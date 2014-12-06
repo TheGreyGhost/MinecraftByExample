@@ -1,0 +1,10 @@
+Installed by:
+1) D/loaded
+2) gradle setupDecompWorkspace
+3) gradle idea
+4) open project.  Import gradle project.
+5) Create artifact..
+Name: CopyResources
+Output Directory: C:\Users\cathy\Documents\JavaSources\MinecraftByExample\build\classes\main
+Output root - Directory Content - 'resources' directory contents of \MinecraftByExample\src\main\
+6) Add Artifact to Minecraft Client configuration
