@@ -17,7 +17,7 @@ Forge Tutorials listing- http://www.minecraftforge.net/forum/index.php/board,120
 How to use this example-
 A) You can browse directly in GitHub, or alternatively download it as a zip and browse it locally.
 
-B) If you want to install it and compile it, the basic steps for beginners.
+B) If you want to install it and compile it, the basic steps for beginners are:
 1) Download the project as a zip.  Unzip it to an appropriate folder on your computer, such as My Documents.  (Or, if you know
    how to fork a project on GitHub and import it into a local git repository, you can do that instead).
 2) From the command line, run gradlew setupDecompWorkspace to install Forge and configure the project.  This will take
