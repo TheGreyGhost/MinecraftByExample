@@ -1,14 +1,14 @@
 [
 {
-  "modid": "examplemod",
-  "name": "Example Mod",
-  "description": "Example placeholder mod.",
-  "version": "${version}",
+  "modid": "minecraftbyexample_mcmod_info",
+  "name": "Minecraft By Example (mcmod_info)",
+  "description": "Minecraft By Example (mcmod_info)",
+  "version": "1.0_mcmod_info",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
-  "authorList": ["ExampleDude"],
-  "credits": "The Forge and FML guys, for making this example",
+  "authorList": ["TGG and others"],
+  "credits": "The Forge, MCP, and FML guys, for making it possible",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []
