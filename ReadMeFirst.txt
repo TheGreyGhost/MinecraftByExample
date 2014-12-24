@@ -31,3 +31,9 @@ http://www.minecraftforge.net/forum/index.php?topic=21354.msg108332#msg108332
 
 Some extra help for installation of forge:
 https://www.youtube.com/watch?v=8VEdtQLuLO0&feature=youtu.be
+
+List of examples
+Blocks
+MBE01 - a simple cube
+MBE02 - a block with more complicated shape
+
