@@ -19,12 +19,16 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 public class Startup
 {
   public static BlockTestTorch blockTestTorch;  // this holds the unique instance of your block
+  public static BlockTestNumberedPart blockTestNumberedPart;  // this holds the unique instance of your block
 
   public static void preInitCommon()
   {
     // each instance of your block should have a name that is unique within your mod.  use lower case.
     blockTestTorch = (BlockTestTorch)(new BlockTestTorch().setUnlocalizedName("test_torch"));
     GameRegistry.registerBlock(blockTestTorch, "test_torch");
+
+    blockTestNumberedPart = (BlockTestNumberedPart)(new BlockTestNumberedPart().setUnlocalizedName("test_numbered_part"));
+    GameRegistry.registerBlock(blockTestNumberedPart, "test_numbered_part");
 
   }
 
