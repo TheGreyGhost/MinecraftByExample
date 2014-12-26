@@ -1,0 +1,20 @@
+{
+    "variants": {
+        "facing=south,colour=red": { "model": "minecraftbyexample:mbe03_block_variant_model_red" },
+         "facing=west,colour=red": { "model": "minecraftbyexample:mbe03_block_variant_model_red", "y": 90 },
+        "facing=north,colour=red": { "model": "minecraftbyexample:mbe03_block_variant_model_red", "y": 180 },
+         "facing=east,colour=red": { "model": "minecraftbyexample:mbe03_block_variant_model_red", "y": 270 },
+         "facing=south,colour=green": { "model": "minecraftbyexample:mbe03_block_variant_model_green" },
+         "facing=west,colour=green": { "model": "minecraftbyexample:mbe03_block_variant_model_green", "y": 90 },
+         "facing=north,colour=green": { "model": "minecraftbyexample:mbe03_block_variant_model_green", "y": 180 },
+         "facing=east,colour=green": { "model": "minecraftbyexample:mbe03_block_variant_model_green", "y": 270 },
+         "facing=south,colour=yellow": { "model": "minecraftbyexample:mbe03_block_variant_model_yellow" },
+         "facing=west,colour=yellow": { "model": "minecraftbyexample:mbe03_block_variant_model_yellow", "y": 90 },
+         "facing=north,colour=yellow": { "model": "minecraftbyexample:mbe03_block_variant_model_yellow", "y": 180 },
+         "facing=east,colour=yellow": { "model": "minecraftbyexample:mbe03_block_variant_model_yellow", "y": 270 },
+         "facing=south,colour=blue": { "model": "minecraftbyexample:mbe03_block_variant_model_blue" },
+         "facing=west,colour=blue": { "model": "minecraftbyexample:mbe03_block_variant_model_blue", "y": 90 },
+         "facing=north,colour=blue": { "model": "minecraftbyexample:mbe03_block_variant_model_blue", "y": 180 },
+         "facing=east,colour=blue": { "model": "minecraftbyexample:mbe03_block_variant_model_blue", "y": 270 }
+    }
+}
