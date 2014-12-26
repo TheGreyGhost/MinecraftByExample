@@ -26,9 +26,10 @@ public class Startup
   {
     // each instance of your block should have a name that is unique within your mod.  use lower case.
     blockVariants = (BlockVariants)(new BlockVariants().setUnlocalizedName("mbe03_block_variants"));
-    GameRegistry.registerBlock(blockVariants, "mbe03_block_variants");
-    // you don't need to register any items corresponding to the block, GameRegistry.registerBlock does this automatically.
-    //  The resulting item(s) is an ItemBlock.
+    GameRegistry.registerBlock(blockVariants, ItemVariants.class, "mbe03_block_variants", blockVariants);
+    // you don't need to register any items corresponding to the block, GameRegistry.registerBlock does this automatically
+    //   when you supply the custom Item class (ItemVariants)
+    //  The resulting item(s) is an ItemVariants.
   }
 
   public static void preInitClientOnly()
