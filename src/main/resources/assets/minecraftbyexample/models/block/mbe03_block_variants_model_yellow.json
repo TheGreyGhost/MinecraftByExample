@@ -1,0 +1,7 @@
+{
+    "parent": "minecraftbyexample:block/mbe03_block_variants_model_shape",
+    "textures": {
+        "sign": "minecraftbyexample:blocks/mbe03_block_variants_sign_yellow",
+        "particle": "blocks/wool_colored_yellow"
+    }
+}

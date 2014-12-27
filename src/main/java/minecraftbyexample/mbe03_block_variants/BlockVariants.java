@@ -139,6 +139,7 @@ public class BlockVariants extends Block
   }
 
   // necessary to define which properties your blocks use
+  // will also affect the variants listed in the blockstates model file
   @Override
   protected BlockState createBlockState()
   {
@@ -148,10 +149,15 @@ public class BlockVariants extends Block
   // when the block is placed, set the appropriate facing direction based on which way the player is looking
   // the colour of block is contained in meta, it corresponds to the values we used for getSubBlocks
   @Override
-  public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
+  public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing blockFaceClickedOn, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
   {
     EnumColour colour = EnumColour.byMetadata(meta);
-    return this.getDefaultState().withProperty(PROPERTYFACING, facing).withProperty(PROPERTYCOLOUR, colour);
+    // find the quadrant the player is facing, add 0.5 for half a quadrant to get proper roundoff to east/west/north/south, then
+    //   extract the lower 2 bits (0-3) to account for possible wrap around of the angle
+    int playerFacingDirection = (placer == null) ? 0 : MathHelper.floor_double((placer.rotationYaw / 90.0F) + 0.5D) & 3;
+    EnumFacing enumfacing = EnumFacing.getHorizontal(playerFacingDirection);
+
+    return this.getDefaultState().withProperty(PROPERTYFACING, enumfacing).withProperty(PROPERTYCOLOUR, colour);
   }
 
   // create a new enum for our four colours, with some supporting methods to convert to & from metadata, and to get

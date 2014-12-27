@@ -15,12 +15,12 @@
                "east": {"uv": [ 8, 2, 9, 16], "texture": "#pole"}
            }
         },
-        {  "from": [4, 9, 8],
-           "to": [12, 13, 8],
+        {  "from": [4, 9, 8.01],
+           "to": [13, 13, 8.01],
            "shade": false,
            "faces": {
-               "north": {"uv": [ 4, 3, 12, 7], "texture": "#sign"},
-               "south": {"uv": [ 4, 3, 12, 7], "texture": "#sign"}
+               "north": {"uv": [ 13, 3,  4, 7], "texture": "#sign"},
+               "south": {"uv": [  4, 3, 13, 7], "texture": "#sign"}
            }
         }
 

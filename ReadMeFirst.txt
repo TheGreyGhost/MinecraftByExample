@@ -25,6 +25,10 @@ B) If you want to install it and compile it, the basic steps for beginners are:
 3) From the command line, run gradlew idea if you are using IntelliJ IDEA, or gradlew eclipse if you are using Eclipse.
 4) Open IntelliJ or Eclipse, then open the project.  If you want, you can import the gradle project so you don't have to
    use the command line when building the mod.
+5) If using Eclipse:
+    a). Right click on the project, select "Run As" > "Run Configurations..."
+    b). Set the main class to "GradleStart"
+    c). You should be able to start Minecraft now.
 
 For some extra help if this doesn't make sense to you
 http://www.minecraftforge.net/forum/index.php?topic=21354.msg108332#msg108332
@@ -35,5 +39,6 @@ https://www.youtube.com/watch?v=8VEdtQLuLO0&feature=youtu.be
 List of examples
 Blocks
 MBE01 - a simple cube
-MBE02 - a block with more complicated shape
+MBE02 - a block with a more complicated shape
+MBE03 - a block (coloured signpost) with multiple variants- four colours, can be placed facing in four directions
 
