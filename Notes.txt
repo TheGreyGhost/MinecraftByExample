@@ -12,17 +12,20 @@ Output root - Directory Content - 'resources' directory contents of \MinecraftBy
 Ideas for future topics
 
 Blocks -
-   simple block modelling
-   more-complicated block modelling
-   blocks with properties / metadata
+   #simple block modelling
+   #more-complicated block modelling
+   #blocks with properties / metadata
    block with display tick
    block with scheduled update
    animated texture
 Items -
-   simple item
+   #simple item
    item with sub-types
    item with NBT - Brandon's project
    how to control rendering in the different views (1st person, 3rd person, inventory, etc)
+   how to control rendering of bow-like (Item.getModel)
+   armour?
+   tool - strength vs blocks, durability, various events?
 Recipes
   variety of recipe types
 TileEntity

@@ -1,0 +1,19 @@
+{
+    "parent": "builtin/generated",
+    "textures": {
+        "layer0": "minecraftbyexample:items/mbe11_item_variants_layer0",
+        "layer1": "minecraftbyexample:items/mbe11_item_variants_layer1_75pc"
+    },
+    "display": {
+        "thirdperson": {
+            "rotation": [ -90, 0, 0 ],
+            "translation": [ 0, 1, -3 ],
+            "scale": [ 0.55, 0.55, 0.55 ]
+        },
+        "firstperson": {
+            "rotation": [ 0, -135, 25 ],
+            "translation": [ 0, 4, 2 ],
+            "scale": [ 1.7, 1.7, 1.7 ]
+        }
+    }
+}

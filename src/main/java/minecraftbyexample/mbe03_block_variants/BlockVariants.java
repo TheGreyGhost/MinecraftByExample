@@ -207,13 +207,8 @@ public class BlockVariants extends Block
 
     static
     {
-      EnumColour[] var0 = values();
-      int var1 = var0.length;
-
-      for (int var2 = 0; var2 < var1; ++var2)
-      {
-        EnumColour var3 = var0[var2];
-        META_LOOKUP[var3.getMetadata()] = var3;
+      for (EnumColour colour : values()) {
+        META_LOOKUP[colour.getMetadata()] = colour;
       }
     }
   }
