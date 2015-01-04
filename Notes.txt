@@ -22,9 +22,9 @@ Blocks -
 Items -
    #simple item
    #item with sub-types
-   item with NBT - Brandon's project
+   #item with NBT - Brandon's project
    how to control rendering in the different views (1st person, 3rd person, inventory, etc)
-   how to control rendering of bow-like (Item.getModel)
+   #how to control rendering of bow-like (Item.getModel)
    armour?
    tool - strength vs blocks, durability, various events?
 Recipes
