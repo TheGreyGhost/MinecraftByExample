@@ -17,10 +17,11 @@ Blocks -
    #blocks with properties / metadata
    block with display tick
    block with scheduled update
+   redstone compatible blocks
    animated texture
 Items -
    #simple item
-   item with sub-types
+   #item with sub-types
    item with NBT - Brandon's project
    how to control rendering in the different views (1st person, 3rd person, inventory, etc)
    how to control rendering of bow-like (Item.getModel)
@@ -40,7 +41,8 @@ Entities
   entity rendering / techne -based / animation
   entity with basic AI
   - use of datawatchers
-
+Sound
+  - point and continuous sound effects
 EntityFX
   simple effect generator
 Events

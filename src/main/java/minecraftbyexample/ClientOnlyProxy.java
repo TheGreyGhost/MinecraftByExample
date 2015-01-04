@@ -19,6 +19,7 @@ public class ClientOnlyProxy extends CommonProxy
     minecraftbyexample.mbe03_block_variants.Startup.preInitClientOnly();
     minecraftbyexample.mbe10_item_simple.Startup.preInitClientOnly();
     minecraftbyexample.mbe11_item_variants.Startup.preInitClientOnly();
+    minecraftbyexample.mbe12_item_nbt_animate.Startup.preInitClientOnly();
     minecraftbyexample.testingarea.Startup.preInitClientOnly();
   }
 
@@ -34,6 +35,7 @@ public class ClientOnlyProxy extends CommonProxy
     minecraftbyexample.mbe03_block_variants.Startup.initClientOnly();
     minecraftbyexample.mbe10_item_simple.Startup.initClientOnly();
     minecraftbyexample.mbe11_item_variants.Startup.initClientOnly();
+    minecraftbyexample.mbe12_item_nbt_animate.Startup.initClientOnly();
     minecraftbyexample.testingarea.Startup.initClientOnly();
   }
 
@@ -48,6 +50,7 @@ public class ClientOnlyProxy extends CommonProxy
     minecraftbyexample.mbe03_block_variants.Startup.postInitClientOnly();
     minecraftbyexample.mbe10_item_simple.Startup.postInitClientOnly();
     minecraftbyexample.mbe11_item_variants.Startup.postInitClientOnly();
+    minecraftbyexample.mbe12_item_nbt_animate.Startup.postInitClientOnly();
     minecraftbyexample.testingarea.Startup.postInitClientOnly();
   }
 }
