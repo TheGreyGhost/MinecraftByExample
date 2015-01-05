@@ -1,2 +1,5 @@
 tile.mbe01_block_simple.name=MBE01 Block Simple
 tile.mbe02_block_partial.name=MBE02 Block Partial
+
+itemGroup.gold_nugget_tab=Gold Nugget Tab
+itemGroup.prefix_gold_block_tab=Gold Block Tab
