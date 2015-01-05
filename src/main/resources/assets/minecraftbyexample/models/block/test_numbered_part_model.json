@@ -1,0 +1,25 @@
+{
+  "textures": {
+    "down": "minecraftbyexample:blocks/mbe01_block_simple_face0",
+    "up": "minecraftbyexample:blocks/mbe01_block_simple_face1",
+    "north": "minecraftbyexample:blocks/mbe01_block_simple_face2",
+    "east": "minecraftbyexample:blocks/mbe01_block_simple_face5",
+    "south": "minecraftbyexample:blocks/mbe01_block_simple_face3",
+    "west": "minecraftbyexample:blocks/mbe01_block_simple_face4",
+    "particle": "blocks/lapis_block"
+  },
+  "elements": [
+    {  "from": [0, 0, 0],
+       "to": [16, 16, 16],
+       "faces": {
+         "down": {"uv": [ 0, 0, 16, 16], "texture": "#down"},
+         "up": {"uv": [ 0, 0, 16, 16], "texture": "#up"},
+         "north": {"uv": [ 0, 0, 16, 16], "texture": "#north"},
+         "south": {"uv": [ 0, 0, 16, 16], "texture": "#south"},
+         "west": {"uv": [ 0, 0, 16, 16], "texture": "#west"},
+         "east": {"uv": [ 0, 0, 16, 16], "texture": "#east"}
+       }
+    }
+
+  ]
+}

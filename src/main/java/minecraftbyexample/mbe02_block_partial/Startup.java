@@ -16,7 +16,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
  *  initClientOnly
  *  postInitCommon
  *  postInitClientOnly
- *  See MinecraftByExample for more information
+ *  See MinecraftByExample class for more information
  */
 public class Startup
 {

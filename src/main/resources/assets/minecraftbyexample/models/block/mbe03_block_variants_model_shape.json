@@ -1,0 +1,28 @@
+{
+    "ambientocclusion": false,
+    "textures": {
+        "pole": "blocks/log_big_oak"
+    },
+    "elements": [
+        {  "from": [7, 0, 7],
+           "to": [8, 14, 8],
+           "faces": {
+               "down": {"uv": [ 7, 8, 8, 9], "texture": "#pole"},
+               "up": {"uv": [ 7, 7, 8, 8], "texture": "#pole"},
+               "north": {"uv": [ 8, 2, 9, 16], "texture": "#pole"},
+               "south": {"uv": [ 7, 2, 8, 16], "texture": "#pole"},
+               "west": {"uv": [ 7, 2, 8, 16], "texture": "#pole"},
+               "east": {"uv": [ 8, 2, 9, 16], "texture": "#pole"}
+           }
+        },
+        {  "from": [4, 9, 8.01],
+           "to": [13, 13, 8.01],
+           "shade": false,
+           "faces": {
+               "north": {"uv": [ 13, 3,  4, 7], "texture": "#sign"},
+               "south": {"uv": [  4, 3, 13, 7], "texture": "#sign"}
+           }
+        }
+
+    ]
+}

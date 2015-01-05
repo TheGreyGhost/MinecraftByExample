@@ -8,3 +8,56 @@ Name: CopyResources
 Output Directory: C:\Users\tgg\Documents\JavaSources\MinecraftByExample\build\classes\main
 Output root - Directory Content - 'resources' directory contents of \MinecraftByExample\src\main\
 6) Add Artifact to Minecraft Client configuration
+
+Ideas for future topics
+
+Blocks -
+   #simple block modelling
+   #more-complicated block modelling
+   #blocks with properties / metadata
+   block with display tick
+   block with scheduled update
+   animated texture
+Items -
+   #simple item
+   item with sub-types
+   item with NBT - Brandon's project
+   how to control rendering in the different views (1st person, 3rd person, inventory, etc)
+   how to control rendering of bow-like (Item.getModel)
+   armour?
+   tool - strength vs blocks, durability, various events?
+Recipes
+  variety of recipe types
+TileEntity
+  simple tile entity with NBT, no renderer
+  simple TileEntitySpecialRenderer
+Containers
+  furnace-like
+  chest-like
+Entities
+  basic entity that can be spawned and disappears after a certain time
+  missile entity
+  entity rendering / techne -based / animation
+  entity with basic AI
+  - use of datawatchers
+
+EntityFX
+  simple effect generator
+Events
+  show some events on different busses
+GUI
+  customise the standard HUD render elements (crosshairs, etc)
+  create a custom GUI
+  some overlay examples - Nephroid
+Terrain generation
+
+Generate a new dimension
+
+Miscellaneous
+  best practice error logging (I could sure use some help on that one!)
+
+Places to store extra data....
+WorldSavedData
+http://www.minecraftforge.net/forum/index.php/topic,26304.0.html
+
+Basic packets

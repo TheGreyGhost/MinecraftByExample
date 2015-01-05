@@ -1,5 +1,13 @@
 tile.mbe01_block_simple.name=MBE01 Block Simple
 tile.mbe02_block_partial.name=MBE02 Block Partial
-
+tile.mbe03_block_variants.red.name=MBE03 Block Variants Red
 itemGroup.gold_nugget_tab=Gold Nugget Tab
 itemGroup.prefix_gold_block_tab=Gold Block Tab
+tile.mbe03_block_variants.blue.name=MBE03 Block Variants Blue
+tile.mbe03_block_variants.green.name=MBE03 Block Variants Green
+tile.mbe03_block_variants.yellow.name=MBE03 Block Variants Yellow
+item.mbe10_item_simple.name=MBE10 Item Simple
+item.mbe11_item_variants.orange.name=MBE11 Item Variants orange
+item.mbe11_item_variants.lemon.name=MBE11 Item Variants lemon
+item.mbe11_item_variants.lime.name=MBE11 Item Variants lime
+item.mbe11_item_variants.cherry.name=MBE11 Item Variants cherry

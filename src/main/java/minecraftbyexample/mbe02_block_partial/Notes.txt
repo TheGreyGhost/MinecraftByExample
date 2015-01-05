@@ -22,7 +22,7 @@ The block will appear in the Blocks tab in the creative inventory.
 
 For background information on
 - blocks: see here http://greyminecraftcoder.blogspot.com.au/2014/12/blocks-18.html
-- rendering blocks: see here
+- rendering blocks: see here http://greyminecraftcoder.blogspot.com.au/p/list-of-topics.html (the topics under the Block Rendering heading)
 
 --------
 Common errors:
