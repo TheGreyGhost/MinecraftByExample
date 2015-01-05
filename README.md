@@ -25,6 +25,7 @@ Blocks
 Items
   MBE10 - a simple item
   MBE11 - an item with multiple variants - rendered using multiple models and multiple layers
+  MBE12 - an item that stores extra information in NBT, also illustrates the "in use" animation similar to drawing a bow
 
 How to use this example project-
 A) You can browse directly in GitHub, or alternatively download it as a zip and browse it locally.
