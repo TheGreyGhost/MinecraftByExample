@@ -1,6 +1,5 @@
 package minecraftbyexample.mbe13_item_tools;
 
-import minecraftbyexample.usefultools.MethodCallLogger;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -29,48 +28,41 @@ public class BlockToolTest extends Block
 
   @Override
   public int getHarvestLevel(IBlockState state) {
-    int result = super.getHarvestLevel(state);
-    if (MethodCallLogger.shouldLog("Block.getHarvestLevel")) {
-      System.out.println("#BlockToolTest.getHarvestLevel(" + state + "), result = " + result);
-    }
+    Startup.methodCallLogger.enterMethod("BlockToolTest.canHarvestBlock", state.toString());
+    Integer result = super.getHarvestLevel(state);
+    Startup.methodCallLogger.exitMethod("BlockToolTest.canHarvestBlock", result.toString());
     return result;
-
   }
 
   @Override
   public String getHarvestTool(IBlockState state) {
+    Startup.methodCallLogger.enterMethod("BlockToolTest.getHarvestTool", state.toString());
     String result = super.getHarvestTool(state);
-    if (MethodCallLogger.shouldLog("Block.getHarvestTool")) {
-      System.out.println("#BlockToolTest.getHarvestTool(" + state + "), result = " + result);
-    }
+    Startup.methodCallLogger.exitMethod("BlockToolTest.getHarvestTool", result.toString());
     return result;
   }
 
   @Override
   public boolean isToolEffective(String type, IBlockState state) {
-    boolean result = super.isToolEffective(type, state);
-    if (MethodCallLogger.shouldLog("Block.isToolEffective")) {
-      System.out.println("#BlockToolTest.isToolEffective(" + state + "), result = " + result);
-    }
+    Startup.methodCallLogger.enterMethod("BlockToolTest.isToolEffective", type + ", " + state.toString());
+    Boolean result = super.isToolEffective(type, state);
+    Startup.methodCallLogger.exitMethod("BlockToolTest.isToolEffective", result.toString());
     return result;
   }
 
   @Override
   public float getBlockHardness(World worldIn, BlockPos pos) {
-    float result = super.getBlockHardness(worldIn, pos);
-    if (MethodCallLogger.shouldLog("Block.getBlockHardness")) {
-      System.out.println("#BlockToolTest.getBlockHardness({world}, " + pos + "), result = " + result);
-    }
+    Startup.methodCallLogger.enterMethod("BlockToolTest.getBlockHardness", "{world}, " + pos);
+    Float result = super.getBlockHardness(worldIn, pos);
+    Startup.methodCallLogger.exitMethod("BlockToolTest.getBlockHardness", result.toString());
     return result;
   }
 
   @Override
   public float getPlayerRelativeBlockHardness(EntityPlayer playerIn, World worldIn, BlockPos pos) {
-    float result = super.getPlayerRelativeBlockHardness(playerIn, worldIn, pos);
-    if (MethodCallLogger.shouldLog("Block.getPlayerRelativeBlockHardness")) {
-      System.out.println("#BlockToolTest.getPlayerRelativeBlockHardness(" + playerIn.getDisplayNameString() + ", {world}, "
-              + pos + "), result = " + result);
-    }
+    Startup.methodCallLogger.enterMethod("BlockToolTest.getPlayerRelativeBlockHardness", playerIn.getDisplayNameString() + ", {world}, " + pos);
+    Float result = super.getPlayerRelativeBlockHardness(playerIn, worldIn, pos);
+    Startup.methodCallLogger.exitMethod("BlockToolTest.getPlayerRelativeBlockHardness", result.toString());
     return result;
   }
 

@@ -1,7 +1,6 @@
 package minecraftbyexample.mbe13_item_tools;
 
 import minecraftbyexample.MinecraftByExample;
-import minecraftbyexample.usefultools.MethodCallLogger;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -31,67 +30,63 @@ public class ItemToolsTest extends ItemTool
 
   @Override
   public boolean canHarvestBlock(Block blockIn) {
-    boolean result = super.canHarvestBlock(blockIn);
-    if (MethodCallLogger.shouldLog("Item.canHarvestBlock")) {
-      System.out.println("#ItemToolsTest.canHarvestBlock(" + blockIn.getLocalizedName() + "), result = " + result);
-    }
+    Startup.methodCallLogger.enterMethod("ItemToolsTest.canHarvestBlock", blockIn.getLocalizedName());
+    Boolean result = super.canHarvestBlock(blockIn);
+    Startup.methodCallLogger.exitMethod("ItemToolsTest.canHarvestBlock", result.toString());
     return result;
   }
 
   @Override
   public boolean canHarvestBlock(Block par1Block, ItemStack itemStack) {
-    boolean result =  super.canHarvestBlock(par1Block, itemStack);
-    if (MethodCallLogger.shouldLog("Item.canHarvestBlock")) {
-      System.out.println("#ItemToolsTest.canHarvestBlock(" + par1Block.getLocalizedName() + ", " + itemStack.getDisplayName() + " ), result = " + result);
-    }return result;
+    Startup.methodCallLogger.enterMethod("ItemToolsTest.canHarvestBlock", par1Block.getLocalizedName() + ", " + itemStack.getDisplayName());
+    Boolean result = super.canHarvestBlock(par1Block, itemStack);
+    Startup.methodCallLogger.exitMethod("ItemToolsTest.canHarvestBlock", result.toString());
+    return result;
   }
 
   @Override
   public int getHarvestLevel(ItemStack stack, String toolClass) {
-    int result =  super.getHarvestLevel(stack, toolClass);
-    if (MethodCallLogger.shouldLog("Item.getHarvestLevel")) {
-      System.out.println("#ItemToolsTest.getHarvestLevel(" + stack.getDisplayName() + ", " + toolClass + "), result = " + result);
-    }
+    Startup.methodCallLogger.enterMethod("ItemToolsTest.getHarvestLevel", stack.getDisplayName() + ", " + toolClass);
+    Integer result = super.getHarvestLevel(stack, toolClass);
+    Startup.methodCallLogger.exitMethod("ItemToolsTest.getHarvestLevel", result.toString());
     return result;
   }
 
   @Override
   public float getDigSpeed(ItemStack stack, IBlockState state) {
-    float result =  super.getDigSpeed(stack, state);
-    if (MethodCallLogger.shouldLog("Item.getDigSpeed")) {
-      System.out.println("#ItemToolsTest.getDigSpeed(" + stack.getDisplayName() + ", " + state + "), result = " + result);
-    }
+    Startup.methodCallLogger.enterMethod("ItemToolsTest.getDigSpeed", stack.getDisplayName() + ", " + state);
+    Float result = super.getDigSpeed(stack, state);
+    Startup.methodCallLogger.exitMethod("ItemToolsTest.getDigSpeed", result.toString());
     return result;
   }
 
   @Override
   public float getStrVsBlock(ItemStack stack, Block block) {
-    float result = super.getStrVsBlock(stack, block);
-    if (MethodCallLogger.shouldLog("Item.getStrVsBlock")) {
-      System.out.println("#ItemToolsTest.getStrVsBlock(" + stack.getDisplayName() + ", " + block.getLocalizedName() + "), result = " + result);
-    }
+    Startup.methodCallLogger.enterMethod("ItemToolsTest.getStrVsBlock", stack.getDisplayName() + ", " + block.getLocalizedName());
+    Float result = super.getStrVsBlock(stack, block);
+    Startup.methodCallLogger.exitMethod("ItemToolsTest.getStrVsBlock", result.toString());
     return result;
   }
 
   @Override
   public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, EntityPlayer player) {
-    boolean result =  super.onBlockStartBreak(itemstack, pos, player);
+    Startup.methodCallLogger.enterMethod("ItemToolsTest.onBlockStartBreak", itemstack.getDisplayName() + ", " + pos + ", " + player.getName());
+    Boolean result =  super.onBlockStartBreak(itemstack, pos, player);
     if (MinecraftByExample.proxy.playerIsInCreativeMode(player)) {
       player.addChatComponentMessage(new ChatComponentText("Currently in creative mode; switch to survival mode using /gamemode."));
     }
-    if (MethodCallLogger.shouldLog("Item.onBlockStartBreak")) {
-      System.out.println("#ItemToolsTest.onBlockStartBreak(" + itemstack.getDisplayName() + ", " + pos + ", " + player.getName() + "), result = " + result);
-    }
+    Startup.methodCallLogger.exitMethod("ItemToolsTest.onBlockStartBreak", result.toString());
     return result;
   }
 
   @Override
   public boolean onBlockDestroyed(ItemStack stack, World worldIn, Block blockIn, BlockPos pos, EntityLivingBase playerIn) {
-    boolean result =  super.onBlockDestroyed(stack, worldIn, blockIn, pos, playerIn);
-    if (MethodCallLogger.shouldLog("Item.onBlockDestroyed")) {
-      System.out.println("#ItemToolsTest.onBlockDestroyed(" + stack.getDisplayName() + ", {world}, " + blockIn.getLocalizedName() + ", "
-              + pos + ", " + playerIn.getName() +"), result = " + result);
-    }
+    Startup.methodCallLogger.enterMethod("ItemToolsTest.onBlockDestroyed",
+                                         stack.getDisplayName() + ", {world}, " + blockIn.getLocalizedName() + ", "
+                                         + pos + ", " + playerIn.getName()
+                                         );
+    Boolean result = super.onBlockDestroyed(stack, worldIn, blockIn, pos, playerIn);
+    Startup.methodCallLogger.exitMethod("ItemToolsTest.onBlockDestroyed", result.toString());
     return result;
   }
 

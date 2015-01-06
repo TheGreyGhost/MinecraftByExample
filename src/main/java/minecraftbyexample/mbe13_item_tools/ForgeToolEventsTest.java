@@ -1,6 +1,5 @@
 package minecraftbyexample.mbe13_item_tools;
 
-import minecraftbyexample.usefultools.MethodCallLogger;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -14,28 +13,22 @@ public class ForgeToolEventsTest
   @SubscribeEvent
   public void breakSpeed(PlayerEvent.BreakSpeed event)
   {
-    if (MethodCallLogger.shouldLog("Event.BreakSpeed")) {
-      System.out.println("#PlayerEvent.BreakSpeed: blockstate=" + event.state + ", blockpos=" + event.pos + ", oldspeed = " + event.originalSpeed );
-      System.out.println("#  +---> return to caller: newspeed=" + event.newSpeed + ", cancelled=" + event.isCanceled());
-    }
+    Startup.methodCallLogger.enterMethod("Event.BreakSpeed", "blockstate=" + event.state + ", blockpos=" + event.pos + ", oldspeed = " + event.originalSpeed);
+    Startup.methodCallLogger.exitMethod("Event.BreakSpeed", "newspeed=" + event.newSpeed + ", cancelled=" + event.isCanceled());
   }
 
   @SubscribeEvent
   public void harvestCheck(PlayerEvent.HarvestCheck event)
   {
-    if (MethodCallLogger.shouldLog("Event.HarvestCheck")) {
-      System.out.println("#PlayerEvent.HarvestCheck: block=" + event.block);
-      System.out.println("#  +---> return to caller: success=" + event.success);
-    }
+    Startup.methodCallLogger.enterMethod("Event.HarvestCheck", "block=" + event.block);
+    Startup.methodCallLogger.exitMethod("Event.HarvestCheck", "success=" + event.success);
   }
 
   @SubscribeEvent
   public void playerInteractEvent(PlayerInteractEvent event)
   {
-    if (MethodCallLogger.shouldLog("Event.PlayerInteractEvent")) {
-      System.out.println("#PlayerInteractEvent: action=" + event.action);
-      System.out.println("#  +---> return to caller: success=" + event.useBlock);
-    }
+    Startup.methodCallLogger.enterMethod("Event.PlayerInteractEvent", "action=" + event.action);
+    Startup.methodCallLogger.exitMethod("Event.PlayerInteractEvent","");
   }
 
 }

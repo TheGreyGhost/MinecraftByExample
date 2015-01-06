@@ -1,6 +1,7 @@
 package minecraftbyexample.mbe13_item_tools;
 
 import com.google.common.collect.Sets;
+import minecraftbyexample.usefultools.MethodCallLogger;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -9,6 +10,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.Set;
 
@@ -29,6 +31,8 @@ public class Startup
 {
   public static ItemToolsTest itemToolsTest;
   public static BlockToolTest blockToolTest;
+
+  public static MethodCallLogger methodCallLogger = new MethodCallLogger();
 
   public static void preInitCommon()
   {
@@ -56,21 +60,23 @@ public class Startup
 
     MinecraftForge.EVENT_BUS.register(new ForgeToolEventsTest());
 
-
-    // set up logging of the various methods
-//    shouldLogMap.put("Item.canHarvestBlock", true);
-//    shouldLogMap.put("Item.getHarvestLevel", true);
-//    shouldLogMap.put("Item.getDigSpeed", true);
-//    shouldLogMap.put("Item.getStrVsBlock", true);
-//    shouldLogMap.put("Item.onBlockStartBreak", true);
-//    shouldLogMap.put("Item.onBlockDestroyed", true);
-//    shouldLogMap.put("Block.getHarvestLevel", true);
-//    shouldLogMap.put("Block.getHarvestTool", true);
-//    shouldLogMap.put("Block.isToolEffective", true);
-//    shouldLogMap.put("Block.getBlockHardness", true);
-//    shouldLogMap.put("Block.getPlayerRelativeBlockHardness", true);
-//    shouldLogMap.put("Event.BreakSpeed", true);
-//    shouldLogMap.put("Event.HarvestCheck", true);
+    // set up logging of the various methods - any methods you don't want to log - change to false
+    methodCallLogger.setSideLogging(Side.CLIENT, true);
+    methodCallLogger.setSideLogging(Side.SERVER, true);
+    methodCallLogger.setShouldLog("Item.canHarvestBlock", true);
+    methodCallLogger.setShouldLog("Item.getHarvestLevel", true);
+    methodCallLogger.setShouldLog("Item.getDigSpeed", true);
+    methodCallLogger.setShouldLog("Item.getStrVsBlock", true);
+    methodCallLogger.setShouldLog("Item.onBlockStartBreak", true);
+    methodCallLogger.setShouldLog("Item.onBlockDestroyed", true);
+    methodCallLogger.setShouldLog("Block.getHarvestLevel", true);
+    methodCallLogger.setShouldLog("Block.getHarvestTool", true);
+    methodCallLogger.setShouldLog("Block.isToolEffective", true);
+    methodCallLogger.setShouldLog("Block.getBlockHardness", true);
+    methodCallLogger.setShouldLog("Block.getPlayerRelativeBlockHardness", true);
+    methodCallLogger.setShouldLog("Event.BreakSpeed", true);
+    methodCallLogger.setShouldLog("Event.HarvestCheck", true);
+    methodCallLogger.setShouldLog("Event.PlayerInteractEvent", true);
   }
 
   public static void preInitClientOnly()
