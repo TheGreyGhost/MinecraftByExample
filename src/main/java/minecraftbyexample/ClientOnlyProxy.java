@@ -1,5 +1,10 @@
 package minecraftbyexample;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+
 /**
  * ClientProxy is used to set up the mod and start it running on normal minecraft.  It contains all the code that should run on the
  *   client side only.
@@ -20,6 +25,7 @@ public class ClientOnlyProxy extends CommonProxy
     minecraftbyexample.mbe10_item_simple.Startup.preInitClientOnly();
     minecraftbyexample.mbe11_item_variants.Startup.preInitClientOnly();
     minecraftbyexample.mbe12_item_nbt_animate.Startup.preInitClientOnly();
+    minecraftbyexample.mbe13_item_tools.Startup.preInitClientOnly();
     minecraftbyexample.testingarea.Startup.preInitClientOnly();
   }
 
@@ -36,6 +42,7 @@ public class ClientOnlyProxy extends CommonProxy
     minecraftbyexample.mbe10_item_simple.Startup.initClientOnly();
     minecraftbyexample.mbe11_item_variants.Startup.initClientOnly();
     minecraftbyexample.mbe12_item_nbt_animate.Startup.initClientOnly();
+    minecraftbyexample.mbe13_item_tools.Startup.initClientOnly();
     minecraftbyexample.testingarea.Startup.initClientOnly();
   }
 
@@ -51,6 +58,18 @@ public class ClientOnlyProxy extends CommonProxy
     minecraftbyexample.mbe10_item_simple.Startup.postInitClientOnly();
     minecraftbyexample.mbe11_item_variants.Startup.postInitClientOnly();
     minecraftbyexample.mbe12_item_nbt_animate.Startup.postInitClientOnly();
+    minecraftbyexample.mbe13_item_tools.Startup.postInitClientOnly();
     minecraftbyexample.testingarea.Startup.postInitClientOnly();
+  }
+
+  @Override
+  public boolean playerIsInCreativeMode(EntityPlayer player) {
+    if (player instanceof EntityPlayerMP) {
+      EntityPlayerMP entityPlayerMP = (EntityPlayerMP)player;
+      return entityPlayerMP.theItemInWorldManager.isCreative();
+    } else if (player instanceof EntityPlayerSP) {
+      return Minecraft.getMinecraft().playerController.isInCreativeMode();
+    }
+    return false;
   }
 }

@@ -1,0 +1,5 @@
+{
+    "variants": {
+        "normal": { "model": "minecraftbyexample:mbe13_item_tools_block_model" }
+    }
+}

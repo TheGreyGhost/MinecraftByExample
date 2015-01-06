@@ -37,6 +37,8 @@ public class Startup
 //    blockTestNumberedPart = (BlockTestNumberedPart)(new BlockTestNumberedPart().setUnlocalizedName("test_numbered_part"));
 //    GameRegistry.registerBlock(blockTestNumberedPart, "test_numbered_part");
 //
+    TestOfMethodCallLogger.test();
+
   }
 
   public static void preInitClientOnly()

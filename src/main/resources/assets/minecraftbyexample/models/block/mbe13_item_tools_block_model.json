@@ -1,0 +1,7 @@
+{
+    "parent": "block/cube_all",
+    "textures": {
+        "all": "minecraftbyexample:blocks/mbe01_block_simple_face4",
+        "particle": "blocks/lapis_block"
+    }
+}

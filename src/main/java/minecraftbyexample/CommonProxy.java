@@ -1,5 +1,7 @@
 package minecraftbyexample;
 
+import net.minecraft.entity.player.EntityPlayer;
+
 /**
  * CommonProxy is used to set up the mod and start it running.  It contains all the code that should run on both the
  *   Standalone client and the dedicated server.
@@ -18,6 +20,7 @@ public abstract class CommonProxy {
     minecraftbyexample.mbe10_item_simple.Startup.preInitCommon();
     minecraftbyexample.mbe11_item_variants.Startup.preInitCommon();
     minecraftbyexample.mbe12_item_nbt_animate.Startup.preInitCommon();
+    minecraftbyexample.mbe13_item_tools.Startup.preInitCommon();
     minecraftbyexample.testingarea.Startup.preInitCommon();
   }
 
@@ -33,6 +36,7 @@ public abstract class CommonProxy {
     minecraftbyexample.mbe10_item_simple.Startup.initCommon();
     minecraftbyexample.mbe11_item_variants.Startup.initCommon();
     minecraftbyexample.mbe12_item_nbt_animate.Startup.initCommon();
+    minecraftbyexample.mbe13_item_tools.Startup.initCommon();
     minecraftbyexample.testingarea.Startup.initCommon();
   }
 
@@ -47,6 +51,12 @@ public abstract class CommonProxy {
     minecraftbyexample.mbe10_item_simple.Startup.postInitCommon();
     minecraftbyexample.mbe11_item_variants.Startup.postInitCommon();
     minecraftbyexample.mbe12_item_nbt_animate.Startup.postInitCommon();
+    minecraftbyexample.mbe13_item_tools.Startup.postInitCommon();
     minecraftbyexample.testingarea.Startup.postInitCommon();
   }
+
+  // helper to determine whether the given player is in creative mode
+  //  not necessary for most examples
+  abstract public boolean playerIsInCreativeMode(EntityPlayer player);
+
 }
