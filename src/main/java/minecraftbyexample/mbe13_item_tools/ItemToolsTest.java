@@ -18,56 +18,57 @@ import java.util.Set;
  * User: The Grey Ghost
  * Date: 30/12/2014
  *
- * ItemToolsTest is an ordinary two-dimensional item used to test the interaction between tools and blocks
+ * ItemToolsTest is a simple tool used to test the interactions between tools and blocks
+ * For background information see here
+ * http://greyminecraftcoder.blogspot.ch/2015/01/mining-blocks-with-tools.html
+ *
+ * Manipulating the item properties or methods is generally the best way to customise mining behaviour if you are creating
+ * your own custom item.
+ *
+ * Item.setHarvestLevel(ToolClass, level) - first choice - give your tool one or more ToolClasses equivalent to existing tool eg "pickaxe", "axe".
+   ItemTool constructor -
+     EFFECTIVE_ON set of blocks - to add extra "special case" blocks that your item is effective on which don't match the Item's ToolClass(es).
+     ToolMaterial, which affects the maximum dig speed and the tool durability.
+   Item.getStrVsBlock() - add further "special cases" that ToolClass and ItemTool constructor don't cover.
+   Item.getDigSpeed() - metadata / damage sensitive version of getStrVsBlock()
+   Item.onBlockStartBreak() - can be used to abort block breaking before it is destroyed
+   Item.onBlockDestroyed() - used to damage the item once the block is destroyed
+
+   In Adventure mode, the "CanDestroy" NBT tag in the tool's itemstack is used to determine which blocks it can destroy.
  */
+
 public class ItemToolsTest extends ItemTool
 {
 
   public ItemToolsTest(float attackDamage, ToolMaterial material, Set effectiveBlocks) {
     super(attackDamage, material, effectiveBlocks);
     this.setCreativeTab(CreativeTabs.tabMisc);   // the item will appear on the Miscellaneous tab in creative
+
+    final int WOOD_HARDNESS_LEVEL = 0;
+    final int STONE_HARDNESS_LEVEL = 1;
+    this.setHarvestLevel("axe", WOOD_HARDNESS_LEVEL);  // default.  can also be set when creating the block instance, which is typically what vanilla does
+    this.setHarvestLevel("pickaxe", STONE_HARDNESS_LEVEL);  // can add hardness level for as many or few ToolClasses as you want; new ToolClasses also possible
   }
 
-  @Override
-  public boolean canHarvestBlock(Block blockIn) {
-    Startup.methodCallLogger.enterMethod("ItemToolsTest.canHarvestBlock", blockIn.getLocalizedName());
-    Boolean result = super.canHarvestBlock(blockIn);
-    Startup.methodCallLogger.exitMethod("ItemToolsTest.canHarvestBlock", result.toString());
-    return result;
-  }
-
-  @Override
-  public boolean canHarvestBlock(Block par1Block, ItemStack itemStack) {
-    Startup.methodCallLogger.enterMethod("ItemToolsTest.canHarvestBlock", par1Block.getLocalizedName() + ", " + itemStack.getDisplayName());
-    Boolean result = super.canHarvestBlock(par1Block, itemStack);
-    Startup.methodCallLogger.exitMethod("ItemToolsTest.canHarvestBlock", result.toString());
-    return result;
-  }
-
-  @Override
-  public int getHarvestLevel(ItemStack stack, String toolClass) {
-    Startup.methodCallLogger.enterMethod("ItemToolsTest.getHarvestLevel", stack.getDisplayName() + ", " + toolClass);
-    Integer result = super.getHarvestLevel(stack, toolClass);
-    Startup.methodCallLogger.exitMethod("ItemToolsTest.getHarvestLevel", result.toString());
-    return result;
-  }
-
-  @Override
-  public float getDigSpeed(ItemStack stack, IBlockState state) {
-    Startup.methodCallLogger.enterMethod("ItemToolsTest.getDigSpeed", stack.getDisplayName() + ", " + state);
-    Float result = super.getDigSpeed(stack, state);
-    Startup.methodCallLogger.exitMethod("ItemToolsTest.getDigSpeed", result.toString());
-    return result;
-  }
-
+  // can be useful to add further "special cases" that ToolClass and ItemTool constructor don't cover.
   @Override
   public float getStrVsBlock(ItemStack stack, Block block) {
     Startup.methodCallLogger.enterMethod("ItemToolsTest.getStrVsBlock", stack.getDisplayName() + ", " + block.getLocalizedName());
     Float result = super.getStrVsBlock(stack, block);
-    Startup.methodCallLogger.exitMethod("ItemToolsTest.getStrVsBlock", result.toString());
+    Startup.methodCallLogger.exitMethod("ItemToolsTest.getStrVsBlock", String.valueOf(result));
     return result;
   }
 
+  // metadata / damage sensitive version of getStrVsBlock()
+  @Override
+  public float getDigSpeed(ItemStack stack, IBlockState state) {
+    Startup.methodCallLogger.enterMethod("ItemToolsTest.getDigSpeed", stack.getDisplayName() + ", " + state);
+    Float result = super.getDigSpeed(stack, state);
+    Startup.methodCallLogger.exitMethod("ItemToolsTest.getDigSpeed", String.valueOf(result));
+    return result;
+  }
+
+  //   Item.onBlockStartBreak() - called immediately before the block is destroyed - can be used to abort block breaking before it is destroyed
   @Override
   public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, EntityPlayer player) {
     Startup.methodCallLogger.enterMethod("ItemToolsTest.onBlockStartBreak", itemstack.getDisplayName() + ", " + pos + ", " + player.getName());
@@ -75,39 +76,44 @@ public class ItemToolsTest extends ItemTool
     if (MinecraftByExample.proxy.playerIsInCreativeMode(player)) {
       player.addChatComponentMessage(new ChatComponentText("Currently in creative mode; switch to survival mode using /gamemode."));
     }
-    Startup.methodCallLogger.exitMethod("ItemToolsTest.onBlockStartBreak", result.toString());
+    Startup.methodCallLogger.exitMethod("ItemToolsTest.onBlockStartBreak", String.valueOf(result));
     return result;
   }
 
   @Override
+  // damage the item when it destroys a block - defaults to 1 damage for tools
   public boolean onBlockDestroyed(ItemStack stack, World worldIn, Block blockIn, BlockPos pos, EntityLivingBase playerIn) {
     Startup.methodCallLogger.enterMethod("ItemToolsTest.onBlockDestroyed",
-                                         stack.getDisplayName() + ", {world}, " + blockIn.getLocalizedName() + ", "
-                                         + pos + ", " + playerIn.getName()
-                                         );
+            stack.getDisplayName() + ", {world}, " + blockIn.getLocalizedName() + ", "
+                    + pos + ", " + playerIn.getName()
+    );
     Boolean result = super.onBlockDestroyed(stack, worldIn, blockIn, pos, playerIn);
-    Startup.methodCallLogger.exitMethod("ItemToolsTest.onBlockDestroyed", result.toString());
+    Startup.methodCallLogger.exitMethod("ItemToolsTest.onBlockDestroyed", String.valueOf(result));
     return result;
   }
 
-  /*
-  canHarvestBlock
-  getHarvestLevel / setHarvestLevel
-        getToolClasses
-  getDigSpeed
-          getStrVsBlock
-  onBlockStartBreak (cancellable)
 
-  ItemTool
-  Item.ToolMaterial
-  ItemTool(effectiveBlocks)
-
-  -the tool constructor provides a set of blocks that it is "effective on".
-        -when a tool is effective on a block, it operates with efficiency according to its material, otherwise "1.0F"
-
-  ItemStack
-  "CanDestroy" tag (vanilla doesn't use?) in ItemStack NBT  (adventure mode)
-*/
-
-
+//  @Override
+//  public boolean canHarvestBlock(Block blockIn) {
+//    Startup.methodCallLogger.enterMethod("ItemToolsTest.canHarvestBlock#1", blockIn.getLocalizedName());
+//    Boolean result = super.canHarvestBlock(blockIn);
+//    Startup.methodCallLogger.exitMethod("ItemToolsTest.canHarvestBlock#1", result.toString());
+//    return result;
+//  }
+//
+//  @Override
+//  public boolean canHarvestBlock(Block par1Block, ItemStack itemStack) {
+//    Startup.methodCallLogger.enterMethod("ItemToolsTest.canHarvestBlock#2", par1Block.getLocalizedName() + ", " + itemStack.getDisplayName());
+//    Boolean result = super.canHarvestBlock(par1Block, itemStack);
+//    Startup.methodCallLogger.exitMethod("ItemToolsTest.canHarvestBlock#2", result.toString());
+//    return result;
+//  }
+//
+//  @Override
+//  public int getHarvestLevel(ItemStack stack, String toolClass) {
+//    Startup.methodCallLogger.enterMethod("ItemToolsTest.getHarvestLevel", stack.getDisplayName() + ", " + toolClass);
+//    Integer result = super.getHarvestLevel(stack, toolClass);
+//    Startup.methodCallLogger.exitMethod("ItemToolsTest.getHarvestLevel", result.toString());
+//    return result;
+//  }
 }
