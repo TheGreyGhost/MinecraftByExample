@@ -21,7 +21,8 @@ List of examples<br>
 Blocks<br>
 -  MBE01 - a simple cube<br>
 -  MBE02 - a block with a more complicated shape<br>
--  MBE03 - a block (coloured signpost) with multiple variants- four colours, can be placed facing in four directions<br>
+-  MBE03 - a block (coloured signpost) with multiple variants- four colours, can be placed facing in four directions
+
 Items<br>
 -  MBE10 - a simple item<br>
 -  MBE11 - an item with multiple variants - rendered using multiple models and multiple layers<br>
