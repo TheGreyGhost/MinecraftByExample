@@ -1,0 +1,5 @@
+{
+    "variants": {
+        "normal": { "model": "minecraftbyexample:mbe30_inventory_basic_model" }
+    }
+}

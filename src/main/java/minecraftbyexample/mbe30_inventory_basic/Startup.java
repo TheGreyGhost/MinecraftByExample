@@ -3,6 +3,9 @@ package minecraftbyexample.mbe30_inventory_basic;
 import minecraftbyexample.GuiHandlerRegistry;
 import minecraftbyexample.MinecraftByExample;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
@@ -51,6 +54,11 @@ public class Startup
 
 	public static void initClientOnly()
 	{
+		Item itemBlockInventoryBasic = GameRegistry.findItem("minecraftbyexample", "mbe30_inventory_basic");
+		ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation("minecraftbyexample:mbe30_inventory_basic", "inventory");
+		final int DEFAULT_ITEM_SUBTYPE = 0;
+		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(itemBlockInventoryBasic, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
+
 	}
 
 	public static void postInitCommon()
