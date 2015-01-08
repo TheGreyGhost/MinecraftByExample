@@ -1,16 +1,13 @@
-package minecraftbyexample.mbe31_inventory_crafting;
+package minecraftbyexample.mbe31_inventory_smelting;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.*;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
 
@@ -18,13 +15,25 @@ import net.minecraft.util.IChatComponent;
  * User: brandon3055
  * Date: 06/01/2015
  *
- * TileInventoryAdvanced is an advanced sided inventory that works like a vanilla furnace accept that it has 5 input and putout slots,
- * 4 fuel slots and cooks at twice the speed
+ * TileInventorySmelting is an advanced sided inventory that works like a vanilla furnace except that it has 5 input and output slots,
+ * 4 fuel slots and cooks at twice the speed.
+ * The slots are used sequentially rather than in parallel, i.e. the first slot cooks, then the second, then the third, etc
+ * The code is heavily based on TileEntityFurnace.
  */
-public class TileInventoryAdvanced extends TileEntity implements ISidedInventory, IUpdatePlayerListBox {
-	// Create and initialize the items variable that will store store the items
-	ItemStack[] items = new ItemStack[14];
-	/**The number of ticks remaining on the current peace of fuel*/
+public class TileInventorySmelting extends TileEntity implements ISidedInventory, IUpdatePlayerListBox {
+	// Create and initialize the itemStacks variable that will store store the itemStacks
+	final int FUEL_SLOTS_COUNT = 4;
+	final int INPUT_SLOTS_COUNT = 5;
+	final int OUTPUT_SLOTS_COUNT = 5;
+	final int TOTAL_SLOTS_COUNT = FUEL_SLOTS_COUNT + INPUT_SLOTS_COUNT + OUTPUT_SLOTS_COUNT;
+
+	final int FIRST_FUEL_SLOT = 0;
+	final int FIRST_INPUT_SLOT = FUEL_SLOTS_COUNT;
+	final int FIRST_OUTPUT_SLOT = FIRST_INPUT_SLOT + INPUT_SLOTS_COUNT;
+
+	ItemStack[] itemStacks = new ItemStack[TOTAL_SLOTS_COUNT];
+
+	/**The number of ticks remaining on the current piece of fuel*/
 	public int burnTimeRemaining;
 	/**The max number of ticks the currently burning item can burn*/
 	public int currentItemBurnTime;
@@ -33,11 +42,13 @@ public class TileInventoryAdvanced extends TileEntity implements ISidedInventory
 	/**The number of ticks required to cook an item*/
 	public final int maxCookTime = 100;
 
-	// This method is called every tick to update the tile entity
+	// This method is called every tick to update the tile entity (i.e.
+	// - see if the fuel has run out, and if so turn the furnace "off"
+	// - see if any of the items have finished smelting
 	@Override
 	public void update() {
 
-		// If there is nothing to smelt or there is no room in the output reset cookTime and return
+		// If there is nothing to smelt or there is no room in the output, reset cookTime and return
 		if (canSmelt())
 		{
 			// If burnTimeRemaining == 0 try to refuel
@@ -66,78 +77,72 @@ public class TileInventoryAdvanced extends TileEntity implements ISidedInventory
 		if (burnTimeRemaining < 0) burnTimeRemaining = 0;
 	}
 
-	// checks if burnTimeRemaining = 0 and tries to consume a new peace of fuel if one is available
+	// checks if burnTimeRemaining = 0 and tries to consume a new piece of fuel if one is available
 	private void tryRefuel(){
 
 		if (burnTimeRemaining > 0) return;
 
 		// Iterate over the 4 fuel slots
-		for (int i = 10; i < 14; i++)
-		{
-
-			if (items[i] != null && getItemBurnTime(items[i]) > 0)
-			{
+		for (int i = FIRST_FUEL_SLOT; i < FIRST_FUEL_SLOT + FUEL_SLOTS_COUNT; i++) {
+			if (itemStacks[i] != null && getItemBurnTime(itemStacks[i]) > 0) {
 				// If the stack in this slot is not null and is fuel set burnTimeRemaining & currentItemBurnTime to the
 				// items burn time and decrease the stack size
-				burnTimeRemaining = currentItemBurnTime = getItemBurnTime(items[i]);
-				--items[i].stackSize;
+				burnTimeRemaining = currentItemBurnTime = getItemBurnTime(itemStacks[i]);
+				--itemStacks[i].stackSize;
 
 				// If the stack size now equals 0 set the slot contents to the items container item. This is for fuel
 				// items such as lava buckets so that the bucket is not consumed. If the item dose not have
 				// a container item getContainerItem returns null which sets the slot contents to null
-				if (items[i].stackSize == 0)
+				if (itemStacks[i].stackSize == 0)
 				{
-					items[i] = items[i].getItem().getContainerItem(items[i]);
+					itemStacks[i] = itemStacks[i].getItem().getContainerItem(itemStacks[i]);
 				}
 				return;
 			}
 		}
 	}
 
+	// todo - integrate into a single method using practice run
 	// checks that there is an item to be smelted in one of the input slots and that there is room for the result in the output slots
 	private boolean canSmelt()
 	{
-		ItemStack input = null;
+		ItemStack result = null;
 
 		// sets input to the first smeltable stack in the input slots
-		for (int i = 0; i < 5; i++)
-		{
-			if (items[i] != null && getResult(items[i]) != null) {
-				input = items[i];
-				break;
+		for (int i = FIRST_INPUT_SLOT; i < FIRST_INPUT_SLOT + INPUT_SLOTS_COUNT; i++) {
+			if (itemStacks[i] != null) {
+				result = getSmeltingResultForItem(itemStacks[i]);
+				if (result != null) break;
 			}
 		}
 		// return false if there are no smeltable items
-		if (input == null) return false;
-
-		ItemStack result = getResult(input);
+		if (result == null) return false;
 
 		// checks that there is room for the result in the output slots
-
-		for (int i = 5; i < 10; i++)
-		{
-			if (items[i] == null) return true;
-			if (items[i].isItemEqual(result))
-			{
-				int resultSize = items[i].stackSize + result.stackSize;
-				if (resultSize <= getInventoryStackLimit() && resultSize <= items[i].getMaxStackSize()) return true;
+		for (int i = FIRST_OUTPUT_SLOT; i < FIRST_OUTPUT_SLOT + OUTPUT_SLOTS_COUNT; i++) {
+			ItemStack itemStack = itemStacks[i];
+			if (itemStack == null) return true;
+			if (itemStack.getItem() == result.getItem() && (!itemStack.getHasSubtypes() || itemStack.getMetadata() == itemStack.getMetadata())
+																								  && ItemStack.areItemStackTagsEqual(itemStack, result) ) {
+				int resultSize = itemStacks[i].stackSize + result.stackSize;
+				if (resultSize <= getInventoryStackLimit() && resultSize <= itemStacks[i].getMaxStackSize()) return true;
 			}
 		}
 
 		return false;
 	}
 
+
 	private void smeltItem(){
 		ItemStack result = null;
 
 		// sets result to the smelting result of the first smeltable item
-		for (int i = 0; i < 5; i++)
-		{
-			if (items[i] != null && getResult(items[i]) != null) {
+		for (int i = FIRST_INPUT_SLOT; i < FIRST_INPUT_SLOT + INPUT_SLOTS_COUNT; i++)	{
+			if (itemStacks[i] != null && getSmeltingResultForItem(itemStacks[i]) != null) {
 				// Use .copy() to avoid altering the recipe
-				result = getResult(items[i]).copy();
-				--items[i].stackSize;
-				if (items[i].stackSize <= 0) items[i] = null;
+				result = getSmeltingResultForItem(itemStacks[i]).copy();
+				--itemStacks[i].stackSize;
+				if (itemStacks[i].stackSize <= 0) itemStacks[i] = null;
 				break;
 			}
 		}
@@ -147,17 +152,17 @@ public class TileInventoryAdvanced extends TileEntity implements ISidedInventory
 		// Add the result to the output slots
 		for (int i = 5; i < 10; i++)
 		{
-			if (items[i] == null)
+			if (itemStacks[i] == null)
 			{
-				items[i] = result;
+				itemStacks[i] = result;
 				return;
 			}
-			if (items[i].isItemEqual(result))
+			if (itemStacks[i].isItemEqual(result))
 			{
-				int resultSize = items[i].stackSize + result.stackSize;
-				if (resultSize <= getInventoryStackLimit() && resultSize <= items[i].getMaxStackSize())
+				int resultSize = itemStacks[i].stackSize + result.stackSize;
+				if (resultSize <= getInventoryStackLimit() && resultSize <= itemStacks[i].getMaxStackSize())
 				{
-					items[i].stackSize += result.stackSize;
+					itemStacks[i].stackSize += result.stackSize;
 					return;
 				}
 			}
@@ -165,59 +170,24 @@ public class TileInventoryAdvanced extends TileEntity implements ISidedInventory
 	}
 
 	// returns the smelting result for the given stack. Returns null if the given stack can not be smelted
-	public static ItemStack getResult(ItemStack stack) { return FurnaceRecipes.instance().getSmeltingResult(stack); }
+	public static ItemStack getSmeltingResultForItem(ItemStack stack) { return FurnaceRecipes.instance().getSmeltingResult(stack); }
 
 	// returns the number of ticks the given item will burn. Returns 0 if the given item is not a valid fuel
 	public static int getItemBurnTime(ItemStack stack)
 	{
-		if (stack == null) return 0;
-		else
-		{
-			Item item = stack.getItem();
-
-			if (item instanceof ItemBlock && Block.getBlockFromItem(item) != Blocks.air)
-			{
-				Block block = Block.getBlockFromItem(item);
-
-				if (block == Blocks.wooden_slab)
-				{
-					return 150;
-				}
-
-				if (block.getMaterial() == Material.wood)
-				{
-					return 300;
-				}
-
-				if (block == Blocks.coal_block)
-				{
-					return 16000;
-				}
-			}
-
-			if (item instanceof ItemTool && ((ItemTool)item).getToolMaterialName().equals("WOOD")) return 200;
-			if (item instanceof ItemSword && ((ItemSword)item).getToolMaterialName().equals("WOOD")) return 200;
-			if (item instanceof ItemHoe && ((ItemHoe)item).getMaterialName().equals("WOOD")) return 200;
-			if (item == Items.stick) return 100;
-			if (item == Items.coal) return 1600;
-			if (item == Items.lava_bucket) return 20000;
-			if (item == Item.getItemFromBlock(Blocks.sapling)) return 100;
-			if (item == Items.blaze_rod) return 2400;
-			return net.minecraftforge.fml.common.registry.GameRegistry.getFuelValue(stack);
-		}
+		return TileEntityFurnace.getItemBurnTime(stack);  // just use the vanilla values
 	}
-
 
 	// Gets the number of slots in the inventory
 	@Override
 	public int getSizeInventory() {
-		return items.length;
+		return itemStacks.length;
 	}
 
 	// Gets the stack in the given slot
 	@Override
 	public ItemStack getStackInSlot(int i) {
-		return items[i];
+		return itemStacks[i];
 	}
 
 	// Reduces the size of the stack in the given slot
@@ -249,7 +219,7 @@ public class TileInventoryAdvanced extends TileEntity implements ISidedInventory
 	// Sets the stack in the given slot
 	@Override
 	public void setInventorySlotContents(int i, ItemStack itemstack) {
-		items[i] = itemstack;
+		itemStacks[i] = itemstack;
 		if (itemstack != null && itemstack.stackSize > getInventoryStackLimit()) {
 			itemstack.stackSize = getInventoryStackLimit();
 		}
@@ -275,7 +245,7 @@ public class TileInventoryAdvanced extends TileEntity implements ISidedInventory
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
 		// Return true if the slot is one of the input slots and the item has a smelting result
-		if (i < 5 && getResult(itemstack) != null) return true;
+		if (i < 5 && getSmeltingResultForItem(itemstack) != null) return true;
 		// Return true if the slot is one of the fuel slots and the item is a valid fuel
 		if (i > 9 && getItemBurnTime(itemstack) > 0) return true;
 
@@ -290,15 +260,15 @@ public class TileInventoryAdvanced extends TileEntity implements ISidedInventory
 		super.writeToNBT(compound); // The super call is required to save and load the tiles location
 
 		// Save the stored item stacks
-		NBTTagCompound[] tag = new NBTTagCompound[items.length];
+		NBTTagCompound[] tag = new NBTTagCompound[itemStacks.length];
 
-		for (int i = 0; i < items.length; i++)
+		for (int i = 0; i < itemStacks.length; i++)
 		{
 			tag[i] = new NBTTagCompound();
 
-			if (items[i] != null)
+			if (itemStacks[i] != null)
 			{
-				tag[i] = items[i].writeToNBT(tag[i]);
+				tag[i] = itemStacks[i].writeToNBT(tag[i]);
 			}
 
 			compound.setTag("Item" + i, tag[i]);
@@ -317,12 +287,12 @@ public class TileInventoryAdvanced extends TileEntity implements ISidedInventory
 		super.readFromNBT(compound); // The super call is required to save and load the tiles location
 
 		// Load the stored item stacks
-		NBTTagCompound[] tag = new NBTTagCompound[items.length];
+		NBTTagCompound[] tag = new NBTTagCompound[itemStacks.length];
 
-		for (int i = 0; i < items.length; i++)
+		for (int i = 0; i < itemStacks.length; i++)
 		{
 			tag[i] = compound.getCompoundTag("Item" + i);
-			items[i] = ItemStack.loadItemStackFromNBT(tag[i]);
+			itemStacks[i] = ItemStack.loadItemStackFromNBT(tag[i]);
 		}
 
 		// Load everything else

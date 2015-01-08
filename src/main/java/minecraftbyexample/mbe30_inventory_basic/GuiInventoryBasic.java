@@ -1,6 +1,5 @@
 package minecraftbyexample.mbe30_inventory_basic;
 
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -22,7 +21,7 @@ import java.awt.*;
 public class GuiInventoryBasic extends GuiContainer {
 
 	// This is the resource location for the background image for the GUI
-	private static final ResourceLocation texture = new ResourceLocation("minecraftbyexample", "textures/gui/mbe_example_inventory_basic.png");
+	private static final ResourceLocation texture = new ResourceLocation("minecraftbyexample", "textures/gui/mbe30_inventory_basic_bg.png");
 	private TileEntityInventoryBasic tileEntityInventoryBasic;
 
 	public GuiInventoryBasic(InventoryPlayer invPlayer, TileEntityInventoryBasic tile) {

@@ -1,7 +1,6 @@
-package minecraftbyexample.mbe31_inventory_crafting;
+package minecraftbyexample.mbe31_inventory_smelting;
 
-import com.brandon3055.referencemod.GuiHandler;
-import com.brandon3055.referencemod.ReferenceMod;
+import minecraftbyexample.MinecraftByExample;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -12,7 +11,10 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 
 /**
@@ -22,11 +24,11 @@ import net.minecraft.world.World;
  * BlockInventoryAdvanced is an advanced furnace with 5 input, 4 output and 4 fuel slots that smelts at twice the speed
  * of a regular furnace. The block itself doesn't do much more then any regular block except create a tile entity when
  * placed, open a gui when right clicked and drop tne inventory's contents when harvested. Everything else is handled
- * by the tile entity
+ * by the tile entity.
  */
-public class BlockInventoryAdvanced extends BlockContainer
+public class BlockInventorySmelting extends BlockContainer
 {
-	public BlockInventoryAdvanced()
+	public BlockInventorySmelting()
 	{
 		super(Material.rock);
 		this.setCreativeTab(CreativeTabs.tabBlock);
@@ -36,7 +38,7 @@ public class BlockInventoryAdvanced extends BlockContainer
 	// Should return a new instance of the tile entity for the block
 	@Override
 	public TileEntity createNewTileEntity(World worldIn, int meta) {
-		return new TileInventoryAdvanced();
+		return new TileInventorySmelting();
 	}
 
 	// Called when the block is right clicked
@@ -44,7 +46,10 @@ public class BlockInventoryAdvanced extends BlockContainer
 	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ) {
 		// Uses the gui handler registered to your mod to open the gui for the given gui id
-		playerIn.openGui(ReferenceMod.instance, GuiHandler.GUIID_EXAMPLE_ADVANCED, worldIn, pos.getX(), pos.getY(), pos.getZ());
+		// open on the server side only  (not sure why you shouldn't open client side too... vanilla doesn't, so we better not either)
+		if (worldIn.isRemote) return true;
+
+		playerIn.openGui(MinecraftByExample.instance, GuiHandlerMBE31.getGuiID(), worldIn, pos.getX(), pos.getY(), pos.getZ());
 		return true;
 	}
 
@@ -85,4 +90,38 @@ public class BlockInventoryAdvanced extends BlockContainer
 		// Super MUST be called last because it removes the tile entity
 		super.breakBlock(worldIn, pos, state);
 	}
+
+	//------------------------------------------------------------
+
+	// the block will render in the SOLID layer.  See http://greyminecraftcoder.blogspot.co.at/2014/12/block-rendering-18.html for more information.
+	@SideOnly(Side.CLIENT)
+	public EnumWorldBlockLayer getBlockLayer()
+	{
+		return EnumWorldBlockLayer.SOLID;
+	}
+
+	// used by the renderer to control lighting and visibility of other blocks.
+	// set to false because this block doesn't fill the entire 1x1x1 space
+	@Override
+	public boolean isOpaqueCube() {
+		return false;
+	}
+
+	// used by the renderer to control lighting and visibility of other blocks, also by
+	// (eg) wall or fence to control whether the fence joins itself to this block
+	// set to false because this block doesn't fill the entire 1x1x1 space
+	@Override
+	public boolean isFullCube() {
+		return false;
+	}
+
+	// render using a BakedModel
+	// not strictly required because the default (super method) is 3.
+	@Override
+	public int getRenderType() {
+		return 3;
+	}
+
+
+
 }

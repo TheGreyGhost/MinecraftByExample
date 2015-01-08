@@ -1,4 +1,4 @@
-package minecraftbyexample.mbe30_inventory_basic;
+package minecraftbyexample.mbe31_inventory_smelting;
 
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,11 +14,11 @@ import net.minecraftforge.fml.common.network.IGuiHandler;
  * This class is used to get the client and server gui elements when a player opens a gui. There can only be one registered
  *   IGuiHandler instance handler per mod.
  */
-public class GuiHandlerMBE30 implements IGuiHandler {
-	private static final int GUIID_MBE_30 = 30;
-	public static int getGuiID() {return GUIID_MBE_30;}
+public class GuiHandlerMBE31 implements IGuiHandler {
+	private static final int GUIID_MBE_31 = 31;
+	public static int getGuiID() {return GUIID_MBE_31;}
 
-	// Gets the server side element for the given gui id- this should return a container
+	// Gets the server side element for the given gui id this should return a container
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		if (ID != getGuiID()) {
@@ -27,14 +27,14 @@ public class GuiHandlerMBE30 implements IGuiHandler {
 
 		BlockPos xyz = new BlockPos(x, y, z);
 		TileEntity tileEntity = world.getTileEntity(xyz);
-		if (tileEntity instanceof TileEntityInventoryBasic) {
-			TileEntityInventoryBasic tileEntityInventoryBasic = (TileEntityInventoryBasic) tileEntity;
-			return new ContainerBasic(player.inventory, tileEntityInventoryBasic);
+		if (tileEntity instanceof TileInventorySmelting) {
+			TileInventorySmelting tileInventorySmelting = (TileInventorySmelting) tileEntity;
+			return new ContainerSmelting(player.inventory, tileInventorySmelting);
 		}
 		return null;
 	}
 
-	// Gets the client side element for the given gui id- this should return a gui
+	// Gets the client side element for the given gui id this should return a gui
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		if (ID != getGuiID()) {
@@ -43,10 +43,11 @@ public class GuiHandlerMBE30 implements IGuiHandler {
 
 		BlockPos xyz = new BlockPos(x, y, z);
 		TileEntity tileEntity = world.getTileEntity(xyz);
-		if (tileEntity instanceof TileEntityInventoryBasic) {
-			TileEntityInventoryBasic tileEntityInventoryBasic = (TileEntityInventoryBasic) tileEntity;
-			return new GuiInventoryBasic(player.inventory, tileEntityInventoryBasic);
+		if (tileEntity instanceof TileInventorySmelting) {
+			TileInventorySmelting tileInventorySmelting = (TileInventorySmelting) tileEntity;
+			return new GuiInventorySmelting(player.inventory, tileInventorySmelting);
 		}
 		return null;
 	}
+
 }

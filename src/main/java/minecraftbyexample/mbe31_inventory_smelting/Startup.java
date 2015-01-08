@@ -1,4 +1,4 @@
-package minecraftbyexample.mbe31_inventory_crafting;
+package minecraftbyexample.mbe31_inventory_smelting;
 
 import net.minecraft.block.Block;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -23,10 +23,10 @@ public class Startup
 	public static void preInitCommon()
 	{
 		// each instance of your block should have a name that is unique within your mod.  use lower case.
-		blockInventoryAdvanced = new BlockInventoryAdvanced().setUnlocalizedName("mbe05_block_inventory_advanced");
+		blockInventoryAdvanced = new BlockInventorySmelting().setUnlocalizedName("mbe05_block_inventory_advanced");
 		GameRegistry.registerBlock(blockInventoryAdvanced, "mbe05_block_inventory_advanced");
 		// Each of your tile entities needs to be registered with a name that is unique to your mod.
-		GameRegistry.registerTileEntity(TileInventoryAdvanced.class, "mbe05_block_inventory_advanced");
+		GameRegistry.registerTileEntity(TileInventorySmelting.class, "mbe05_block_inventory_advanced");
 		// you don't need to register an item corresponding to the block, GameRegistry.registerBlock does this automatically.
 	}
 

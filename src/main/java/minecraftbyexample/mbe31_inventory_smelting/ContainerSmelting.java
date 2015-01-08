@@ -1,4 +1,4 @@
-package minecraftbyexample.mbe31_inventory_crafting;
+package minecraftbyexample.mbe31_inventory_smelting;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -14,14 +14,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * User: brandon3055
  * Date: 06/01/2015
  *
- * ContainerAdvanced is used to link the client side gui to the server side inventory and it is where
+ * ContainerSmelting is used to link the client side gui to the server side inventory and it is where
  * you add the slots to the. It is also used to send server side data such as progress bars to the client
  * for use in guis
  */
-public class ContainerAdvanced extends Container {
+public class ContainerSmelting extends Container {
 
 	// Stores the tile entity instance for later use
-	private TileInventoryAdvanced tile;
+	private TileInventorySmelting tile;
 	// These store cache values used to update the client side tile entity
 	private int lastTickBurnTime;
 	private int lastTickItemBurnTime;
@@ -29,7 +29,7 @@ public class ContainerAdvanced extends Container {
 
 
 
-	public ContainerAdvanced(InventoryPlayer invPlayer, TileInventoryAdvanced tile) {
+	public ContainerSmelting(InventoryPlayer invPlayer, TileInventorySmelting tile) {
 		this.tile = tile;
 
 		// Add the players hotbar to the gui
@@ -86,12 +86,12 @@ public class ContainerAdvanced extends Container {
 			if (i < 36)
 			{
 				// If the stack is smeltable try to merge merge the stack into the input slots
-				if (TileInventoryAdvanced.getResult(stack) != null){
+				if (TileInventorySmelting.getSmeltingResultForItem(stack) != null){
 					if (!mergeItemStack(stack, 36, 42, false)){
 						return null;
 					}
 				}
-				else if (TileInventoryAdvanced.getItemBurnTime(stack) > 0){
+				else if (TileInventorySmelting.getItemBurnTime(stack) > 0){
 					if (!mergeItemStack(stack, 46, 50, true)){ // Setting the boolean to true places the stack in the bottom slot first
 						return null;
 					}
@@ -185,7 +185,7 @@ public class ContainerAdvanced extends Container {
 
 		@Override
 		public boolean isItemValid(ItemStack stack) {
-			return TileInventoryAdvanced.getItemBurnTime(stack) > 0;
+			return TileInventorySmelting.getItemBurnTime(stack) > 0;
 		}
 	}
 
@@ -198,7 +198,7 @@ public class ContainerAdvanced extends Container {
 
 		@Override
 		public boolean isItemValid(ItemStack stack) {
-			return TileInventoryAdvanced.getResult(stack) != null;
+			return TileInventorySmelting.getSmeltingResultForItem(stack) != null;
 		}
 	}
 

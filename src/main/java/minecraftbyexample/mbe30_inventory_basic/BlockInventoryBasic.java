@@ -46,10 +46,8 @@ public class BlockInventoryBasic extends BlockContainer
 	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ) {
 		// Uses the gui handler registered to your mod to open the gui for the given gui id
-//		if (worldIn.isRemote) //todo is this necessary?
-//		{
-//			return true;
-//		}
+		// open on the server side only  (not sure why you shouldn't open client side too... vanilla doesn't, so we better not either)
+		if (worldIn.isRemote) return true;
 
 		playerIn.openGui(MinecraftByExample.instance, GuiHandlerMBE30.getGuiID(), worldIn, pos.getX(), pos.getY(), pos.getZ());
 		return true;
@@ -92,6 +90,8 @@ public class BlockInventoryBasic extends BlockContainer
 		// Super MUST be called last because it removes the tile entity
 		super.breakBlock(worldIn, pos, state);
 	}
+
+	//---------------------------------------------------------
 
 	// the block will render in the SOLID layer.  See http://greyminecraftcoder.blogspot.co.at/2014/12/block-rendering-18.html for more information.
 	@SideOnly(Side.CLIENT)

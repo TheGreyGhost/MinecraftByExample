@@ -1,4 +1,4 @@
-package minecraftbyexample.mbe31_inventory_crafting;
+package minecraftbyexample.mbe31_inventory_smelting;
 
 
 import com.brandon3055.referencemod.lib.References;
@@ -21,14 +21,14 @@ import java.util.List;
  * Both indicators have mouse over text
  */
 @SideOnly(Side.CLIENT)
-public class GuiInventoryAdvanced extends GuiContainer {
+public class GuiInventorySmelting extends GuiContainer {
 
 	// This is the resource location for the background image
 	private static final ResourceLocation texture = new ResourceLocation(References.MODID.toLowerCase(), "textures/gui/mbe_example_inventory_advanced.png");
-	private TileInventoryAdvanced tile;
+	private TileInventorySmelting tile;
 
-	public GuiInventoryAdvanced(InventoryPlayer invPlayer, TileInventoryAdvanced tile) {
-		super(new ContainerAdvanced(invPlayer, tile));
+	public GuiInventorySmelting(InventoryPlayer invPlayer, TileInventorySmelting tile) {
+		super(new ContainerSmelting(invPlayer, tile));
 
 		// Set the width and height of the gui
 		xSize = 176;
