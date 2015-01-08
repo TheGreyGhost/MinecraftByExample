@@ -29,7 +29,7 @@ public class Startup
 		blockInventoryBasic = new BlockInventoryBasic().setUnlocalizedName("mbe30_inventory_basic");
 		GameRegistry.registerBlock(blockInventoryBasic, "mbe30_inventory_basic");
 		// Each of your tile entities needs to be registered with a name that is unique to your mod.
-		GameRegistry.registerTileEntity(TileInventoryBasic.class, "mbe30_tile_inventory_basic");
+		GameRegistry.registerTileEntity(TileEntityInventoryBasic.class, "mbe30_tile_inventory_basic");
 		// you don't need to register an item corresponding to the block, GameRegistry.registerBlock does this automatically.
 
 		// You need to register a GUIHandler for the container.  However there can be only one handler per mod, so for the purposes

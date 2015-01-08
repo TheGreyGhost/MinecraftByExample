@@ -27,14 +27,14 @@ public class BlockInventoryBasic extends BlockContainer
 	public BlockInventoryBasic()
 	{
 		super(Material.rock);
-		this.setCreativeTab(CreativeTabs.tabBlock);
+		this.setCreativeTab(CreativeTabs.tabBlock);     // the block will appear on the Blocks tab.
 	}
 
 	// Called when the block is placed or loaded client side to get the tile entity for the block
 	// Should return a new instance of the tile entity for the block
 	@Override
 	public TileEntity createNewTileEntity(World worldIn, int meta) {
-		return new TileInventoryBasic();
+		return new TileEntityInventoryBasic();
 	}
 
 	// Called when the block is right clicked

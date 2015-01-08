@@ -1,5 +1,7 @@
-MBE30_CONTAINER_SIMPLE
+MBE30_CONTAINER_BASIC
 Code by Brandon3055
+
+Heavily based on the TileEntityChest and ContainerChest
 
 This example is an Item that stores extra information in NBT and also illustrates an animation technique
   designed for when you are "using" an item (eg similar to the way that the bow changes shape when you draw it before firing)

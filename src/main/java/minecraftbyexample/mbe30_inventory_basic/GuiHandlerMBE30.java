@@ -21,14 +21,14 @@ public class GuiHandlerMBE30 implements IGuiHandler {
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		if (ID != getGuiID()) {
-			System.out.println("Invalid ID: expected " + getGuiID() + ", received " + ID);
+			System.err.println("Invalid ID: expected " + getGuiID() + ", received " + ID);
 		}
 
 		BlockPos xyz = new BlockPos(x, y, z);
 		TileEntity tileEntity = world.getTileEntity(xyz);
-		if (tileEntity instanceof TileInventoryBasic) {
-			TileInventoryBasic tileInventoryBasic = (TileInventoryBasic) tileEntity;
-			return new ContainerBasic(player.inventory, tileInventoryBasic);
+		if (tileEntity instanceof TileEntityInventoryBasic) {
+			TileEntityInventoryBasic tileEntityInventoryBasic = (TileEntityInventoryBasic) tileEntity;
+			return new ContainerBasic(player.inventory, tileEntityInventoryBasic);
 		}
 		return null;
 
@@ -42,14 +42,14 @@ public class GuiHandlerMBE30 implements IGuiHandler {
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		if (ID != getGuiID()) {
-			System.out.println("Invalid ID: expected " + getGuiID() + ", received " + ID);
+			System.err.println("Invalid ID: expected " + getGuiID() + ", received " + ID);
 		}
 
 		BlockPos xyz = new BlockPos(x, y, z);
 		TileEntity tileEntity = world.getTileEntity(xyz);
-		if (tileEntity instanceof TileInventoryBasic) {
-			TileInventoryBasic tileInventoryBasic = (TileInventoryBasic) tileEntity;
-			return new GuiInventoryBasic(player.inventory, tileInventoryBasic);
+		if (tileEntity instanceof TileEntityInventoryBasic) {
+			TileEntityInventoryBasic tileEntityInventoryBasic = (TileEntityInventoryBasic) tileEntity;
+			return new GuiInventoryBasic(player.inventory, tileEntityInventoryBasic);
 		}
 		return null;
 

@@ -12,3 +12,5 @@ item.mbe11_item_variants.cherry.name=MBE11 Item Variants cherry
 item.mbe12_item_nbt_animate.name=MBE12 Item NBT animate
 tile.mbe13_item_tools_block.name=MBE13 Item Tools test block
 item.mbe13_item_tools_item.name=MBE13 Item Tools test tool
+tile.mbe30_inventory_basic.name=MBE30 Inventory Basic Block
+container.mbe30_inventory_basic.name=MBE30 Inventory Basic GUI

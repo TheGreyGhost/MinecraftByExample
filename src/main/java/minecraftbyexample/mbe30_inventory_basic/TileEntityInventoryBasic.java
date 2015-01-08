@@ -18,7 +18,7 @@ import java.util.Arrays;
  *
  * This is a simple tile entity implementing IInventory that can store 9 item stacks
  */
-public class TileInventoryBasic extends TileEntity implements IInventory {
+public class TileEntityInventoryBasic extends TileEntity implements IInventory {
 	// Create and initialize the items variable that will store store the items
 	final int NUMBER_OF_SLOTS = 9;
 	private ItemStack[] itemStacks = new ItemStack[NUMBER_OF_SLOTS];
@@ -203,5 +203,4 @@ public class TileInventoryBasic extends TileEntity implements IInventory {
 	public int getFieldCount() {
 		return 0;
 	}
-
 }
