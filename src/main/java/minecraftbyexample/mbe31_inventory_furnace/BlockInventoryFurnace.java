@@ -1,4 +1,4 @@
-package minecraftbyexample.mbe31_inventory_smelting;
+package minecraftbyexample.mbe31_inventory_furnace;
 
 import minecraftbyexample.MinecraftByExample;
 import net.minecraft.block.BlockContainer;
@@ -26,9 +26,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * placed, open a gui when right clicked and drop tne inventory's contents when harvested. Everything else is handled
  * by the tile entity.
  */
-public class BlockInventorySmelting extends BlockContainer
+public class BlockInventoryFurnace extends BlockContainer
 {
-	public BlockInventorySmelting()
+	public BlockInventoryFurnace()
 	{
 		super(Material.rock);
 		this.setCreativeTab(CreativeTabs.tabBlock);
@@ -38,7 +38,7 @@ public class BlockInventorySmelting extends BlockContainer
 	// Should return a new instance of the tile entity for the block
 	@Override
 	public TileEntity createNewTileEntity(World worldIn, int meta) {
-		return new TileInventorySmelting();
+		return new TileInventoryFurnace();
 	}
 
 	// Called when the block is right clicked

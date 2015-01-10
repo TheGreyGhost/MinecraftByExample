@@ -1,4 +1,4 @@
-package minecraftbyexample.mbe31_inventory_smelting;
+package minecraftbyexample.mbe31_inventory_furnace;
 
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,9 +27,9 @@ public class GuiHandlerMBE31 implements IGuiHandler {
 
 		BlockPos xyz = new BlockPos(x, y, z);
 		TileEntity tileEntity = world.getTileEntity(xyz);
-		if (tileEntity instanceof TileInventorySmelting) {
-			TileInventorySmelting tileInventorySmelting = (TileInventorySmelting) tileEntity;
-			return new ContainerSmelting(player.inventory, tileInventorySmelting);
+		if (tileEntity instanceof TileInventoryFurnace) {
+			TileInventoryFurnace tileInventoryFurnace = (TileInventoryFurnace) tileEntity;
+			return new ContainerInventoryFurnace(player.inventory, tileInventoryFurnace);
 		}
 		return null;
 	}
@@ -43,9 +43,9 @@ public class GuiHandlerMBE31 implements IGuiHandler {
 
 		BlockPos xyz = new BlockPos(x, y, z);
 		TileEntity tileEntity = world.getTileEntity(xyz);
-		if (tileEntity instanceof TileInventorySmelting) {
-			TileInventorySmelting tileInventorySmelting = (TileInventorySmelting) tileEntity;
-			return new GuiInventorySmelting(player.inventory, tileInventorySmelting);
+		if (tileEntity instanceof TileInventoryFurnace) {
+			TileInventoryFurnace tileInventoryFurnace = (TileInventoryFurnace) tileEntity;
+			return new GuiInventoryFurnace(player.inventory, tileInventoryFurnace);
 		}
 		return null;
 	}

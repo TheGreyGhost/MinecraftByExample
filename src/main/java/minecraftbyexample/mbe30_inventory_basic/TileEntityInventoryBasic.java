@@ -113,10 +113,8 @@ public class TileEntityInventoryBasic extends TileEntity implements IInventory {
 		//   as slot=1, id=2353, count=1, etc
 		// Each of these NBTTagCompound are then inserted into NBTTagList, which is similar to an array.
 		NBTTagList dataForAllSlots = new NBTTagList();
-		for (int i = 0; i < this.itemStacks.length; ++i)
-		{
-			if (this.itemStacks[i] != null)
-			{
+		for (int i = 0; i < this.itemStacks.length; ++i) {
+			if (this.itemStacks[i] != null)	{
 				NBTTagCompound dataForThisSlot = new NBTTagCompound();
 				dataForThisSlot.setByte("Slot", (byte) i);
 				this.itemStacks[i].writeToNBT(dataForThisSlot);

@@ -43,7 +43,7 @@ public class ContainerBasic extends Container {
     final int SLOT_Y_SPACING = 18;
 		final int HOTBAR_XPOS = 8;
 		final int HOTBAR_YPOS = 109;
-		// Add the players hotbar to the gui
+		// Add the players hotbar to the gui - the [xpos, ypos] location of each item
 		for (int x = 0; x < HOTBAR_SLOT_COUNT; x++) {
 			int slotNumber = x;
 			addSlotToContainer(new Slot(invPlayer, slotNumber, HOTBAR_XPOS + SLOT_X_SPACING * x, HOTBAR_YPOS));
@@ -120,7 +120,6 @@ public class ContainerBasic extends Container {
 		}
 
 		sourceSlot.onPickupFromSlot(player, sourceStack);
-
 		return copyOfSourceStack;
 	}
 
