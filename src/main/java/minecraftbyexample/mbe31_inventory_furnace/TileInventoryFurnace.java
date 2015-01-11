@@ -7,6 +7,9 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagIntArray;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
@@ -14,6 +17,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.MathHelper;
+import net.minecraft.world.EnumSkyBlock;
 
 import java.util.Arrays;
 
@@ -35,7 +39,7 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, IUpd
 	public static final int TOTAL_SLOTS_COUNT = FUEL_SLOTS_COUNT + INPUT_SLOTS_COUNT + OUTPUT_SLOTS_COUNT;
 
 	public static final int FIRST_FUEL_SLOT = 0;
-	public static final int FIRST_INPUT_SLOT = FUEL_SLOTS_COUNT;
+	public static final int FIRST_INPUT_SLOT = FIRST_FUEL_SLOT + FUEL_SLOTS_COUNT;
 	public static final int FIRST_OUTPUT_SLOT = FIRST_INPUT_SLOT + INPUT_SLOTS_COUNT;
 
 	private ItemStack[] itemStacks = new ItemStack[TOTAL_SLOTS_COUNT];
@@ -49,6 +53,8 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, IUpd
 	private short cookTime;
 	/**The number of ticks required to cook an item*/
 	private static final short COOK_TIME_FOR_COMPLETION = 200;  // vanilla value is 200 = 10 seconds
+
+	private int cachedNumberOfBurningSlots = -1;
 
 	/**
 	 * Returns the amount of fuel remaining on the currently burning item in the given fuel slot.
@@ -72,22 +78,36 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, IUpd
 		if (burnTimeRemaining[fuelSlot] <= 0 ) return 0;
 		return burnTimeRemaining[fuelSlot] / 20; // 20 ticks per second
 	}
+
+	/**
+	 * Get the number of slots which have fuel burning in them.
+	 * @return number of slots with burning fuel, 0 - FUEL_SLOTS_COUNT
+	 */
+	public int numberOfBurningFuelSlots()
+	{
+		int burningCount = 0;
+		for (int burnTime : burnTimeRemaining) {
+			if (burnTime > 0) ++burningCount;
+		}
+		return burningCount;
+	}
+
 	/**
 	 * Returns the amount of cook time completed on the currently cooking item.
 	 * @return fraction remaining, between 0 - 1
 	 */
 	public double fractionOfCookTimeComplete()
 	{
-		double fraction = cookTime / COOK_TIME_FOR_COMPLETION;
+		double fraction = cookTime / (double)COOK_TIME_FOR_COMPLETION;
 		return MathHelper.clamp_double(fraction, 0.0, 1.0);
 	}
 
 	// This method is called every tick to update the tile entity, i.e.
 	// - see if the fuel has run out, and if so turn the furnace "off" and slowly uncook the current item (if any)
 	// - see if any of the items have finished smelting
+	// It runs both on the server and the client.
 	@Override
 	public void update() {
-
 		// If there is nothing to smelt or there is no room in the output, reset cookTime and return
 		if (canSmelt()) {
 			int numberOfFuelBurning = burnFuel();
@@ -109,6 +129,19 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, IUpd
 		}	else {
 			cookTime = 0;
 		}
+
+		// when the number of burning slots changes, we need to force the block to re-render, otherwise the change in
+		//   state will not be visible.  Likewise, we need to force a lighting recalculation.
+		// The block update (for renderer) is only required on client side, but the lighting is required on both, since
+		//    the client needs it for rendering and the server needs it for crop growth etc
+		int numberBurning = numberOfBurningFuelSlots();
+		if (cachedNumberOfBurningSlots != numberBurning) {
+			cachedNumberOfBurningSlots = numberBurning;
+			if (worldObj.isRemote) {
+				worldObj.markBlockForUpdate(pos);
+			}
+			worldObj.checkLightFor(EnumSkyBlock.BLOCK, pos);
+		}
 	}
 
 	/**
@@ -118,13 +151,14 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, IUpd
 	private int burnFuel() {
 		int burningCount = 0;
 		boolean inventoryChanged = false;
-		// Iterate over the 4 fuel slots
+		// Iterate over all the fuel slots
 		for (int i = 0; i < FUEL_SLOTS_COUNT; i++) {
 			int fuelSlotNumber = i + FIRST_FUEL_SLOT;
 			if (burnTimeRemaining[i] > 0) {
 				--burnTimeRemaining[i];
 				++burningCount;
-			} else {
+			}
+			if (burnTimeRemaining[i] == 0) {
 				if (itemStacks[fuelSlotNumber] != null && getItemBurnTime(itemStacks[fuelSlotNumber]) > 0) {
 					// If the stack in this slot is not null and is fuel, set burnTimeRemaining & burnTimeInitialValue to the
 					// item's burn time and decrease the stack size
@@ -212,71 +246,6 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, IUpd
 		return true;
 	}
 
-//	private boolean canSmelt()
-//	{
-//		ItemStack result = null;
-//
-//		// sets input to the first smeltable stack in the input slots
-//		for (int i = FIRST_INPUT_SLOT; i < FIRST_INPUT_SLOT + INPUT_SLOTS_COUNT; i++) {
-//			if (itemStacks[i] != null) {
-//				result = getSmeltingResultForItem(itemStacks[i]);
-//				if (result != null) break;
-//			}
-//		}
-//		// return false if there are no smeltable items
-//		if (result == null) return false;
-//
-//		// checks that there is room for the result in the output slots
-//		for (int i = FIRST_OUTPUT_SLOT; i < FIRST_OUTPUT_SLOT + OUTPUT_SLOTS_COUNT; i++) {
-//			ItemStack itemStack = itemStacks[i];
-//			if (itemStack == null) return true;
-//			if (itemStack.getItem() == result.getItem() && (!itemStack.getHasSubtypes() || itemStack.getMetadata() == itemStack.getMetadata())
-//																								  && ItemStack.areItemStackTagsEqual(itemStack, result) ) {
-//				int resultSize = itemStacks[i].stackSize + result.stackSize;
-//				if (resultSize <= getInventoryStackLimit() && resultSize <= itemStacks[i].getMaxStackSize()) return true;
-//			}
-//		}
-//
-//		return false;
-//	}
-
-//
-//	private void smeltItem(){
-//		ItemStack result = null;
-//
-//		// sets result to the smelting result of the first smeltable item
-//		for (int i = FIRST_INPUT_SLOT; i < FIRST_INPUT_SLOT + INPUT_SLOTS_COUNT; i++)	{
-//			if (itemStacks[i] != null && getSmeltingResultForItem(itemStacks[i]) != null) {
-//				// Use .copy() to avoid altering the recipe
-//				result = getSmeltingResultForItem(itemStacks[i]).copy();
-//				--itemStacks[i].stackSize;
-//				if (itemStacks[i].stackSize <= 0) itemStacks[i] = null;
-//				break;
-//			}
-//		}
-//
-//		if (result == null) return;
-//
-//		// Add the result to the output slots
-//		for (int i = 5; i < 10; i++)
-//		{
-//			if (itemStacks[i] == null)
-//			{
-//				itemStacks[i] = result;
-//				return;
-//			}
-//			if (itemStacks[i].isItemEqual(result))
-//			{
-//				int resultSize = itemStacks[i].stackSize + result.stackSize;
-//				if (resultSize <= getInventoryStackLimit() && resultSize <= itemStacks[i].getMaxStackSize())
-//				{
-//					itemStacks[i].stackSize += result.stackSize;
-//					return;
-//				}
-//			}
-//		}
-//	}
-
 	// returns the smelting result for the given stack. Returns null if the given stack can not be smelted
 	public static ItemStack getSmeltingResultForItem(ItemStack stack) { return FurnaceRecipes.instance().getSmeltingResult(stack); }
 
@@ -355,17 +324,6 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, IUpd
 		return player.getDistanceSq(pos.getX() + X_CENTRE_OFFSET, pos.getY() + Y_CENTRE_OFFSET, pos.getZ() + Z_CENTRE_OFFSET) < MAXIMUM_DISTANCE_SQ;
 	}
 
-	// todo: unused
-	// Return true if the given stack is allowed to go in the given slot
-	// Unlike the vanilla furnace, we allow anything to be placed in the fuel slots or the input slots.
-	// Nothing is allowed in the output slots.
-	@Override
-	public boolean isItemValidForSlot(int slotIndex, ItemStack itemstack) {
-//		if (slotIndex >= FIRST_FUEL_SLOT && slotIndex < FIRST_FUEL_SLOT + FUEL_SLOTS_COUNT) return true;
-//		if (slotIndex >= FIRST_INPUT_SLOT && slotIndex < FIRST_INPUT_SLOT + INPUT_SLOTS_COUNT) return true;
-		return false;
-	}
-
 	// Return true if the given stack is allowed to be inserted in the given slot
 	// Unlike the vanilla furnace, we allow anything to be placed in the fuel slots
 	static public boolean isItemValidForFuelSlot(ItemStack itemStack)
@@ -387,6 +345,8 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, IUpd
 		return false;
 	}
 
+	//------------------------------
+
 	// This is where you save any data that you don't want to lose when the tile entity unloads
 	// In this case, it saves the state of the furnace (burn time etc) and the itemstacks stored in the fuel, input, and output slots
 	@Override
@@ -394,8 +354,8 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, IUpd
 	{
 		super.writeToNBT(parentNBTTagCompound); // The super call is required to save and load the tiles location
 
-		// Save the stored item stacks
-		NBTTagCompound[] tag = new NBTTagCompound[itemStacks.length];
+//		// Save the stored item stacks
+//		NBTTagCompound[] tag = new NBTTagCompound[itemStacks.length];
 
 		// to use an analogy with Java, this code generates an array of hashmaps
 		// The itemStack in each slot is converted to an NBTTagCompound, which is effectively a hashmap of key->value pairs such
@@ -405,6 +365,7 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, IUpd
 		for (int i = 0; i < this.itemStacks.length; ++i) {
 			if (this.itemStacks[i] != null) {
 				NBTTagCompound dataForThisSlot = new NBTTagCompound();
+				dataForThisSlot.setByte("Slot", (byte) i);
 				this.itemStacks[i].writeToNBT(dataForThisSlot);
 				dataForAllSlots.appendTag(dataForThisSlot);
 			}
@@ -429,8 +390,9 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, IUpd
 		Arrays.fill(itemStacks, null);           // set all slots to empty
 		for (int i = 0; i < dataForAllSlots.tagCount(); ++i) {
 			NBTTagCompound dataForOneSlot = dataForAllSlots.getCompoundTagAt(i);
-			if (i < this.itemStacks.length) {
-				this.itemStacks[i] = ItemStack.loadItemStackFromNBT(dataForOneSlot);
+			byte slotNumber = dataForOneSlot.getByte("Slot");
+			if (slotNumber >= 0 && slotNumber < this.itemStacks.length) {
+				this.itemStacks[slotNumber] = ItemStack.loadItemStackFromNBT(dataForOneSlot);
 			}
 		}
 
@@ -438,37 +400,25 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, IUpd
 		cookTime = nbtTagCompound.getShort("CookTime");
 		burnTimeRemaining = Arrays.copyOf(nbtTagCompound.getIntArray("burnTimeRemaining"), FUEL_SLOTS_COUNT);
 		burnTimeInitialValue = Arrays.copyOf(nbtTagCompound.getIntArray("burnTimeInitial"), FUEL_SLOTS_COUNT);
+		cachedNumberOfBurningSlots = -1;
 	}
 
-//	// This is where you specify which slots are available from what sides
-//	// This is setup to imitate the vanilla furnace
-//	@Override
-//	public int[] getSlotsForFace(EnumFacing side) {
-//		// If side == top return the input slots
-//		if (side == EnumFacing.UP) return new int[] {0, 1, 2, 3, 4};
-//		// If side == bottom return the output and fuel slots. The fuel slots are made accessible so it is possible to
-//		// extract things such as empty buckets
-//		if (side == EnumFacing.DOWN) return new int[] {5, 6, 7, 8, 9, 10, 11, 12, 13};
-//		// If none of the above are true side must equal one of the 4 sides of the block so return the fuel slots
-//		return new int[] {10, 11, 12, 13};
-//	}
-//
-//	// This is where you specify what items can be inserted into what slots from what sides
-//	@Override
-//	public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction) {
-//		return isItemValidForSlot(index, itemStackIn);
-//	}
-//
-//	// This is where you specify what items can be extracted from what slots on what sides
-//	@Override
-//	public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
-//		// If direction == bottom and the slot is one of the output slots return true
-//		if (direction == EnumFacing.DOWN && index > 4 && index < 10) return true;
-//		// If direction == bottom, the slot is one of the fuel slots and the item being extracted is not fuel return true
-//		// This allows things such as empty buckets to be extracted from the fuel slots
-//		if (direction == EnumFacing.DOWN && index > 9 && index < 14 && getItemBurnTime(stack) == 0) return true;
-//		return false;
-//	}
+	// When the world loads from disk, the server needs to send the TileEntity information to the client
+	//  it uses getDescriptionPacket() and onDataPacket() to do this
+	@Override
+	public Packet getDescriptionPacket() {
+		NBTTagCompound nbtTagCompound = new NBTTagCompound();
+		writeToNBT(nbtTagCompound);
+		final int METADATA = 0;
+		return new S35PacketUpdateTileEntity(this.pos, METADATA, nbtTagCompound);
+	}
+
+	@Override
+	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+		readFromNBT(pkt.getNbtCompound());
+	}
+
+	//------------------------
 
 	// set all slots to empty
 	@Override
@@ -479,7 +429,7 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, IUpd
 	// will add a key for this container to the lang file so we can name it in the GUI
 	@Override
 	public String getName() {
-		return "container.mbe31_inventory_smelting.name";
+		return "container.mbe31_inventory_furnace.name";
 	}
 
 	@Override
@@ -493,11 +443,11 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, IUpd
 		return this.hasCustomName() ? new ChatComponentText(this.getName()) : new ChatComponentTranslation(this.getName());
 	}
 
-	// fields are used to send non-inventory information from the server to interested clients, a form of serialisation
+	// Fields are used to send non-inventory information from the server to interested clients
 	// The container code caches the fields and sends the client any fields which have changed.
 	// The field ID is limited to byte, and the field value is limited to short. (if you use more than this, they get cast down
 	//   in the network packets)
-	// If you need more than that, you can create a fake Slot and put an ItemStack into it with an NBT that contains all your info
+	// If you need more than this, or shorts are too small, use a custom packet in your container instead.
 
 	private static final byte COOK_FIELD_ID = 0;
 	private static final byte FIRST_BURN_TIME_REMAINING_FIELD_ID = 1;
@@ -538,6 +488,13 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, IUpd
 
 	// -----------------------------------------------------------------------------------------------------------
 	// The following methods are not needed for this example but are part of IInventory so they must be implemented
+
+	// Unused unless your container specifically uses it.
+	// Return true if the given stack is allowed to go in the given slot
+	@Override
+	public boolean isItemValidForSlot(int slotIndex, ItemStack itemstack) {
+		return false;
+	}
 
 	/**
 	 * This method removes the entire contents of the given slot and returns it.

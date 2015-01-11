@@ -15,7 +15,7 @@ BlockInventoryBasic
 TileInventoryBasic
 ContainerBasic
 GuiInventoryBasic
-GuiHandler
+GuiHandlerMBE30
 resources\assets\minecraftbyexample\textures\gui\mbe30_inventory_basic_bg.png
 
 The example uses some other resources as well for block rendering etc, these aren't the focus of this example, see

@@ -32,21 +32,21 @@ public class GuiInventoryFurnace extends GuiContainer {
 
 		// Set the width and height of the gui
 		xSize = 176;
-		ySize = 195;
+		ySize = 207;
 
 		this.tileEntity = tileInventoryFurnace;
 	}
 
 	// some [x,y] coordinates of graphical elements
 	final int COOK_BAR_XPOS = 49;
-	final int COOK_BAR_YPOS = 48;
+	final int COOK_BAR_YPOS = 60;
 	final int COOK_BAR_ICON_U = 0;   // texture position of white arrow icon
-	final int COOK_BAR_ICON_V = 195;
+	final int COOK_BAR_ICON_V = 207;
 	final int COOK_BAR_WIDTH = 80;
 	final int COOK_BAR_HEIGHT = 17;
 
 	final int FLAME_XPOS = 54;
-	final int FLAME_YPOS = 68;
+	final int FLAME_YPOS = 80;
 	final int FLAME_ICON_U = 176;   // texture position of flame icon
 	final int FLAME_ICON_V = 0;
 	final int FLAME_WIDTH = 14;
@@ -61,16 +61,13 @@ public class GuiInventoryFurnace extends GuiContainer {
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
-//		// You must re bind the texture and reset the colour if you still need to use it after drawing a string
-//		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
-//		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-
 		// get cook progress as a double between 0 and 1
 		double cookProgress = tileEntity.fractionOfCookTimeComplete();
 		// draw the cook progress bar
 		drawTexturedModalRect(guiLeft + COOK_BAR_XPOS, guiTop + COOK_BAR_YPOS, COOK_BAR_ICON_U, COOK_BAR_ICON_V,
 						              (int)(cookProgress * COOK_BAR_WIDTH), COOK_BAR_HEIGHT);
 
+		// draw the fuel remaining bar for each fuel slot flame
 		for (int i = 0; i < tileEntity.FUEL_SLOTS_COUNT; ++i) {
 			double burnRemaining = tileEntity.fractionOfFuelRemaining(i);
 			int yOffset = (int)((1.0 - burnRemaining) * FLAME_HEIGHT);
@@ -107,6 +104,9 @@ public class GuiInventoryFurnace extends GuiContainer {
 		if (!hoveringText.isEmpty()){
 			drawHoveringText(hoveringText, mouseX - guiLeft, mouseY - guiTop, fontRendererObj);
 		}
+//		// You must re bind the texture and reset the colour if you still need to use it after drawing a string
+//		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
+//		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
 	}
 

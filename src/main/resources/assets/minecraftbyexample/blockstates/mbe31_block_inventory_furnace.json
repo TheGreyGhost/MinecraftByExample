@@ -1,0 +1,9 @@
+{
+    "variants": {
+           "burning_sides_count=0": { "model": "minecraftbyexample:mbe31_block_inventory_furnace_model_0"},
+           "burning_sides_count=1": { "model": "minecraftbyexample:mbe31_block_inventory_furnace_model_1"},
+           "burning_sides_count=2": { "model": "minecraftbyexample:mbe31_block_inventory_furnace_model_2"},
+           "burning_sides_count=3": { "model": "minecraftbyexample:mbe31_block_inventory_furnace_model_3"},
+           "burning_sides_count=4": { "model": "minecraftbyexample:mbe31_block_inventory_furnace_model_4"}
+    }
+}

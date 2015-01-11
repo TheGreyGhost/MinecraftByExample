@@ -3,6 +3,9 @@ package minecraftbyexample.mbe31_inventory_furnace;
 import minecraftbyexample.GuiHandlerRegistry;
 import minecraftbyexample.MinecraftByExample;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
@@ -59,10 +62,10 @@ public class Startup
 		//  the model for each item is normally done by RenderItem.registerItems(), and this is not currently aware
 		//   of any extra items you have created.  Hence you have to do it manually.  This will probably change in future.
 		// It must be done in the init phase, not preinit, and must be done on client only.
-//		Item itemBlockSimple = GameRegistry.findItem("minecraftbyexample", "mbe01_block_simple");
-//		ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation("minecraftbyexample:mbe01_block_simple", "inventory");
-//		final int DEFAULT_ITEM_SUBTYPE = 0;
-//		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(itemBlockSimple, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
+		Item itemBlockSimple = GameRegistry.findItem("minecraftbyexample", "mbe31_block_inventory_furnace");
+		ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation("minecraftbyexample:mbe31_block_inventory_furnace", "inventory");
+		final int DEFAULT_ITEM_SUBTYPE = 0;
+		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(itemBlockSimple, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
 	}
 
 	public static void postInitCommon()
