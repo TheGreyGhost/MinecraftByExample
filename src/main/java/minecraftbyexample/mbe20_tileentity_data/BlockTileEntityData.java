@@ -1,10 +1,14 @@
-package minecraftbyexample.mbe20_tileenentity_data;
+package minecraftbyexample.mbe20_tileentity_data;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -25,11 +29,24 @@ public class BlockTileEntityData extends Block implements ITileEntityProvider
     this.setCreativeTab(CreativeTabs.tabBlock);   // the block will appear on the Blocks tab in creative
   }
 
+  private final int TIMER_COUNTDOWN_TICKS = 20 * 10; // duration of the countdown, in ticks = 10 seconds
+
   // Called when the block is placed or loaded client side to get the tile entity for the block
   // Should return a new instance of the tile entity for the block
   @Override
   public TileEntity createNewTileEntity(World worldIn, int meta) {
     return new TileEntityData();
+  }
+
+  // Called just after the player places a block.  Start the tileEntity's timer
+  @Override
+  public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+    super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
+    TileEntity tileentity = worldIn.getTileEntity(pos);
+    if (tileentity instanceof TileEntityData) { // prevent a crash if not the right type, or is null
+      TileEntityData tileEntityData = (TileEntityData)tileentity;
+      tileEntityData.setTicksLeftTillDisappear(TIMER_COUNTDOWN_TICKS);
+    }
   }
 
   // the block will render in the SOLID layer.  See http://greyminecraftcoder.blogspot.co.at/2014/12/block-rendering-18.html for more information.

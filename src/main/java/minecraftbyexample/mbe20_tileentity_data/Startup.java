@@ -1,4 +1,4 @@
-package minecraftbyexample.mbe20_tileenentity_data;
+package minecraftbyexample.mbe20_tileentity_data;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -25,19 +25,18 @@ public class Startup
   public static void preInitCommon()
   {
     // each instance of your block should have a name that is unique within your mod.  use lower case.
-    blockTileEntityData = (BlockTileEntityData)(new BlockTileEntityData().setUnlocalizedName("mbe01_block_simple"));
-    GameRegistry.registerBlock(blockTileEntityData, "mbe01_block_simple");
+    blockTileEntityData = (BlockTileEntityData)(new BlockTileEntityData().setUnlocalizedName("mbe20_tileentity_data_block"));
+    GameRegistry.registerBlock(blockTileEntityData, "mbe20_tileentity_data_block");
     // you don't need to register an item corresponding to the block, GameRegistry.registerBlock does this automatically.
+    GameRegistry.registerTileEntity(TileEntityData.class, "mbe20_tileentity_data_te");
   }
 
   public static void preInitClientOnly()
   {
-
   }
 
   public static void initCommon()
   {
-
   }
 
   public static void initClientOnly()
@@ -48,20 +47,18 @@ public class Startup
     //  the model for each item is normally done by RenderItem.registerItems(), and this is not currently aware
     //   of any extra items you have created.  Hence you have to do it manually.  This will probably change in future.
     // It must be done in the init phase, not preinit, and must be done on client only.
-    Item itemBlockSimple = GameRegistry.findItem("minecraftbyexample", "mbe01_block_simple");
-    ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation("minecraftbyexample:mbe01_block_simple", "inventory");
+    Item itemBlockSimple = GameRegistry.findItem("minecraftbyexample", "mbe20_tileentity_data_block");
+    ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation("minecraftbyexample:mbe20_tileentity_data_block", "inventory");
     final int DEFAULT_ITEM_SUBTYPE = 0;
     Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(itemBlockSimple, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
   }
 
   public static void postInitCommon()
   {
-
   }
 
   public static void postInitClientOnly()
   {
-
   }
 
 }

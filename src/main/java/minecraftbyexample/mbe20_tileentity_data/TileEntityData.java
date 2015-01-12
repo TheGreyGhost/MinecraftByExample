@@ -1,15 +1,24 @@
-package minecraftbyexample.mbe20_tileenentity_data;
+package minecraftbyexample.mbe20_tileentity_data;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockSapling;
+import net.minecraft.block.BlockTNT;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagDouble;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
+import net.minecraft.world.World;
 
 import java.util.Arrays;
+import java.util.Random;
 
 /**
  * User: brandon3055
@@ -18,7 +27,7 @@ import java.util.Arrays;
  * This is a simple tile entity which stores some data
  * When placed, it waits for 10 seconds then replaces itself with a random block
  */
-public class TileEntityData extends TileEntity  {
+public class TileEntityData extends TileEntity implements IUpdatePlayerListBox {
 
 	private final int INVALID_VALUE = -1;
 	private int ticksLeftTillDisappear = INVALID_VALUE;  // the time (in ticks) left until the block disappears
@@ -27,6 +36,22 @@ public class TileEntityData extends TileEntity  {
 	public void setTicksLeftTillDisappear(int ticks)
 	{
 		ticksLeftTillDisappear = ticks;
+	}
+
+	// When the world loads from disk, the server needs to send the TileEntity information to the client
+	//  it uses getDescriptionPacket() and onDataPacket() to do this
+	//  Not really required for this example since we only use the timer on the client, but included anyway for illustration
+	@Override
+	public Packet getDescriptionPacket() {
+		NBTTagCompound nbtTagCompound = new NBTTagCompound();
+		writeToNBT(nbtTagCompound);
+		int metadata = getBlockMetadata();
+		return new S35PacketUpdateTileEntity(this.pos, metadata, nbtTagCompound);
+	}
+
+	@Override
+	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+		readFromNBT(pkt.getNbtCompound());
 	}
 
 	// This is where you save any data that you don't want to lose when the tile entity unloads
@@ -52,12 +77,12 @@ public class TileEntityData extends TileEntity  {
 		parentNBTTagCompound.setTag("testBlockPos", blockPosNBT);
 
 		NBTTagCompound itemStackNBT = new NBTTagCompound();
-		testItemStack.writeToNBT(itemStackNBT);                     // make sure it's not null..
+		testItemStack.writeToNBT(itemStackNBT);                     // make sure testItemStack is not null first!
 		parentNBTTagCompound.setTag("testItemStack", itemStackNBT);
 
 		parentNBTTagCompound.setIntArray("testIntArray", testIntArray);
 
-		NBTTagList doubleArrayNBT = new NBTTagList();                     // an NBTTagList is similar to a Java ArrayList
+		NBTTagList doubleArrayNBT = new NBTTagList();                     // an NBTTagList is equivalent to a Java ArrayList
 		for (double value : testDoubleArray) {
 			doubleArrayNBT.appendTag(new NBTTagDouble(value));
 		}
@@ -68,7 +93,8 @@ public class TileEntityData extends TileEntity  {
 			Double value = testDoubleArrayWithNulls[i];
 			if (value != null) {
 				NBTTagCompound dataForThisSlot = new NBTTagCompound();
-				dataForThisSlot.setInteger("i", i);
+				dataForThisSlot.setInteger("i", i+1);   // avoid using 0, so the default when reading a missing value (0) is obviously invalid
+				dataForThisSlot.setDouble("v", value);
 				doubleArrayWithNullsNBT.appendTag(dataForThisSlot);
 			}
 		}
@@ -82,10 +108,6 @@ public class TileEntityData extends TileEntity  {
 		super.readFromNBT(parentNBTTagCompound); // The super call is required to load the tiles location
 
 		// important rule: never trust the data you read from NBT, make sure it can't cause a crash
-		final int NBT_COMPOUND_ID = 10;					// see NBTBase.createNewByType()
-		final int NBT_INTARRAY_ID = 11;					// see NBTBase.createNewByType()
-		final int NBT_TAGLIST_ID = 9;					// see NBTBase.createNewByType()
-		final int NBT_STRING_ID = 8;          // see NBTBase.createNewByType()
 
 		final int NBT_INT_ID = 3;					// see NBTBase.createNewByType()
 		int readTicks = INVALID_VALUE;
@@ -95,9 +117,10 @@ public class TileEntityData extends TileEntity  {
 		}
 		ticksLeftTillDisappear = readTicks;
 
-		// some examples of other NBT tags - browse NBTTagCompound or serach for the subclasses of NBTBase for more
+		// some examples of other NBT tags - browse NBTTagCompound or search for the subclasses of NBTBase for more
 
 		String readTestString = null;
+		final int NBT_STRING_ID = 8;          // see NBTBase.createNewByType()
 		if (parentNBTTagCompound.hasKey("testString", NBT_STRING_ID)) {
 			readTestString = parentNBTTagCompound.getString("testString");
 		}
@@ -119,60 +142,64 @@ public class TileEntityData extends TileEntity  {
 		if (!ItemStack.areItemStacksEqual(testItemStack, readItemStack)) {
 			System.err.println("testItemStack mismatch:" + readItemStack);
 		}
- UP TO HERE
-		parentNBTTagCompound.setIntArray("testIntArray", testIntArray);
 
-		NBTTagList doubleArrayNBT = new NBTTagList();                     // an NBTTagList is similar to a Java ArrayList
-		for (double value : testDoubleArray) {
-			doubleArrayNBT.appendTag(new NBTTagDouble(value));
+		int [] readIntArray = parentNBTTagCompound.getIntArray("testIntArray");
+		if (!Arrays.equals(testIntArray, readIntArray)) {
+			System.err.println("testIntArray mismatch:" + readIntArray);
 		}
-		parentNBTTagCompound.setTag("testDoubleArray", doubleArrayNBT);
 
-		NBTTagList doubleArrayWithNullsNBT = new NBTTagList();
-		for (int i = 0; i < testDoubleArrayWithNulls.length; ++i) {
-			Double value = testDoubleArrayWithNulls[i];
-			if (value != null) {
-				NBTTagCompound dataForThisSlot = new NBTTagCompound();
-				dataForThisSlot.setInteger("i", i);
-				doubleArrayWithNullsNBT.appendTag(dataForThisSlot);
+		final int NBT_DOUBLE_ID = 6;					// see NBTBase.createNewByType()
+		NBTTagList doubleArrayNBT = parentNBTTagCompound.getTagList("testDoubleArray", NBT_DOUBLE_ID);
+		int numberOfEntries = Math.min(doubleArrayNBT.tagCount(), testDoubleArray.length);
+		double [] readDoubleArray = new double[numberOfEntries];
+		for (int i = 0; i < numberOfEntries; ++i) {
+			 readDoubleArray[i] = doubleArrayNBT.getDouble(i);
+		}
+		if (doubleArrayNBT.tagCount() != numberOfEntries || !Arrays.equals(readDoubleArray, testDoubleArray)) {
+			System.err.println("testDoubleArray mismatch:" + readDoubleArray);
+		}
+
+		final int NBT_COMPOUND_ID = 10;					// see NBTBase.createNewByType()
+		NBTTagList doubleNullArrayNBT = parentNBTTagCompound.getTagList("testDoubleArrayWithNulls", NBT_COMPOUND_ID);
+		numberOfEntries = Math.min(doubleArrayNBT.tagCount(), testDoubleArrayWithNulls.length);
+		Double [] readDoubleNullArray = new Double[numberOfEntries];
+		for (int i = 0; i < doubleNullArrayNBT.tagCount(); ++i)	{
+			NBTTagCompound nbtEntry = doubleNullArrayNBT.getCompoundTagAt(i);
+			int idx = nbtEntry.getInteger("i") - 1;
+			if (nbtEntry.hasKey("v", NBT_DOUBLE_ID) && idx >= 0 && idx < numberOfEntries) {
+				readDoubleNullArray[idx] = nbtEntry.getDouble("v");
 			}
 		}
-		parentNBTTagCompound.setTag("testDoubleArrayWithNulls", doubleArrayWithNullsNBT);
-
-
-
-		final byte NBT_TYPE_COMPOUND = 10;       // See NBTBase.createNewByType() for a listing
-		NBTTagList dataForAllSlots = parentNBTTagCompound.getTagList("Items", NBT_TYPE_COMPOUND);
-
-		Arrays.fill(itemStacks, null);           // set all slots to empty
-		for (int i = 0; i < dataForAllSlots.tagCount(); ++i) {
-			NBTTagCompound dataForOneSlot = dataForAllSlots.getCompoundTagAt(i);
-			byte slotNumber = dataForOneSlot.getByte("Slot");
-			if (slotNumber >= 0 && slotNumber < this.itemStacks.length) {
-				this.itemStacks[slotNumber] = ItemStack.loadItemStackFromNBT(dataForOneSlot);
-			}
+		if (!Arrays.equals(testDoubleArrayWithNulls, readDoubleNullArray)) {
+			System.err.println("testDoubleArrayWithNulls mismatch:" + readDoubleNullArray);
 		}
-
-		// Load everything else.  Trim the arrays (or pad with 0) to make sure they have the correct number of elements
-		cookTime = parentNBTTagCompound.getShort("CookTime");
-		burnTimeRemaining = Arrays.copyOf(parentNBTTagCompound.getIntArray("burnTimeRemaining"), FUEL_SLOTS_COUNT);
-		burnTimeInitialValue = Arrays.copyOf(parentNBTTagCompound.getIntArray("burnTimeInitial"), FUEL_SLOTS_COUNT);
-		cachedNumberOfBurningSlots = -1;
 	}
 
-	// When the world loads from disk, the server needs to send the TileEntity information to the client
-	//  it uses getDescriptionPacket() and onDataPacket() to do this
+	// Since our TileEntity implements IUpdatePlayerListBox, we get an update method which is called once per tick (20 times / second)
+	//    (yes, the name IUpdatePlayerListBox is misleading)
+	// When the timer elapses, replace our block with a random one.
 	@Override
-	public Packet getDescriptionPacket() {
-		NBTTagCompound nbtTagCompound = new NBTTagCompound();
-		writeToNBT(nbtTagCompound);
-		int metadata = getBlockMetadata();
-		return new S35PacketUpdateTileEntity(this.pos, metadata, nbtTagCompound);
-	}
+	public void update() {
+		if (!this.hasWorldObj()) return;
+		World world = this.getWorld();
+		if (world.isRemote) return;   // don't bother doing anything on the client side.
+		if (ticksLeftTillDisappear == INVALID_VALUE) return;  // do nothing until the time is valid
+		--ticksLeftTillDisappear;
+//		this.markDirty();            // if you update a tileentity variable on the server and this should be communicated to the client,
+// 																		you need to markDirty() to force a resend.  In this case, the client doesn't need to know
+		if (ticksLeftTillDisappear > 0) return;   // not ready yet
 
-	@Override
-	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
-		readFromNBT(pkt.getNbtCompound());
+		Block [] blockChoices = {Blocks.diamond_block, Blocks.obsidian, Blocks.air, Blocks.tnt, Blocks.yellow_flower, Blocks.sapling, Blocks.water};
+		Random random = new Random();
+		Block chosenBlock = blockChoices[random.nextInt(blockChoices.length)];
+	  world.setBlockState(this.pos, chosenBlock.getDefaultState());
+		if (chosenBlock == Blocks.tnt) {
+			Blocks.tnt.onBlockDestroyedByPlayer(world, pos, Blocks.tnt.getDefaultState().withProperty(BlockTNT.EXPLODE, true));
+			world.setBlockToAir(pos);
+		} else if (chosenBlock == Blocks.sapling) {
+			BlockSapling blockSapling = (BlockSapling)Blocks.sapling;
+			blockSapling.generateTree(world, this.pos, blockSapling.getDefaultState(),random);
+		}
 	}
 
 	private final int [] testIntArray = {5, 4, 3, 2, 1};
