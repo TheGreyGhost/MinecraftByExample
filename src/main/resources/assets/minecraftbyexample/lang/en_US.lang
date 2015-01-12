@@ -13,3 +13,4 @@ item.mbe12_item_nbt_animate.name=MBE12 Item NBT animate
 tile.mbe13_item_tools_block.name=MBE13 Item Tools test block
 item.mbe13_item_tools_item.name=MBE13 Item Tools test tool
 tile.mbe20_tileentity_data_block.name=MBE20 TileEntity data
+tile.mbe21_tesr_block.name=MBE21 TileEntitySpecialRenderer

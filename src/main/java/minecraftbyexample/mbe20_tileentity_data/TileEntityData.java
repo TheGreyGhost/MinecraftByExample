@@ -56,8 +56,9 @@ public class TileEntityData extends TileEntity implements IUpdatePlayerListBox {
 
 	// This is where you save any data that you don't want to lose when the tile entity unloads
 	// In this case, we only need to store the ticks left until explosion, but we store a bunch of other
-	//  data as well to serve as an example
-	// Mention NBTExplorer here
+	//  data as well to serve as an example.
+	// NBTexplorer is a very useful tool to examine the structure of your NBT saved data and make sure it's correct:
+	//   http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-tools/1262665-nbtexplorer-nbt-editor-for-windows-and-mac
 	@Override
 	public void writeToNBT(NBTTagCompound parentNBTTagCompound)
 	{
