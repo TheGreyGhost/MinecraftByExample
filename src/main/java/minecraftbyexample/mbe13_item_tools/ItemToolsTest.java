@@ -53,42 +53,42 @@ public class ItemToolsTest extends ItemTool
   // can be useful to add further "special cases" that ToolClass and ItemTool constructor don't cover.
   @Override
   public float getStrVsBlock(ItemStack stack, Block block) {
-    Startup.methodCallLogger.enterMethod("ItemToolsTest.getStrVsBlock", stack.getDisplayName() + ", " + block.getLocalizedName());
+    StartupCommon.methodCallLogger.enterMethod("ItemToolsTest.getStrVsBlock", stack.getDisplayName() + ", " + block.getLocalizedName());
     Float result = super.getStrVsBlock(stack, block);
-    Startup.methodCallLogger.exitMethod("ItemToolsTest.getStrVsBlock", String.valueOf(result));
+    StartupCommon.methodCallLogger.exitMethod("ItemToolsTest.getStrVsBlock", String.valueOf(result));
     return result;
   }
 
   // metadata / damage sensitive version of getStrVsBlock()
   @Override
   public float getDigSpeed(ItemStack stack, IBlockState state) {
-    Startup.methodCallLogger.enterMethod("ItemToolsTest.getDigSpeed", stack.getDisplayName() + ", " + state);
+    StartupCommon.methodCallLogger.enterMethod("ItemToolsTest.getDigSpeed", stack.getDisplayName() + ", " + state);
     Float result = super.getDigSpeed(stack, state);
-    Startup.methodCallLogger.exitMethod("ItemToolsTest.getDigSpeed", String.valueOf(result));
+    StartupCommon.methodCallLogger.exitMethod("ItemToolsTest.getDigSpeed", String.valueOf(result));
     return result;
   }
 
   //   Item.onBlockStartBreak() - called immediately before the block is destroyed - can be used to abort block breaking before it is destroyed
   @Override
   public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, EntityPlayer player) {
-    Startup.methodCallLogger.enterMethod("ItemToolsTest.onBlockStartBreak", itemstack.getDisplayName() + ", " + pos + ", " + player.getName());
+    StartupCommon.methodCallLogger.enterMethod("ItemToolsTest.onBlockStartBreak", itemstack.getDisplayName() + ", " + pos + ", " + player.getName());
     Boolean result =  super.onBlockStartBreak(itemstack, pos, player);
     if (MinecraftByExample.proxy.playerIsInCreativeMode(player)) {
       player.addChatComponentMessage(new ChatComponentText("Currently in creative mode; switch to survival mode using /gamemode."));
     }
-    Startup.methodCallLogger.exitMethod("ItemToolsTest.onBlockStartBreak", String.valueOf(result));
+    StartupCommon.methodCallLogger.exitMethod("ItemToolsTest.onBlockStartBreak", String.valueOf(result));
     return result;
   }
 
   @Override
   // damage the item when it destroys a block - defaults to 1 damage for tools
   public boolean onBlockDestroyed(ItemStack stack, World worldIn, Block blockIn, BlockPos pos, EntityLivingBase playerIn) {
-    Startup.methodCallLogger.enterMethod("ItemToolsTest.onBlockDestroyed",
+    StartupCommon.methodCallLogger.enterMethod("ItemToolsTest.onBlockDestroyed",
             stack.getDisplayName() + ", {world}, " + blockIn.getLocalizedName() + ", "
                     + pos + ", " + playerIn.getName()
     );
     Boolean result = super.onBlockDestroyed(stack, worldIn, blockIn, pos, playerIn);
-    Startup.methodCallLogger.exitMethod("ItemToolsTest.onBlockDestroyed", String.valueOf(result));
+    StartupCommon.methodCallLogger.exitMethod("ItemToolsTest.onBlockDestroyed", String.valueOf(result));
     return result;
   }
 

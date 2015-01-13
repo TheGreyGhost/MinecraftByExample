@@ -26,12 +26,12 @@ Items -
    how to control rendering in the different views (1st person, 3rd person, inventory, etc)
    #how to control rendering of bow-like (Item.getModel)
    armour?
-   tool - strength vs blocks, durability, various events?
+   # tool - strength vs blocks, durability, various events?
 Recipes
   variety of recipe types
 TileEntity
-  simple tile entity with NBT, no renderer
-  simple TileEntitySpecialRenderer
+  # simple tile entity with NBT, no renderer
+  # simple TileEntitySpecialRenderer
 Containers
   furnace-like
   chest-like

@@ -29,6 +29,10 @@ Items<br>
 -  MBE12 - an item that stores extra information in NBT, also illustrates the "in use" animation similar to drawing a bow<br>
 -  MBE13 - customise Mining behaviour of Blocks and Items - several test classes that show how mining works<br>
 
+TileEntities<br>
+-  MBE20 - using a tile entity to store information about a block - also shows examples of using NBT storage<br>
+-  MBE21 - using the TileEntitySpecialRenderer to render unusual shapes or animations<br>
+
 How to use this example project-<br>
 A) You can browse directly in GitHub, or alternatively download it as a zip and browse it locally.<br>
 
@@ -48,8 +52,8 @@ B) If you want to install it and compile it, the basic steps for beginners are:<
     b). Set the main class to "GradleStart"                                     <br>
 7) You should be able to start Minecraft now (using the Run or Debug configuration) and the mod will be loaded.<br>
 
-For some extra help if this doesn't make sense to you
+For some extra help if this doesn't make sense to you  <br>
 http://www.minecraftforge.net/forum/index.php?topic=21354.msg108332#msg108332
 
-Some extra help for installation of forge:
+Some extra help for installation of forge:<br>
 https://www.youtube.com/watch?v=8VEdtQLuLO0&feature=youtu.be

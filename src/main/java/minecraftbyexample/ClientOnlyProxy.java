@@ -1,5 +1,6 @@
 package minecraftbyexample;
 
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,16 +20,16 @@ public class ClientOnlyProxy extends CommonProxy
   public void preInit()
   {
     super.preInit();
-    minecraftbyexample.mbe01_block_simple.Startup.preInitClientOnly();
-    minecraftbyexample.mbe02_block_partial.Startup.preInitClientOnly();
-    minecraftbyexample.mbe03_block_variants.Startup.preInitClientOnly();
-    minecraftbyexample.mbe10_item_simple.Startup.preInitClientOnly();
-    minecraftbyexample.mbe11_item_variants.Startup.preInitClientOnly();
-    minecraftbyexample.mbe12_item_nbt_animate.Startup.preInitClientOnly();
-    minecraftbyexample.mbe13_item_tools.Startup.preInitClientOnly();
-    minecraftbyexample.mbe20_tileentity_data.Startup.preInitClientOnly();
-    minecraftbyexample.mbe21_tileentityspecialrenderer.Startup.preInitClientOnly();
-    minecraftbyexample.testingarea.Startup.preInitClientOnly();
+    minecraftbyexample.mbe01_block_simple.StartupClientOnly.preInitClientOnly();
+    minecraftbyexample.mbe02_block_partial.StartupClientOnly.preInitClientOnly();
+    minecraftbyexample.mbe03_block_variants.StartupClientOnly.preInitClientOnly();
+    minecraftbyexample.mbe10_item_simple.StartupClientOnly.preInitClientOnly();
+    minecraftbyexample.mbe11_item_variants.StartupClientOnly.preInitClientOnly();
+    minecraftbyexample.mbe12_item_nbt_animate.StartupClientOnly.preInitClientOnly();
+    minecraftbyexample.mbe13_item_tools.StartupClientOnly.preInitClientOnly();
+    minecraftbyexample.mbe20_tileentity_data.StartupClientOnly.preInitClientOnly();
+    minecraftbyexample.mbe21_tileentityspecialrenderer.StartupClientOnly.preInitClientOnly();
+    minecraftbyexample.testingarea.StartupClientOnly.preInitClientOnly();
   }
 
   /**
@@ -38,16 +39,16 @@ public class ClientOnlyProxy extends CommonProxy
   public void init()
   {
     super.init();
-    minecraftbyexample.mbe01_block_simple.Startup.initClientOnly();
-    minecraftbyexample.mbe02_block_partial.Startup.initClientOnly();
-    minecraftbyexample.mbe03_block_variants.Startup.initClientOnly();
-    minecraftbyexample.mbe10_item_simple.Startup.initClientOnly();
-    minecraftbyexample.mbe11_item_variants.Startup.initClientOnly();
-    minecraftbyexample.mbe12_item_nbt_animate.Startup.initClientOnly();
-    minecraftbyexample.mbe13_item_tools.Startup.initClientOnly();
-    minecraftbyexample.mbe20_tileentity_data.Startup.initClientOnly();
-    minecraftbyexample.mbe21_tileentityspecialrenderer.Startup.initClientOnly();
-    minecraftbyexample.testingarea.Startup.initClientOnly();
+    minecraftbyexample.mbe01_block_simple.StartupClientOnly.initClientOnly();
+    minecraftbyexample.mbe02_block_partial.StartupClientOnly.initClientOnly();
+    minecraftbyexample.mbe03_block_variants.StartupClientOnly.initClientOnly();
+    minecraftbyexample.mbe10_item_simple.StartupClientOnly.initClientOnly();
+    minecraftbyexample.mbe11_item_variants.StartupClientOnly.initClientOnly();
+    minecraftbyexample.mbe12_item_nbt_animate.StartupClientOnly.initClientOnly();
+    minecraftbyexample.mbe13_item_tools.StartupClientOnly.initClientOnly();
+    minecraftbyexample.mbe20_tileentity_data.StartupClientOnly.initClientOnly();
+    minecraftbyexample.mbe21_tileentityspecialrenderer.StartupClientOnly.initClientOnly();
+    minecraftbyexample.testingarea.StartupClientOnly.initClientOnly();
   }
 
   /**
@@ -56,16 +57,16 @@ public class ClientOnlyProxy extends CommonProxy
   public void postInit()
   {
     super.postInit();
-    minecraftbyexample.mbe01_block_simple.Startup.postInitClientOnly();
-    minecraftbyexample.mbe02_block_partial.Startup.postInitClientOnly();
-    minecraftbyexample.mbe03_block_variants.Startup.postInitClientOnly();
-    minecraftbyexample.mbe10_item_simple.Startup.postInitClientOnly();
-    minecraftbyexample.mbe11_item_variants.Startup.postInitClientOnly();
-    minecraftbyexample.mbe12_item_nbt_animate.Startup.postInitClientOnly();
-    minecraftbyexample.mbe13_item_tools.Startup.postInitClientOnly();
-    minecraftbyexample.mbe20_tileentity_data.Startup.postInitClientOnly();
-    minecraftbyexample.mbe21_tileentityspecialrenderer.Startup.postInitClientOnly();
-    minecraftbyexample.testingarea.Startup.postInitClientOnly();
+    minecraftbyexample.mbe01_block_simple.StartupClientOnly.postInitClientOnly();
+    minecraftbyexample.mbe02_block_partial.StartupClientOnly.postInitClientOnly();
+    minecraftbyexample.mbe03_block_variants.StartupClientOnly.postInitClientOnly();
+    minecraftbyexample.mbe10_item_simple.StartupClientOnly.postInitClientOnly();
+    minecraftbyexample.mbe11_item_variants.StartupClientOnly.postInitClientOnly();
+    minecraftbyexample.mbe12_item_nbt_animate.StartupClientOnly.postInitClientOnly();
+    minecraftbyexample.mbe13_item_tools.StartupClientOnly.postInitClientOnly();
+    minecraftbyexample.mbe20_tileentity_data.StartupClientOnly.postInitClientOnly();
+    minecraftbyexample.mbe21_tileentityspecialrenderer.StartupClientOnly.postInitClientOnly();
+    minecraftbyexample.testingarea.StartupClientOnly.postInitClientOnly();
   }
 
   @Override

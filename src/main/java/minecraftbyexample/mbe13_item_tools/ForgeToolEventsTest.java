@@ -21,18 +21,18 @@ public class ForgeToolEventsTest
   @SubscribeEvent
   public void breakSpeed(PlayerEvent.BreakSpeed event)
   {
-    Startup.methodCallLogger.enterMethod("Event.BreakSpeed", "blockstate=" + event.state + ", blockpos=" + event.pos + ", oldspeed = " + event.originalSpeed);
+    StartupCommon.methodCallLogger.enterMethod("Event.BreakSpeed", "blockstate=" + event.state + ", blockpos=" + event.pos + ", oldspeed = " + event.originalSpeed);
     // your code here
-    Startup.methodCallLogger.exitMethod("Event.BreakSpeed", "newspeed=" + event.newSpeed + ", cancelled=" + event.isCanceled());
+    StartupCommon.methodCallLogger.exitMethod("Event.BreakSpeed", "newspeed=" + event.newSpeed + ", cancelled=" + event.isCanceled());
   }
 
   // can be used to add harvesting = true for block/item combinations which aren't otherwise covered by the ToolClass.
   @SubscribeEvent
   public void harvestCheck(PlayerEvent.HarvestCheck event)
   {
-    Startup.methodCallLogger.enterMethod("Event.HarvestCheck", "block=" + event.block);
+    StartupCommon.methodCallLogger.enterMethod("Event.HarvestCheck", "block=" + event.block);
     // your code here
-    Startup.methodCallLogger.exitMethod("Event.HarvestCheck", "success=" + event.success);
+    StartupCommon.methodCallLogger.exitMethod("Event.HarvestCheck", "success=" + event.success);
   }
 
   // can be used to cancel digging before it starts.
@@ -40,9 +40,9 @@ public class ForgeToolEventsTest
   @SubscribeEvent
   public void playerInteractEvent(PlayerInteractEvent event)
   {
-    Startup.methodCallLogger.enterMethod("Event.PlayerInteractEvent", "action=" + event.action);
+    StartupCommon.methodCallLogger.enterMethod("Event.PlayerInteractEvent", "action=" + event.action);
     // your code here
-    Startup.methodCallLogger.exitMethod("Event.PlayerInteractEvent",
+    StartupCommon.methodCallLogger.exitMethod("Event.PlayerInteractEvent",
             "cancelled=" + event.isCanceled() + "; useItem=" + event.useItem + "; useBlock=" + event.useBlock);
   }
 
@@ -50,9 +50,9 @@ public class ForgeToolEventsTest
   @SubscribeEvent
   public void breakEvent(BlockEvent.BreakEvent event)
   {
-    Startup.methodCallLogger.enterMethod("Event.BreakEvent", "player=" + event.getPlayer().getDisplayNameString() + ", exp=" + event.getExpToDrop());
+    StartupCommon.methodCallLogger.enterMethod("Event.BreakEvent", "player=" + event.getPlayer().getDisplayNameString() + ", exp=" + event.getExpToDrop());
     // your code here
-    Startup.methodCallLogger.exitMethod("Event.BreakEvent", "cancelled=" + event.isCanceled() + ";exp after = " + event.getExpToDrop());
+    StartupCommon.methodCallLogger.exitMethod("Event.BreakEvent", "cancelled=" + event.isCanceled() + ";exp after = " + event.getExpToDrop());
   }
 
   // modify the list of items that might be dropped when the block is harvested.
@@ -69,7 +69,7 @@ public class ForgeToolEventsTest
       params += String.valueOf(itemStack) + "; ";
     }
     params += "}";
-    Startup.methodCallLogger.enterMethod("Event.HarvestDropsEvent", params);
+    StartupCommon.methodCallLogger.enterMethod("Event.HarvestDropsEvent", params);
 
     params = "dropChance=" + event.dropChance;
     params += "; drops={";
@@ -77,6 +77,6 @@ public class ForgeToolEventsTest
       params += String.valueOf(itemStack) + "; ";
     }
     params += "}";
-    Startup.methodCallLogger.exitMethod("Event.HarvestDropsEvent", params);
+    StartupCommon.methodCallLogger.exitMethod("Event.HarvestDropsEvent", params);
   }
 }
