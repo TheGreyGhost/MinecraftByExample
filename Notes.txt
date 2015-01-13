@@ -55,6 +55,8 @@ Terrain generation
 
 Generate a new dimension
 
+Different rendering modes
+
 Miscellaneous
   best practice error logging (I could sure use some help on that one!)
 
