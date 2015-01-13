@@ -1,5 +1,6 @@
 package minecraftbyexample.mbe21_tileentityspecialrenderer;
 
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
@@ -30,6 +31,7 @@ public class StartupCommon
 
   public static void initCommon()
   {
+    ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMBE21.class, new TileEntitySpecialRendererMBE21());
   }
 
   public static void postInitCommon()
