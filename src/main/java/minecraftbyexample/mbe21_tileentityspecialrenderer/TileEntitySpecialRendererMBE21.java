@@ -16,10 +16,11 @@ import java.awt.*;
 /**
  * User: The Grey Ghost
  * Date: 12/01/2015
+ * This class renders the gem floating above the block.
+ * The base model is drawn by the block model, not this class.
  */
 public class TileEntitySpecialRendererMBE21 extends TileEntitySpecialRenderer
 {
-  int counter; //todo remove
   /**
    * render the tile entity - called every frame while the tileentity is in view of the player
    * @param tileEntity the associated tile entity
@@ -38,9 +39,9 @@ public class TileEntitySpecialRendererMBE21 extends TileEntitySpecialRenderer
 
     // the gem changes its appearance and animation as the player approaches.
     // When the player is a long distance away, the gem is dark, resting in the hopper, and does not rotate.
-    // As the player approaches closer than 16 blocks, the gem first starts to glow brighter and to spin clockwise
+    // As the player approaches closer than 16 blocks, the gem first starts to glow brighter and to spin anti-clockwise
     // When the player gets closer than 4 blocks, the gem is at maximum speed and brightness, and starts to levitate above the pedestal
-    // Once the player gets closer than 1 block, the gem reaches maximum height.
+    // Once the player gets closer than 2 blocks, the gem reaches maximum height.
 
     // the appearance and animation of the gem is hence made up of several parts:
     // 1) the colour of the gem, which is contained in the tileEntity
@@ -51,7 +52,6 @@ public class TileEntitySpecialRendererMBE21 extends TileEntitySpecialRenderer
     final double pedestalCentreOffsetX = 0.5;
     final double pedestalCentreOffsetY = 0.8;
     final double pedestalCentreOffsetZ = 0.5;
-
     Vec3 playerEye = new Vec3(0.0, 0.0, 0.0);
     Vec3 pedestalCentre = new Vec3(relativeX + pedestalCentreOffsetX, relativeY + pedestalCentreOffsetY, relativeZ + pedestalCentreOffsetZ);
     double playerDistance = playerEye.distanceTo(pedestalCentre);
@@ -74,19 +74,18 @@ public class TileEntitySpecialRendererMBE21 extends TileEntitySpecialRenderer
     final double MAX_GLOW = 1.0;
     double glowMultiplier = UsefulFunctions.interpolate(playerDistance, DISTANCE_FOR_MIN_GLOW, DISTANCE_FOR_MAX_GLOW,
             MIN_GLOW, MAX_GLOW);
+
     final double MIN_REV_PER_SEC = 0.0;
     final double MAX_REV_PER_SEC = 0.5;
     double revsPerSecond = UsefulFunctions.interpolate(playerDistance, DISTANCE_FOR_MIN_SPIN, DISTANCE_FOR_MAX_SPIN,
             MIN_REV_PER_SEC, MAX_REV_PER_SEC);
-    double position = tileEntityMBE21.getNextAngularPosition(revsPerSecond);
+    double angularPositionInDegrees = tileEntityMBE21.getNextAngularPosition(revsPerSecond);
 
-    // save the transformation matrix and the rendering attributes, so that we can restore them after rendering.  This
-    //   prevents us disrupting any vanilla TESR that render after ours.
-    //  using try..finally is not essential but helps make it more robust in case of exceptions
-    // For further information on rendering using the Tessellator, see http://greyminecraftcoder.blogspot.co.at/2014/12/the-tessellator-and-worldrenderer-18.html
     try {
-//      GlStateManager.pushMatrix();  // a bug in GLStateManager.popAttrib() means you need to issue direct GL11 calls
-//      GlStateManager.pushAttrib();
+      // save the transformation matrix and the rendering attributes, so that we can restore them after rendering.  This
+      //   prevents us disrupting any vanilla TESR that render after ours.
+      //  using try..finally is not essential but helps make it more robust in case of exceptions
+      // For further information on rendering using the Tessellator, see http://greyminecraftcoder.blogspot.co.at/2014/12/the-tessellator-and-worldrenderer-18.html
       GL11.glPushMatrix();
       GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
 
@@ -99,7 +98,7 @@ public class TileEntitySpecialRendererMBE21 extends TileEntitySpecialRenderer
       // add an extra offset as well, i.e. [gemCentreOffsetX, gemCentreOffsetY, gemCentreOffsetZ]
       GlStateManager.translate(relativeX + gemCentreOffsetX, relativeY + gemCentreOffsetY, relativeZ + gemCentreOffsetZ);
 
-      GlStateManager.rotate((float) position, 0, 1, 0);   // rotate around the vertical axis
+      GlStateManager.rotate((float)angularPositionInDegrees, 0, 1, 0);   // rotate around the vertical axis
 
       final double GEM_HEIGHT = 0.5;        // desired render height of the gem
       final double MODEL_HEIGHT = 1.0;      // actual height of the gem in the vertexTable
@@ -114,9 +113,6 @@ public class TileEntitySpecialRendererMBE21 extends TileEntitySpecialRenderer
       GL11.glDisable(GL11.GL_LIGHTING);     // turn off "item" lighting (face brightness depends on which direction it is facing)
       GL11.glDisable(GL11.GL_BLEND);        // turn off "alpha" transparency blending
       GL11.glDepthMask(true);               // gem is hidden behind other objects
-//      GlStateManager.disableLighting();
-//      GlStateManager.disableBlend();
-//      GlStateManager.depthMask(true);
 
       // set the rendering colour as the gem base colour
       Color fullBrightnessColor = tileEntityMBE21.getGemColour();
@@ -129,607 +125,22 @@ public class TileEntitySpecialRendererMBE21 extends TileEntitySpecialRenderer
       GlStateManager.color(red, green, blue);     // change the rendering colour
 
         // change the "multitexturing" lighting value (default value is the brightness of the tile entity's block)
-        // this will make the gem "glow" brighter than the surroundings if it is dark.
+        // - this will make the gem "glow" brighter than the surroundings if it is dark.
       final int SKY_LIGHT_VALUE = (int)(15 * glowMultiplier);
       final int BLOCK_LIGHT_VALUE = 0;
       OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, SKY_LIGHT_VALUE * 16.0F, BLOCK_LIGHT_VALUE * 16.0F);
 
-      GlStateManager.color(red, green, blue);
-//      worldrenderer.setColorOpaque_F(red, green, blue);
-
-      // OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.F);
-
       worldrenderer.startDrawing(GL11.GL_TRIANGLES);
       addGemVertices(worldrenderer);
-//      if (++counter % 100 == 0) {
-////        System.out.println("Vertex format:" + worldrenderer.getVertexFormat().toString());
-//        OpenGLdebugging.dumpAllIsEnabled();
-//      }
       tessellator.draw();
 
     } finally {
       GL11.glPopAttrib();
       GL11.glPopMatrix();
     }
-
-//    try {
-////      GlStateManager.pushMatrix();  // a bug in GLStateManager.popAttrib() means you need to issue direct GL11 calls
-////      GlStateManager.pushAttrib();
-//      GL11.glPushMatrix();
-//      GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
-//      // First we need to set up the translation so that we render our gem with the bottom point at 0,0,0
-//      // when the renderTileEntityAt method is called, the tessellator is set up so that drawing a dot at [0,0,0] corresponds to the player's eyes
-//      // This means that, in order to draw a dot at the TileEntity [x,y,z], we need to translate the reference frame by the difference between the
-//      // two points, i.e. by the [relativeX, relativeY, relativeZ] passed to the method.  If you then draw a cube from [0,0,0] to [1,1,1], it will
-//      // render exactly over the top of the TileEntity's block.
-//      // In this example, the zero point of our model needs to be in the middle of the block, not at the [x,y,z] of the block, so we need to
-//      // add an extra offset as well, i.e. [gemCentreOffsetX, gemCentreOffsetY, gemCentreOffsetZ]
-//
-//      GlStateManager.translate(relativeX + gemCentreOffsetX, relativeY + gemCentreOffsetY+1, relativeZ + gemCentreOffsetZ);
-//      GlStateManager.rotate((float) position, 0, 1, 0);   // rotate around the vertical axis
-//      final double GEM_HEIGHT = 0.5;        // desired render height of the gem
-//      final double MODEL_HEIGHT = 1.0;      // actual height of the gem in the vertexTable
-//      final double SCALE_FACTOR = GEM_HEIGHT / MODEL_HEIGHT;
-//      GlStateManager.scale(SCALE_FACTOR, SCALE_FACTOR, SCALE_FACTOR);
-//      Tessellator tessellator = Tessellator.getInstance();
-//      WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-//
-//
-//      this.bindTexture(gemTexture);
-//      // set the key rendering flags appropriately...
-//      GL11.glDisable(GL11.GL_LIGHTING);
-//      GL11.glDisable(GL11.GL_BLEND);
-//      GL11.glDepthMask(true);
-////      GlStateManager.disableLighting();
-////      GlStateManager.disableBlend();
-////      GlStateManager.depthMask(true);
-//
-//      // set the rendering colour as the gem base colour multiplied by the glow brightness
-//      Color fullBrightnessColor = tileEntityMBE21.getGemColour();
-//      float red = 0, green = 0, blue = 0;
-//      if (fullBrightnessColor != TileEntityMBE21.INVALID_COLOR) {
-//        red = (float) (fullBrightnessColor.getRed() / 255.0 * glowMultiplier);
-//        green = (float) (fullBrightnessColor.getGreen() / 255.0 * glowMultiplier);
-//        blue = (float) (fullBrightnessColor.getBlue() / 255.0 * glowMultiplier);
-//      }
-//
-//      worldrenderer.startDrawing(GL11.GL_TRIANGLES);
-//
-//      GlStateManager.color(1.0F, 1.0F, 1.0F);
-//      worldrenderer.setColorOpaque_F(red, green, blue);
-//
-//      // OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.F);
-//
-//      addGemVertices(worldrenderer);
-////      if (++counter % 100 == 0) {
-//////        System.out.println("Vertex format:" + worldrenderer.getVertexFormat().toString());
-////        OpenGLdebugging.dumpAllIsEnabled();
-////      }
-//      tessellator.draw();
-//
-//    } finally {
-//      GL11.glPopAttrib();
-//      GL11.glPopMatrix();
-//    }
-//
-//    // save the transformation matrix and the rendering attributes, so that we can restore them after rendering.  This
-//    //   prevents us disrupting any vanilla TESR that render after ours.
-//    //  using try..finally is not essential but helps make it more robust in case of exceptions
-//    // For further information on rendering using the Tessellator, see http://greyminecraftcoder.blogspot.co.at/2014/12/the-tessellator-and-worldrenderer-18.html
-//    try {
-////      GlStateManager.pushMatrix();  // a bug in GLStateManager.popAttrib() means you need to issue direct GL11 calls
-////      GlStateManager.pushAttrib();
-//      GL11.glPushMatrix();
-//      GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
-//      // First we need to set up the translation so that we render our gem with the bottom point at 0,0,0
-//      // when the renderTileEntityAt method is called, the tessellator is set up so that drawing a dot at [0,0,0] corresponds to the player's eyes
-//      // This means that, in order to draw a dot at the TileEntity [x,y,z], we need to translate the reference frame by the difference between the
-//      // two points, i.e. by the [relativeX, relativeY, relativeZ] passed to the method.  If you then draw a cube from [0,0,0] to [1,1,1], it will
-//      // render exactly over the top of the TileEntity's block.
-//      // In this example, the zero point of our model needs to be in the middle of the block, not at the [x,y,z] of the block, so we need to
-//      // add an extra offset as well, i.e. [gemCentreOffsetX, gemCentreOffsetY, gemCentreOffsetZ]
-//
-//      GlStateManager.translate(relativeX + gemCentreOffsetX, relativeY + gemCentreOffsetY + 2, relativeZ + gemCentreOffsetZ);
-//      GlStateManager.rotate((float) position, 0, 1, 0);   // rotate around the vertical axis
-//      final double GEM_HEIGHT = 0.5;        // desired render height of the gem
-//      final double MODEL_HEIGHT = 1.0;      // actual height of the gem in the vertexTable
-//      final double SCALE_FACTOR = GEM_HEIGHT / MODEL_HEIGHT;
-//      GlStateManager.scale(SCALE_FACTOR, SCALE_FACTOR, SCALE_FACTOR);
-//      Tessellator tessellator = Tessellator.getInstance();
-//      WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-//
-//
-//      this.bindTexture(gemTexture);
-//      // set the key rendering flags appropriately...
-//      GL11.glDisable(GL11.GL_LIGHTING);
-//      GL11.glDisable(GL11.GL_BLEND);
-//      GL11.glDepthMask(true);
-////      GlStateManager.disableLighting();
-////      GlStateManager.disableBlend();
-////      GlStateManager.depthMask(true);
-//
-//      // set the rendering colour as the gem base colour multiplied by the glow brightness
-//      Color fullBrightnessColor = tileEntityMBE21.getGemColour();
-//      float red = 0, green = 0, blue = 0;
-//      if (fullBrightnessColor != TileEntityMBE21.INVALID_COLOR) {
-//        red = (float) (fullBrightnessColor.getRed() / 255.0 * glowMultiplier);
-//        green = (float) (fullBrightnessColor.getGreen() / 255.0 * glowMultiplier);
-//        blue = (float) (fullBrightnessColor.getBlue() / 255.0 * glowMultiplier);
-//      }
-//
-//      worldrenderer.startDrawing(GL11.GL_TRIANGLES);
-//
-//      GlStateManager.color(red, green, blue);
-////      worldrenderer.setColorOpaque_F(red, green, blue);
-//
-//      // OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.F);
-//
-//      addGemVertices(worldrenderer);
-////      if (++counter % 100 == 0) {
-//////        System.out.println("Vertex format:" + worldrenderer.getVertexFormat().toString());
-////        OpenGLdebugging.dumpAllIsEnabled();
-////      }
-//      tessellator.draw();
-//
-//    } finally {
-//      GL11.glPopAttrib();
-//      GL11.glPopMatrix();
-//    }
-
-
-//
-//    try {
-//      GlStateManager.pushMatrix();
-//      GlStateManager.pushAttrib();
-//
-//      // First we need to set up the translation so that we render our gem with the bottom point at 0,0,0
-//      // when the renderTileEntityAt method is called, the tessellator is set up so that drawing a dot at [0,0,0] corresponds to the player's eyes
-//      // This means that, in order to draw a dot at the TileEntity [x,y,z], we need to translate the reference frame by the difference between the
-//      // two points, i.e. by the [relativeX, relativeY, relativeZ] passed to the method.  If you then draw a cube from [0,0,0] to [1,1,1], it will
-//      // render exactly over the top of the TileEntity's block.
-//      // In this example, the zero point of our model needs to be in the middle of the block, not at the [x,y,z] of the block, so we need to
-//      // add an extra offset as well, i.e. [gemCentreOffsetX, gemCentreOffsetY, gemCentreOffsetZ]
-//
-//      GlStateManager.translate(relativeX + gemCentreOffsetX, relativeY + gemCentreOffsetY, relativeZ + gemCentreOffsetZ);
-//      GlStateManager.rotate((float) position, 0, 1, 0);   // rotate around the vertical axis
-//      final double GEM_HEIGHT = 0.5;        // desired render height of the gem
-//      final double MODEL_HEIGHT = 1.0;      // actual height of the gem in the vertexTable
-//      final double SCALE_FACTOR = GEM_HEIGHT / MODEL_HEIGHT;
-//      GlStateManager.scale(SCALE_FACTOR, SCALE_FACTOR, SCALE_FACTOR);
-//      Tessellator tessellator = Tessellator.getInstance();
-//      WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-//
-//
-//      this.bindTexture(gemTexture);
-//      // set the key rendering flags appropriately...
-//      System.out.print(GL11.glIsEnabled(GL11.GL_LIGHTING));
-//      GlStateManager.disableLighting();
-//      System.out.print(GL11.glIsEnabled(GL11.GL_LIGHTING));
-//      GlStateManager.disableBlend();
-//      System.out.print(GL11.glIsEnabled(GL11.GL_LIGHTING));
-//      GlStateManager.depthMask(true);
-//      System.out.print(GL11.glIsEnabled(GL11.GL_LIGHTING));
-//
-//      // set the rendering colour as the gem base colour multiplied by the glow brightness
-//      Color fullBrightnessColor = tileEntityMBE21.getGemColour();
-//      float red = 0, green = 0, blue = 0;
-//      if (fullBrightnessColor != TileEntityMBE21.INVALID_COLOR) {
-//        red = (float)(fullBrightnessColor.getRed() / 255.0 * glowMultiplier);
-//        green = (float)(fullBrightnessColor.getGreen() / 255.0 * glowMultiplier);
-//        blue = (float)(fullBrightnessColor.getBlue() / 255.0 * glowMultiplier);
-//      }
-//      System.out.print(GL11.glIsEnabled(GL11.GL_LIGHTING));
-//
-//      worldrenderer.startDrawing(GL11.GL_TRIANGLES);
-//      System.out.print(GL11.glIsEnabled(GL11.GL_LIGHTING));
-//
-//      GlStateManager.color(1.0F, 1.0F, 1.0F);
-//      System.out.print(GL11.glIsEnabled(GL11.GL_LIGHTING));
-//      worldrenderer.setColorOpaque_F(red, green, blue);
-//      System.out.print(GL11.glIsEnabled(GL11.GL_LIGHTING));
-//
-//      // OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.F);
-//
-//      addGemVertices(worldrenderer);
-//      System.out.print(GL11.glIsEnabled(GL11.GL_LIGHTING));
-//      if (++counter %100 == 0) {
-////        System.out.println("Vertex format:" + worldrenderer.getVertexFormat().toString());
-//        OpenGLdebugging.dumpAllIsEnabled();
-//      }
-//      tessellator.draw();
-//      System.out.print(GL11.glIsEnabled(GL11.GL_LIGHTING));
-//
-//    } finally {
-//      System.out.print(GL11.glIsEnabled(GL11.GL_LIGHTING));
-//      GlStateManager.popAttrib();
-//      System.out.print(GL11.glIsEnabled(GL11.GL_LIGHTING));
-//      GlStateManager.popMatrix();
-//      System.out.print(GL11.glIsEnabled(GL11.GL_LIGHTING));
-//    }
-//
-//    // save the transformation matrix and the rendering attributes, so that we can restore them after rendering.  This
-//    //   prevents us disrupting any vanilla TESR that render after ours.
-//    //  using try..finally is not essential but helps make it more robust in case of exceptions
-//    // For further information on rendering using the Tessellator, see http://greyminecraftcoder.blogspot.co.at/2014/12/the-tessellator-and-worldrenderer-18.html
-//    try {
-//      GlStateManager.pushMatrix();
-//      GlStateManager.pushAttrib();
-//
-//      // First we need to set up the translation so that we render our gem with the bottom point at 0,0,0
-//      // when the renderTileEntityAt method is called, the tessellator is set up so that drawing a dot at [0,0,0] corresponds to the player's eyes
-//      // This means that, in order to draw a dot at the TileEntity [x,y,z], we need to translate the reference frame by the difference between the
-//      // two points, i.e. by the [relativeX, relativeY, relativeZ] passed to the method.  If you then draw a cube from [0,0,0] to [1,1,1], it will
-//      // render exactly over the top of the TileEntity's block.
-//      // In this example, the zero point of our model needs to be in the middle of the block, not at the [x,y,z] of the block, so we need to
-//      // add an extra offset as well, i.e. [gemCentreOffsetX, gemCentreOffsetY, gemCentreOffsetZ]
-//
-//      GlStateManager.translate(relativeX + gemCentreOffsetX, relativeY + gemCentreOffsetY + 1, relativeZ + gemCentreOffsetZ);
-//      GlStateManager.rotate((float) position, 0, 1, 0);   // rotate around the vertical axis
-//      final double GEM_HEIGHT = 0.5;        // desired render height of the gem
-//      final double MODEL_HEIGHT = 1.0;      // actual height of the gem in the vertexTable
-//      final double SCALE_FACTOR = GEM_HEIGHT / MODEL_HEIGHT;
-//      GlStateManager.scale(SCALE_FACTOR, SCALE_FACTOR, SCALE_FACTOR);
-//      Tessellator tessellator = Tessellator.getInstance();
-//      WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-//      this.bindTexture(gemTexture);
-//      // set the key rendering flags appropriately...
-//      System.out.print(GL11.glIsEnabled(GL11.GL_LIGHTING));
-//      GlStateManager.disableLighting();
-//      System.out.print(GL11.glIsEnabled(GL11.GL_LIGHTING));
-//      GlStateManager.disableBlend();
-//      System.out.print(GL11.glIsEnabled(GL11.GL_LIGHTING));
-//      GlStateManager.depthMask(true);
-//      System.out.print(GL11.glIsEnabled(GL11.GL_LIGHTING));
-//
-//      // set the rendering colour as the gem base colour multiplied by the glow brightness
-//      Color fullBrightnessColor = tileEntityMBE21.getGemColour();
-//      float red = 0, green = 0, blue = 0;
-//      if (fullBrightnessColor != TileEntityMBE21.INVALID_COLOR) {
-//        red = (float)(fullBrightnessColor.getRed() / 255.0 * glowMultiplier);
-//        green = (float)(fullBrightnessColor.getGreen() / 255.0 * glowMultiplier);
-//        blue = (float)(fullBrightnessColor.getBlue() / 255.0 * glowMultiplier);
-//      }
-//
-//      System.out.print(GL11.glIsEnabled(GL11.GL_LIGHTING));
-//      worldrenderer.startDrawing(GL11.GL_TRIANGLES);
-//
-//      System.out.print(GL11.glIsEnabled(GL11.GL_LIGHTING));
-//      GlStateManager.color(1.0F, 1.0F, 1.0F);
-//      System.out.print(GL11.glIsEnabled(GL11.GL_LIGHTING));
-//      worldrenderer.setColorOpaque_F(red, green, blue);
-//
-//      // OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.F);
-//
-//      System.out.print(GL11.glIsEnabled(GL11.GL_LIGHTING));
-//      addGemVertices(worldrenderer);
-//      if (counter %100 == 0) {
-//        OpenGLdebugging.dumpAllIsEnabled();
-//      }
-//      System.out.print(GL11.glIsEnabled(GL11.GL_LIGHTING));
-//      tessellator.draw();
-//      System.out.print(GL11.glIsEnabled(GL11.GL_LIGHTING));
-//
-//    } finally {
-//      System.out.print(GL11.glIsEnabled(GL11.GL_LIGHTING));
-//      GlStateManager.popAttrib();
-//      System.out.print(GL11.glIsEnabled(GL11.GL_LIGHTING));
-//      GlStateManager.popMatrix();
-//      System.out.print(GL11.glIsEnabled(GL11.GL_LIGHTING));
-//    }
-
-//    try {
-//      GlStateManager.pushMatrix();
-//      GlStateManager.pushAttrib();
-//
-//      // First we need to set up the translation so that we render our gem with the bottom point at 0,0,0
-//      // when the renderTileEntityAt method is called, the tessellator is set up so that drawing a dot at [0,0,0] corresponds to the player's eyes
-//      // This means that, in order to draw a dot at the TileEntity [x,y,z], we need to translate the reference frame by the difference between the
-//      // two points, i.e. by the [relativeX, relativeY, relativeZ] passed to the method.  If you then draw a cube from [0,0,0] to [1,1,1], it will
-//      // render exactly over the top of the TileEntity's block.
-//      // In this example, the zero point of our model needs to be in the middle of the block, not at the [x,y,z] of the block, so we need to
-//      // add an extra offset as well, i.e. [gemCentreOffsetX, gemCentreOffsetY, gemCentreOffsetZ]
-//
-//      GlStateManager.translate(relativeX + gemCentreOffsetX, relativeY + gemCentreOffsetY + 2, relativeZ + gemCentreOffsetZ);
-//      GlStateManager.rotate((float) position, 0, 1, 0);   // rotate around the vertical axis
-//      final double GEM_HEIGHT = 0.5;        // desired render height of the gem
-//      final double MODEL_HEIGHT = 1.0;      // actual height of the gem in the vertexTable
-//      final double SCALE_FACTOR = GEM_HEIGHT / MODEL_HEIGHT;
-//      GlStateManager.scale(SCALE_FACTOR, SCALE_FACTOR, SCALE_FACTOR);
-//      Tessellator tessellator = Tessellator.getInstance();
-//      WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-//      this.bindTexture(gemTexture);
-//      // set the key rendering flags appropriately...
-//      GlStateManager.disableLighting();
-//      GlStateManager.disableBlend();
-//      GlStateManager.depthMask(true);
-//
-//      // set the rendering colour as the gem base colour multiplied by the glow brightness
-//      Color fullBrightnessColor = tileEntityMBE21.getGemColour();
-//      float red = 0, green = 0, blue = 0;
-//      if (fullBrightnessColor != TileEntityMBE21.INVALID_COLOR) {
-//        red = (float)(fullBrightnessColor.getRed() / 255.0 * glowMultiplier);
-//        green = (float)(fullBrightnessColor.getGreen() / 255.0 * glowMultiplier);
-//        blue = (float)(fullBrightnessColor.getBlue() / 255.0 * glowMultiplier);
-//      }
-//
-//      worldrenderer.startDrawing(GL11.GL_TRIANGLES);
-//
-//      GlStateManager.color(1.0F, 1.0F, 1.0F);
-//      worldrenderer.setColorOpaque_F(red, green, blue);
-////      worldrenderer.setBrightness((240 << 16) | 240);
-//
-////      OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.F);
-//      if (counter %100 == 0) {
-//        OpenGLdebugging.dumpAllIsEnabled();
-//      }
-//
-//      addGemVertices(worldrenderer);
-//      tessellator.draw();
-//
-//    } finally {
-//      GlStateManager.popAttrib();
-//      GlStateManager.popMatrix();
-//    }
-//
-//    try {
-//      GlStateManager.pushMatrix();
-//      GlStateManager.pushAttrib();
-//
-//      // First we need to set up the translation so that we render our gem with the bottom point at 0,0,0
-//      // when the renderTileEntityAt method is called, the tessellator is set up so that drawing a dot at [0,0,0] corresponds to the player's eyes
-//      // This means that, in order to draw a dot at the TileEntity [x,y,z], we need to translate the reference frame by the difference between the
-//      // two points, i.e. by the [relativeX, relativeY, relativeZ] passed to the method.  If you then draw a cube from [0,0,0] to [1,1,1], it will
-//      // render exactly over the top of the TileEntity's block.
-//      // In this example, the zero point of our model needs to be in the middle of the block, not at the [x,y,z] of the block, so we need to
-//      // add an extra offset as well, i.e. [gemCentreOffsetX, gemCentreOffsetY, gemCentreOffsetZ]
-//
-//      GlStateManager.translate(relativeX + gemCentreOffsetX, relativeY + gemCentreOffsetY + 3, relativeZ + gemCentreOffsetZ);
-//      GlStateManager.rotate((float) position, 0, 1, 0);   // rotate around the vertical axis
-//      final double GEM_HEIGHT = 0.5;        // desired render height of the gem
-//      final double MODEL_HEIGHT = 1.0;      // actual height of the gem in the vertexTable
-//      final double SCALE_FACTOR = GEM_HEIGHT / MODEL_HEIGHT;
-//      GlStateManager.scale(SCALE_FACTOR, SCALE_FACTOR, SCALE_FACTOR);
-//      Tessellator tessellator = Tessellator.getInstance();
-//      WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-//      this.bindTexture(gemTexture);
-//      // set the key rendering flags appropriately...
-//      GlStateManager.disableLighting();
-//      GlStateManager.disableBlend();
-//      GlStateManager.depthMask(true);
-//
-//      // set the rendering colour as the gem base colour multiplied by the glow brightness
-//      Color fullBrightnessColor = tileEntityMBE21.getGemColour();
-//      float red = 0, green = 0, blue = 0;
-//      if (fullBrightnessColor != TileEntityMBE21.INVALID_COLOR) {
-//        red = (float)(fullBrightnessColor.getRed() / 255.0 * glowMultiplier);
-//        green = (float)(fullBrightnessColor.getGreen() / 255.0 * glowMultiplier);
-//        blue = (float)(fullBrightnessColor.getBlue() / 255.0 * glowMultiplier);
-//      }
-//
-//      worldrenderer.startDrawing(GL11.GL_TRIANGLES);
-//
-//      GlStateManager.color(1.0F, 1.0F, 1.0F);
-//      worldrenderer.setColorOpaque_F(red, green, blue);
-////      worldrenderer.setBrightness((240 << 16) | 240);
-//
-//      OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 128.0F, 128.0F);
-//
-//      addGemVertices(worldrenderer);
-//      tessellator.draw();
-//
-//    } finally {
-//      GlStateManager.popAttrib();
-//      GlStateManager.popMatrix();
-//    }
-//
-//    try {
-//      GlStateManager.pushMatrix();
-//      GlStateManager.pushAttrib();
-//
-//      // First we need to set up the translation so that we render our gem with the bottom point at 0,0,0
-//      // when the renderTileEntityAt method is called, the tessellator is set up so that drawing a dot at [0,0,0] corresponds to the player's eyes
-//      // This means that, in order to draw a dot at the TileEntity [x,y,z], we need to translate the reference frame by the difference between the
-//      // two points, i.e. by the [relativeX, relativeY, relativeZ] passed to the method.  If you then draw a cube from [0,0,0] to [1,1,1], it will
-//      // render exactly over the top of the TileEntity's block.
-//      // In this example, the zero point of our model needs to be in the middle of the block, not at the [x,y,z] of the block, so we need to
-//      // add an extra offset as well, i.e. [gemCentreOffsetX, gemCentreOffsetY, gemCentreOffsetZ]
-//
-//      GlStateManager.translate(relativeX + gemCentreOffsetX, relativeY + gemCentreOffsetY + 4, relativeZ + gemCentreOffsetZ);
-//      GlStateManager.rotate((float) position, 0, 1, 0);   // rotate around the vertical axis
-//      final double GEM_HEIGHT = 0.5;        // desired render height of the gem
-//      final double MODEL_HEIGHT = 1.0;      // actual height of the gem in the vertexTable
-//      final double SCALE_FACTOR = GEM_HEIGHT / MODEL_HEIGHT;
-//      GlStateManager.scale(SCALE_FACTOR, SCALE_FACTOR, SCALE_FACTOR);
-//      Tessellator tessellator = Tessellator.getInstance();
-//      WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-//      this.bindTexture(gemTexture);
-//      // set the key rendering flags appropriately...
-//      GlStateManager.disableLighting();
-//      GlStateManager.disableBlend();
-//      GlStateManager.depthMask(true);
-//
-//      // set the rendering colour as the gem base colour multiplied by the glow brightness
-//      Color fullBrightnessColor = tileEntityMBE21.getGemColour();
-//      float red = 0, green = 0, blue = 0;
-//      if (fullBrightnessColor != TileEntityMBE21.INVALID_COLOR) {
-//        red = (float)(fullBrightnessColor.getRed() / 255.0 * glowMultiplier);
-//        green = (float)(fullBrightnessColor.getGreen() / 255.0 * glowMultiplier);
-//        blue = (float)(fullBrightnessColor.getBlue() / 255.0 * glowMultiplier);
-//      }
-//
-//      worldrenderer.startDrawing(GL11.GL_TRIANGLES);
-//
-//      GlStateManager.color(1.0F, 1.0F, 1.0F);
-//      worldrenderer.setColorOpaque_F(red, green, blue);
-//      OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 128.0F, 128.0F);
-//      worldrenderer.setBrightness((240 << 16) | 240);
-//
-//
-//      // OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.F);
-//
-//      addGemVertices(worldrenderer);
-//      tessellator.draw();
-//
-//    } finally {
-//      GlStateManager.popAttrib();
-//      GlStateManager.popMatrix();
-//    }
-//
-//    try {
-//      GlStateManager.pushMatrix();
-//      GlStateManager.pushAttrib();
-//
-//      // First we need to set up the translation so that we render our gem with the bottom point at 0,0,0
-//      // when the renderTileEntityAt method is called, the tessellator is set up so that drawing a dot at [0,0,0] corresponds to the player's eyes
-//      // This means that, in order to draw a dot at the TileEntity [x,y,z], we need to translate the reference frame by the difference between the
-//      // two points, i.e. by the [relativeX, relativeY, relativeZ] passed to the method.  If you then draw a cube from [0,0,0] to [1,1,1], it will
-//      // render exactly over the top of the TileEntity's block.
-//      // In this example, the zero point of our model needs to be in the middle of the block, not at the [x,y,z] of the block, so we need to
-//      // add an extra offset as well, i.e. [gemCentreOffsetX, gemCentreOffsetY, gemCentreOffsetZ]
-//
-////      gemCentreOffsetX = 0.5; gemCentreOffsetZ = 0.5; gemCentreOffsetY = 1.0;   //todo remove
-//      GlStateManager.translate(relativeX + gemCentreOffsetX, relativeY + gemCentreOffsetY + 1, relativeZ + gemCentreOffsetZ);
-//
-//      GlStateManager.rotate((float) position, 0, 1, 0);   // rotate around the vertical axis //todo remove
-//      final double GEM_HEIGHT = 0.5;        // desired render height of the gem
-//      final double MODEL_HEIGHT = 1.0;      // actual height of the gem in the vertexTable
-//      final double SCALE_FACTOR = GEM_HEIGHT / MODEL_HEIGHT;
-//      GlStateManager.scale(SCALE_FACTOR, SCALE_FACTOR, SCALE_FACTOR);                        //todo remove
-//      Tessellator tessellator = Tessellator.getInstance();
-//      WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-//      this.bindTexture(gemTexture);
-//      // set the key rendering flags appropriately...
-//      GlStateManager.disableLighting();
-//      GlStateManager.disableBlend();
-//      GlStateManager.depthMask(true);
-//
-////      Minecraft.getMinecraft().entityRenderer.enableLightmap();
-//
-//      // set the rendering colour as the gem base colour multiplied by the glow brightness
-//      Color fullBrightnessColor = tileEntityMBE21.getGemColour();
-//      if (fullBrightnessColor == TileEntityMBE21.INVALID_COLOR) {
-//        GlStateManager.color(0, 0, 0);
-//      } else {
-//        float red = (float)(fullBrightnessColor.getRed() / 255.0 * glowMultiplier);
-//        float green = (float)(fullBrightnessColor.getGreen() / 255.0 * glowMultiplier);
-//        float blue = (float)(fullBrightnessColor.getBlue() / 255.0 * glowMultiplier);
-//        GlStateManager.color(red, green, blue);
-//      }
-//
-//      worldrenderer.startDrawing(GL11.GL_TRIANGLES);
-//      addGemVertices(worldrenderer);
-//      tessellator.draw();
-//
-//    } finally {
-//      GlStateManager.popAttrib();
-//      GlStateManager.popMatrix();
-//    }
-//
-//    try {
-//      GlStateManager.pushMatrix();
-//      GlStateManager.pushAttrib();
-//
-//      // First we need to set up the translation so that we render our gem with the bottom point at 0,0,0
-//      // when the renderTileEntityAt method is called, the tessellator is set up so that drawing a dot at [0,0,0] corresponds to the player's eyes
-//      // This means that, in order to draw a dot at the TileEntity [x,y,z], we need to translate the reference frame by the difference between the
-//      // two points, i.e. by the [relativeX, relativeY, relativeZ] passed to the method.  If you then draw a cube from [0,0,0] to [1,1,1], it will
-//      // render exactly over the top of the TileEntity's block.
-//      // In this example, the zero point of our model needs to be in the middle of the block, not at the [x,y,z] of the block, so we need to
-//      // add an extra offset as well, i.e. [gemCentreOffsetX, gemCentreOffsetY, gemCentreOffsetZ]
-//
-////      gemCentreOffsetX = 0.5; gemCentreOffsetZ = 0.5; gemCentreOffsetY = 1.0;   //todo remove
-//      GlStateManager.translate(relativeX + gemCentreOffsetX, relativeY + gemCentreOffsetY + 2, relativeZ + gemCentreOffsetZ);
-//
-//      GlStateManager.rotate((float) position, 0, 1, 0);   // rotate around the vertical axis //todo remove
-//      final double GEM_HEIGHT = 0.5;        // desired render height of the gem
-//      final double MODEL_HEIGHT = 1.0;      // actual height of the gem in the vertexTable
-//      final double SCALE_FACTOR = GEM_HEIGHT / MODEL_HEIGHT;
-//      GlStateManager.scale(SCALE_FACTOR, SCALE_FACTOR, SCALE_FACTOR);                        //todo remove
-//      Tessellator tessellator = Tessellator.getInstance();
-//      WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-//      this.bindTexture(gemTexture);
-//      // set the key rendering flags appropriately...
-//      GlStateManager.disableLighting();
-//      GlStateManager.disableBlend();
-//      GlStateManager.depthMask(true);
-//
-////      Minecraft.getMinecraft().entityRenderer.enableLightmap();
-//
-//      // set the rendering colour as the gem base colour multiplied by the glow brightness
-//      Color fullBrightnessColor = tileEntityMBE21.getGemColour();
-//      if (fullBrightnessColor == TileEntityMBE21.INVALID_COLOR) {
-//        GlStateManager.color(0, 0, 0);
-//      } else {
-//        float red = (float)(fullBrightnessColor.getRed() * glowMultiplier);
-//        float green = (float)(fullBrightnessColor.getGreen() * glowMultiplier);
-//        float blue = (float)(fullBrightnessColor.getBlue() * glowMultiplier);
-//        GlStateManager.color(red, green, blue);
-//      }
-//      worldrenderer.setColorOpaque_F(1.0F, 1.0F, 1.0F);
-//      worldrenderer.startDrawing(GL11.GL_TRIANGLES);
-//      addGemVertices(worldrenderer);
-//      tessellator.draw();
-//
-//    } finally {
-//      GlStateManager.popAttrib();
-//      GlStateManager.popMatrix();
-//    }
-//
-//    try {
-//      GlStateManager.pushMatrix();
-//      GlStateManager.pushAttrib();
-//
-//      // First we need to set up the translation so that we render our gem with the bottom point at 0,0,0
-//      // when the renderTileEntityAt method is called, the tessellator is set up so that drawing a dot at [0,0,0] corresponds to the player's eyes
-//      // This means that, in order to draw a dot at the TileEntity [x,y,z], we need to translate the reference frame by the difference between the
-//      // two points, i.e. by the [relativeX, relativeY, relativeZ] passed to the method.  If you then draw a cube from [0,0,0] to [1,1,1], it will
-//      // render exactly over the top of the TileEntity's block.
-//      // In this example, the zero point of our model needs to be in the middle of the block, not at the [x,y,z] of the block, so we need to
-//      // add an extra offset as well, i.e. [gemCentreOffsetX, gemCentreOffsetY, gemCentreOffsetZ]
-//
-////      gemCentreOffsetX = 0.5; gemCentreOffsetZ = 0.5; gemCentreOffsetY = 1.0;   //todo remove
-//      GlStateManager.translate(relativeX + gemCentreOffsetX, relativeY + gemCentreOffsetY + 3, relativeZ + gemCentreOffsetZ);
-//
-//      GlStateManager.rotate((float) position, 0, 1, 0);   // rotate around the vertical axis //todo remove
-//      final double GEM_HEIGHT = 0.5;        // desired render height of the gem
-//      final double MODEL_HEIGHT = 1.0;      // actual height of the gem in the vertexTable
-//      final double SCALE_FACTOR = GEM_HEIGHT / MODEL_HEIGHT;
-//      GlStateManager.scale(SCALE_FACTOR, SCALE_FACTOR, SCALE_FACTOR);                        //todo remove
-//      Tessellator tessellator = Tessellator.getInstance();
-//      WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-//      this.bindTexture(gemTexture);
-//      // set the key rendering flags appropriately...
-//      GlStateManager.disableLighting();
-//      GlStateManager.disableBlend();
-//      GlStateManager.depthMask(true);
-//
-////      Minecraft.getMinecraft().entityRenderer.enableLightmap();
-//
-//      // set the rendering colour as the gem base colour multiplied by the glow brightness
-//      Color fullBrightnessColor = tileEntityMBE21.getGemColour();
-//      if (fullBrightnessColor == TileEntityMBE21.INVALID_COLOR) {
-//        GlStateManager.color(0, 0, 0);
-//      } else {
-//        float red = (float)(fullBrightnessColor.getRed() / 255.0 * glowMultiplier);
-//        float green = (float)(fullBrightnessColor.getGreen() / 255.0 * glowMultiplier);
-//        float blue = (float)(fullBrightnessColor.getBlue() / 255.0 * glowMultiplier);
-//        GlStateManager.color(red, green, blue);
-//      }
-//
-//      OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.F);
-//
-//      worldrenderer.startDrawing(GL11.GL_TRIANGLES);
-//      addGemVertices(worldrenderer);
-//      tessellator.draw();
-//
-//    } finally {
-//      GlStateManager.popAttrib();
-//      GlStateManager.popMatrix();
-//    }
-//
   }
 
-  // add the vertices for drawing the gem.  Generated using a model builder; pasted manually because the object model
+  // add the vertices for drawing the gem.  Generated using a model builder and pasted manually because the object model
   //   loader is (not yet?) implemented.
   private void addGemVertices(WorldRenderer worldrenderer) {
     final double[][] vertexTable = {

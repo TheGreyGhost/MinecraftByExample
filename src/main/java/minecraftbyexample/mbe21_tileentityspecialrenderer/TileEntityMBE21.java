@@ -12,10 +12,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.awt.*;
 
 /**
- * User: brandon3055
- * Date: 06/01/2015
- *
  * This is a simple tile entity which stores the gem colour, angular position and has an associated TileEntitySpecialRenderer (TESR)
+ * The gem colour is saved to disk, the angular position isn't.
  */
 public class TileEntityMBE21 extends TileEntity {
 
@@ -24,6 +22,11 @@ public class TileEntityMBE21 extends TileEntity {
 	// get the colour of the gem.  returns INVALID_COLOR if not set yet.
 	public Color getGemColour() {
 		return gemColour;
+	}
+
+	public void setGemColour(Color newColour)
+	{
+		gemColour = newColour;
 	}
 
 	/**
@@ -38,6 +41,8 @@ public class TileEntityMBE21 extends TileEntity {
 		//  run while the game is paused.
 		// Alternatively, the elapsed time can be calculated as
 		//  time_in_seconds = (number_of_ticks_elapsed + partialTick) / 20.0;
+		//  where your tileEntity's update() method increments number_of_ticks_elapsed, and partialTick is passed by vanilla
+		//   to your TESR renderTileEntityAt() method.
 		long timeNow = System.nanoTime();
 		if (lastTime == INVALID_TIME) {   // automatically initialise to 0 if not set yet
 			lastTime = timeNow;
@@ -50,11 +55,6 @@ public class TileEntityMBE21 extends TileEntity {
 		lastAngularPosition = nextAngularPosition;
 		lastTime = timeNow;
 		return nextAngularPosition;
-	}
-
-	public void setGemColour(Color newColour)
-	{
-		gemColour = newColour;
 	}
 
 	// When the world loads from disk, the server needs to send the TileEntity information to the client
