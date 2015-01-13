@@ -60,10 +60,10 @@ public class BlockToolTest extends Block
   // called when the block is destroyed, this method mostly does nothing but some Blocks add extra effects- eg TNT generates an explosion.
   @Override
   public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player) {
-    Startup.methodCallLogger.enterMethod("BlockToolTest.onBlockHarvested",
+    StartupCommon.methodCallLogger.enterMethod("BlockToolTest.onBlockHarvested",
                                          "{world}, " + pos + ", " + String.valueOf(state) + ", " + player.getDisplayNameString());
     super.onBlockHarvested(worldIn, pos, state, player);
-    Startup.methodCallLogger.exitMethod("BlockToolTest.onBlockHarvested", "");
+    StartupCommon.methodCallLogger.exitMethod("BlockToolTest.onBlockHarvested", "");
     return;
   }
 
@@ -71,14 +71,14 @@ public class BlockToolTest extends Block
   // In simple cases, you can just override quantityDropped() and getItemDropped()
   @Override
   public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
-    Startup.methodCallLogger.enterMethod("BlockToolTest.getDrops",
+    StartupCommon.methodCallLogger.enterMethod("BlockToolTest.getDrops",
             "{world}, " + pos + ", " + String.valueOf(state) + ", " + fortune);
     List<ItemStack> result = super.getDrops(world, pos, state, fortune);
     String resultString = "";
     for (ItemStack itemStack : result) {
       resultString += String.valueOf(itemStack) + "; ";
     }
-    Startup.methodCallLogger.exitMethod("BlockToolTest.getDrops", String.valueOf(result));
+    StartupCommon.methodCallLogger.exitMethod("BlockToolTest.getDrops", String.valueOf(result));
     return result;
   }
 
@@ -87,10 +87,10 @@ public class BlockToolTest extends Block
   // Used in some special cases to drop extra items (eg skulls) or destroy other parts of a multiblock (eg bed)
   @Override
   public void onBlockDestroyedByPlayer(World worldIn, BlockPos pos, IBlockState state) {
-    Startup.methodCallLogger.enterMethod("BlockToolTest.onBlockDestroyedByPlayer",
+    StartupCommon.methodCallLogger.enterMethod("BlockToolTest.onBlockDestroyedByPlayer",
             "{world}, " + pos + ", " + String.valueOf(state));
     super.onBlockDestroyedByPlayer(worldIn, pos, state);
-    Startup.methodCallLogger.exitMethod("BlockToolTest.onBlockDestroyedByPlayer", "");
+    StartupCommon.methodCallLogger.exitMethod("BlockToolTest.onBlockDestroyedByPlayer", "");
     return;
   }
 
@@ -98,19 +98,19 @@ public class BlockToolTest extends Block
   //   sapling drop rate and trigger a special achievement)
   @Override
   public void harvestBlock(World worldIn, EntityPlayer player, BlockPos pos, IBlockState state, TileEntity te) {
-    Startup.methodCallLogger.enterMethod("BlockToolTest.harvestBlock",
+    StartupCommon.methodCallLogger.enterMethod("BlockToolTest.harvestBlock",
             "{world}, " + pos + ", " + String.valueOf(state) + ", " + String.valueOf(te));
     super.harvestBlock(worldIn, player, pos, state, te);
-    Startup.methodCallLogger.exitMethod("BlockToolTest.harvestBlock", "");
+    StartupCommon.methodCallLogger.exitMethod("BlockToolTest.harvestBlock", "");
     return;
   }
 
   // Used in some special cases set the type of drop for silk enchantment harvesting.
   @Override
   protected ItemStack createStackedBlock(IBlockState state) {
-    Startup.methodCallLogger.enterMethod("BlockToolTest.createStackedBlock", String.valueOf(state));
+    StartupCommon.methodCallLogger.enterMethod("BlockToolTest.createStackedBlock", String.valueOf(state));
     ItemStack result = super.createStackedBlock(state);
-    Startup.methodCallLogger.exitMethod("BlockToolTest.createStackedBlock", String.valueOf(result));
+    StartupCommon.methodCallLogger.exitMethod("BlockToolTest.createStackedBlock", String.valueOf(result));
     return result;
   }
 
@@ -118,10 +118,10 @@ public class BlockToolTest extends Block
   //   when harvesting wheat.
   @Override
   public void dropBlockAsItemWithChance(World worldIn, BlockPos pos, IBlockState state, float chance, int fortune) {
-    Startup.methodCallLogger.enterMethod("BlockToolTest.dropBlockAsItemWithChance",
+    StartupCommon.methodCallLogger.enterMethod("BlockToolTest.dropBlockAsItemWithChance",
             "{world}, " + pos + ", " + String.valueOf(state) + ", " + chance + ", " + fortune);
     super.dropBlockAsItemWithChance(worldIn, pos, state, chance, fortune);
-    Startup.methodCallLogger.exitMethod("BlockToolTest.dropBlockAsItemWithChance", "");
+    StartupCommon.methodCallLogger.exitMethod("BlockToolTest.dropBlockAsItemWithChance", "");
     return;
   }
 
@@ -130,9 +130,9 @@ public class BlockToolTest extends Block
   // This method is not generally useful for overriding but it can be useful for logging to show the rate of block damage per tick
   @Override
   public float getPlayerRelativeBlockHardness(EntityPlayer playerIn, World worldIn, BlockPos pos) {
-    Startup.methodCallLogger.enterMethod("BlockToolTest.getPlayerRelativeBlockHardness", playerIn.getDisplayNameString() + ", {world}, " + pos);
+    StartupCommon.methodCallLogger.enterMethod("BlockToolTest.getPlayerRelativeBlockHardness", playerIn.getDisplayNameString() + ", {world}, " + pos);
     Float result = super.getPlayerRelativeBlockHardness(playerIn, worldIn, pos);
-    Startup.methodCallLogger.exitMethod("BlockToolTest.getPlayerRelativeBlockHardness", String.valueOf(result));
+    StartupCommon.methodCallLogger.exitMethod("BlockToolTest.getPlayerRelativeBlockHardness", String.valueOf(result));
     return result;
   }
 

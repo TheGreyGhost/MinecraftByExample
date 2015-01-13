@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
  * User: The Grey Ghost
  * Date: 24/12/2014
  *
- * The Startup class for this example is called during startup, in the following order:
+ * The Startup classes for this example are called during startup, in the following order:
  *  preInitCommon
  *  preInitClientOnly
  *  initCommon
@@ -19,38 +19,17 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
  *  postInitClientOnly
  *  See MinecraftByExample class for more information
  */
-public class Startup
+public class StartupClientOnly
 {
-  public static BlockVariants blockVariants;  // this holds the unique instance of your block
-
-  public static void preInitCommon()
+  public static void preInitClientOnly()
   {
-    // each instance of your block should have a name that is unique within your mod.  use lower case.
-    blockVariants = (BlockVariants)(new BlockVariants().setUnlocalizedName("mbe03_block_variants"));
-    GameRegistry.registerBlock(blockVariants, ItemBlockVariants.class, "mbe03_block_variants");
-    // you don't need to register any items corresponding to the block, GameRegistry.registerBlock does this automatically
-    //   when you supply the custom Item class (ItemVariants), creating an item with ItemVariants(blockVariants)
-    //  You can access that item using GameRegistry.findItem
-
     Item itemBlockVariants = GameRegistry.findItem("minecraftbyexample", "mbe03_block_variants");
 
     // need to add the variants to the bakery so it knows what models are available for rendering the different subtypes
     ModelBakery.addVariantName(itemBlockVariants, "minecraftbyexample:mbe03_block_variants_blue",
-                                                  "minecraftbyexample:mbe03_block_variants_green",
-                                                  "minecraftbyexample:mbe03_block_variants_red",
-                                                  "minecraftbyexample:mbe03_block_variants_yellow");
-
-
-  }
-
-  public static void preInitClientOnly()
-  {
-
-  }
-
-  public static void initCommon()
-  {
-
+            "minecraftbyexample:mbe03_block_variants_green",
+            "minecraftbyexample:mbe03_block_variants_red",
+            "minecraftbyexample:mbe03_block_variants_yellow");
   }
 
   public static void initClientOnly()
@@ -75,14 +54,7 @@ public class Startup
     Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(itemBlockVariants, BlockVariants.EnumColour.YELLOW.getMetadata(), itemModelResourceLocation);
   }
 
-  public static void postInitCommon()
-  {
-
-  }
-
   public static void postInitClientOnly()
   {
-
   }
-
 }

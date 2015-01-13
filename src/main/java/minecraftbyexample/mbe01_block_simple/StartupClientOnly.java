@@ -1,4 +1,4 @@
-package minecraftbyexample.mbe02_block_partial;
+package minecraftbyexample.mbe01_block_simple;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
  * User: The Grey Ghost
  * Date: 24/12/2014
  *
- * The Startup class for this example is called during startup, in the following order:
+ * The Startup classes for this example are called during startup, in the following order:
  *  preInitCommon
  *  preInitClientOnly
  *  initCommon
@@ -18,26 +18,10 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
  *  postInitClientOnly
  *  See MinecraftByExample class for more information
  */
-public class Startup
+public class StartupClientOnly
 {
-  public static BlockPartial blockPartial;  // this holds the unique instance of your block
-
-  public static void preInitCommon()
-  {
-    // each instance of your block should have a name that is unique within your mod.  use lower case.
-    blockPartial = (BlockPartial)(new BlockPartial().setUnlocalizedName("mbe02_block_partial"));
-    GameRegistry.registerBlock(blockPartial, "mbe02_block_partial");
-    // you don't need to register an item corresponding to the block, GameRegistry.registerBlock does this automatically.
-  }
-
   public static void preInitClientOnly()
   {
-
-  }
-
-  public static void initCommon()
-  {
-
   }
 
   public static void initClientOnly()
@@ -48,20 +32,13 @@ public class Startup
     //  the model for each item is normally done by RenderItem.registerItems(), and this is not currently aware
     //   of any extra items you have created.  Hence you have to do it manually.  This will probably change in future.
     // It must be done in the init phase, not preinit, and must be done on client only.
-    Item itemBlockPartial = GameRegistry.findItem("minecraftbyexample", "mbe02_block_partial");
-    ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation("minecraftbyexample:mbe02_block_partial", "inventory");
+    Item itemBlockSimple = GameRegistry.findItem("minecraftbyexample", "mbe01_block_simple");
+    ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation("minecraftbyexample:mbe01_block_simple", "inventory");
     final int DEFAULT_ITEM_SUBTYPE = 0;
-    Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(itemBlockPartial, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
-  }
-
-  public static void postInitCommon()
-  {
-
+    Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(itemBlockSimple, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
   }
 
   public static void postInitClientOnly()
   {
-
   }
-
 }

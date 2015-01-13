@@ -4,8 +4,6 @@ import com.google.common.collect.Sets;
 import minecraftbyexample.usefultools.MethodCallLogger;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
@@ -18,7 +16,7 @@ import java.util.Set;
  * User: The Grey Ghost
  * Date: 24/12/2014
  *
- * The Startup class for this example is called during startup, in the following order:
+ * The Startup classes for this example are called during startup, in the following order:
  *  preInitCommon
  *  preInitClientOnly
  *  initCommon
@@ -27,7 +25,7 @@ import java.util.Set;
  *  postInitClientOnly
  *  See MinecraftByExample class for more information
  */
-public class Startup
+public class StartupCommon
 {
   public static ItemToolsTest itemToolsTest;
   public static BlockToolTest blockToolTest;
@@ -84,32 +82,11 @@ public class Startup
     methodCallLogger.setShouldLog("Event.PlayerInteractEvent", true);
   }
 
-  public static void preInitClientOnly()
-  {
-  }
-
   public static void initCommon()
   {
   }
 
-  public static void initClientOnly()
-  {
-    Item blockToolsTestItem = GameRegistry.findItem("minecraftbyexample", "mbe13_item_tools_block");
-    ModelResourceLocation itemBlockModelResourceLocation = new ModelResourceLocation("minecraftbyexample:mbe13_item_tools_block", "inventory");
-    final int DEFAULT_ITEM_SUBTYPE = 0;
-    Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(blockToolsTestItem, DEFAULT_ITEM_SUBTYPE, itemBlockModelResourceLocation);
-
-    ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation("minecraftbyexample:mbe13_item_tools_item", "inventory");
-    Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(itemToolsTest, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
-
-
-  }
-
   public static void postInitCommon()
-  {
-  }
-
-  public static void postInitClientOnly()
   {
   }
 }

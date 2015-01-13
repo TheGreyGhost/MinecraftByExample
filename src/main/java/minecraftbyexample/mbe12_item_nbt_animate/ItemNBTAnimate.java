@@ -33,13 +33,6 @@ public class ItemNBTAnimate extends Item
     this.setCreativeTab(CreativeTabs.tabMisc);   // items will appear on the Miscellaneous creative tab
   }
 
-  private final ModelResourceLocation itemModel_0 = new ModelResourceLocation("minecraftbyexample:mbe12_item_nbt_animate_0", "inventory");
-  private final ModelResourceLocation itemModel_1 = new ModelResourceLocation("minecraftbyexample:mbe12_item_nbt_animate_1", "inventory");
-  private final ModelResourceLocation itemModel_2 = new ModelResourceLocation("minecraftbyexample:mbe12_item_nbt_animate_2", "inventory");
-  private final ModelResourceLocation itemModel_3 = new ModelResourceLocation("minecraftbyexample:mbe12_item_nbt_animate_3", "inventory");
-  private final ModelResourceLocation itemModel_4 = new ModelResourceLocation("minecraftbyexample:mbe12_item_nbt_animate_4", "inventory");
-  private final ModelResourceLocation itemModel_5 = new ModelResourceLocation("minecraftbyexample:mbe12_item_nbt_animate_5", "inventory");
-
   // When the user presses and holds right click, there are three phases:
   // 1) an initial pause, then
   // 2) a visual 'charging up' of the gem, then
@@ -49,26 +42,28 @@ public class ItemNBTAnimate extends Item
   private final int CHARGE_UP_DURATION_TICKS = 20;
 
   @Override
-  public ModelResourceLocation getModel(ItemStack stack, EntityPlayer player, int ticksInUse) {
+  @SideOnly(Side.CLIENT)
+  public ModelResourceLocation getModel(ItemStack stack, EntityPlayer player, int ticksRemaining) {
     if (!player.isUsingItem()) {
-      return itemModel_0;
+      return ItemNBTModels.getInstance().getModel(0);
     }
 
-    if (ticksInUse < CHARGE_UP_INITIAL_PAUSE_TICKS) {
-      return itemModel_0;
+    final int ticksInUse = CHARGE_UP_INITIAL_PAUSE_TICKS + CHARGE_UP_DURATION_TICKS - ticksRemaining;
+    if (ticksInUse <= CHARGE_UP_INITIAL_PAUSE_TICKS) {
+      return ItemNBTModels.getInstance().getModel(0);
     }
+
     final int chargeTicksSoFar = ticksInUse - CHARGE_UP_INITIAL_PAUSE_TICKS;
-
     if (chargeTicksSoFar < CHARGE_UP_DURATION_TICKS * 0.2) {
-      return itemModel_1;
+      return ItemNBTModels.getInstance().getModel(1);
     } else if (chargeTicksSoFar < CHARGE_UP_DURATION_TICKS * 0.4) {
-      return itemModel_2;
+      return ItemNBTModels.getInstance().getModel(2);
     } else if (chargeTicksSoFar < CHARGE_UP_DURATION_TICKS * 0.6) {
-      return itemModel_3;
+      return ItemNBTModels.getInstance().getModel(3);
     } else if (chargeTicksSoFar < CHARGE_UP_DURATION_TICKS * 0.8) {
-      return itemModel_4;
+      return ItemNBTModels.getInstance().getModel(4);
     } else {
-      return itemModel_5;
+      return ItemNBTModels.getInstance().getModel(5);
     }
   }
 

@@ -14,16 +14,16 @@ public abstract class CommonProxy {
    */
   public void preInit()
   {
-    minecraftbyexample.mbe01_block_simple.Startup.preInitCommon();
-    minecraftbyexample.mbe02_block_partial.Startup.preInitCommon();
-    minecraftbyexample.mbe03_block_variants.Startup.preInitCommon();
-    minecraftbyexample.mbe10_item_simple.Startup.preInitCommon();
-    minecraftbyexample.mbe11_item_variants.Startup.preInitCommon();
-    minecraftbyexample.mbe12_item_nbt_animate.Startup.preInitCommon();
-    minecraftbyexample.mbe13_item_tools.Startup.preInitCommon();
-    minecraftbyexample.mbe30_inventory_basic.Startup.preInitCommon();
-    minecraftbyexample.mbe31_inventory_furnace.Startup.preInitCommon();
-    minecraftbyexample.testingarea.Startup.preInitCommon();
+    minecraftbyexample.mbe01_block_simple.StartupCommon.preInitCommon();
+    minecraftbyexample.mbe02_block_partial.StartupCommon.preInitCommon();
+    minecraftbyexample.mbe03_block_variants.StartupCommon.preInitCommon();
+    minecraftbyexample.mbe10_item_simple.StartupCommon.preInitCommon();
+    minecraftbyexample.mbe11_item_variants.StartupCommon.preInitCommon();
+    minecraftbyexample.mbe12_item_nbt_animate.StartupCommon.preInitCommon();
+    minecraftbyexample.mbe13_item_tools.StartupCommon.preInitCommon();
+    minecraftbyexample.mbe20_tileentity_data.StartupCommon.preInitCommon();
+    minecraftbyexample.mbe21_tileentityspecialrenderer.StartupCommon.preInitCommon();
+    minecraftbyexample.testingarea.StartupCommon.preInitCommon();
   }
 
   /**
@@ -32,16 +32,16 @@ public abstract class CommonProxy {
    */
   public void init()
   {
-    minecraftbyexample.mbe01_block_simple.Startup.initCommon();
-    minecraftbyexample.mbe02_block_partial.Startup.initCommon();
-    minecraftbyexample.mbe03_block_variants.Startup.initCommon();
-    minecraftbyexample.mbe10_item_simple.Startup.initCommon();
-    minecraftbyexample.mbe11_item_variants.Startup.initCommon();
-    minecraftbyexample.mbe12_item_nbt_animate.Startup.initCommon();
-    minecraftbyexample.mbe13_item_tools.Startup.initCommon();
-    minecraftbyexample.mbe30_inventory_basic.Startup.initCommon();
-    minecraftbyexample.mbe31_inventory_furnace.Startup.initCommon();
-    minecraftbyexample.testingarea.Startup.initCommon();
+    minecraftbyexample.mbe01_block_simple.StartupCommon.initCommon();
+    minecraftbyexample.mbe02_block_partial.StartupCommon.initCommon();
+    minecraftbyexample.mbe03_block_variants.StartupCommon.initCommon();
+    minecraftbyexample.mbe10_item_simple.StartupCommon.initCommon();
+    minecraftbyexample.mbe11_item_variants.StartupCommon.initCommon();
+    minecraftbyexample.mbe12_item_nbt_animate.StartupCommon.initCommon();
+    minecraftbyexample.mbe13_item_tools.StartupCommon.initCommon();
+    minecraftbyexample.mbe20_tileentity_data.StartupCommon.initCommon();
+    minecraftbyexample.mbe21_tileentityspecialrenderer.StartupCommon.initCommon();
+    minecraftbyexample.testingarea.StartupCommon.initCommon();
   }
 
   /**
@@ -49,16 +49,16 @@ public abstract class CommonProxy {
    */
   public void postInit()
   {
-    minecraftbyexample.mbe01_block_simple.Startup.postInitCommon();
-    minecraftbyexample.mbe02_block_partial.Startup.postInitCommon();
-    minecraftbyexample.mbe03_block_variants.Startup.postInitCommon();
-    minecraftbyexample.mbe10_item_simple.Startup.postInitCommon();
-    minecraftbyexample.mbe11_item_variants.Startup.postInitCommon();
-    minecraftbyexample.mbe12_item_nbt_animate.Startup.postInitCommon();
-    minecraftbyexample.mbe13_item_tools.Startup.postInitCommon();
-    minecraftbyexample.mbe30_inventory_basic.Startup.postInitCommon();
-    minecraftbyexample.mbe31_inventory_furnace.Startup.postInitCommon();
-    minecraftbyexample.testingarea.Startup.postInitCommon();
+    minecraftbyexample.mbe01_block_simple.StartupCommon.postInitCommon();
+    minecraftbyexample.mbe02_block_partial.StartupCommon.postInitCommon();
+    minecraftbyexample.mbe03_block_variants.StartupCommon.postInitCommon();
+    minecraftbyexample.mbe10_item_simple.StartupCommon.postInitCommon();
+    minecraftbyexample.mbe11_item_variants.StartupCommon.postInitCommon();
+    minecraftbyexample.mbe12_item_nbt_animate.StartupCommon.postInitCommon();
+    minecraftbyexample.mbe13_item_tools.StartupCommon.postInitCommon();
+    minecraftbyexample.mbe20_tileentity_data.StartupCommon.postInitCommon();
+    minecraftbyexample.mbe21_tileentityspecialrenderer.StartupCommon.postInitCommon();
+    minecraftbyexample.testingarea.StartupCommon.postInitCommon();
   }
 
   // helper to determine whether the given player is in creative mode

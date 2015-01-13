@@ -30,8 +30,8 @@ Items -
 Recipes
   variety of recipe types
 TileEntity
-  simple tile entity with NBT, no renderer
-  simple TileEntitySpecialRenderer
+  # simple tile entity with NBT, no renderer
+  # simple TileEntitySpecialRenderer
 Containers
   #furnace-like
   #chest-like
@@ -54,6 +54,8 @@ GUI
 Terrain generation
 
 Generate a new dimension
+
+Different rendering modes
 
 Miscellaneous
   best practice error logging (I could sure use some help on that one!)

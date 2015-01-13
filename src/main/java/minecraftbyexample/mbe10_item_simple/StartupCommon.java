@@ -1,14 +1,12 @@
 package minecraftbyexample.mbe10_item_simple;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
  * User: The Grey Ghost
  * Date: 24/12/2014
  *
- * The Startup class for this example is called during startup, in the following order:
+ * The Startup classes for this example are called during startup, in the following order:
  *  preInitCommon
  *  preInitClientOnly
  *  initCommon
@@ -17,7 +15,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
  *  postInitClientOnly
  *  See MinecraftByExample class for more information
  */
-public class Startup
+public class StartupCommon
 {
   public static ItemSimple itemSimple;  // this holds the unique instance of your block
 
@@ -28,28 +26,11 @@ public class Startup
     GameRegistry.registerItem(itemSimple, "mbe10_item_simple");
   }
 
-  public static void preInitClientOnly()
-  {
-  }
-
   public static void initCommon()
   {
   }
 
-  public static void initClientOnly()
-  {
-    // required in order for the renderer to know how to render your item.  Likely to change in the near future.
-    ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation("minecraftbyexample:mbe10_item_simple", "inventory");
-    final int DEFAULT_ITEM_SUBTYPE = 0;
-    Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(itemSimple, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
-
-  }
-
   public static void postInitCommon()
-  {
-  }
-
-  public static void postInitClientOnly()
   {
   }
 }
