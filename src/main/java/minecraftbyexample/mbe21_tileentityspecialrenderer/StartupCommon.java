@@ -31,7 +31,6 @@ public class StartupCommon
 
   public static void initCommon()
   {
-    ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMBE21.class, new TileEntitySpecialRendererMBE21());
   }
 
   public static void postInitCommon()

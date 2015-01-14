@@ -28,6 +28,8 @@ public class ClientOnlyProxy extends CommonProxy
     minecraftbyexample.mbe13_item_tools.StartupClientOnly.preInitClientOnly();
     minecraftbyexample.mbe20_tileentity_data.StartupClientOnly.preInitClientOnly();
     minecraftbyexample.mbe21_tileentityspecialrenderer.StartupClientOnly.preInitClientOnly();
+    minecraftbyexample.mbe30_inventory_basic.StartupClientOnly.preInitClientOnly();
+    minecraftbyexample.mbe31_inventory_furnace.StartupClientOnly.preInitClientOnly();
     minecraftbyexample.testingarea.StartupClientOnly.preInitClientOnly();
   }
 
@@ -47,17 +49,9 @@ public class ClientOnlyProxy extends CommonProxy
     minecraftbyexample.mbe13_item_tools.StartupClientOnly.initClientOnly();
     minecraftbyexample.mbe20_tileentity_data.StartupClientOnly.initClientOnly();
     minecraftbyexample.mbe21_tileentityspecialrenderer.StartupClientOnly.initClientOnly();
+    minecraftbyexample.mbe30_inventory_basic.StartupClientOnly.initClientOnly();
+    minecraftbyexample.mbe31_inventory_furnace.StartupClientOnly.initClientOnly();
     minecraftbyexample.testingarea.StartupClientOnly.initClientOnly();
-    minecraftbyexample.mbe01_block_simple.Startup.initClientOnly();
-    minecraftbyexample.mbe02_block_partial.Startup.initClientOnly();
-    minecraftbyexample.mbe03_block_variants.Startup.initClientOnly();
-    minecraftbyexample.mbe10_item_simple.Startup.initClientOnly();
-    minecraftbyexample.mbe11_item_variants.Startup.initClientOnly();
-    minecraftbyexample.mbe12_item_nbt_animate.Startup.initClientOnly();
-    minecraftbyexample.mbe13_item_tools.Startup.initClientOnly();
-    minecraftbyexample.mbe30_inventory_basic.Startup.initClientOnly();
-    minecraftbyexample.mbe31_inventory_furnace.Startup.initClientOnly();
-    minecraftbyexample.testingarea.Startup.initClientOnly();
   }
 
   /**
@@ -75,6 +69,8 @@ public class ClientOnlyProxy extends CommonProxy
     minecraftbyexample.mbe13_item_tools.StartupClientOnly.postInitClientOnly();
     minecraftbyexample.mbe20_tileentity_data.StartupClientOnly.postInitClientOnly();
     minecraftbyexample.mbe21_tileentityspecialrenderer.StartupClientOnly.postInitClientOnly();
+    minecraftbyexample.mbe30_inventory_basic.StartupClientOnly.postInitClientOnly();
+    minecraftbyexample.mbe31_inventory_furnace.StartupClientOnly.postInitClientOnly();
     minecraftbyexample.testingarea.StartupClientOnly.postInitClientOnly();
   }
 
