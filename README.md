@@ -33,6 +33,10 @@ TileEntities<br>
 -  MBE20 - using a tile entity to store information about a block - also shows examples of using NBT storage<br>
 -  MBE21 - using the TileEntitySpecialRenderer to render unusual shapes or animations<br>
 
+Containers (Inventory blocks)<br>
+-  MBE30 - a simple container for storing items in the world - similar to a Chest<br>
+-  MBE31 - a functional container such as a Furnace or Crafting Table<br>
+
 How to use this example project-<br>
 A) You can browse directly in GitHub, or alternatively download it as a zip and browse it locally.<br>
 
