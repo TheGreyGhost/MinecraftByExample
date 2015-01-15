@@ -63,5 +63,8 @@ Miscellaneous
 Places to store extra data....
 WorldSavedData
 http://www.minecraftforge.net/forum/index.php/topic,26304.0.html
+About the player
+IExtendedEntityProperties http://www.minecraftforge.net/forum/index.php/topic,26810.0.html
+
 
 Basic packets

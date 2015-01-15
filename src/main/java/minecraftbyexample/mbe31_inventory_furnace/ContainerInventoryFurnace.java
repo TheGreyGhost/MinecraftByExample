@@ -146,7 +146,8 @@ public class ContainerInventoryFurnace extends Container {
 				return null;
 			}
 		} else if (sourceSlotIndex >= FIRST_FUEL_SLOT_INDEX && sourceSlotIndex < FIRST_FUEL_SLOT_INDEX + FURNACE_SLOTS_COUNT) {
-			// This is a furnace slot so merge the stack into the players inventory
+			// This is a furnace slot so merge the stack into the players inventory: try the hotbar first and then the main inventory
+			//   because the main inventory slots are immediately after the hotbar slots, we can just merge with a single call
 			if (!mergeItemStack(sourceStack, VANILLA_FIRST_SLOT_INDEX, VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT, false)) {
 				return null;
 			}

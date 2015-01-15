@@ -12,9 +12,10 @@ item.mbe11_item_variants.cherry.name=MBE11 Item Variants cherry
 item.mbe12_item_nbt_animate.name=MBE12 Item NBT animate
 tile.mbe13_item_tools_block.name=MBE13 Item Tools test block
 item.mbe13_item_tools_item.name=MBE13 Item Tools test tool
+tile.mbe20_tileentity_data_block.name=MBE20 TileEntity data
+tile.mbe21_tesr_block.name=MBE21 TileEntitySpecialRenderer
 tile.mbe30_inventory_basic.name=MBE30 Inventory Basic Block
 container.mbe30_inventory_basic.name=MBE30 Inventory Basic GUI
 tile.mbe31_block_inventory_furnace.name=MBE31 Inventory Furnace Block
-container.mbe31_inventory_furnace.name=MBE31 Inventory Furnace GUIitem.mbe13_item_tools_item.name=MBE13 Item Tools test tool
-tile.mbe20_tileentity_data_block.name=MBE20 TileEntity data
-tile.mbe21_tesr_block.name=MBE21 TileEntitySpecialRenderer
+container.mbe31_inventory_furnace.name=MBE31 Inventory Furnace GUI
+item.mbe60_item_airstrike.name=MBE60 Network Messages Item
