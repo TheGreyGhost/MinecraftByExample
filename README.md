@@ -37,6 +37,9 @@ Containers (Inventory blocks)<br>
 -  MBE30 - a simple container for storing items in the world - similar to a Chest<br>
 -  MBE31 - a functional container such as a Furnace or Crafting Table<br>
 
+Network<br>
+-  MBE60 - send network messages between client and server<br>
+
 How to use this example project-<br>
 A) You can browse directly in GitHub, or alternatively download it as a zip and browse it locally.<br>
 

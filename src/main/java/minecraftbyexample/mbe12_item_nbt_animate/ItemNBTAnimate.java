@@ -158,6 +158,7 @@ public class ItemNBTAnimate extends Item
       tooltip.add("X: " + nbtTagCompound.getInteger("X"));
       tooltip.add("Y: " + nbtTagCompound.getInteger("Y"));
       tooltip.add("Z: " + nbtTagCompound.getInteger("Z"));
+      tooltip.add("Hold down right click to teleport.");
     }
     else
     {

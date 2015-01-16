@@ -30,7 +30,7 @@ public class StartupClientOnly
     Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(StartupCommon.itemAirStrike, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
   }
 
-public static void postInitClientOnly()
+  public static void postInitClientOnly()
   {
   }
 }
