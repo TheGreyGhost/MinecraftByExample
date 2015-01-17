@@ -67,11 +67,11 @@ public class TileEntityData extends TileEntity implements IUpdatePlayerListBox {
 		parentNBTTagCompound.setInteger("ticksLeft", ticksLeftTillDisappear);
 		// alternatively - could use parentNBTTagCompound.setTag("ticksLeft", new NBTTagInt(ticksLeftTillDisappear));
 
-		// some examples of other NBT tags - browse NBTTagCompound or serach for the subclasses of NBTBase for more
+		// some examples of other NBT tags - browse NBTTagCompound or search for the subclasses of NBTBase for more examples
 
 		parentNBTTagCompound.setString("testString", testString);
 
-		NBTTagCompound blockPosNBT = new NBTTagCompound();        // NBTTagCompound is equivalent to a Java HashMap
+		NBTTagCompound blockPosNBT = new NBTTagCompound();        // NBTTagCompound is similar to a Java HashMap
 		blockPosNBT.setInteger("x", testBlockPos.getX());
 		blockPosNBT.setInteger("y", testBlockPos.getY());
 		blockPosNBT.setInteger("z", testBlockPos.getZ());
@@ -83,7 +83,7 @@ public class TileEntityData extends TileEntity implements IUpdatePlayerListBox {
 
 		parentNBTTagCompound.setIntArray("testIntArray", testIntArray);
 
-		NBTTagList doubleArrayNBT = new NBTTagList();                     // an NBTTagList is equivalent to a Java ArrayList
+		NBTTagList doubleArrayNBT = new NBTTagList();                     // an NBTTagList is similar to a Java ArrayList
 		for (double value : testDoubleArray) {
 			doubleArrayNBT.appendTag(new NBTTagDouble(value));
 		}
