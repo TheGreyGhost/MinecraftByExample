@@ -21,6 +21,11 @@ public class ForgeToolEventsTest
   @SubscribeEvent
   public void breakSpeed(PlayerEvent.BreakSpeed event)
   {
+    // only show event if either the test block or the test item is involved
+    if (   (event.state == null || event.state.getBlock() != StartupCommon.blockToolTest)
+        && (event.entityPlayer == null || event.entityPlayer.getCurrentEquippedItem() == null || event.entityPlayer.getCurrentEquippedItem().getItem() != StartupCommon.itemToolsTest)) {
+      return;
+    }
     StartupCommon.methodCallLogger.enterMethod("Event.BreakSpeed", "blockstate=" + event.state + ", blockpos=" + event.pos + ", oldspeed = " + event.originalSpeed);
     // your code here
     StartupCommon.methodCallLogger.exitMethod("Event.BreakSpeed", "newspeed=" + event.newSpeed + ", cancelled=" + event.isCanceled());
@@ -30,6 +35,11 @@ public class ForgeToolEventsTest
   @SubscribeEvent
   public void harvestCheck(PlayerEvent.HarvestCheck event)
   {
+    // only show event if either the test block or the test item is involved
+    if (   (event.block != StartupCommon.blockToolTest)
+            && (event.entityPlayer == null || event.entityPlayer.getCurrentEquippedItem() == null || event.entityPlayer.getCurrentEquippedItem().getItem() != StartupCommon.itemToolsTest)) {
+    return;
+  }
     StartupCommon.methodCallLogger.enterMethod("Event.HarvestCheck", "block=" + event.block);
     // your code here
     StartupCommon.methodCallLogger.exitMethod("Event.HarvestCheck", "success=" + event.success);
@@ -40,6 +50,12 @@ public class ForgeToolEventsTest
   @SubscribeEvent
   public void playerInteractEvent(PlayerInteractEvent event)
   {
+    // only show event if either the test block or the test item is involved
+    if (   (event.world.getBlockState(event.pos) != StartupCommon.blockToolTest)
+            && (event.entityPlayer == null || event.entityPlayer.getCurrentEquippedItem() == null || event.entityPlayer.getCurrentEquippedItem().getItem() != StartupCommon.itemToolsTest)) {
+      return;
+    }
+
     StartupCommon.methodCallLogger.enterMethod("Event.PlayerInteractEvent", "action=" + event.action);
     // your code here
     StartupCommon.methodCallLogger.exitMethod("Event.PlayerInteractEvent",
@@ -50,6 +66,11 @@ public class ForgeToolEventsTest
   @SubscribeEvent
   public void breakEvent(BlockEvent.BreakEvent event)
   {
+    // only show event if either the test block or the test item is involved
+    if (   (event.world.getBlockState(event.pos) != StartupCommon.blockToolTest)
+            && (event.getPlayer() == null || event.getPlayer().getCurrentEquippedItem() == null || event.getPlayer().getCurrentEquippedItem().getItem() != StartupCommon.itemToolsTest)) {
+      return;
+    }
     StartupCommon.methodCallLogger.enterMethod("Event.BreakEvent", "player=" + event.getPlayer().getDisplayNameString() + ", exp=" + event.getExpToDrop());
     // your code here
     StartupCommon.methodCallLogger.exitMethod("Event.BreakEvent", "cancelled=" + event.isCanceled() + ";exp after = " + event.getExpToDrop());
@@ -59,6 +80,11 @@ public class ForgeToolEventsTest
   @SubscribeEvent
   public void harvestDropsEvent(BlockEvent.HarvestDropsEvent event)
   {
+    // only show event if either the test block or the test item is involved
+    if (   (event.world.getBlockState(event.pos) != StartupCommon.blockToolTest)
+            && (event.harvester == null || event.harvester.getCurrentEquippedItem() == null || event.harvester.getCurrentEquippedItem().getItem() != StartupCommon.itemToolsTest)) {
+      return;
+    }
     String params = "";
     params += "harvester=" + event.harvester;
     params += "; isSilkTouching=" + event.isSilkTouching;
