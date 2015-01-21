@@ -12,6 +12,8 @@ public class ModelBakeEventHandler
   @SubscribeEvent
   void modelBakeEvent(ModelBakeEvent event)
   {
-    event.
+    event.modelManager
+    event.modelBakery
+    event.modelRegistry
   }
 }

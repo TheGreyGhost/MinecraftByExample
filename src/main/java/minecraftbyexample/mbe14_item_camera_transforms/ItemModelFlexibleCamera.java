@@ -59,6 +59,6 @@ public class ItemModelFlexibleCamera implements IBakedModel
     return itemCameraTransforms;
   }
 
-  private ItemCameraTransforms itemCameraTransforms;
-  private IBakedModel iBakedModel;
+  private final ItemCameraTransforms itemCameraTransforms;
+  private final IBakedModel iBakedModel;
 }
