@@ -2,8 +2,8 @@ MBE60_NETWORK_MESSAGES
 
 The purpose of this example is to show how to send and receive network messages between the client and the server
 It will show you
-1) how to create a network message (IMessageHandler)
-2) how to create a handler that will process your message on the receiving side without crashing the game...
+1) how to create a network message (IMessage)
+2) how to create a handler (IMessageHandler) that will process your message on the receiving side without crashing the game...
 3) how to use the SimpleNetworkWrapper to register your messages and handler, and to send messages.
 
 The most critical point to realise is that network messages are received in a network thread, not the client or server thread.

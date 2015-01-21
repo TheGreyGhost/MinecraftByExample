@@ -17,13 +17,13 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
  */
 public class StartupCommon
 {
-  public static ItemSimple itemSimple;  // this holds the unique instance of your block
+  public static ItemCamera itemCamera;  // this holds the unique instance of your block
 
   public static void preInitCommon()
   {
     // each instance of your item should have a name that is unique within your mod.  use lower case.
-    itemSimple = (ItemSimple)(new ItemSimple().setUnlocalizedName("mbe14_item_camera"));
-    GameRegistry.registerItem(itemSimple, "mbe14_item_camera");
+    itemCamera = (ItemCamera)(new ItemCamera().setUnlocalizedName("mbe14_item_camera"));
+    GameRegistry.registerItem(itemCamera, "mbe14_item_camera");
   }
 
   public static void initCommon()

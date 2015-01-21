@@ -12,15 +12,18 @@ import java.util.List;
  * Date: 20/01/2015
  * This class is a simple wrapper to substitute a new set of camera transforms for an existing item
  * Usage:
- * 1) Construct a new ItemModelFlexibleCamera with the model to wrap and the ItemCameraTransforms object
- * 2) Replace the ItemModelFlexibleCamera into the ModelBakery in place of the model to wrap
- * 3) alter the ItemCameraTransforms to change the transform
+ * 1) Construct a new ItemModelFlexibleCamera with the model to wrap and an UpdateLink
+ * 2) Replace the ItemModelFlexibleCamera into the modelRegistry in place of the model to wrap
+ * 3) Alter the UpdateLink to control the ItemCameraTransform of a given model:
+ *   a) itemModelToOverride selects the item to be overridden
+ *   b) forcedTransform is the transform to apply
+ * Models which don't match itemModelToOverride will use the original transform
  */
 public class ItemModelFlexibleCamera implements IBakedModel
 {
-  public ItemModelFlexibleCamera(IBakedModel i_modelToWrap, ItemCameraTransforms i_cameraTransforms)
+  public ItemModelFlexibleCamera(IBakedModel i_modelToWrap, UpdateLink linkToCurrentInformation)
   {
-    itemCameraTransforms = i_cameraTransforms;
+    updateLink = linkToCurrentInformation;
     iBakedModel = i_modelToWrap;
   }
 
@@ -56,9 +59,21 @@ public class ItemModelFlexibleCamera implements IBakedModel
 
   @Override
   public ItemCameraTransforms getItemCameraTransforms() {
-    return itemCameraTransforms;
+    return (updateLink.itemModelToOverride == this) ? updateLink.forcedTransform : iBakedModel.getItemCameraTransforms();
   }
 
-  private final ItemCameraTransforms itemCameraTransforms;
+  private final UpdateLink updateLink;
+
+  public IBakedModel getIBakedModel() {
+    return iBakedModel;
+  }
+
   private final IBakedModel iBakedModel;
+
+  public static class UpdateLink
+  {
+    public IBakedModel itemModelToOverride;
+    public ItemCameraTransforms forcedTransform;
+  }
+
 }
