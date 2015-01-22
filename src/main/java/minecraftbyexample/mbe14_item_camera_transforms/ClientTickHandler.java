@@ -25,9 +25,8 @@ public class ClientTickHandler
       return;
     }
 
-    IBakedModel swordModel = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(new ItemStack(Items.iron_sword));
-    ItemCameraTransforms swordCameraTransforms = swordModel.getItemCameraTransforms();
-
+//    IBakedModel swordModel = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(new ItemStack(Items.iron_sword));
+//
     EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
     if (player == null) return;
 
@@ -45,11 +44,6 @@ public class ClientTickHandler
     if (foundCamera) {
       ItemStack heldItemStack = player.getHeldItem();
       if (heldItemStack != null) {
-        boolean justSwitchedToThis = (ibakedmodel != StartupClientOnly.modelBakeEventHandler.getItemOverrideLink().itemModelToOverride);
-
-        if (justSwitchedToThis) {  // retrieve underlying, unmodified transform as the initial starting point
-          StartupClientOnly.modelBakeEventHandler.getItemOverrideLink().forcedTransform = MAKE COPY OF ibakedmodel.getItemCameraTransforms();
-        }
         ibakedmodel = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(heldItemStack);
       }
     }

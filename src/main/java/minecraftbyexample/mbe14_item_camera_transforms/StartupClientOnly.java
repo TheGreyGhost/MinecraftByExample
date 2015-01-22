@@ -22,11 +22,13 @@ public class StartupClientOnly
 {
   public final static ModelBakeEventHandler modelBakeEventHandler = new ModelBakeEventHandler();
   public final static ClientTickHandler clientTickHandler = new ClientTickHandler();
+  public final static HUDtextRenderer HUDtextRenderer = new HUDtextRenderer();
 
   public static void preInitClientOnly()
   {
     MinecraftForge.EVENT_BUS.register(modelBakeEventHandler);
     FMLCommonHandler.instance().bus().register(clientTickHandler);
+    MinecraftForge.EVENT_BUS.register(HUDtextRenderer);
   }
 
   public static void initClientOnly()
