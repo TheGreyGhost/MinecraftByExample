@@ -1,12 +1,9 @@
 package minecraftbyexample.mbe14_item_camera_transforms;
 
-import minecraftbyexample.mbe13_item_tools.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -39,6 +36,7 @@ public class ClientTickHandler
         break;
       }
     }
+    StartupClientOnly.menuItemCameraTransforms.changeMenuVisible(foundCamera);
 
     IBakedModel ibakedmodel = null;
     if (foundCamera) {
@@ -47,6 +45,9 @@ public class ClientTickHandler
         ibakedmodel = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(heldItemStack);
       }
     }
-    StartupClientOnly.modelBakeEventHandler.getItemOverrideLink().itemModelToOverride = ibakedmodel;
+
+    ItemModelFlexibleCamera.UpdateLink link = StartupClientOnly.modelBakeEventHandler.getItemOverrideLink();
+    link.itemModelToOverride = ibakedmodel;
+    link.forcedTransform = StartupClientOnly.menuItemCameraTransforms.getItemCameraTransforms();
   }
 }

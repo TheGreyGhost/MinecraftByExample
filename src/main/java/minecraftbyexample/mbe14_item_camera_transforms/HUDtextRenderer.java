@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.block.model.ItemTransformVec3f;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import javax.vecmath.Vector3f;
 import java.util.ArrayList;
 
 /**
@@ -28,6 +29,23 @@ public class HUDtextRenderer
     public ItemCameraTransforms itemCameraTransforms;
     public SelectedField selectedField;
     public TransformName selectedTransform;
+    public boolean menuVisible;
+
+    public HUDinfoUpdateLink()
+    {
+      final Vector3f ROTATION_DEFAULT = new Vector3f(0.0F, 0.0F, 0.0F);
+      final Vector3f TRANSLATION_DEFAULT = new Vector3f(0.0F, 0.0F, 0.0F);
+      final Vector3f SCALE_DEFAULT = new Vector3f(1.0F, 1.0F, 1.0F);
+
+      ItemTransformVec3f vec1 = new ItemTransformVec3f(new Vector3f(ROTATION_DEFAULT), new Vector3f(TRANSLATION_DEFAULT), new Vector3f(SCALE_DEFAULT));
+      ItemTransformVec3f vec2 = new ItemTransformVec3f(new Vector3f(ROTATION_DEFAULT), new Vector3f(TRANSLATION_DEFAULT), new Vector3f(SCALE_DEFAULT));
+      ItemTransformVec3f vec3 = new ItemTransformVec3f(new Vector3f(ROTATION_DEFAULT), new Vector3f(TRANSLATION_DEFAULT), new Vector3f(SCALE_DEFAULT));
+      ItemTransformVec3f vec4 = new ItemTransformVec3f(new Vector3f(ROTATION_DEFAULT), new Vector3f(TRANSLATION_DEFAULT), new Vector3f(SCALE_DEFAULT));
+      itemCameraTransforms = new ItemCameraTransforms(vec1, vec2, vec3, vec4);
+      selectedField = SelectedField.TRANSFORM;
+      selectedTransform = TransformName.FIRST;
+      menuVisible = false;
+    }
 
     public enum TransformName {
       THIRD, FIRST, HEAD, GUI;
@@ -53,8 +71,8 @@ public class HUDtextRenderer
 
       private SelectedField(int index) {fieldIndex = index;}
       public final int fieldIndex;
-      private final SelectedField FIRST_FIELD = TRANSFORM;
-      private final SelectedField LAST_FIELD = RESTORE_DEFAULT;
+      private static final SelectedField FIRST_FIELD = TRANSFORM;
+      private static final SelectedField LAST_FIELD = RESTORE_DEFAULT;
 
       public static SelectedField getFieldName(int indexToFind)
       {
@@ -84,7 +102,7 @@ public class HUDtextRenderer
   @SubscribeEvent
   public void displayHUDtext(RenderGameOverlayEvent.Text event)
   {
-    if (huDinfoUpdateLink == null || huDinfoUpdateLink.itemCameraTransforms == null) return;
+    if (huDinfoUpdateLink == null || !huDinfoUpdateLink.menuVisible ||  huDinfoUpdateLink.itemCameraTransforms == null) return;
     ArrayList<String> displayText = new ArrayList<String>();
     ArrayList<HUDinfoUpdateLink.SelectedField> selectableField = new ArrayList<HUDinfoUpdateLink.SelectedField>();
 
@@ -122,11 +140,11 @@ public class HUDtextRenderer
 
     displayText.add("======"); selectableField.add(NOT_SELECTABLE);
     displayText.add("TRANSL"); selectableField.add(NOT_SELECTABLE);
-    displayText.add("X:" + String.format("%.1f", transformVec3f.translation.getX()));
+    displayText.add("X:" + String.format("%.2f", transformVec3f.translation.getX()));
       selectableField.add(HUDinfoUpdateLink.SelectedField.TRANSLATE_X);
-    displayText.add("Y:" + String.format("%.1f", transformVec3f.translation.getY()));
+    displayText.add("Y:" + String.format("%.2f", transformVec3f.translation.getY()));
       selectableField.add(HUDinfoUpdateLink.SelectedField.TRANSLATE_Y);
-    displayText.add("Z:" + String.format("%.1f", transformVec3f.translation.getZ()));
+    displayText.add("Z:" + String.format("%.2f", transformVec3f.translation.getZ()));
       selectableField.add(HUDinfoUpdateLink.SelectedField.TRANSLATE_Z);
 
     displayText.add("======"); selectableField.add(NOT_SELECTABLE);

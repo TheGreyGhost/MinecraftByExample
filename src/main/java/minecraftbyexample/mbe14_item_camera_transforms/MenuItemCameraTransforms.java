@@ -1,11 +1,13 @@
 package minecraftbyexample.mbe14_item_camera_transforms;
 
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemTransformVec3f;
+import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Keyboard;
 
 /**
@@ -21,16 +23,20 @@ public class MenuItemCameraTransforms
     FMLCommonHandler.instance().bus().register(menuKeyHandler);
   }
 
+  public ItemCameraTransforms getItemCameraTransforms() {return linkToHUDrenderer.itemCameraTransforms;}
+
+  public void changeMenuVisible(boolean visible) {linkToHUDrenderer.menuVisible = visible;}
+
   public class KeyPressCallback
   {
     void keyPressed(MenuKeyHandler.ArrowKeys whichKey)
     {
       switch (whichKey) {
-        case UP: {
+        case DOWN: {
           linkToHUDrenderer.selectedField = linkToHUDrenderer.selectedField.getNextField();
           break;
         }
-        case DOWN: {
+        case UP: {
           linkToHUDrenderer.selectedField = linkToHUDrenderer.selectedField.getPreviousField();
           break;
         }
@@ -90,10 +96,46 @@ public class MenuItemCameraTransforms
         transformVec3f.rotation.setZ(newAngle);
         break;
       }
+      case TRANSLATE_X: {
+        transformVec3f.translation.setX(transformVec3f.translation.getX() + (increase ? 0.01F : -0.01F));
+        break;
+      }
+      case TRANSLATE_Y: {
+        transformVec3f.translation.setY(transformVec3f.translation.getY() + (increase ? 0.01F : -0.01F));
+        break;
+      }
+      case TRANSLATE_Z: {
+        transformVec3f.translation.setZ(transformVec3f.translation.getZ() + (increase ? 0.01F : -0.01F));
+        break;
+      }
       case RESTORE_DEFAULT: {
+        ItemModelFlexibleCamera.UpdateLink link = StartupClientOnly.modelBakeEventHandler.getItemOverrideLink();
+        IBakedModel savedModel = link.itemModelToOverride;
+        link.itemModelToOverride = null;
+        ItemCameraTransforms originalTransforms = savedModel.getItemCameraTransforms();
+        link.itemModelToOverride = savedModel;
+        switch (linkToHUDrenderer.selectedTransform) {
+          case THIRD: {copyTransforms(originalTransforms.thirdPerson, transformVec3f); break;}
+          case FIRST: {copyTransforms(originalTransforms.firstPerson, transformVec3f); break;}
+          case GUI: {copyTransforms(originalTransforms.gui, transformVec3f); break;}
+          case HEAD: {copyTransforms(originalTransforms.head, transformVec3f); break;}
+        }
         break;
       }
     }
+  }
+
+  private static void copyTransforms(ItemTransformVec3f from, ItemTransformVec3f to)
+  {
+    to.translation.setX(from.translation.getX());
+    to.scale.setX(from.scale.getX());
+    to.rotation.setX(from.rotation.getX());
+    to.translation.setY(from.translation.getY());
+    to.scale.setY(from.scale.getY());
+    to.rotation.setY(from.rotation.getY());
+    to.translation.setZ(from.translation.getZ());
+    to.scale.setZ(from.scale.getZ());
+    to.rotation.setZ(from.rotation.getZ());
   }
 
   private HUDtextRenderer.HUDinfoUpdateLink linkToHUDrenderer;
@@ -107,28 +149,35 @@ public class MenuItemCameraTransforms
     }
 
     @SubscribeEvent
-    void menuKeyInputEvent(InputEvent.KeyInputEvent keyInputEvent)
+    public void clientTick(TickEvent.ClientTickEvent event)
     {
+      if (event.phase != TickEvent.Phase.START) {
+        return;
+      }
+
       ArrowKeys keyPressed = ArrowKeys.NONE;
       if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) keyPressed = ArrowKeys.LEFT;
       if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) keyPressed = ArrowKeys.RIGHT;
       if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) keyPressed = ArrowKeys.DOWN;
       if (Keyboard.isKeyDown(Keyboard.KEY_UP)) keyPressed = ArrowKeys.UP;
 
-      if (keyPressed == ArrowKeys.NONE) return;
+      if (keyPressed == ArrowKeys.NONE) {
+        lastKey = keyPressed;
+        return;
+      }
       if (keyPressed != lastKey) {
         lastKey = keyPressed;
-        holdTime = 0;
+        keyDownTimeTicks = 0;
       } else {
-        ++holdTime;
+        ++keyDownTimeTicks;
         final int INITIAL_PAUSE_TICKS = 10;  // wait 10 ticks before repeating
-        if (holdTime < INITIAL_PAUSE_TICKS) return;
+        if (keyDownTimeTicks < INITIAL_PAUSE_TICKS) return;
       }
       keyPressCallback.keyPressed(keyPressed);
     }
 
     public enum ArrowKeys {NONE, UP, DOWN, LEFT, RIGHT}
-    private int holdTime = 0;
+    private long keyDownTimeTicks = 0;
     private ArrowKeys lastKey = ArrowKeys.NONE;
     private KeyPressCallback keyPressCallback;
   }
