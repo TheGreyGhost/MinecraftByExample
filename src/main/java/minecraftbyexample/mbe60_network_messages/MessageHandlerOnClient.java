@@ -47,7 +47,7 @@ public class MessageHandlerOnClient implements IMessageHandler<TargetEffectMessa
     //  In this case, the task is to call messageHandlerOnClient.processMessage(worldclient, message)
     Minecraft minecraft = Minecraft.getMinecraft();
     final WorldClient worldClient = minecraft.theWorld;
-    Minecraft.getMinecraft().addScheduledTask(new Runnable()
+    minecraft.addScheduledTask(new Runnable()
     {
       public void run() {
         processMessage(worldClient, message);
