@@ -17,7 +17,7 @@ import java.util.List;
  * 3) Alter the UpdateLink to control the ItemCameraTransform of a given model:
  *   a) itemModelToOverride selects the item to be overridden
  *   b) forcedTransform is the transform to apply
- * Models which don't match itemModelToOverride will use the original transform
+ * Models which don't match itemModelToOverride will use their original transform
  */
 public class ItemModelFlexibleCamera implements IBakedModel
 {

@@ -28,17 +28,18 @@ Items
   MBE11 - an item with multiple variants - rendered using multiple models and multiple layers
   MBE12 - an item that stores extra information in NBT, also illustrates the "in use" animation similar to drawing a bow
   MBE13 - customise Mining behaviour of Blocks and Items - several test classes that show how mining works
+  MBE14 - an interactive helper tool to adjust the ItemCameraTransforms for your custom item
 
 TileEntities
   MBE20 - using a tile entity to store information about a block - also shows examples of using NBT storage
   MBE21 - using the TileEntitySpecialRenderer to render unusual shapes or animations
 
 Containers (Inventory blocks)
--  MBE30 - a simple container for storing items in the world - similar to a Chest
--  MBE31 - a functional container such as a Furnace or Crafting Table
+  MBE30 - a simple container for storing items in the world - similar to a Chest
+  MBE31 - a functional container such as a Furnace or Crafting Table
 
 Network
--  MBE60 - send network messages between client and server
+  MBE60 - send network messages between client and server
 
 How to use this example project-
 A) You can browse directly in GitHub, or alternatively download it as a zip and browse it locally.

@@ -28,6 +28,7 @@ Items<br>
 -  MBE11 - an item with multiple variants - rendered using multiple models and multiple layers<br>
 -  MBE12 - an item that stores extra information in NBT, also illustrates the "in use" animation similar to drawing a bow<br>
 -  MBE13 - customise Mining behaviour of Blocks and Items - several test classes that show how mining works<br>
+-  MBE14 - an interactive helper tool to adjust the ItemCameraTransforms for your custom item<br>
 
 TileEntities<br>
 -  MBE20 - using a tile entity to store information about a block - also shows examples of using NBT storage<br>

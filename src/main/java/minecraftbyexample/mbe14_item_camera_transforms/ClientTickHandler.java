@@ -22,8 +22,6 @@ public class ClientTickHandler
       return;
     }
 
-//    IBakedModel swordModel = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(new ItemStack(Items.iron_sword));
-//
     EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
     if (player == null) return;
 

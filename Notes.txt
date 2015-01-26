@@ -68,3 +68,11 @@ IExtendedEntityProperties http://www.minecraftforge.net/forum/index.php/topic,26
 
 
 Basic packets
+
+Extra info for entities:
+https://www.youtube.com/watch?v=6TLgIgXogwA
+http://www.minecraftforge.net/forum/index.php/topic,27137.msg138553.html#msg138553
+http://www.minecraftforge.net/forum/index.php/topic,27137.msg138502.html#msg138502
+
+
+

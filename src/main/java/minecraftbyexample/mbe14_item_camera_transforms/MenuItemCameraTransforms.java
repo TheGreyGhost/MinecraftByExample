@@ -1,8 +1,10 @@
 package minecraftbyexample.mbe14_item_camera_transforms;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemTransformVec3f;
 import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -11,6 +13,9 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Keyboard;
 
 /**
+ * The menu used to select and alter the different parts of the ItemCameraTransform for the currently selected item.
+ * The menu state is rendered on the screen by HUDtextRenderer.
+ * The class registers its components on the Forge and FML event buses.
  * Created by TheGreyGhost on 22/01/15.
  */
 public class MenuItemCameraTransforms
@@ -23,8 +28,16 @@ public class MenuItemCameraTransforms
     FMLCommonHandler.instance().bus().register(menuKeyHandler);
   }
 
+  /**
+   * get the current ItemCameraTransforms
+   * @return
+   */
   public ItemCameraTransforms getItemCameraTransforms() {return linkToHUDrenderer.itemCameraTransforms;}
 
+  /**
+   * turn menu on or off
+   * @param visible
+   */
   public void changeMenuVisible(boolean visible) {linkToHUDrenderer.menuVisible = visible;}
 
   public class KeyPressCallback
@@ -60,6 +73,9 @@ public class MenuItemCameraTransforms
     }
     if (transformVec3f == null) return; // should never happen
 
+    final float SCALE_INCREMENT = 0.01F;
+    final float ROTATION_INCREMENT = 2F;
+    final float TRANSLATION_INCREMENT = 0.25F * 0.0625F; // 1/4 of a block, with multiplier from ItemTransformVec3f::deserialize0()
     switch (linkToHUDrenderer.selectedField) {
       case TRANSFORM: {
         linkToHUDrenderer.selectedTransform = increase ? linkToHUDrenderer.selectedTransform.getNext()
@@ -67,45 +83,45 @@ public class MenuItemCameraTransforms
         break;
       }
       case SCALE_X: {
-        transformVec3f.scale.setX(transformVec3f.scale.getX() + (increase ? 0.01F : -0.01F));
+        transformVec3f.scale.setX(transformVec3f.scale.getX() + (increase ? SCALE_INCREMENT : -SCALE_INCREMENT));
         break;
       }
       case SCALE_Y: {
-        transformVec3f.scale.setY(transformVec3f.scale.getY() + (increase ? 0.01F : -0.01F));
+        transformVec3f.scale.setY(transformVec3f.scale.getY() + (increase ? SCALE_INCREMENT : -SCALE_INCREMENT));
         break;
       }
       case SCALE_Z: {
-        transformVec3f.scale.setZ(transformVec3f.scale.getZ() + (increase ? 0.01F : -0.01F));
+        transformVec3f.scale.setZ(transformVec3f.scale.getZ() + (increase ? SCALE_INCREMENT : -SCALE_INCREMENT));
         break;
       }
       case ROTATE_X: {
-        float newAngle = transformVec3f.rotation.getX() + (increase ? 2F : -2F);
+        float newAngle = transformVec3f.rotation.getX() + (increase ? ROTATION_INCREMENT : -ROTATION_INCREMENT);
         newAngle = MathHelper.wrapAngleTo180_float(newAngle - 180) + 180;
         transformVec3f.rotation.setX(newAngle);
         break;
       }
       case ROTATE_Y: {
-        float newAngle = transformVec3f.rotation.getY() + (increase ? 2F : -2F);
+        float newAngle = transformVec3f.rotation.getY() + (increase ? ROTATION_INCREMENT : -ROTATION_INCREMENT);
         newAngle = MathHelper.wrapAngleTo180_float(newAngle - 180) + 180;
         transformVec3f.rotation.setY(newAngle);
         break;
       }
       case ROTATE_Z: {
-        float newAngle = transformVec3f.rotation.getZ() + (increase ? 2F : -2F);
+        float newAngle = transformVec3f.rotation.getZ() + (increase ? ROTATION_INCREMENT : -ROTATION_INCREMENT);
         newAngle = MathHelper.wrapAngleTo180_float(newAngle - 180) + 180;
         transformVec3f.rotation.setZ(newAngle);
         break;
       }
       case TRANSLATE_X: {
-        transformVec3f.translation.setX(transformVec3f.translation.getX() + (increase ? 0.01F : -0.01F));
+        transformVec3f.translation.setX(transformVec3f.translation.getX() + (increase ? TRANSLATION_INCREMENT : -TRANSLATION_INCREMENT));
         break;
       }
       case TRANSLATE_Y: {
-        transformVec3f.translation.setY(transformVec3f.translation.getY() + (increase ? 0.01F : -0.01F));
+        transformVec3f.translation.setY(transformVec3f.translation.getY() + (increase ? TRANSLATION_INCREMENT : -TRANSLATION_INCREMENT));
         break;
       }
       case TRANSLATE_Z: {
-        transformVec3f.translation.setZ(transformVec3f.translation.getZ() + (increase ? 0.01F : -0.01F));
+        transformVec3f.translation.setZ(transformVec3f.translation.getZ() + (increase ? TRANSLATION_INCREMENT : -TRANSLATION_INCREMENT));
         break;
       }
       case RESTORE_DEFAULT: {
@@ -122,7 +138,44 @@ public class MenuItemCameraTransforms
         }
         break;
       }
+      case PRINT: {
+        StringBuilder output = new StringBuilder();
+        output.append("\n\"display\": {\n");
+        printTransform(output, "thirdperson", linkToHUDrenderer.itemCameraTransforms.thirdPerson);
+        output.append(",\n");
+        printTransform(output, "firstperson", linkToHUDrenderer.itemCameraTransforms.firstPerson);
+        output.append(",\n");
+        printTransform(output, "gui", linkToHUDrenderer.itemCameraTransforms.gui);
+        output.append(",\n");
+        printTransform(output, "head", linkToHUDrenderer.itemCameraTransforms.head);
+        output.append("\n}");
+        System.out.println(output);
+        ChatComponentText text = new ChatComponentText("                   \"display\" JSON section printed to console...");
+        Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(text);
+        break;
+      }
     }
+  }
+
+  private static void printTransform(StringBuilder output, String transformView, ItemTransformVec3f itemTransformVec3f) {
+    output.append("  \"" + transformView + "\":{\n");
+    output.append("    \"rotation\": [");
+    output.append(String.format("%.0f, ", itemTransformVec3f.rotation.getX()));
+    output.append(String.format("%.0f, ", itemTransformVec3f.rotation.getY()));
+    output.append(String.format("%.0f],", itemTransformVec3f.rotation.getZ()));
+    output.append("\n");
+
+    final double TRANSLATE_MULTIPLIER = 1/ 0.0625;   // see ItemTransformVec3f::deserialize0()
+    output.append("    \"translation\": [");
+    output.append(String.format("%.2f, ", itemTransformVec3f.translation.getX() * TRANSLATE_MULTIPLIER));
+    output.append(String.format("%.2f, ", itemTransformVec3f.translation.getY() * TRANSLATE_MULTIPLIER));
+    output.append(String.format("%.2f],", itemTransformVec3f.translation.getZ() * TRANSLATE_MULTIPLIER));
+    output.append("\n");
+    output.append("    \"scale\": [");
+    output.append(String.format("%.2f, ", itemTransformVec3f.scale.getX()));
+    output.append(String.format("%.2f, ", itemTransformVec3f.scale.getY()));
+    output.append(String.format("%.2f]", itemTransformVec3f.scale.getZ()));
+    output.append("\n  }");
   }
 
   private static void copyTransforms(ItemTransformVec3f from, ItemTransformVec3f to)
@@ -141,6 +194,9 @@ public class MenuItemCameraTransforms
   private HUDtextRenderer.HUDinfoUpdateLink linkToHUDrenderer;
   private MenuKeyHandler menuKeyHandler;
 
+  /**
+   * Intercept arrow keys and handle repeats
+   */
   public static class MenuKeyHandler
   {
     public MenuKeyHandler(KeyPressCallback i_keyPressCallback)
