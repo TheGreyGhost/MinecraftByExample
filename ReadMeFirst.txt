@@ -22,6 +22,7 @@ Blocks
   MBE01 - a simple cube
   MBE02 - a block with a more complicated shape
   MBE03 - a block (coloured signpost) with multiple variants- four colours, can be placed facing in four directions
+  MBE08 - how to add a creative tab for organising your custom blocks / items
 
 Items
   MBE10 - a simple item
