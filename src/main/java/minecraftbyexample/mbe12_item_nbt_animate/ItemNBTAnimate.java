@@ -162,7 +162,8 @@ public class ItemNBTAnimate extends Item
     }
     else
     {
-      tooltip.add("Hold down shift and then right click to store your current location");
+      tooltip.add("Hold down shift and then right");
+      tooltip.add("  click to store your current location");
     }
   }
 }
