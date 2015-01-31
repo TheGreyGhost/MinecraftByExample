@@ -39,6 +39,9 @@ Containers (Inventory blocks)
   MBE30 - a simple container for storing items in the world - similar to a Chest
   MBE31 - a functional container such as a Furnace or Crafting Table
 
+HeadsUpDisplay - overlays
+  MBE40 - simple customisations of the heads up display (hotbar, health meter)
+
 Network
   MBE60 - send network messages between client and server
 

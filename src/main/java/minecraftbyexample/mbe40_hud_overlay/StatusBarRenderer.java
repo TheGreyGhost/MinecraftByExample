@@ -83,6 +83,7 @@ public class StatusBarRenderer extends Gui {
       final int vanillaExpTopY = screenHeight - 32 + 3;  // top of the experience bar
 
       /* Shift our rendering origin to just above the experience bar
+       * The top left corner of the screen is x=0, y=0
        */
       GL11.glTranslatef(vanillaExpLeftX, vanillaExpTopY - BAR_SPACING_ABOVE_EXP_BAR - BAR_HEIGHT, 0);
       
