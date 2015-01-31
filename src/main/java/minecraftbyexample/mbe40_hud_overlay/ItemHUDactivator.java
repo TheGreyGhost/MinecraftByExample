@@ -20,7 +20,6 @@ import java.util.List;
  * 1) activate the HUD overlay when it is held in the hotbar.
  * 2) switch the player to survival mode when it is held in the hotbar (so (s)he can see the health bar effect)
  *
- * See the Notes.
  */
 public class ItemHUDactivator extends Item
 {

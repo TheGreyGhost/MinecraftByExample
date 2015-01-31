@@ -11,8 +11,10 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 /**
  * @author Nephroid
  *
- * This class contains the code that modifies how the default overlay is drawn
- * 
+ * This class contains the code that modifies how the default overlay is drawn:
+ * 1) the health hearts and armour hearts are replaced with a health / armour status bar
+ * 2) the hotbar colour is changed
+ *
  * In order to change the position of the existing overlay, we have to use events.
  * For a detailed documentation on how events work, see Jabelar's tutorial:
  * 
@@ -26,13 +28,6 @@ public class EventHandlerOverlay
   {
     statusBarRenderer = i_HUDrenderer;
   }
-
-  boolean popMatrixRequired = false;
-
-  private int translateX = 0;
-  private int translateY = 0;
-  private int angle = 0;
-  private int delay = 0;
 
   private StatusBarRenderer statusBarRenderer;
 
@@ -66,104 +61,34 @@ public class EventHandlerOverlay
 
     switch (event.type) {
       case HEALTH:
-        statusBarRenderer.renderStatusBar();        /* Call a helper method so that this method stays organized */
+        statusBarRenderer.renderStatusBar(event.resolution.getScaledWidth(), event.resolution.getScaledHeight());        /* Call a helper method so that this method stays organized */
         /* Don't render the vanilla heart bar */
         event.setCanceled(true);
         break;
 
       case ARMOR:
-        /* Don't render the vanilla armor bar */
+        /* Don't render the vanilla armor bar, it's part of the status bar in the HEALTH event */
         event.setCanceled(true);
         break;
 
-      case FOOD:
-        /* The following line saves the current "position" that OpenGL uses to render with.
-         * After calling this line, you can then perform any transformations that you want.
-         * When you're finished, call GL11.glPopMatrix() to reset the transformations that
-         * you did.
+      case HOTBAR:
+        /* Specify a color to render with. If you're familiar with Photoshop or something similar, this
+         * basically adds a layer on top with the "Multiply" blend mode. Using the color white
+         * will have no effect, and using the color black will make your texture completely black (but
+         * it will preserve transparency).
          *
-         * It is extremely important to reset your transformations; otherwise, everything else
-         * that is rendered will use your transformations, which is not what you want.
+         * The actual arguments for glColor3f are 3 float values from 0.0f to 1.0f. These represent the
+         * level of each color component using the RGB model, with 1.0f being the highest. To learn more
+         * about the RGB model, visit this link:
+         * http://en.wikipedia.org/wiki/RGB_color_model
          *
-         * I do not want to undo the transformations until after the health bar is rendered,
-         * so I pop the matrix in the RenderGameOverlayEvent.Post event
+         * The line below turns the hotbar gold
          */
-        GL11.glPushMatrix();
-        popMatrixRequired = true;
-
-        /* This line will rotate the food bar by 180 degrees counter-clockwise. All rotations
-         * will be about a global origin, not the origin of the object. To rotate an object about
-         * its own origin, perform the following 3 operations:
-         *
-         *   1. Translate the object so that its origin matches the global origin
-         *   2. Perform the rotation
-         *   3. Translate the object back
-         *
-         *   A more concrete example of this is shown in the StatusBarRenderer
-         *
-         * When calling glRotatef(a, x, y, z), the four arguments are as follows:
-         *   a : specifies the angle that you want to rotate
-         *   x, y, z: specify the vector that you want to rotate about
-         *
-         * An important thing to note is that a vector that points in the opposite direction will
-         * rotate the opposite way. This means that the following two examples do the same thing:
-         *
-         *   glRotatef(30, 0, 0, -1);
-         *   glRotatef(-30, 0, 0, 1);
-         *
-         * Also, to rotate 2D graphics, you want to use a vector that is perpendicular to the screen,
-         * which is why x and y are 0.
-         */
-
-        translateX = (int)Minecraft.getMinecraft().thePlayer.posX;
-        translateY = (int)Minecraft.getMinecraft().thePlayer.posZ;
-        angle = (int)Minecraft.getMinecraft().thePlayer.rotationYaw;
-        if (++delay > 40) {
-            delay = 0;
-          System.out.println("x,y,angle=" + translateX + ", " + translateY + ", " + angle);
-        }
-        final int XOFFSET = 263;    // XOFFSET and YOFFSET found by trial and error....
-        final int YOFFSET = 206;
-        final int ANGLE = 180;
-        GL11.glTranslatef(translateX, translateY, 0);
-        GL11.glRotatef(angle, 0, 0, ANGLE);
-        GL11.glTranslatef(-translateX, -translateY, 0);
-
-        ++angle;
+        GL11.glColor3f(1, 0.7f, 0);
         break;
 
-    case AIR:
-      GL11.glPushMatrix();
-      popMatrixRequired = true;
-      GL11.glTranslatef(-200, -200, 0);
-      
-      /* Scales the air (underwater) bar by some amount. Similar to rotations, scaling is with
-       * respect to the origin. This means that the distance between the origin of the screen
-       * and the air bar will also be scaled by the specified amount.
-       * 
-       * The arguments are fairly self-explanatory
-       */
-      GL11.glScalef(2, 2, 1);
-      break;
-
-    case HOTBAR:
-      /* Specify a color to render with. If you're familiar with Photoshop or something similar, this
-       * basically adds a layer on top with the "Multiply" blend mode. Using the color white
-       * will have no effect, and using the color black will make your texture completely black (but
-       * it will preserve transparency).
-       * 
-       * The actual arguments for glColor3f are 3 float values from 0.0f to 1.0f. These represent the
-       * level of each color component using the RGB model, with 1.0f being the highest. To learn more
-       * about the RGB model, visit this link:
-       * http://en.wikipedia.org/wiki/RGB_color_model
-       * 
-       * The line below turns the hotbar gold
-       */
-      GL11.glColor3f(1, 0.7f, 0);
-      break;
-
-    default: // If it's not one of the above cases, do nothing
-      break;
+      default: // If it's not one of the above cases, do nothing
+        break;
     }
   }
   
@@ -180,26 +105,14 @@ public class EventHandlerOverlay
      * in the FOOD and AIR cases, so I have to pop in those cases here.
      */
     switch (event.type) {
-    case HEALTH:
-      break;
-    case FOOD:
-      if (popMatrixRequired) {
-        popMatrixRequired = false;
-        GL11.glPopMatrix();
-      }
-      break;
-    case AIR:
-      if (popMatrixRequired) {
-        popMatrixRequired = false;
-        GL11.glPopMatrix();
-      }
-      break;
-    case HOTBAR:
-      /* Set the render color back to white, so that not everything appears gold. */
-      GL11.glColor3f(1, 1, 1);
-      break;
-    default: // If it's not one of the above cases, do nothing
-      break;
+      case HEALTH:
+        break;
+      case HOTBAR:
+        /* Set the render color back to white, so that not everything appears gold. */
+        GL11.glColor3f(1, 1, 1);
+        break;
+      default: // If it's not one of the above cases, do nothing
+        break;
     }
   }
 }

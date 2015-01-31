@@ -1,7 +1,5 @@
 package minecraftbyexample.mbe40_hud_overlay;
 
-import java.text.DecimalFormat;
-
 import minecraftbyexample.MinecraftByExample;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -9,11 +7,9 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-
 import org.lwjgl.opengl.GL11;
+
+import java.text.DecimalFormat;
 
 /**
  * @author Nephroid
@@ -33,12 +29,13 @@ public class StatusBarRenderer extends Gui {
    *   "resources/assets/MODID/textures/gui/advanced_overlay.png"
    */
   private final static ResourceLocation overlayBar = new ResourceLocation(MinecraftByExample.MODID,
-      "/textures/gui/advanced_overlay.png");
+      "/textures/gui/mbe40_hud_overlay.png");
   
   /* These two variables describe the size of the bar */
   private final static int BAR_WIDTH = 81;
   private final static int BAR_HEIGHT = 9;
-  
+  private final static int BAR_SPACING_ABOVE_EXP_BAR = 3;  // pixels between the BAR and the Experience Bar below it
+
   /* Sometimes you want to include extra information from the game. This instance of
    * Minecraft will let you access the World and EntityPlayer objects which is more than
    * enough for most purposes. It also contains some helper objects for OpenGL which can be
@@ -53,38 +50,9 @@ public class StatusBarRenderer extends Gui {
   public StatusBarRenderer(Minecraft mc) {
     this.mc = mc;
   }
-  
-  @SubscribeEvent(receiveCanceled=true)
-  public void onEvent(RenderGameOverlayEvent.Pre event) {
-    if (event.type == ElementType.HEALTH) {
-      /* Call a helper method so that this method stays organized */
-      renderStatusBar();
-      
-      /* Don't render the vanilla heart bar */
-      event.setCanceled(true);
-    }
-    else if (event.type == ElementType.ARMOR) {
-      /* Don't render the vanilla armor bar */
-      event.setCanceled(true);
-    }
-    
-    /* You might be wondering why I use a chain of if statements instead
-     * of the switch statement I used in the simple example. A switch statement
-     * lets you write more compact code, and it's often more readable. (You don't
-     * have to type in event.type a bunch of times, and it's clear which case is
-     * which.)
-     * 
-     * As a general rule of thumb, I use if-else chains if there are very few cases,
-     * otherwise I use switches. 
-     * 
-     * There are some technical differences and possible performance boosts for using
-     * switches, but those aren't too important. (The performance boosts are compiler
-     * dependent, and they won't be noticeable either way.)
-     */
-  }
-  
+
   /* This helper method will render the bar */
-  public void renderStatusBar() {
+  public void renderStatusBar(int screenWidth, int screenHeight) {
     /* These are the variables that contain world and player information */
     World world = mc.theWorld;
     EntityPlayer player = mc.thePlayer;
@@ -108,11 +76,15 @@ public class StatusBarRenderer extends Gui {
       
       /* This method tells OpenGL to draw with the custom texture */
       mc.renderEngine.bindTexture(overlayBar);
-      
-      /* Shift to the position of the vanilla heart bar. The numbers were obtained
-       * by guessing and checking.
+
+      // we will draw the status bar just above the hotbar.
+      //  obtained by inspecting the vanilla hotbar rendering code
+      final int vanillaExpLeftX = screenWidth / 2 - 91; // leftmost edge of the experience bar
+      final int vanillaExpTopY = screenHeight - 32 + 3;  // top of the experience bar
+
+      /* Shift our rendering origin to just above the experience bar
        */
-      GL11.glTranslatef(mc.displayWidth/4 - BAR_WIDTH - 10, mc.displayHeight/2 - 39, 0);
+      GL11.glTranslatef(vanillaExpLeftX, vanillaExpTopY - BAR_SPACING_ABOVE_EXP_BAR - BAR_HEIGHT, 0);
       
       /* Draw a part of the image file at the current position
        * 
@@ -175,17 +147,25 @@ public class StatusBarRenderer extends Gui {
            *   
            * For a more comprehensive list of status effects, see http://minecraft.gamepedia.com/Status_effect
            */
-          if (player.isPotionActive(20)) {
-            drawTexturedModalRect(0, 0, BAR_WIDTH + 2, 0, 1, BAR_HEIGHT - 2);
+          final int WITHER_EFFECT_ID = 20;
+          final int POISON_EFFECT_ID = 19;
+          final int REGEN_EFFECT_ID = 10;
+          final int NORMAL_TEXTURE_U = BAR_WIDTH;     // red texels  - see mbe40_hud_overlay.png
+          final int REGEN_TEXTURE_U = BAR_WIDTH + 1;  //  green texels
+          final int POISON_TEXTURE_U = BAR_WIDTH + 2;  // black texels
+          final int WITHER_TEXTURE_U = BAR_WIDTH + 3;  // brown texels
+
+          if (player.isPotionActive(WITHER_EFFECT_ID)) {
+            drawTexturedModalRect(0, 0, WITHER_TEXTURE_U, 0, 1, BAR_HEIGHT - 2);
           }
-          else if (player.isPotionActive(19)) {
-            drawTexturedModalRect(0, 0, BAR_WIDTH + 3, 0, 1, BAR_HEIGHT - 2);
+          else if (player.isPotionActive(POISON_EFFECT_ID)) {
+            drawTexturedModalRect(0, 0, POISON_TEXTURE_U, 0, 1, BAR_HEIGHT - 2);
           }
-          else if (player.isPotionActive(10)) {
-            drawTexturedModalRect(0, 0, BAR_WIDTH + 1, 0, 1, BAR_HEIGHT - 2);
+          else if (player.isPotionActive(REGEN_EFFECT_ID)) {
+            drawTexturedModalRect(0, 0, REGEN_TEXTURE_U, 0, 1, BAR_HEIGHT - 2);
           }
           else {
-            drawTexturedModalRect(0, 0, BAR_WIDTH, 0, 1, BAR_HEIGHT - 2);
+            drawTexturedModalRect(0, 0, NORMAL_TEXTURE_U, 0, 1, BAR_HEIGHT - 2);
           }
           
         GL11.glPopMatrix();
