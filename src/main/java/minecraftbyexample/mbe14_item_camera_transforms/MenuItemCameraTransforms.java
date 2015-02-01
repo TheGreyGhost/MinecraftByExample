@@ -44,6 +44,8 @@ public class MenuItemCameraTransforms
   {
     void keyPressed(MenuKeyHandler.ArrowKeys whichKey)
     {
+      if (!linkToHUDrenderer.menuVisible) return;
+
       switch (whichKey) {
         case DOWN: {
           linkToHUDrenderer.selectedField = linkToHUDrenderer.selectedField.getNextField();
