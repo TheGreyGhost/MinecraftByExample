@@ -355,7 +355,6 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, IUpd
 		super.writeToNBT(parentNBTTagCompound); // The super call is required to save and load the tiles location
 
 //		// Save the stored item stacks
-//		NBTTagCompound[] tag = new NBTTagCompound[itemStacks.length];
 
 		// to use an analogy with Java, this code generates an array of hashmaps
 		// The itemStack in each slot is converted to an NBTTagCompound, which is effectively a hashmap of key->value pairs such

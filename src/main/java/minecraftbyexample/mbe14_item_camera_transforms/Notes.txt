@@ -3,6 +3,8 @@ MBE14_ITEM_CAMERA_TRANSFORMS
 When you create a custom item, you need to provide ItemCameraTransforms for it.  This example is an interactive
   tool to help you get the transforms right.
 
+See also http://www.planetminecraft.com/mod/item-transform-helper---interactively-rotate-scale-translate/
+
 How to use:
 1) Place the ItemCamera somewhere in the player's hotbar
 2) Hold the Item you want to modify in the player's hand
