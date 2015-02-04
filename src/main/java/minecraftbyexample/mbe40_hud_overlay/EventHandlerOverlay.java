@@ -17,9 +17,9 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
  *
  * In order to change the position of the existing overlay, we have to use events.
  * For a detailed documentation on how events work, see Jabelar's tutorial:
- * 
+ *
  *   http://jabelarminecraft.blogspot.com/p/minecraft-forge-172-event-handling.html
- * 
+ *
  * Though the tutorial is labeled 1.7.2/1.7.10, its concepts carry over to 1.8.
  */
 public class EventHandlerOverlay
@@ -91,7 +91,7 @@ public class EventHandlerOverlay
         break;
     }
   }
-  
+
   /* The RenderGameOverlayEvent.Post event is called after each game overlay element is rendered.
    * Similar to the RenderGameOverlayEvent.Pre event, it is called multiple times.
    * 
