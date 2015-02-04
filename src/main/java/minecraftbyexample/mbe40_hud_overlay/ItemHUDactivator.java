@@ -1,4 +1,4 @@
-package minecraftbyexample.mbe40_hud_overlay2356;
+package minecraftbyexample.mbe40_hud_overlay;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;

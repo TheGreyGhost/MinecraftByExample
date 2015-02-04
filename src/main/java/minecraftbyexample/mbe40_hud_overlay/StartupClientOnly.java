@@ -1,4 +1,4 @@
-package minecraftbyexample.mbe40_hud_overlay2356;
+package minecraftbyexample.mbe40_hud_overlay;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelResourceLocation;
