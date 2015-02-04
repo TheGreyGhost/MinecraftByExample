@@ -1,4 +1,4 @@
-package minecraftbyexample.mbe40_hud_overlay;
+package minecraftbyexample.mbe40_hud_overlay2356;
 
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
