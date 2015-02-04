@@ -21,7 +21,8 @@ List of examples<br>
 Blocks<br>
 -  MBE01 - a simple cube<br>
 -  MBE02 - a block with a more complicated shape<br>
--  MBE03 - a block (coloured signpost) with multiple variants- four colours, can be placed facing in four directions
+-  MBE03 - a block (coloured signpost) with multiple variants- four colours, can be placed facing in four directions<br>
+-  MBE08 - how to add a creative tab for organising your custom blocks / items<br>
 
 Items<br>
 -  MBE10 - a simple item<br>
@@ -38,6 +39,9 @@ Containers (Inventory blocks)<br>
 -  MBE30 - a simple container for storing items in the world - similar to a Chest<br>
 -  MBE31 - a functional container such as a Furnace or Crafting Table<br>
 
+HeadsUpDisplay - overlays<br>
+-  MBE40 - simple customisations of the heads up display (hotbar, health meter)<br>
+
 Network<br>
 -  MBE60 - send network messages between client and server<br>
 
@@ -46,18 +50,18 @@ A) You can browse directly in GitHub, or alternatively download it as a zip and 
 
 B) If you want to install it and compile it, the basic steps for beginners are:<br>
 1) Download the project as a zip.  Unzip it to an appropriate folder on your computer, such as My Documents.  (Or, if you know
-   how to fork a project on GitHub and import it into a local git repository, you can do that instead).<br>
+.   how to fork a project on GitHub and import it into a local git repository, you can do that instead).<br>
 2) From the command line, run gradlew setupDecompWorkspace to install Forge and configure the project.  This will take
-   quite some time, maybe 20 minutes or more.<br>
+.   quite some time, maybe 20 minutes or more.<br>
 3) From the command line, run gradlew idea if you are using IntelliJ IDEA, or gradlew eclipse if you are using Eclipse.<br>
 4) Open IntelliJ or Eclipse, then open the project.  If you want, you can import the gradle project so you don't have to
-   use the command line when building the mod.<br>
+.   use the command line when building the mod.<br>
 5) If using IntelliJ:<br>
-    a) If you imported the gradle project, you should run the gradle task getIntellijRuns afterwards to get the Run and Debug
-       configurations.<br>
+.    a) If you imported the gradle project, you should run the gradle task getIntellijRuns afterwards to get the Run and<br>
+.       Debug configurations.<br>
 6) If using Eclipse:<br>
-    a). Right click on the project, select "Run As" > "Run Configurations..."<br>
-    b). Set the main class to "GradleStart"                                     <br>
+.    a). Right click on the project, select "Run As" > "Run Configurations..."<br>
+.    b). Set the main class to "GradleStart" <br>
 7) You should be able to start Minecraft now (using the Run or Debug configuration) and the mod will be loaded.<br>
 
 For some extra help if this doesn't make sense to you  <br>

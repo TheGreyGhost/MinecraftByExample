@@ -20,6 +20,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  *
  * BlockTileEntityData is a ordinary solid cube with an associated TileEntity
  * For background information on blocks see here http://greyminecraftcoder.blogspot.com.au/2014/12/blocks-18.html
+ * You can either make your block implement ITileEntityProvider, or alternatively
+ * @Override hasTileEntity(IBlockState state)
  */
 public class BlockTileEntityData extends Block implements ITileEntityProvider
 {
@@ -33,6 +35,8 @@ public class BlockTileEntityData extends Block implements ITileEntityProvider
 
   // Called when the block is placed or loaded client side to get the tile entity for the block
   // Should return a new instance of the tile entity for the block
+  // Alternatively - you can @Override hasTileEntity(IBlockState state) and
+  //    createTileEntity(World world, IBlockState state) instead.
   @Override
   public TileEntity createNewTileEntity(World worldIn, int meta) {
     return new TileEntityData();

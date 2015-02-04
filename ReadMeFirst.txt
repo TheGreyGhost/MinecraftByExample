@@ -22,6 +22,7 @@ Blocks
   MBE01 - a simple cube
   MBE02 - a block with a more complicated shape
   MBE03 - a block (coloured signpost) with multiple variants- four colours, can be placed facing in four directions
+  MBE08 - how to add a creative tab for organising your custom blocks / items
 
 Items
   MBE10 - a simple item
@@ -37,6 +38,9 @@ TileEntities
 Containers (Inventory blocks)
   MBE30 - a simple container for storing items in the world - similar to a Chest
   MBE31 - a functional container such as a Furnace or Crafting Table
+
+HeadsUpDisplay - overlays
+  MBE40 - simple customisations of the heads up display (hotbar, health meter)
 
 Network
   MBE60 - send network messages between client and server

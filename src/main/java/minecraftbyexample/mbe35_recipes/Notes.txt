@@ -1,0 +1,25 @@
+MBE35_RECIPES
+
+This example is a collection of the different types of recipes in the game
+It will show you
+1) how to create recipes for the crafting table
+2) how to use "ore dictionary" recipes for the crafting table
+3) how to create recipes for the furnace ("smelting")
+4) how to add a "fuel" value for your items when burnt in a furnace
+5) how to add your own IRecipe class for complicated crafting logic
+
+The pieces you need to understand are located in:
+StartupCommon
+
+For pictures of the recipes being added, see http://greyminecraftcoder.blogspot.com/2015/02/recipes.html
+
+This code is heavily based on Wuppy29's tutorials
+http://www.wuppy29.com/minecraft/modding-tutorials/wuppys-minecraft-forge-modding-tutorials-for-1-7-crafting-recipes
+http://www.wuppy29.com/minecraft/modding-tutorials/wuppys-minecraft-forge-modding-tutorials-for-1-7-shapeless-recipes-and-smelting
+
+For vanilla recipes:
+smelting - see FurnaceRecipes
+shapeless recipes - see RecipeDyes
+ore based recipes - OreDictionary
+custom recipes - see RecipeFireworks
+

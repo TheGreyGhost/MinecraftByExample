@@ -23,7 +23,7 @@ Items -
    #simple item
    #item with sub-types
    #item with NBT - Brandon's project
-   how to control rendering in the different views (1st person, 3rd person, inventory, etc)
+   #how to control rendering in the different views (1st person, 3rd person, inventory, etc)
    #how to control rendering of bow-like (Item.getModel)
    armour?
    #tool - strength vs blocks, durability, various events?
@@ -63,6 +63,7 @@ Miscellaneous
 Places to store extra data....
 WorldSavedData
 http://www.minecraftforge.net/forum/index.php/topic,26304.0.html
+https://github.com/Questology/Questology/blob/master/src/main/java/demonmodders/questology/QuestologyWorldData.java
 About the player
 IExtendedEntityProperties http://www.minecraftforge.net/forum/index.php/topic,26810.0.html
 
@@ -73,6 +74,6 @@ Extra info for entities:
 https://www.youtube.com/watch?v=6TLgIgXogwA
 http://www.minecraftforge.net/forum/index.php/topic,27137.msg138553.html#msg138553
 http://www.minecraftforge.net/forum/index.php/topic,27137.msg138502.html#msg138502
-
+http://www.minecraftforge.net/forum/index.php/topic,27401.0.html
 
 

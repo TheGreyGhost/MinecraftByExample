@@ -32,6 +32,8 @@ For further information:
 -dieSieben tutorial http://www.minecraftforge.net/forum/index.php/topic,20135.0.html
 -coolAlias example mod with more sophisticated network handler https://github.com/coolAlias/Tutorial-Demo/tree/master/src/main/java/tutorial
 -four posts explaining network messages in more detail: http://greyminecraftcoder.blogspot.com.au/2015/01/the-client-server-division.html
+-general info on thread safety: http://www.javaworld.com/article/2076747/core-java/design-for-thread-safety.html
+
 --------
 Common errors:
 Getting the Side wrong, getting the packet ID wrong (missing, or duplicated).
