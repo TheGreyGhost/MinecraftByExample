@@ -40,6 +40,8 @@ public class StartupCommon
   {
     // your recipes must go in initialisation phase, not preInit.
 
+    //  see http://greyminecraftcoder.blogspot.com/2015/02/recipes.html for illustrations of these recipes
+
     // a) Shaped recipe without metadata - emerald surrounded by diamond makes ender eye
     GameRegistry.addRecipe(new ItemStack(Items.ender_eye), new Object[]{
             ".D.",
@@ -48,6 +50,8 @@ public class StartupCommon
                   'D', Items.diamond,
                   'E', Items.emerald     // note carefully - 'E' not "E" !
     });
+
+    // note - smaller grids are also possible, you don't need to fill up the entire 3x3 space.
 
     // b) shaped recipe with metadata - cobblestone surrounded by red dye makes redstone
     final int RED_DYE_DAMAGE_VALUE = EnumDyeColor.RED.getDyeDamage();
@@ -94,7 +98,9 @@ public class StartupCommon
 
     // g) Shaped Ore recipe - any type of tree leaves arranged around sticks makes a sapling
     //    Ores are a way for mods to add blocks & items which are equivalent to vanilla blocks for crafting
-    //   for example - "logWood" for a new type of wood (say BalsaWood).  Also for mods which add new ores (eg copper)
+    //    For example - an ore recipe which uses "logWood" will accept a log of spruce, oak, birch, pine, etc.
+    //    If your mod registers its balsawood log using  OreDictionary.registerOre("logWood", BalsaWood), then your
+    //    BalsaWood log will also be accepted in the recipe.
     IRecipe saplingRecipe = new ShapedOreRecipe(new ItemStack(Blocks.sapling), new Object[] {
             "LLL",
             "LSL",
@@ -105,7 +111,8 @@ public class StartupCommon
     GameRegistry.addRecipe(saplingRecipe);
 
     // h) by default, recipes are automatically mirror-imaged, i.e. you can flip the recipe left<--> right and it will
-    //    produce the same output.  This one isn't.  Only works for OreRecipes.
+    //    produce the same output.  This one isn't.  Only works for OreRecipes, but you can make ShapedOreRecipe from vanilla
+    //    Items or Blocks too (see (g) above)
     IRecipe unmirroredRecipe = new ShapedOreRecipe(new ItemStack(Items.cauldron), new Object[] {
             false,
             "III",

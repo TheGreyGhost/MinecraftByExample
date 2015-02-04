@@ -11,6 +11,8 @@ It will show you
 The pieces you need to understand are located in:
 StartupCommon
 
+For pictures of the recipes being added, see http://greyminecraftcoder.blogspot.com/2015/02/recipes.html
+
 This code is heavily based on Wuppy29's tutorials
 http://www.wuppy29.com/minecraft/modding-tutorials/wuppys-minecraft-forge-modding-tutorials-for-1-7-crafting-recipes
 http://www.wuppy29.com/minecraft/modding-tutorials/wuppys-minecraft-forge-modding-tutorials-for-1-7-shapeless-recipes-and-smelting
@@ -19,4 +21,5 @@ For vanilla recipes:
 smelting - see FurnaceRecipes
 shapeless recipes - see RecipeDyes
 ore based recipes - OreDictionary
+custom recipes - see RecipeFireworks
 
