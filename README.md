@@ -39,6 +39,9 @@ Containers (Inventory blocks)<br>
 -  MBE30 - a simple container for storing items in the world - similar to a Chest<br>
 -  MBE31 - a functional container such as a Furnace or Crafting Table<br>
 
+Recipes (Crafting and Furnaces)<br>
+-  MBE35 - some typical example crafting recipes and furnace (smelting) recipes<br>
+
 HeadsUpDisplay - overlays<br>
 -  MBE40 - simple customisations of the heads up display (hotbar, health meter)<br>
 
