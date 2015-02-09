@@ -24,7 +24,7 @@ If you want more information and explanatory text about the concepts, the follow
 ### Items
   - [MBE10][10] - a simple item
   - [MBE11][11] - an item with multiple variants - rendered using multiple models and multiple layers
-  -  [MBE12][12] - an item that stores extra information in NBT, also illustrates the "in use" animation similar to drawing a bow
+  - [MBE12][12] - an item that stores extra information in NBT, also illustrates the "in use" animation similar to drawing a bow
   - [MBE13][13] - customise Mining behaviour of Blocks and Items - several test classes that show how mining works
   - [MBE14][14] - an interactive helper tool to adjust the ItemCameraTransforms for your custom item
 
@@ -50,25 +50,16 @@ If you want more information and explanatory text about the concepts, the follow
 
   - If you want to install it and compile it, the basic steps for beginners are:
     1. Download the project as a zip.
-  
     2. Unzip it to an appropriate folder on your computer, such as My Documents.  (Or, if you know how to fork a project on GitHub and import it into a local git repository, you can do that instead)
-  
     3. From the command line, run `gradlew setupDecompWorkspace` to install Forge and configure the project, this will take quite some time, maybe 20 minutes or more.
- 
     4. From the command line, run `gradlew idea` if you are using IntelliJ IDEA, or `gradlew eclipse` if you are using Eclipse.
- 
     5. Open IntelliJ or Eclipse, then open the project. (If you want, you can import the gradle project so you don't have to use the command line when building the mod)
- 
     6. If using IntelliJ:
         1. If you imported the gradle project, you should run the gradle task `getIntellijRuns` afterwards to get the Run and Debug configurations.
- 
-
     7. If using Eclipse:
         1. Right click on the project, select "Run As" > "Run Configurations..."
         2. Set the main class to "GradleStart"
- 
     8. You should be able to start Minecraft now (using the Run or Debug configuration) and the mod will be loaded.
-
 
 #### If You're Still Confused
 Head over [here][more_help] if this didn't make sense to you.
@@ -105,3 +96,8 @@ Check out [this video][forge_installation] for more help installing Forge.
 
 [more_help]: http://www.minecraftforge.net/forum/index.php?topic=21354.msg108332#msg108332
 [forge_installation]: http://youtu.be/8VEdtQLuLO0
+
+With thanks to these helpful folks:
+Brandon3035
+Nephroid
+Shadowfacts
