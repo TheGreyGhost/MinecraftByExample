@@ -74,6 +74,6 @@ Some extra help for installation of forge:
 https://www.youtube.com/watch?v=8VEdtQLuLO0&feature=youtu.be
 
 With thanks to these helpful folks:
-Brandon3035
-Nephroid
+Brandon3035,
+Nephroid, and
 Shadowfacts
