@@ -98,6 +98,6 @@ Check out [this video][forge_installation] for more help installing Forge.
 [forge_installation]: http://youtu.be/8VEdtQLuLO0
 
 With thanks to these helpful folks:
-Brandon3035
-Nephroid
+Brandon3035,
+Nephroid, and
 Shadowfacts
