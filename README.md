@@ -54,13 +54,16 @@ If you want more information and explanatory text about the concepts, the follow
     3. From the command line, run `gradlew setupDecompWorkspace` to install Forge and configure the project, this will take quite some time, maybe 20 minutes or more.
     4. From the command line, run `gradlew idea` if you are using IntelliJ IDEA ([alternate method][alternate_idea]), or `gradlew eclipse` if you are using Eclipse.
     5. Open IntelliJ or Eclipse, then open the project. (If you want, you can import the gradle project so you don't have to use the command line when building the mod)
-    6. If using Eclipse:
+    6. If using IntelliJ:
+        1. When IntelliJ asks you if you want to import the unlinked gradle project, choose yes.
+        2. You should run the gradle task `getIntellijRuns` afterwards to get the Run and Debug configurations.
+    7. If using Eclipse:
         1. Right click on the project, select "Run As" > "Run Configurations..."
         2. Set the main class to "GradleStart"
-    7. You should be able to start Minecraft now (using the Run or Debug configuration) and the mod will be loaded.
+    8. You should be able to start Minecraft now (using the Run or Debug configuration) and the mod will be loaded.
     
 ### Alternate Setup for IntelliJ IDEA
-By using `gradlew idea` to create the project files for IDEA, will work perfectly fine, but to be able to use the [Gradle Tool Window][gradle_tool_window] in IDEA, you must set up your project slightly differently. Check out [this tutorial][diesieben_idea] by diesieben07 on how to set up your project to take advantage of Gradle integraion in IDEA.
+By using `gradlew idea` to create the project files for IDEA, will work perfectly fine, but to be able to use the [Gradle Tool Window][gradle_tool_window] in IDEA, you must set up your project slightly differently. Check out [this tutorial][diesieben_idea] by diesieben07 on how to set up your project to take advantage of Gradle integration in IDEA.
 
 #### If You're Still Confused
 Head over [here][more_help] if this didn't make sense to you.
