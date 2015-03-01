@@ -57,15 +57,18 @@ B) If you want to install it and compile it, the basic steps for beginners are:
 2) From the command line, run gradlew setupDecompWorkspace to install Forge and configure the project.  This will take
    quite some time, maybe 20 minutes or more.
 3) From the command line, run gradlew idea if you are using IntelliJ IDEA, or gradlew eclipse if you are using Eclipse.
-4) Open IntelliJ or Eclipse, then open the project.  If you want, you can import the gradle project so you don't have to
-   use the command line when building the mod.
-5) If using IntelliJ:
-    a) If you imported the gradle project, you should run the gradle task getIntellijRuns afterwards to get the Run and Debug
+4) If using IntelliJ:
+    a) Open the project (open the MinecraftByExample.ipr file).
+    b) It will ask you whether you want to import the "unlinked gradle project".  This is optional.  If you choose no,
+       later on (when you publish your mod) you will need to package it up using the command line gradlew build, if you
+       choose yes you can run the gradle build task from inside IntelliJ.  For most users, there's no other difference.
+    c) If you imported the gradle project, you should run the gradle task 'getIntellijRuns' afterwards to get the Run and Debug
        configurations.
-6) If using Eclipse:
-    a). Right click on the project, select "Run As" > "Run Configurations..."
-    b). Set the main class to "GradleStart"
-7) You should be able to start Minecraft now (using the Run or Debug configuration) and the mod will be loaded.
+5) If using Eclipse:
+    a) Open the project
+    b) Right click on the project, select "Run As" > "Run Configurations..."
+    c) Set the main class to "GradleStart"
+6) You should be able to start Minecraft now (using the Run or Debug configuration) and the mod will be loaded.
 
 For some extra help if this doesn't make sense to you
 http://www.minecraftforge.net/forum/index.php?topic=21354.msg108332#msg108332

@@ -52,24 +52,24 @@ If you want more information and explanatory text about the concepts, the follow
     1. Download the project as a zip.
     2. Unzip it to an appropriate folder on your computer, such as My Documents.  (Or, if you know how to fork a project on GitHub and import it into a local git repository, you can do that instead)
     3. From the command line, run `gradlew setupDecompWorkspace` to install Forge and configure the project, this will take quite some time, maybe 20 minutes or more.
-    4. From the command line, run `gradlew idea` if you are using IntelliJ IDEA ([alternate method][alternate_idea]), or `gradlew eclipse` if you are using Eclipse.
-    5. Open IntelliJ or Eclipse, then open the project. (If you want, you can import the gradle project so you don't have to use the command line when building the mod)
-    6. If using IntelliJ:
-        1. When IntelliJ asks you if you want to import the unlinked gradle project, choose yes.
-        2. You should run the gradle task `getIntellijRuns` afterwards to get the Run and Debug configurations.
-    7. If using Eclipse:
-        1. Right click on the project, select "Run As" > "Run Configurations..."
-        2. Set the main class to "GradleStart"
-    8. You should be able to start Minecraft now (using the Run or Debug configuration) and the mod will be loaded.
+    4. From the command line, run `gradlew idea` if you are using IntelliJ IDEA, or `gradlew eclipse` if you are using Eclipse.
+    5. If using IntelliJ:
+        1. Open the project (open the MinecraftByExample.ipr file).
+        2. It will ask you whether you want to import the "unlinked gradle project".  This is optional.  If you choose no,
+           later on (when you publish your mod) you will need to package it up using the command line gradlew build, if you
+           choose yes you can run the gradle build task from inside IntelliJ.  For most users, there's no other difference.
+        3. If you imported the gradle project, you should run the gradle task 'getIntellijRuns' afterwards to get the Run and Debug
+           configurations.
+    6. If using Eclipse:
+        1. Open the Project.
+        2. Right click on the project, select "Run As" > "Run Configurations..."
+        3. Set the main class to "GradleStart"
+    7. You should be able to start Minecraft now (using the Run or Debug configuration) and the mod will be loaded.
     
-### Alternate Setup for IntelliJ IDEA
-By using `gradlew idea` to create the project files for IDEA, will work perfectly fine, but to be able to use the [Gradle Tool Window][gradle_tool_window] in IDEA, you must set up your project slightly differently. Check out [this tutorial][diesieben_idea] by diesieben07 on how to set up your project to take advantage of Gradle integration in IDEA.
-
 #### If You're Still Confused
-Head over [here][more_help] if this didn't make sense to you.
+Head over [here][more_help] if this didn't make sense to you, alternatively [this tutorial][diesieben_idea] by diesieben07.
 
 Check out [this video][forge_installation] for more help installing Forge.
-
 
 [main_classes]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample
 [greyminecraftcoder]: http://greyminecraftcoder.blogspot.com.au/p/list-of-topics.html
