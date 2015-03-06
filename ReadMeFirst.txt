@@ -64,6 +64,10 @@ B) If you want to install it and compile it, the basic steps for beginners are:
        choose yes you can run the gradle build task from inside IntelliJ.  For most users, there's no other difference.
     c) If you imported the gradle project, you should run the gradle task 'getIntellijRuns' afterwards to get the Run and Debug
        configurations.
+    d) Note!  If you are copying the code to your own project, don't forget to add this line to the end of your build.gradle
+       file, otherwise your assets won't work (see http://www.minecraftforge.net/forum/index.php/topic,21354.0.html):
+       sourceSets { main { output.resourcesDir = output.classesDir } }
+
 5) If using Eclipse:
     a) Open the project
     b) Right click on the project, select "Run As" > "Run Configurations..."
@@ -76,7 +80,7 @@ http://www.minecraftforge.net/forum/index.php?topic=21354.msg108332#msg108332
 Some extra help for installation of forge:
 https://www.youtube.com/watch?v=8VEdtQLuLO0&feature=youtu.be
 
-With thanks to these helpful folks:
+With thank to these helpful folks:
 Brandon3035,
 Nephroid, and
 Shadowfacts
