@@ -21,7 +21,7 @@ public class StartupClientOnly
 {
   public static void preInitClientOnly()
   {
-    // need to add the variants to the bakery so it knows what models are available for rendering the different subtypes
+//    need to add the variants to the bakery so it knows what models are available for rendering the different subtypes
     ModelBakery.addVariantName(StartupCommon.itemVariants,  "minecraftbyexample:mbe11_item_variants_0pc",
             "minecraftbyexample:mbe11_item_variants_25pc",
             "minecraftbyexample:mbe11_item_variants_50pc",
