@@ -20,9 +20,9 @@ import java.util.HashMap;
  */
 public class GuiHandlerRegistry implements IGuiHandler {
 
-	public void registerGuiHandler(IGuiHandler hander, int guiID)
+	public void registerGuiHandler(IGuiHandler handler, int guiID)
 	{
-		registeredHandlers.put(guiID, hander);
+		registeredHandlers.put(guiID, handler);
 	}
 
 	public static GuiHandlerRegistry getInstance() {return guiHandlerRegistry;}
