@@ -54,11 +54,12 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
    The initClientOnly method must be moved to a different class StartupClientOnly, which is never loaded in the DedicatedServer at all.
  */
 
-@Mod(modid = MinecraftByExample.MODID, version = MinecraftByExample.VERSION)
+@Mod(modid = MinecraftByExample.MODID, version = MinecraftByExample.VERSION, guiFactory= MinecraftByExample.GUIFACTORY)
 public class MinecraftByExample
 {
     public static final String MODID = "minecraftbyexample";
     public static final String VERSION = "1.0";
+    public static final String GUIFACTORY = "minecraftbyexample.mbe70_configuration.MBEGuiFactory";
 
     // The instance of your mod that Forge uses.  Optional.
     @Mod.Instance(MinecraftByExample.MODID)

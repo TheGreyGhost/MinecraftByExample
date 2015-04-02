@@ -14,6 +14,11 @@ public abstract class CommonProxy {
    */
   public void preInit()
   {
+	//read config first
+	minecraftbyexample.mbe70_configuration.StartupCommon.preInitCommon();
+	//load config from file (see mbe70 package for more info)
+	minecraftbyexample.mbe70_configuration.StartupCommon.syncConfig(true);
+	  
     minecraftbyexample.mbe01_block_simple.StartupCommon.preInitCommon();
     minecraftbyexample.mbe02_block_partial.StartupCommon.preInitCommon();
     minecraftbyexample.mbe03_block_variants.StartupCommon.preInitCommon();
@@ -39,6 +44,8 @@ public abstract class CommonProxy {
    */
   public void init()
   {
+	minecraftbyexample.mbe70_configuration.StartupCommon.initCommon();
+	  
     minecraftbyexample.mbe01_block_simple.StartupCommon.initCommon();
     minecraftbyexample.mbe02_block_partial.StartupCommon.initCommon();
     minecraftbyexample.mbe03_block_variants.StartupCommon.initCommon();
@@ -63,6 +70,8 @@ public abstract class CommonProxy {
    */
   public void postInit()
   {
+	minecraftbyexample.mbe70_configuration.StartupCommon.postInitCommon();
+	  
     minecraftbyexample.mbe01_block_simple.StartupCommon.postInitCommon();
     minecraftbyexample.mbe02_block_partial.StartupCommon.postInitCommon();
     minecraftbyexample.mbe03_block_variants.StartupCommon.postInitCommon();
