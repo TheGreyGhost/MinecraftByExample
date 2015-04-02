@@ -91,6 +91,13 @@ public class StartupCommon
 		 * 	the language key for each properties tooltip is langKey + ".tooltip"
 		 *  If no tooltip lang key is specified in a .lang file, it will default to
 		 *  the property's comment field
+		 * prop.setRequiresWorldRestart(true); and prop.setRequiresMcRestart(true);
+		 *  can be used to tell Forge if that specific property requires a world
+		 *  or complete Minecraft restart, respectively
+		 *  Note: if a property requires a world restart it cannot be edited in the
+		 *   in-world mod settings (which hasn't been implemented yet by Forge), only
+		 *   when a world isn't loaded
+		 *   -See the function definitions for more info
 		 */
 		
 		//how to read integers from configuration (bounding your values is recommended for stability)
@@ -109,7 +116,7 @@ public class StartupCommon
 		//how to read booleans from configuration
 		prop = config.get(Configuration.CATEGORY_GENERAL,  "myBoolean", true);
 		prop.comment = "Configuration boolean";
-		prop.setLanguageKey("gui.mbe70_configuration.myBoolean");
+		prop.setLanguageKey("gui.mbe70_configuration.myBoolean").setRequiresMcRestart(true);
 		myBoolean = prop.getBoolean(myBoolean); //can also use a literal (see integer example) if desired
 		propOrder.add(prop.getName());
 		
@@ -125,7 +132,7 @@ public class StartupCommon
 		
 		//how to read floating point numbers from configuration
 		prop = config.get(Configuration.CATEGORY_GENERAL, "myFloat", 0.08, "Configuration float", 0, 1);
-		prop.setLanguageKey("gui.mbe70_configuration.myFloat");
+		prop.setLanguageKey("gui.mbe70_configuration.myFloat").setRequiresWorldRestart(true);
 		myFloat = (float) prop.getDouble((double) myFloat); //no getFloat function is implemented so we use type casting
 		if (myFloat > 1.0f || myFloat < 0.0f) 
 		{
