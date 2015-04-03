@@ -19,6 +19,7 @@ Blocks -
    block with scheduled update
    redstone compatible blocks
    animated texture
+   ISmartBlockModel
 Items -
    #simple item
    #item with sub-types
@@ -27,6 +28,7 @@ Items -
    #how to control rendering of bow-like (Item.getModel)
    armour?
    #tool - strength vs blocks, durability, various events?
+   ISmartItemModel - see http://www.minecraftforge.net/forum/index.php/topic,28714.0.html
 Recipes
   variety of recipe types
 TileEntity
