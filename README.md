@@ -28,7 +28,7 @@ If you want more information and explanatory text about the concepts, the follow
   - [MBE13][13] - customise Mining behaviour of Blocks and Items - several test classes that show how mining works
   - [MBE14][14] - an interactive helper tool to adjust the ItemCameraTransforms for your custom item
 
-### TileEnities
+### TileEntities
   - [MBE20][20] - using a tile entity to store information about a block - also shows examples of using NBT storage
   - [MBE21][21] - using the TileEntitySpecialRenderer to render unusual shapes or animations
 

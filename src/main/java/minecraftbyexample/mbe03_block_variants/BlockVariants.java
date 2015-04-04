@@ -77,12 +77,13 @@ public class BlockVariants extends Block
 
   // Our block has two properties:
   // 1) PROPERTYFACING for which way the sign points (east, west, north, south).  EnumFacing is as standard used by vanilla for a number of blocks.
-  // 2) PROPERTYFACING for the sign's colour.  ColoursEnum is a custom class (see below)
+  // 2) PROPERTYCOLOUR for the sign's colour.  ColoursEnum is a custom class (see below)
   public static final PropertyDirection PROPERTYFACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
   public static final PropertyEnum PROPERTYCOLOUR = PropertyEnum.create("colour", EnumColour.class);
 
   // this function returns the correct item type corresponding to the colour of our block;
-  // i.e. when a sign is broken, it will drop the correct item.
+  // i.e. when a sign is broken, it will drop the correct item.  Ignores Facing, because we get the same item
+  //   no matter which way the block is facing
   @Override
   public int damageDropped(IBlockState state)
   {
@@ -91,6 +92,7 @@ public class BlockVariants extends Block
   }
 
   // create a list of the subBlocks available for this block, i.e. one for each colour
+  // ignores facings, because the facing is calculated when we place the item.
   //  - used to populate items for the creative inventory
   // - the "metadata" value of the block is set to the colours metadata
   @Override
@@ -112,7 +114,7 @@ public class BlockVariants extends Block
   public IBlockState getStateFromMeta(int meta)
   {
     EnumFacing facing = EnumFacing.getHorizontal(meta);
-    int colourbits = (meta & 0x0c) >> 2;
+    int colourbits = (meta & 0x0c) >> 2; // 0x0c is hexadecimal, in binary 1100
     EnumColour colour = EnumColour.byMetadata(colourbits);
     return this.getDefaultState().withProperty(PROPERTYCOLOUR, colour).withProperty(PROPERTYFACING, facing);
   }
@@ -152,10 +154,8 @@ public class BlockVariants extends Block
   public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing blockFaceClickedOn, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
   {
     EnumColour colour = EnumColour.byMetadata(meta);
-    // find the quadrant the player is facing, add 0.5 for half a quadrant to get proper roundoff to east/west/north/south, then
-    //   extract the lower 2 bits (0-3) to account for possible wrap around of the angle
-    int playerFacingDirection = (placer == null) ? 0 : MathHelper.floor_double((placer.rotationYaw / 90.0F) + 0.5D) & 3;
-    EnumFacing enumfacing = EnumFacing.getHorizontal(playerFacingDirection);
+    // find the quadrant the player is facing
+    EnumFacing enumfacing = (placer == null) ? EnumFacing.NORTH : EnumFacing.fromAngle(placer.rotationYaw);
 
     return this.getDefaultState().withProperty(PROPERTYFACING, enumfacing).withProperty(PROPERTYCOLOUR, colour);
   }

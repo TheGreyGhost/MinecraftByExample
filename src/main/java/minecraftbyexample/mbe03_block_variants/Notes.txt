@@ -46,6 +46,7 @@ Miscellaneous notes
 --------
 Common errors:
 "Missing Model", "Missing texture", etc:
+See here http://greyminecraftcoder.blogspot.com.au/2015/03/troubleshooting-block-and-item-rendering.html
 These are caused when you have specified a filename or path which is not correct, typically:
 1) you've misspelled it
 2) the upper/lower case doesn't match
