@@ -45,6 +45,9 @@ If you want more information and explanatory text about the concepts, the follow
 ### Network
   - [MBE60][60] - send network messages between client and server
 
+### Configuration GUI
+  - [MBE70][70] - configuration file linked to the "mod options" button GUI on the mods list screen
+
 ## Usage
   - You can browse directly in GitHub, or alternatively, download it as a zip and browse it locally.
 
@@ -101,6 +104,8 @@ Check out [this video][forge_installation] for more help installing Forge.
 
 [60]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe60_network_messages
 
+[70]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe70_configuration
+
 [more_help]: http://www.minecraftforge.net/forum/index.php?topic=21354.msg108332#msg108332
 [forge_installation]: http://youtu.be/8VEdtQLuLO0
 [alternate_idea]: #alternate-setup-for-intellij-idea
@@ -110,5 +115,6 @@ Check out [this video][forge_installation] for more help installing Forge.
 
 With thanks to these helpful folks:
 Brandon3035,
+twrightsman (greekphysique),
 Nephroid, and
 Shadowfacts

@@ -48,6 +48,9 @@ HeadsUpDisplay - overlays
 Network
   MBE60 - send network messages between client and server
 
+Configuration GUI
+  MBE70 - configuration file linked to the "mod options" button GUI on the mods list screen
+
 How to use this example project-
 A) You can browse directly in GitHub, or alternatively download it as a zip and browse it locally.
 
@@ -82,5 +85,6 @@ https://www.youtube.com/watch?v=8VEdtQLuLO0&feature=youtu.be
 
 With thank to these helpful folks:
 Brandon3035,
+twrightsman (greekphysique)
 Nephroid, and
 Shadowfacts

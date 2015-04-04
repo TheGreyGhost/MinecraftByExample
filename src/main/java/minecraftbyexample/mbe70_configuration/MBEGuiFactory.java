@@ -54,22 +54,23 @@ public class MBEGuiFactory implements IModGuiFactory
 		public MBEConfigGui(GuiScreen parentScreen) 
 		{
 			//I18n function basically "translates" or localizes the given key using the appropriate .lang file
-			super(parentScreen, getConfigElements(), MinecraftByExample.MODID, false, false, I18n.format("gui.mbe70_configuration.mainTitle"));
+			super(parentScreen, getConfigElements(), MinecraftByExample.MODID,
+            false, false, I18n.format("gui.mbe70_configuration.mainTitle"));
 		}
 		
 		private static List<IConfigElement> getConfigElements() 
 		{
 			List<IConfigElement> list = new ArrayList<IConfigElement>();
 			//Add the two buttons that will go to each config category edit screen
-			list.add(new DummyCategoryElement("mainCfg", "gui.mbe70_configuration.ctgy.GeneralConfig", GeneralEntry.class));
-			list.add(new DummyCategoryElement("miscCfg", "gui.mbe70_configuration.ctgy.MiscConfig", MiscEntry.class));
+			list.add(new DummyCategoryElement("mainCfg", "gui.mbe70_configuration.ctgy.general", CategoryEntryGeneral.class));
+			list.add(new DummyCategoryElement("miscCfg", "gui.mbe70_configuration.ctgy.other", CategoryEntryOther.class));
 			return list;
 		}
 		
 		//the next two classes are the edit screens for each configuration category
-		public static class GeneralEntry extends CategoryEntry 
+		public static class CategoryEntryGeneral extends CategoryEntry
 		{
-			public GeneralEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement prop) 
+			public CategoryEntryGeneral(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement prop)
 			{
 				super(owningScreen, owningEntryList, prop);
 			}
@@ -83,19 +84,26 @@ public class MBEGuiFactory implements IModGuiFactory
 				// --see GuiFactory of Forge for more info
 				//Additionally, Forge best practices say to put the path to the config file for the category as
 				// the title for the category config screen
-				return new GuiConfig(this.owningScreen,
-						(new ConfigElement(StartupCommon.getConfig().getCategory(Configuration.CATEGORY_GENERAL))).getChildElements(),
-						this.owningScreen.modID, Configuration.CATEGORY_GENERAL, this.configElement.requiresWorldRestart() || this.owningScreen.allRequireWorldRestart,
-						this.configElement.requiresMcRestart() || this.owningScreen.allRequireMcRestart,
-						GuiConfig.getAbridgedConfigPath(StartupCommon.getConfig().toString()));
+
+        Configuration configuration = MBEConfiguration.getConfig();
+        ConfigElement cat_general = new ConfigElement(configuration.getCategory(MBEConfiguration.CATEGORY_NAME_GENERAL));
+        List<IConfigElement> propertiesOnThisScreen = cat_general.getChildElements();
+        String windowTitle = configuration.toString();
+
+        return new GuiConfig(this.owningScreen, propertiesOnThisScreen,
+                              this.owningScreen.modID,
+                              MBEConfiguration.CATEGORY_NAME_GENERAL,
+                              this.configElement.requiresWorldRestart() || this.owningScreen.allRequireWorldRestart,
+                              this.configElement.requiresMcRestart() || this.owningScreen.allRequireMcRestart,
+                              windowTitle);
 				//this is a complicated object that specifies the category's gui screen, to better understand
 				// how it works, look into the definitions of the called functions and objects
 			}
 		}
 		
-		public static class MiscEntry extends CategoryEntry 
+		public static class CategoryEntryOther extends CategoryEntry
 		{
-			public MiscEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement prop) 
+			public CategoryEntryOther(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement prop)
 			{
 				super(owningScreen, owningEntryList, prop);
 			}
@@ -103,9 +111,19 @@ public class MBEGuiFactory implements IModGuiFactory
 			@Override
 			protected GuiScreen buildChildScreen() 
 			{
-				//implement a category entry screen for the misc category here, following the example of the GeneralEntry
-				// buildChildScreen()  function, other classes can be made for additional categories
-				return null; //until the null is replaced, it will simply return to the Forge mod menu
+        Configuration configuration = MBEConfiguration.getConfig();
+        ConfigElement cat_general = new ConfigElement(configuration.getCategory(MBEConfiguration.CATEGORY_NAME_OTHER));
+        List<IConfigElement> propertiesOnThisScreen = cat_general.getChildElements();
+        String windowTitle = configuration.toString();
+
+        return new GuiConfig(this.owningScreen, propertiesOnThisScreen,
+                             this.owningScreen.modID,
+                             MBEConfiguration.CATEGORY_NAME_OTHER,
+                             this.configElement.requiresWorldRestart() || this.owningScreen.allRequireWorldRestart,
+                             this.configElement.requiresMcRestart() || this.owningScreen.allRequireMcRestart,
+                             windowTitle);
+        //this is a complicated object that specifies the category's gui screen, to better understand
+        // how it works, look into the definitions of the called functions and objects
 			}
 		}
 	}
