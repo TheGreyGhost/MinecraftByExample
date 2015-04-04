@@ -14,11 +14,9 @@ public abstract class CommonProxy {
    */
   public void preInit()
   {
-	//read config first
-	minecraftbyexample.mbe70_configuration.StartupCommon.preInitCommon();
-	//load config from file (see mbe70 package for more info)
-	minecraftbyexample.mbe70_configuration.StartupCommon.syncConfig(true);
-	  
+	   //read config first
+	  minecraftbyexample.mbe70_configuration.StartupCommon.preInitCommon();
+
     minecraftbyexample.mbe01_block_simple.StartupCommon.preInitCommon();
     minecraftbyexample.mbe02_block_partial.StartupCommon.preInitCommon();
     minecraftbyexample.mbe03_block_variants.StartupCommon.preInitCommon();

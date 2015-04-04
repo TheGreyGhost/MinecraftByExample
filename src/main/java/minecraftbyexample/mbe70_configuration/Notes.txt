@@ -1,4 +1,5 @@
 MBE70_CONFIGURATION
+Code by twrightsman (greekphysique)
 
 This example shows how to implement simple configuration scheme, specifically:
 1) How to create/load/save a configuration file and its values
@@ -7,6 +8,8 @@ This example shows how to implement simple configuration scheme, specifically:
 Parts to understand are:
 MBEGuiFactory
 Both Startup Classes
+Main mod file MinecraftByExample:
+   guiFactory= MinecraftByExample.GUIFACTORY in the @Mod annotation
 resources\assets\minecraftbyexample\lang\en_US.lang - for displayed names in gui
 
 ---
