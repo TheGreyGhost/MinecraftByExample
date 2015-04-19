@@ -1,0 +1,6 @@
+{
+    "parent": "block/cube_all",
+    "textures": {
+        "all": "minecraftbyexample:blocks/mbe04_block_camouflage"
+    }
+}
