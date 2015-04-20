@@ -16,6 +16,11 @@ ISmartBlockModel is often a better (more realistic) choice if the block should h
 
 This example shows the basics of using an ISmartBlockModel.
 
+How it works:
+
+
+
+
 https://github.com/MinecraftForge/MinecraftForge/blob/master/src/test/java/net/minecraftforge/debug/ModelBakeEventDebug.java
 http://www.minecraftforge.net/forum/index.php/topic,29019.msg149531.html#msg149531
 http://www.minecraftforge.net/forum/index.php/topic,28714.0.html

@@ -2,12 +2,19 @@ package minecraftbyexample.mbe04_block_smartblockmodel;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -61,4 +68,29 @@ public class BlockCamouflage extends Block {
   {
     return null;
   }
+
+  @Override
+  protected BlockState createBlockState() {
+    IProperty [] listedProperties = new IProperty[0];
+    IUnlistedProperty [] unlistedProperties = new IUnlistedProperty[] {COPIEDBLOCK};
+    return new ExtendedBlockState(this, listedProperties, unlistedProperties);
+  }
+
+  @Override
+  public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
+    if (state instanceof IExtendedBlockState) {  // avoid crash in case of mismatch
+      IExtendedBlockState retval = (IExtendedBlockState)state;
+      retval = retval.withProperty(COPIEDBLOCK, Blocks.diamond_block.getDefaultState());
+      return retval;
+    }
+    return state;
+  }
+
+  @Override
+  public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+  {
+    return state;  //for debugging breakpoint only
+  }
+
+  public static final UnlistedPropertyCopiedBlock COPIEDBLOCK = new UnlistedPropertyCopiedBlock();
 }

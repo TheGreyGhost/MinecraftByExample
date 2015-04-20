@@ -1,9 +1,13 @@
 package minecraftbyexample.mbe14_item_camera_transforms;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.client.model.ISmartBlockModel;
+import net.minecraftforge.client.model.ISmartItemModel;
 
 import java.util.List;
 
@@ -19,7 +23,7 @@ import java.util.List;
  *   b) forcedTransform is the transform to apply
  * Models which don't match itemModelToOverride will use their original transform
  */
-public class ItemModelFlexibleCamera implements IBakedModel
+public class ItemModelFlexibleCamera implements IBakedModel, ISmartBlockModel, ISmartItemModel
 {
   public ItemModelFlexibleCamera(IBakedModel i_modelToWrap, UpdateLink linkToCurrentInformation)
   {
@@ -69,6 +73,24 @@ public class ItemModelFlexibleCamera implements IBakedModel
   }
 
   private final IBakedModel iBakedModel;
+
+  @Override
+  public IBakedModel handleBlockState(IBlockState state) {
+    if (iBakedModel instanceof ISmartBlockModel) {
+      return ((ISmartBlockModel)iBakedModel).handleBlockState(state);
+    } else {
+      return iBakedModel;
+    }
+  }
+
+  @Override
+  public IBakedModel handleItemState(ItemStack stack) {
+    if (iBakedModel instanceof  ISmartItemModel) {
+      return ((ISmartItemModel)iBakedModel).handleItemState(stack);
+    } else {
+      return iBakedModel;
+    }
+  }
 
   public static class UpdateLink
   {
