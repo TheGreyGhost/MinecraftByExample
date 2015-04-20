@@ -23,13 +23,18 @@ import java.util.Map;
  */
 public class CamouflageISmartBlockModelFactory implements ISmartBlockModel {
 
+  public CamouflageISmartBlockModelFactory(IBakedModel unCamouflagedModel)
+  {
+    modelWhenNotCamouflaged = unCamouflagedModel;
+  }
+
   // create a tag (ModelResourceLocation) for our model.
   // Blocks usually have "normal" as the variant, i.e. modid:block#normal, in this case we use
   //  "custom" to avoid creating a duplicate.
 //  public static final ModelResourceLocation modelResourceLocation
 //          = new ModelResourceLocation("minecraftbyexample:mbe04_block_camouflage", "custom");
   public static final ModelResourceLocation modelResourceLocation
-          = new ModelResourceLocation("minecraftbyexample:mbe04_block_camouflage_model");
+          = new ModelResourceLocation("minecraftbyexample:mbe04_block_camouflage");
 
   @SuppressWarnings("deprecation")  // IBakedModel is deprecated to encourage folks to use IFlexibleBakedModel instead
                                     // .. but IFlexibleBakedModel is of no use here...
@@ -41,24 +46,37 @@ public class CamouflageISmartBlockModelFactory implements ISmartBlockModel {
   @Override
   public IBakedModel handleBlockState(IBlockState iBlockState)
   {
+    IBakedModel retval = modelWhenNotCamouflaged;  // default
+    IBlockState UNCAMOUFLAGED_BLOCK = Blocks.air.getDefaultState();
+
     // Extract the block to be copied from the IExtendedBlockState, previously set by Block.getExtendedState()
-    IBlockState copiedBlockIBlockState = Blocks.slime_block.getDefaultState();
+    // If the block is null, the block is not camouflaged so use the uncamouflaged model.
     if (iBlockState instanceof IExtendedBlockState) {
       IExtendedBlockState iExtendedBlockState = (IExtendedBlockState) iBlockState;
-      copiedBlockIBlockState = iExtendedBlockState.getValue(BlockCamouflage.COPIEDBLOCK);
-    }
+      IBlockState copiedBlockIBlockState = iExtendedBlockState.getValue(BlockCamouflage.COPIEDBLOCK);
 
-    // Retrieve the IBakedModel of the copied block and return it.
-    Minecraft mc = Minecraft.getMinecraft();
-    BlockRendererDispatcher blockRendererDispatcher = mc.getBlockRendererDispatcher();
-    BlockModelShapes blockModelShapes = blockRendererDispatcher.getBlockModelShapes();
-    IBakedModel copiedBlockModel = blockModelShapes.getModelForState(copiedBlockIBlockState);
-    if (copiedBlockModel instanceof ISmartBlockModel) {
-      copiedBlockModel = ((ISmartBlockModel)copiedBlockModel).handleBlockState(copiedBlockIBlockState);
+      if (copiedBlockIBlockState != UNCAMOUFLAGED_BLOCK) {
+        // Retrieve the IBakedModel of the copied block and return it.
+        Minecraft mc = Minecraft.getMinecraft();
+        BlockRendererDispatcher blockRendererDispatcher = mc.getBlockRendererDispatcher();
+        BlockModelShapes blockModelShapes = blockRendererDispatcher.getBlockModelShapes();
+        IBakedModel copiedBlockModel = blockModelShapes.getModelForState(copiedBlockIBlockState);
+        if (copiedBlockModel instanceof ISmartBlockModel) {
+          copiedBlockModel = ((ISmartBlockModel) copiedBlockModel).handleBlockState(copiedBlockIBlockState);
+        }
+        retval = copiedBlockModel;
+      }
     }
-    return copiedBlockModel;
+    return retval;
   }
 
+  private IBakedModel modelWhenNotCamouflaged;
+
+  // getTexture is used directly when player is inside the block
+  @Override
+  public TextureAtlasSprite getTexture() {
+    return modelWhenNotCamouflaged.getTexture();
+  }
 
   // The methods below are all unused for CamouflageISmartBlockModelFactory because we always return a vanilla model
   //  from handleBlockState.
@@ -86,11 +104,6 @@ public class CamouflageISmartBlockModelFactory implements ISmartBlockModel {
   @Override
   public boolean isBuiltInRenderer() {
     return false;
-  }
-
-  @Override
-  public TextureAtlasSprite getTexture() {
-    return null;
   }
 
   @Override
