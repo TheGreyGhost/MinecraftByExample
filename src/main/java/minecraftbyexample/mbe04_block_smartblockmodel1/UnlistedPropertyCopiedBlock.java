@@ -1,4 +1,4 @@
-package minecraftbyexample.mbe04_block_smartblockmodel;
+package minecraftbyexample.mbe04_block_smartblockmodel1;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;

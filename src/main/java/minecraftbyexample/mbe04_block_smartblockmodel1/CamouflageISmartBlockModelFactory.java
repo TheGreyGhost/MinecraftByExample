@@ -1,7 +1,5 @@
-package minecraftbyexample.mbe04_block_smartblockmodel;
+package minecraftbyexample.mbe04_block_smartblockmodel1;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockModelShapes;
@@ -16,10 +14,10 @@ import net.minecraftforge.client.model.ISmartBlockModel;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by TheGreyGhost on 19/04/2015.
+ * This class is used to customise the rendering of the camouflage block, based on the block it is copying.
  */
 public class CamouflageISmartBlockModelFactory implements ISmartBlockModel {
 
@@ -29,10 +27,6 @@ public class CamouflageISmartBlockModelFactory implements ISmartBlockModel {
   }
 
   // create a tag (ModelResourceLocation) for our model.
-  // Blocks usually have "normal" as the variant, i.e. modid:block#normal, in this case we use
-  //  "custom" to avoid creating a duplicate.
-//  public static final ModelResourceLocation modelResourceLocation
-//          = new ModelResourceLocation("minecraftbyexample:mbe04_block_camouflage", "custom");
   public static final ModelResourceLocation modelResourceLocation
           = new ModelResourceLocation("minecraftbyexample:mbe04_block_camouflage");
 
@@ -72,7 +66,8 @@ public class CamouflageISmartBlockModelFactory implements ISmartBlockModel {
 
   private IBakedModel modelWhenNotCamouflaged;
 
-  // getTexture is used directly when player is inside the block
+  // getTexture is used directly when player is inside the block.  The game will crash if you don't use something
+  //   meaningful here.
   @Override
   public TextureAtlasSprite getTexture() {
     return modelWhenNotCamouflaged.getTexture();

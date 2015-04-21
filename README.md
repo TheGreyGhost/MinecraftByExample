@@ -19,6 +19,7 @@ If you want more information and explanatory text about the concepts, the follow
   - [MBE01][01] - a simple cube
   - [MBE02][02] - a block with a more complicated shape
   - [MBE03][03] - a block (coloured signpost) with multiple variants- four colours, can be placed facing in four directions
+  - [MBE04][04] - a camouflage ("secret door") block which copies the appearance of adjacent blocks - uses ISmartBlockModel
   - [MBE08][08] - how to add a creative tab for organising your custom blocks / items
 
 ### Items
@@ -85,6 +86,7 @@ Check out [this video][forge_installation] for more help installing Forge.
 [01]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe01_block_simple
 [02]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe02_block_partial
 [03]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe03_block_variants
+[04]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe04_block_smartblockmodel1
 [08]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe08_creative_tab
 
 [10]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe10_item_simple
@@ -116,5 +118,6 @@ Check out [this video][forge_installation] for more help installing Forge.
 With thanks to these helpful folks:
 Brandon3035,
 twrightsman (greekphysique),
-Nephroid, and
+Nephroid,
+Herbix, and
 Shadowfacts

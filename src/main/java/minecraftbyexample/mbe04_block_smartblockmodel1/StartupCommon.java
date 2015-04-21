@@ -1,6 +1,5 @@
-package minecraftbyexample.mbe04_block_smartblockmodel;
+package minecraftbyexample.mbe04_block_smartblockmodel1;
 
-import minecraftbyexample.mbe01_block_simple.BlockSimple;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**

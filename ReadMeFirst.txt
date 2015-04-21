@@ -22,6 +22,7 @@ Blocks
   MBE01 - a simple cube
   MBE02 - a block with a more complicated shape
   MBE03 - a block (coloured signpost) with multiple variants- four colours, can be placed facing in four directions
+  MBE04 - a camouflage ("secret door") block which copies the appearance of adjacent blocks - uses ISmartBlockModel
   MBE08 - how to add a creative tab for organising your custom blocks / items
 
 Items
@@ -86,5 +87,6 @@ https://www.youtube.com/watch?v=8VEdtQLuLO0&feature=youtu.be
 With thank to these helpful folks:
 Brandon3035,
 twrightsman (greekphysique)
-Nephroid, and
+Nephroid,
+Herbix, and
 Shadowfacts

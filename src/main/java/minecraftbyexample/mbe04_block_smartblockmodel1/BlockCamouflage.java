@@ -1,4 +1,4 @@
-package minecraftbyexample.mbe04_block_smartblockmodel;
+package minecraftbyexample.mbe04_block_smartblockmodel1;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -58,23 +58,23 @@ public class BlockCamouflage extends Block {
     return true;
   }
 
-  // render using a BakedModel (mbe01_block_simple.json --> mbe01_block_simple_model.json)
+  // render using an IBakedModel
   // not strictly required because the default (super method) is 3.
   @Override
   public int getRenderType() {
     return 3;
   }
 
-  // by returning a null collision bounding box we stop the player from colliding with it
+  // by returning a null collision bounding box, we stop the player from colliding with it
   @Override
   public AxisAlignedBB getCollisionBoundingBox(World worldIn, BlockPos pos, IBlockState state)
   {
     return null;
   }
 
-  // necessary to define which properties your blocks use.
-  // Vanilla BlockState is composed of listed properties only - a variant is created for each combination of listed
-  //   properties; for example two properties ON(true/false) and READY(true/false) would give rise to the variants
+  // createBlockState is used to define which properties your blocks possess
+  // Vanilla BlockState is composed of listed properties only.  A variant is created for each combination of listed
+  //   properties; for example two properties ON(true/false) and READY(true/false) would give rise to four variants
   //   [on=true, ready=true]
   //   [on=false, ready=true]
   //   [on=true, ready=false]
@@ -89,7 +89,7 @@ public class BlockCamouflage extends Block {
     return new ExtendedBlockState(this, listedProperties, unlistedProperties);
   }
 
-  // this method uses the block state and BlockPos to update the unlisted properties in IExtendedBlockState based
+  // this method uses the block state and BlockPos to update the unlisted COPIEDBLOCK property in IExtendedBlockState based
   // on non-metadata information.  This is then conveyed to the ISmartBlockModel during rendering.
   // In this case, we look around the camouflage block to find a suitable adjacent block it should camouflage itself as
   @Override
@@ -109,6 +109,7 @@ public class BlockCamouflage extends Block {
     return state;  //for debugging - useful spot for a breakpoint.  Not necessary.
   }
 
+  // the COPIEDBLOCK property is used to store the identity of the block that BlockCamouflage will copy
   public static final UnlistedPropertyCopiedBlock COPIEDBLOCK = new UnlistedPropertyCopiedBlock();
 
   // Select the best adjacent block to camouflage as.
