@@ -1,20 +1,14 @@
-MBE04_BLOCK_SMARTBLOCKMODEL1
-Based on code by Herbix and RainWarrior
-This example shows how to use ISmartBlockModel in conjunction with ModelBakeEvent
-Normal blocks can only have up to 16 different states, and you need to create a blockstates JSON file which handles
-every single state. But what if you want a block which needs to display many more possibilities?
-For example a wool block with 100 different colours, or a camouflage block which copies the texture of the adjacent block?
-In these cases you can use an ISmartBlockModel or a TileEntitySpecialRenderer.
+MBE05_BLOCK_SMARTBLOCKMODEL2
+Based on code by Herbix
+This example shows how to use ISmartBlockModel in conjunction with ModelLoader.  It is very similar to MBE04, it just
+uses a different method of injecting your ISmartBlockModel into the registry.
 
-Which to choose?
-TileEntitySpecialRenderer is often a better (simpler!) choice if the block is animated, or needs fancy rendering, for
-  example like an animated chest, or the lettering on a sign.  You must give your block a TileEntity as well.
-ISmartBlockModel is often a better (more realistic) choice if the block should have shaded lighting like a normal block,
-  or if there are very many of the block and they don't need to store information (can calculate their state from adjacent
-  blocks). For example - a 3D net which has wires going up,down, west,east,north,south to any adjacent blocks - total of
-  2*2*2*2*2*2 = 64 combinations depending on how many adjacent blocks there are.
-
-This example shows the basics of using an ISmartBlockModel.
+ModelLoader:
+The ModelLoader can be useful if your ISmartBlockModel is composed of a number of models subcomponents and you want to
+  use a model.json for each subcomponent.
+It is also well-suited if you are parsing your own custom model definitions (similar to the B3DModelLoader)
+ModelBakeEvent:
+The BakeEvent is more useful if you want to copy an existing model, or to generate your model's quads algorithmically.
 
 How it works:
 (1) ModelLoader.setCustomStateMapper is used to set up a custom StateMapper for BlockCamouflage.  This StateMapper
