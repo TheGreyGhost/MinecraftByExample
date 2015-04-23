@@ -1,0 +1,24 @@
+{
+  "ambientocclusion": false,
+  "textures": {
+    "down": "minecraftbyexample:blocks/mbe05_block_3d_web",
+    "up": "minecraftbyexample:blocks/mbe05_block_3d_web",
+    "north": "minecraftbyexample:blocks/mbe05_block_3d_web",
+    "south": "minecraftbyexample:blocks/mbe05_block_3d_web",
+    "east": "minecraftbyexample:blocks/mbe05_block_3d_web",
+    "west": "minecraftbyexample:blocks/mbe05_block_3d_web"
+  },
+  "elements": [
+    {  "from": [7.5, 0, 7.5],
+      "to": [8.5, 5.5, 8.5],
+      "faces": {
+        "down": {"uv": [ 7.5, 7.5, 8.5, 8.5], "texture": "#down", "cullface": "down"},
+        "up": {"uv": [ 7.5, 7.5, 8.5, 8.5], "texture": "#up"},
+        "north": {"uv": [ 7.5, 10.5, 8.5, 16], "texture": "#north"},
+        "south": {"uv": [ 7.5, 10.5, 8.5, 16], "texture": "#south"},
+        "west": {"uv": [ 7.5, 10.5, 8.5, 16], "texture": "#west"},
+        "east": {"uv": [ 7.5, 10.5, 8.5, 16], "texture": "#east"}
+      }
+    }
+  ]
+}

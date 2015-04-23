@@ -5,6 +5,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ICustomModelLoader;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 
 /**
  * Created by TheGreyGhost on 19/04/2015.
@@ -13,8 +14,7 @@ import net.minecraftforge.client.model.ModelLoader;
  */
 public class ModelLoader3DWeb implements ICustomModelLoader
 {
-  private IResourceManager resourceManager;
-  private final String SMART_MODEL_RESOURCE_LOCATION = "models/block/smartmodel/";
+  public final String SMART_MODEL_RESOURCE_LOCATION = "models/block/smartmodel/";
 
   @Override
   public void onResourceManagerReload(IResourceManager resourceManager) {
@@ -36,11 +36,11 @@ public class ModelLoader3DWeb implements ICustomModelLoader
     String modelName = resourcePath.substring(SMART_MODEL_RESOURCE_LOCATION.length());
 
     if(modelName.equals("webmodel")) {
-
-      ModelLoader.VanillaLoader.instance.loadModel
-
       return new WebModel();
+    } else {
+      return ModelLoaderRegistry.getMissingModel();
     }
-
   }
+
+  private IResourceManager resourceManager;
 }

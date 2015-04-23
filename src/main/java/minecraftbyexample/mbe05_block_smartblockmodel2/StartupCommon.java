@@ -18,13 +18,13 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
  */
 public class StartupCommon
 {
-  public static BlockCamouflage blockCamouflage;  // this holds the unique instance of your block
+  public static Block3DWeb block3DWeb;  // this holds the unique instance of your block
 
   public static void preInitCommon()
   {
     // each instance of your block should have a name that is unique within your mod.  use lower case.
-    blockCamouflage = (BlockCamouflage)(new BlockCamouflage().setUnlocalizedName("mbe04_block_camouflage"));
-    GameRegistry.registerBlock(blockCamouflage, "mbe04_block_camouflage");
+    block3DWeb = (Block3DWeb)(new Block3DWeb().setUnlocalizedName("mbe05_block_3d_web"));
+    GameRegistry.registerBlock(block3DWeb, "mbe05_block_3d_web");
     // you don't need to register an item corresponding to the block, GameRegistry.registerBlock does this automatically.
   }
 
