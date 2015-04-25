@@ -1,5 +1,4 @@
 MBE08_CREATIVE_TAB
-
 Code by Nephroid
 
 This example adds two 'creative tabs' to the vanilla tabs:
@@ -18,6 +17,7 @@ The example also uses some files in resources\assets\minecraftbyexample to draw 
 
 For background information see
 - http://tutorials.darkhax.net/custom-creative-tabs.html
+- how to sort your items in a specific order: http://www.minecraftforge.net/forum/index.php/topic,23782.0.html
 
 
 

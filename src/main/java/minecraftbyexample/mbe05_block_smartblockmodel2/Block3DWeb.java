@@ -35,6 +35,8 @@ import java.util.TreeMap;
  * Created by TheGreyGhost on 19/04/2015.
  *
  * This block forms a 3D web.
+ * If the block is adjacent to another Block3DWeb, or to a solid surface, it joins to it with a strand of web.
+ * Its IBlockState has six unlisted properties, one for each direction (up, down, north, south, east, west)
  */
 public class Block3DWeb extends Block {
   public Block3DWeb()
@@ -105,7 +107,7 @@ public class Block3DWeb extends Block {
   // this method uses the block state and BlockPos to update the unlisted LINK properties in IExtendedBlockState based
   // on non-metadata information.  This is then conveyed to the ISmartBlockModel during rendering.
   // In this case, we look around the block to see which faces are next to either a solid block or another web block:
-  // The web node forms a link to any adjacent solid blocks or web nodes
+  // The web node forms a strand of web to any adjacent solid blocks or web nodes
   @Override
   public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
     if (state instanceof IExtendedBlockState) {  // avoid crash in case of mismatch
@@ -148,7 +150,7 @@ public class Block3DWeb extends Block {
     return false;
   }
 
-  // the LINK properties are used to remember which of the links should be drawn
+  // the LINK properties are used to communicate to the ISmartBlockModel which of the links should be drawn
   public static final IUnlistedProperty<Boolean> LINK_UP = new Properties.PropertyAdapter<Boolean>(PropertyBool.create("link_up"));
   public static final IUnlistedProperty<Boolean> LINK_DOWN = new Properties.PropertyAdapter<Boolean>(PropertyBool.create("link_down"));
   public static final IUnlistedProperty<Boolean> LINK_WEST = new Properties.PropertyAdapter<Boolean>(PropertyBool.create("link_west"));

@@ -2,48 +2,50 @@ MBE05_BLOCK_SMARTBLOCKMODEL2
 Based on code by Herbix
 This example shows how to use ISmartBlockModel in conjunction with ModelLoader.  It is very similar to MBE04, it just
 uses a different method of injecting your ISmartBlockModel into the registry.
-
+Guidelines on choosing which injection method to use
 ModelLoader:
-The ModelLoader can be useful if your ISmartBlockModel is composed of a number of models subcomponents and you want to
+The ModelLoader can be useful if your ISmartBlockModel is composed of a number of subcomponents and you want to
   use a model.json for each subcomponent.
 It is also well-suited if you are parsing your own custom model definitions (similar to the B3DModelLoader)
 ModelBakeEvent:
 The BakeEvent is more useful if you want to copy an existing model, or to generate your model's quads algorithmically.
 
 How it works:
-(1) ModelLoader.setCustomStateMapper is used to set up a custom StateMapper for BlockCamouflage.  This StateMapper
-    tells vanilla to use ModelResourceLocation mbe04_block_camouflage for rendering, regardless of the block's state.
-(2) The vanilla loader loads the model for mbe04_block_camouflage using the blockstates json and model json, as per
-    normal blocks
-(3) The ModelBakeEvent is then used to remove the model json from the registry and replace it with an ISmartBlockModel.
-(4) During the render, BlockCamouflage.getExtendedBlockState is called, which looks at the block's neighbours to pick a
-    suitable block for the camouflage block to copy.  It then stores the identity of that copied block in the
-    IExtendedBlockState.
-(5) The IExtendedBlockState is passed to the ISmartBlockModel, which looks up the IBakedModel for the copied block and
+(1) ModelLoader.setCustomStateMapper is used to set up a custom StateMapper for Block3DWeb.  This StateMapper
+    tells vanilla to use ModelResourceLocation mbe05_block_3d_web for rendering, regardless of the block's state.
+(2) In mbe05_block_3d_web.json, the model ResourceLocation is set to "minecraftbyexample:smartmodel/webmodel"
+(3) The custom ModelLoader ModelLoader3DWeb, which was previously registered using ModelLoaderRegistry.registerLoader(),
+    recognises the smartmodel tag and creates an WebModel (implements IModel).
+(4) The IModel (WebModel) is then "baked" to form an ISmartBlockModel.  During baking, the WebModel loads and bakes the
+    models for each of the seven subcomponents (a central "core" plus one model for each of the six strands that can
+    extend up, down, east, west, north, or south).  Each of these models is defined using .json as usual.
+(5) During the render, Block3DWeb.getExtendedBlockState is called, which looks at the block's neighbours to see which
+    strands should be drawn (a strand is drawn to each solid neighbour).  The yes/no for each strand is then stored in
+    the IExtendedBlockState.
+(5) The IExtendedBlockState is passed to the ISmartBlockModel, which generates an IBakedModel from the sub-component
+    models (including or excluding each one depending on which directions have strands) and then
     returns it to the caller for rendering.
 
-The camouflage block appears in the Blocks tab in the creative inventory.
+The 3d web block appears in the Blocks tab in the creative inventory.
 
 The pieces you need to understand are located in:
 StartupClientOnly and StartupCommon
-BlockCamouflage
-CamouflageISmartBlockModelFactory
-ModelBakeEventHandler
-UnlistedPropertyCopiedBlock
+Block3DWeb
+CompositeModel
+ModelLoader3DWeb
+WebModel
 resources\assets\minecraftbyexample\lang\en_US.lang - for the displayed name of the block
-resources\assets\minecraftbyexample\blockstates\mbe04_block_camouflage - for the blockstate definition
-resources\assets\minecraftbyexample\models\block\mbe04_block_camouflage_model - the model used to render the uncamouflaged block
-resources\assets\minecraftbyexample\models\item\mbe04_block_camouflage - the model for rendering as an item
-resources\assets\minecraftbyexample\textures\blocks\mbe04_block_camouflage - the texture used for the uncamouflaged block
+resources\assets\minecraftbyexample\blockstates\mbe05_block_3D_web - for the blockstate definition
+resources\assets\minecraftbyexample\models\block\mbe05_block_web_****_model - where **** is eg core, up, down, etc (sub-component models)
+resources\assets\minecraftbyexample\models\item\mbe05_block_3D_web - the model for rendering as an item
+resources\assets\minecraftbyexample\textures\blocks\mbe05_block_3D_web - the base texture used for all components
 
 More background information:
 - blocks: see here http://greyminecraftcoder.blogspot.com.au/2014/12/blocks-18.html
 - rendering blocks: see here http://greyminecraftcoder.blogspot.com.au/p/list-of-topics.html (the topics under the Block Rendering heading)
-
 - test code for ISmartBlockModel which generates the model quads using an algorithm instead of using a pre-existing model
   https://github.com/MinecraftForge/MinecraftForge/blob/master/src/test/java/net/minecraftforge/debug/ModelBakeEventDebug.java
-- another way of implementing ISmartBlockModel, also explains IExtendedBlockState
-  http://www.minecraftforge.net/forum/index.php/topic,28714.0.html
+- more explanation on ISmartBlockModel http://www.minecraftforge.net/forum/index.php/topic,28714.0.html
 
 Useful vanilla classes to look at (for BlockStateMapping):  BlockModelShapes.registerAllBlocks()
 
@@ -56,8 +58,7 @@ BlockModelShapes.reloadModels()
 BlockStateMapper.putAllStateModelLocations()
 BlockRendererDispatcher.getModelFromBlockState()
 YourCustomBlock.getActualState() - called just before render - can add a dummy method specially for use by breakpoint
-
-A conditional breakpoint will often be very useful to break when your block is being processed, for example
+ - A conditional breakpoint will often be very useful to break when your block is being processed, for example
 
   public IBakedModel getModelFromBlockState(IBlockState iBlockState, IBlockAccess world, BlockPos pos)
     {

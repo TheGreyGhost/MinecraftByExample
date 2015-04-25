@@ -18,6 +18,9 @@ import java.util.Collection;
 
 /**
  * Created by TheGreyGhost on 22/04/2015.
+ * WebModel is an intermediate step between the ModelResourceLocation and the final IBakedModel.
+ * In this case, our IModel has a number of dependant sub-components.  We bake them all individually and store them
+ *   in the CompositeModel.
  */
 public class WebModel implements IModel {
 
@@ -34,16 +37,21 @@ public class WebModel implements IModel {
     public WebModel() {
     }
 
+  // return all other resources used by this model (not strictly needed for this example because we load all the subcomponent
+  //   models during the bake anyway)
     @Override
     public Collection<ResourceLocation> getDependencies() {
       return ImmutableList.copyOf(new ResourceLocation[]{MODEL_CORE, MODEL_UP, MODEL_DOWN, MODEL_WEST, MODEL_EAST, MODEL_NORTH, MODEL_SOUTH});
     }
 
+    // return all the textures used by this model (not strictly needed for this example because we load all the subcomponent
+    //   models during the bake anyway)
     @Override
     public Collection<ResourceLocation> getTextures() {
       return ImmutableList.copyOf(new ResourceLocation[]{TEXTURE_SHEET});
     }
 
+    //  Bake the subcomponents into a CompositeModel
     @Override
     public IFlexibleBakedModel bake(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
       IModel subComponent = ModelLoaderRegistry.getModel(MODEL_CORE);

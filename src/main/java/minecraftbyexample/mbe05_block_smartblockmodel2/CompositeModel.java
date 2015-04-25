@@ -18,6 +18,13 @@ import java.util.List;
 
 /**
  * Created by TheGreyGhost on 22/04/2015.
+ * CompositeModel is the ISmartBlockModel used to create a custom IBakedModel based on the web block's IBlockState
+ * The Model is constructed from the various models corresponding to the subcomponents:
+ * 1) "core" for the solid core in the middle of the web
+ * 2) up, down, north, south, east, west for each "stem" that extends from the core in the centre to the edge of the block
+ *   (eg the up model connects the core to the top face of the block)
+ * An IBakedModel is just a list of quads; the composite model is created by concatenating the quads from the relevant
+ *   subcomponents.
  */
 public class CompositeModel implements IFlexibleBakedModel, ISmartBlockModel {
 
@@ -49,6 +56,8 @@ public class CompositeModel implements IFlexibleBakedModel, ISmartBlockModel {
   private boolean north = false;
   private boolean south = false;
 
+  // quads that correspond to faces of the cube (up, down, north, south, east, west).  A face may be hidden if
+  //   the model's 'cullface' flag is true and it touches the adjacent block
   @Override
   public List<BakedQuad> getFaceQuads(EnumFacing side) {
     List<BakedQuad> allFaceQuads = new LinkedList<BakedQuad>();
@@ -74,6 +83,7 @@ public class CompositeModel implements IFlexibleBakedModel, ISmartBlockModel {
     return allFaceQuads;
   }
 
+  // general quads that can face in any direction
   @Override
   public List<BakedQuad> getGeneralQuads() {
     List<BakedQuad> allGeneralQuads = new LinkedList<BakedQuad>();
@@ -124,6 +134,9 @@ public class CompositeModel implements IFlexibleBakedModel, ISmartBlockModel {
     return modelCore.getItemCameraTransforms();
   }
 
+  // returns the vertex format for this model (each vertex in the list of quads can have a variety of information
+  //   associated with it - for example, not just position and texture information, but also colour, world brightness,
+  //   etc.  Just use DEFAULT_BAKED_FORMAT unless you really know what you're doing...
   @Override
   public VertexFormat getFormat() {
     return Attributes.DEFAULT_BAKED_FORMAT;
@@ -131,6 +144,8 @@ public class CompositeModel implements IFlexibleBakedModel, ISmartBlockModel {
 
   // This method is used to create a suitable IBakedModel based on the IBlockState of the block being rendered.
   // If IBlockState is an instance of IExtendedBlockState, you can use it to pass in any information you want.
+  // Instead of creating & returning a new instance, we can just modifying this one's member variables, because it
+  //  is used for rendering immediately after returning
   @Override
   public IBakedModel handleBlockState(IBlockState iBlockState) {
     if (iBlockState instanceof IExtendedBlockState) {
