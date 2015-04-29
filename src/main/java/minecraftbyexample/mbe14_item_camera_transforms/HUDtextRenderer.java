@@ -159,7 +159,7 @@ public class HUDtextRenderer
       private SelectedField(int index) {fieldIndex = index;}
       public final int fieldIndex;
       private static final SelectedField FIRST_FIELD = TRANSFORM;
-      private static final SelectedField LAST_FIELD = RESTORE_DEFAULT;
+      private static final SelectedField LAST_FIELD = PRINT;
 
       public static SelectedField getFieldName(int indexToFind)
       {
