@@ -18,8 +18,8 @@ public class ModelBakeEventHandler {
 
   private ModelBakeEventHandler() {};
 
-  // Called after all the other block models have been added to the modelRegistry, but before baking.
-  // Allows us to manipulate the modelRegistry before models are baked.
+  // Called after all the other baked block models have been added to the modelRegistry
+  // Allows us to manipulate the modelRegistry before BlockModelShapes caches them.
   @SubscribeEvent
   public void onModelBakeEvent(ModelBakeEvent event)
   {

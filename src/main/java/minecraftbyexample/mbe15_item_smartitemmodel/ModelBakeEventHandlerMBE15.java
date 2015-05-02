@@ -1,4 +1,4 @@
-package minecraftbyexample.mbe15_item_smartitemmodel.mbe04_block_smartblockmodel1;
+package minecraftbyexample.mbe15_item_smartitemmodel;
 
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraftforge.client.event.ModelBakeEvent;
@@ -13,24 +13,24 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
  * For the camouflage block, it will map from
  *  CamouflageISmartBlockModelFactory.modelResourceLocation to our CamouflageISmartBlockModelFactory instance
  */
-public class ModelBakeEventHandler {
-  public static final ModelBakeEventHandler instance = new ModelBakeEventHandler();
+public class ModelBakeEventHandlerMBE15 {
+  public static final ModelBakeEventHandlerMBE15 instance = new ModelBakeEventHandlerMBE15();
 
-  private ModelBakeEventHandler() {};
+  private ModelBakeEventHandlerMBE15() {};
 
-  // Called after all the other block models have been added to the modelRegistry, but before baking.
-  // Allows us to manipulate the modelRegistry before models are baked.
+  // Called after all the other baked block models have been added to the modelRegistry
+  // Allows us to manipulate the modelRegistry before BlockModelShapes caches them.
   @SubscribeEvent
   public void onModelBakeEvent(ModelBakeEvent event)
   {
     // Find the existing mapping for CamouflageISmartBlockModelFactory - it will have been added automatically because
     //  we registered a custom BlockStateMapper for it (using ModelLoader.setCustomStateMapper)
     // Replace the mapping with our ISmartBlockModel.
-    Object object =  event.modelRegistry.getObject(CamouflageISmartBlockModelFactory.modelResourceLocation);
+    Object object =  event.modelRegistry.getObject(ChessboardSmartItemModel.modelResourceLocation);
     if (object instanceof IBakedModel) {
       IBakedModel existingModel = (IBakedModel)object;
-      CamouflageISmartBlockModelFactory customModel = new CamouflageISmartBlockModelFactory(existingModel);
-      event.modelRegistry.putObject(CamouflageISmartBlockModelFactory.modelResourceLocation, customModel);
+      ChessboardSmartItemModel customModel = new ChessboardSmartItemModel(existingModel);
+      event.modelRegistry.putObject(ChessboardSmartItemModel.modelResourceLocation, customModel);
     }
   }
 }

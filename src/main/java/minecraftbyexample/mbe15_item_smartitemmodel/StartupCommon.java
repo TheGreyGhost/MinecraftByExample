@@ -1,4 +1,4 @@
-package minecraftbyexample.mbe15_item_smartitemmodel.mbe04_block_smartblockmodel1;
+package minecraftbyexample.mbe15_item_smartitemmodel;
 
 import net.minecraftforge.fml.common.registry.GameRegistry;
 

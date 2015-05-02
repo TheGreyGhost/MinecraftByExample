@@ -1,4 +1,4 @@
-package minecraftbyexample.mbe15_item_smartitemmodel.mbe04_block_smartblockmodel1;
+package minecraftbyexample.mbe15_item_smartitemmodel;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -19,4 +19,5 @@ public class ItemChessBoard extends Item
     this.setMaxStackSize(MAXIMUM_NUMBER_OF_COUNTERS);
     this.setCreativeTab(CreativeTabs.tabMisc);   // the item will appear on the Miscellaneous tab in creative
   }
+
 }
