@@ -1,21 +1,28 @@
 package minecraftbyexample.mbe15_item_smartitemmodel;
 
+import com.google.common.primitives.Ints;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.FaceBakery;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Vec3;
 import net.minecraftforge.client.model.ISmartBlockModel;
 import net.minecraftforge.client.model.ISmartItemModel;
 import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -44,6 +51,11 @@ public class ChessboardSmartItemModel implements ISmartItemModel {
   //   isn't stored or cached and is discarded after rendering.  Haven't run into any problems yet
   @Override
   public IBakedModel handleItemState(ItemStack stack) {
+    numberOfChessPieces = 0;
+    if (stack != null) {
+      numberOfChessPieces = stack.stackSize;
+    }
+
     return this;
   }
 
@@ -59,11 +71,21 @@ public class ChessboardSmartItemModel implements ISmartItemModel {
 
   @Override
   public List getGeneralQuads() {
+    Item itemBlockSimple = GameRegistry.findItem("minecraftbyexample", "mbe01_block_simple");
+    ItemStack itemStack = new ItemStack(itemBlockSimple);
+    IBakedModel baseCube = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(itemStack);
 
+    List<BakedQuad> combinedQuadsList = new ArrayList();
 
-    FaceBakery.makeBakedQuad() can be useful for generating quads
+//    List<BakedQuad> combinedQuadsList = new ArrayList(baseCube.getGeneralQuads());
+    for (EnumFacing facing : EnumFacing.values()) {
+      combinedQuadsList.addAll(baseCube.getFaceQuads(facing));
+    }
+//    combinedQuadsList.addAll(getChessPiecesQuads(numberOfChessPieces));
+    return combinedQuadsList;
 
-    return baseChessboardModel.getGeneralQuads();
+//    FaceBakery.makeBakedQuad() can be useful for generating quads
+
   }
 
   // not needed for items, but hey
@@ -87,6 +109,92 @@ public class ChessboardSmartItemModel implements ISmartItemModel {
     return baseChessboardModel.getItemCameraTransforms();
   }
 
+  public List<BakedQuad> getChessPiecesQuads(int numberOfPieces)
+  {
+    final int MIN_NUMBER_OF_PIECES = 1;
+    final int PIECES_PER_ROW = 8;
+    final int NUMBER_OF_ROWS = 8;
+    final int MAX_NUMBER_OF_PIECES = PIECES_PER_ROW * NUMBER_OF_ROWS;
+
+    TextureAtlasSprite chessPieceTexture = Minecraft.getMinecraft().getTextureMapBlocks()
+                                                    .getAtlasSprite("minecraft:blocks/diamond_block");
+
+    List<BakedQuad> returnList = new ArrayList<BakedQuad>(64);
+    if (numberOfPieces < MIN_NUMBER_OF_PIECES || numberOfPieces > MAX_NUMBER_OF_PIECES) {
+      return returnList;
+    }
+
+    double xposvble = Minecraft.getMinecraft().getRenderViewEntity().posX / 100.0;
+    double zposvble = Minecraft.getMinecraft().getRenderViewEntity().posZ / 100.0;
+    final float FRONT_FACE_POSITION = (float)zposvble;
+    final float BACK_FACE_POSITION = (float)xposvble;
+    final float FRACTION_OF_WIDTH_OCCUPIED_BY_A_PIECE = 0.75F;
+    final float FRACTION_OF_HEIGHT_OCCUPIED_BY_A_PIECE = 0.75F;
+    final float PIECE_WIDTH = 1.0F / PIECES_PER_ROW * FRACTION_OF_WIDTH_OCCUPIED_BY_A_PIECE;
+    final float PIECE_HEIGHT = 1.0F / NUMBER_OF_ROWS * FRACTION_OF_HEIGHT_OCCUPIED_BY_A_PIECE;
+
+    int row = 0;
+    int col = 0;
+    for (int i = 0; i < numberOfPieces; ++i) {
+      float xposmiddle = ((float)col + 0.5F)/PIECES_PER_ROW;
+      float zposmiddle = ((float)row + 0.5F)/NUMBER_OF_ROWS;
+      float zpos = FRONT_FACE_POSITION;
+
+//      final int ITEM_RENDER_LAYER_NONE = -1;
+      final int ITEM_RENDER_LAYER0 = 0;
+      final int ITEM_RENDER_LAYER1 = 1;
+
+      // make a baked quad for each side of the chessboard i.e.front and back
+
+      BakedQuad nextPieceFront = createSidedBakedQuad(xposmiddle - PIECE_WIDTH/2.0F, xposmiddle + PIECE_WIDTH/2.0F,
+                                                 zposmiddle - PIECE_HEIGHT/2.0F, zposmiddle + PIECE_HEIGHT/2.0F,
+                                                 FRONT_FACE_POSITION,
+                                                 ITEM_RENDER_LAYER0, chessPieceTexture, EnumFacing.SOUTH
+                                                 );
+      BakedQuad nextPieceBack = createSidedBakedQuad(xposmiddle - PIECE_WIDTH/2.0F, xposmiddle + PIECE_WIDTH/2.0F,
+                                                    zposmiddle - PIECE_HEIGHT/2.0F, zposmiddle + PIECE_HEIGHT/2.0F,
+                                                    BACK_FACE_POSITION,
+                                                    ITEM_RENDER_LAYER0, chessPieceTexture, EnumFacing.NORTH
+                                                   );
+      returnList.add(nextPieceFront);
+      returnList.add(nextPieceBack);
+
+      ++col;
+      if (col >= PIECES_PER_ROW) {
+        col = 0;
+        ++row;
+      }
+    }
+    return returnList;
+  }
+
+  // creates a baked quad for the given side.
+  // when you are looking at the side face on, the quad is centred at [centreLR, centreUD]
+  // the width of the quad is width, the height is height.
+  //  the depth of the quad (perpendicular to the flat face you can see) is depthPos
+  private BakedQuad createSidedBakedQuad(float centreLR, float width, float centreUD, float height, float depthPos,
+                                         int itemRenderLayer,
+                                         TextureAtlasSprite texture, EnumFacing side)
+  {
+//    float x1, x2, x3;
+//    float y1, y2, y3;
+//    float z1, z2, z3;
+//
+//    switch (side) {
+//
+//
+//
+//
+//    }
+//
+//    return new BakedQuad(Ints.concat(vertexToInts(width, top, z, Color.WHITE.getRGB(), texture, 16, 0),
+//                                     vertexToInts(width, height, z, Color.WHITE.getRGB(), texture, 16, 16),
+//                                     vertexToInts(left, height, z, Color.WHITE.getRGB(), texture, 0, 16),
+//                                     vertexToInts(left, top, z, Color.WHITE.getRGB(), texture, 0, 0)    ),
+//                         itemRenderLayer, side);
+    return null;
+  }
+
   private int[] vertexToInts(float x, float y, float z, int color, TextureAtlasSprite texture, float u, float v)
   {
     return new int[] {
@@ -100,46 +208,6 @@ public class ChessboardSmartItemModel implements ISmartItemModel {
     };
   }
 
-  private BakedQuad createSidedBakedQuad(float x1, float x2, float z1, float z2, float y, TextureAtlasSprite texture, EnumFacing side)
-  {
-    Vec3 v1 = rotate(new Vec3(x1 - .5, y - .5, z1 - .5), side).addVector(.5, .5, .5);
-    Vec3 v2 = rotate(new Vec3(x1 - .5, y - .5, z2 - .5), side).addVector(.5, .5, .5);
-    Vec3 v3 = rotate(new Vec3(x2 - .5, y - .5, z2 - .5), side).addVector(.5, .5, .5);
-    Vec3 v4 = rotate(new Vec3(x2 - .5, y - .5, z1 - .5), side).addVector(.5, .5, .5);
-    return new BakedQuad(Ints.concat(
-            vertexToInts((float)v1.xCoord, (float)v1.yCoord, (float)v1.zCoord, -1, texture, 0, 0),
-            vertexToInts((float)v2.xCoord, (float)v2.yCoord, (float)v2.zCoord, -1, texture, 0, 16),
-            vertexToInts((float)v3.xCoord, (float)v3.yCoord, (float)v3.zCoord, -1, texture, 16, 16),
-            vertexToInts((float)v4.xCoord, (float)v4.yCoord, (float)v4.zCoord, -1, texture, 16, 0)
-    ), -1, side);
-  }
-
-  @Override
-  public List<BakedQuad> getGeneralQuads()
-  {
-    int len = cubeSize * 5 + 1;
-    List<BakedQuad> ret = new ArrayList<BakedQuad>();
-    for(EnumFacing f : EnumFacing.values())
-    {
-      ret.add(createSidedBakedQuad(0, 1, 0, 1, 1, base, f));
-      for(int i = 0; i < cubeSize; i++)
-      {
-        for(int j = 0; j < cubeSize; j++)
-        {
-          if(state != null)
-          {
-            Integer value = (Integer)state.getValue(properties[f.ordinal()]);
-            if(value != null && (value & (1 << (i * cubeSize + j))) != 0)
-            {
-              ret.add(createSidedBakedQuad((float)(1 + i * 5) / len, (float)(5 + i * 5) / len, (float)(1 + j * 5) / len, (float)(5 + j * 5) / len, 1.0001f, overlay, f));
-            }
-          }
-        }
-      }
-    }
-    return ret;
-  }
-
-
   private IBakedModel baseChessboardModel;
+  private int numberOfChessPieces;
 }
