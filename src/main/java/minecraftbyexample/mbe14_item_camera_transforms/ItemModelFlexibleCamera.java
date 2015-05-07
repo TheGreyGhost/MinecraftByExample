@@ -77,18 +77,20 @@ public class ItemModelFlexibleCamera implements IBakedModel, ISmartBlockModel, I
   @Override
   public IBakedModel handleBlockState(IBlockState state) {
     if (iBakedModel instanceof ISmartBlockModel) {
-      return ((ISmartBlockModel)iBakedModel).handleBlockState(state);
+      IBakedModel baseModel = ((ISmartBlockModel)iBakedModel).handleBlockState(state);
+      return new ItemModelFlexibleCamera(baseModel, updateLink);
     } else {
-      return iBakedModel;
+      return this;
     }
   }
 
   @Override
   public IBakedModel handleItemState(ItemStack stack) {
     if (iBakedModel instanceof  ISmartItemModel) {
-      return ((ISmartItemModel)iBakedModel).handleItemState(stack);
+      IBakedModel baseModel = ((ISmartItemModel)iBakedModel).handleItemState(stack);
+      return new ItemModelFlexibleCamera(baseModel, updateLink);
     } else {
-      return iBakedModel;
+      return this;
     }
   }
 
