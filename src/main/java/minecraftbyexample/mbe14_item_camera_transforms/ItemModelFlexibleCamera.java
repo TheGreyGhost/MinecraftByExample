@@ -23,7 +23,7 @@ import java.util.List;
  *   b) forcedTransform is the transform to apply
  * Models which don't match itemModelToOverride will use their original transform
  */
-public class ItemModelFlexibleCamera implements IBakedModel, ISmartBlockModel, ISmartItemModel
+public class ItemModelFlexibleCamera implements IBakedModel, ISmartItemModel
 {
   public ItemModelFlexibleCamera(IBakedModel i_modelToWrap, UpdateLink linkToCurrentInformation)
   {
@@ -73,16 +73,6 @@ public class ItemModelFlexibleCamera implements IBakedModel, ISmartBlockModel, I
   }
 
   private final IBakedModel iBakedModel;
-
-  @Override
-  public IBakedModel handleBlockState(IBlockState state) {
-    if (iBakedModel instanceof ISmartBlockModel) {
-      IBakedModel baseModel = ((ISmartBlockModel)iBakedModel).handleBlockState(state);
-      return new ItemModelFlexibleCamera(baseModel, updateLink);
-    } else {
-      return this;
-    }
-  }
 
   @Override
   public IBakedModel handleItemState(ItemStack stack) {

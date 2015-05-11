@@ -19,5 +19,4 @@ public class ItemChessBoard extends Item
     this.setMaxStackSize(MAXIMUM_NUMBER_OF_COUNTERS);
     this.setCreativeTab(CreativeTabs.tabMisc);   // the item will appear on the Miscellaneous tab in creative
   }
-
 }

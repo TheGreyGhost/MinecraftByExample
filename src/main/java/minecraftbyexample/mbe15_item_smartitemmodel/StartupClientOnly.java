@@ -23,12 +23,10 @@ public class StartupClientOnly
 {
   public static void preInitClientOnly()
   {
-
     // ModelBakeEvent will be used to add our ISmartItemModel to the ModelManager's registry (the
-    //  registry used to map all the ModelResourceLocations to IBlockModels).  For the stone example there is a map from
-    // ModelResourceLocation("minecraft:granite#inventory") to an IBakedModel created from models/block/granite.json.
+    //  registry used to map all the ModelResourceLocations to IBlockModels).
     // For the chessboard item, it will map from
-    // "minecraftbyexample: to our SmartChessboardModel instance
+    // "minecraftbyexample:mbe15_item_chessboard#inventory to our SmartChessboardModel instance
     MinecraftForge.EVENT_BUS.register(ModelBakeEventHandlerMBE15.instance);
   }
 
