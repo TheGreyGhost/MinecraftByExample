@@ -29,6 +29,7 @@ If you want more information and explanatory text about the concepts, the follow
   - [MBE12][12] - an item that stores extra information in NBT, also illustrates the "in use" animation similar to drawing a bow
   - [MBE13][13] - customise Mining behaviour of Blocks and Items - several test classes that show how mining works
   - [MBE14][14] - an interactive helper tool to adjust the ItemCameraTransforms for your custom item
+  - [MBE15][15] - a chessboard item with 1 - 64 pieces; uses ISmartItemModel
 
 ### TileEntities
   - [MBE20][20] - using a tile entity to store information about a block - also shows examples of using NBT storage
@@ -96,6 +97,7 @@ Check out [this video][forge_installation] for more help installing Forge.
 [12]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe12_item_nbt_animate
 [13]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe14_item_camera_transforms
 [14]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe14_item_camera_transforms
+[15]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe15_item_smartitemmodel
 
 [20]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe20_tileentity_data
 [21]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe21_tileentityspecialrenderer

@@ -32,6 +32,7 @@ Items
   MBE12 - an item that stores extra information in NBT, also illustrates the "in use" animation similar to drawing a bow
   MBE13 - customise Mining behaviour of Blocks and Items - several test classes that show how mining works
   MBE14 - an interactive helper tool to adjust the ItemCameraTransforms for your custom item
+  MBE15 - a chessboard item with 1 - 64 pieces; uses ISmartItemModel
 
 TileEntities
   MBE20 - using a tile entity to store information about a block - also shows examples of using NBT storage

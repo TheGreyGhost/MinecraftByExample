@@ -13,7 +13,7 @@ This example shows the basics of using an ISmartBlockModel to draw a chessboard 
 
 How it works:
 (1) An Item is defined and loaded from a BlockModel json file as normal (see StartupClientOnly).
-(2) ModelBakeEvent is then used to find the item's IBakedModel in the modelRegistry and replace it with a ISmartBlockModel
+(2) ModelBakeEvent is then used to find the item's IBakedModel in the modelRegistry and replace it with a ISmartItemModel
     (ChessboardSmartItemModel)
 (4) Immediately before the render, ChessboardSmartItemModel.handleItemState(itemStack) is called, which looks at the number of items
     in the stack (1 - 64) and stores it in the ChessboardSmartItemModel instance for later use ("numberOfChessPieces")
@@ -33,6 +33,7 @@ resources\assets\minecraftbyexample\models\item\mbe15_item_smartitemmodel - the 
 resources\assets\minecraftbyexample\textures\items\mbe15_chessboard - the texture used for the chessboard
 
 More background information:
-
+See also MBE04 and MBE05 for different ways of inserting your ISmartItemModel into the model registry and of combining
+  existing models into your smart model.
 --------
 Common errors:
