@@ -1,14 +1,11 @@
 package minecraftbyexample.mbe08_creative_tab;
 
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.Iterator;
 import java.util.List;
 
 // This creative tab is very similar to the basic CreativeTab, but overrides displayAllReleventItems to

@@ -1,7 +1,5 @@
 package minecraftbyexample.mbe05_block_smartblockmodel2;
 
-import minecraftbyexample.mbe04_block_smartblockmodel1.CamouflageISmartBlockModelFactory;
-import minecraftbyexample.mbe04_block_smartblockmodel1.ModelBakeEventHandler;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
@@ -9,7 +7,6 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**

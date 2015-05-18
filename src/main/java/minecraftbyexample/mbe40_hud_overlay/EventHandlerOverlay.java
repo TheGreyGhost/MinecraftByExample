@@ -3,10 +3,9 @@ package minecraftbyexample.mbe40_hud_overlay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.item.ItemStack;
-import org.lwjgl.opengl.GL11;
-
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.lwjgl.opengl.GL11;
 
 /**
  * @author Nephroid

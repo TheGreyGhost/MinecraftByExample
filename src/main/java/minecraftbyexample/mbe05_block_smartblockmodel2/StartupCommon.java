@@ -1,6 +1,5 @@
 package minecraftbyexample.mbe05_block_smartblockmodel2;
 
-import minecraftbyexample.mbe04_block_smartblockmodel1.BlockCamouflage;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**

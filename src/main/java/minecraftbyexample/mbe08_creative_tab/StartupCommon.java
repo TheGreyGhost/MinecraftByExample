@@ -1,11 +1,7 @@
 package minecraftbyexample.mbe08_creative_tab;
 
-import minecraftbyexample.mbe10_item_simple.ItemSimple;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockBed;
-import net.minecraft.block.BlockDirt;
 import net.minecraft.block.BlockHardenedClay;
-import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;

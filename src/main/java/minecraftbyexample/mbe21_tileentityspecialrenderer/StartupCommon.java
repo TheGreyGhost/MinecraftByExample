@@ -1,6 +1,5 @@
 package minecraftbyexample.mbe21_tileentityspecialrenderer;
 
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**

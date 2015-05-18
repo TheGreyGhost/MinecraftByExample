@@ -1,9 +1,5 @@
 package minecraftbyexample.mbe70_configuration;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import minecraftbyexample.MinecraftByExample;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -16,6 +12,10 @@ import net.minecraftforge.fml.client.config.GuiConfig;
 import net.minecraftforge.fml.client.config.GuiConfigEntries;
 import net.minecraftforge.fml.client.config.GuiConfigEntries.CategoryEntry;
 import net.minecraftforge.fml.client.config.IConfigElement;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class MBEGuiFactory implements IModGuiFactory 
 {
