@@ -2,6 +2,7 @@ package minecraftbyexample.mbe60_network_messages;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * User: The Grey Ghost
@@ -20,6 +21,11 @@ public class StartupClientOnly
 {
   public static void preInitClientOnly()
   {
+    // Client-side message handler must be registered in clientproxy only, unless you are very careful to keep all
+    //   client-side-only code out of your client-side message handler.
+    //  See further discussion in StartupCommon.
+    StartupCommon.simpleNetworkWrapper.registerMessage(MessageHandlerOnClient.class, TargetEffectMessageToClient.class,
+                                                       StartupCommon.TARGET_EFFECT_MESSAGE_ID, Side.CLIENT);
   }
 
   public static void initClientOnly()

@@ -50,6 +50,8 @@ More background information:
   https://github.com/MinecraftForge/MinecraftForge/blob/master/src/test/java/net/minecraftforge/debug/ModelBakeEventDebug.java
 - another way of implementing ISmartBlockModel, also explains IExtendedBlockState
   http://www.minecraftforge.net/forum/index.php/topic,28714.0.html
+- A way to automate insertion of your ISmartBlockModel into the model registry, useful if you have lots of models
+  http://www.minecraftforge.net/forum/index.php/topic,26267.msg158055.html#msg158055
 
 Useful vanilla classes to look at (for BlockStateMapping):  BlockModelShapes.registerAllBlocks()
 
@@ -64,7 +66,7 @@ BlockRendererDispatcher.getModelFromBlockState()
 YourCustomBlock.getActualState() - called just before render - can add a dummy method specially for use by breakpoint
 
 A conditional breakpoint will often be very useful to break when your block is being processed, for example
-
+BlockRendererDispatcher::
   public IBakedModel getModelFromBlockState(IBlockState iBlockState, IBlockAccess world, BlockPos pos)
     {
       Block block = iBlockState.getBlock();

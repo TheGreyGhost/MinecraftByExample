@@ -5,10 +5,10 @@ This example shows how to use ISmartItemModel in conjunction with ModelBakeEvent
 Normally, it can be difficult to customise your item's appearance without creating a new BakedModel for every different
   state the item has.  For example, an item which shows the time in hours and minutes would need 24 * 60 different
   BakedModels.
-ISmartBlockModel lets you change the item's appearance, typically based on NBT information stored within the itemstack,
+ISmartItemModel lets you change the item's appearance, typically based on NBT information stored within the itemstack,
   by adding extra BakedQuads that will be rendered.
 
-This example shows the basics of using an ISmartBlockModel to draw a chessboard with 1 - 64 checker pieces located on
+This example shows the basics of using an ISmartItemModel to draw a chessboard with 1 - 64 checker pieces located on
   the chessboard squares.
 
 How it works:
