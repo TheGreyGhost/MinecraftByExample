@@ -7,11 +7,10 @@ import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.client.model.Attributes;
-import net.minecraftforge.client.model.IFlexibleBakedModel;
-import net.minecraftforge.client.model.ISmartBlockModel;
-import net.minecraftforge.client.model.ISmartItemModel;
+import net.minecraftforge.client.model.*;
+import org.apache.commons.lang3.tuple.Pair;
 
+import javax.vecmath.Matrix4f;
 import java.util.List;
 
 /**
@@ -25,10 +24,21 @@ import java.util.List;
  *   a) itemModelToOverride selects the item to be overridden
  *   b) forcedTransform is the transform to apply
  * Models which don't match itemModelToOverride will use their original transform
+ *
+ * The wrapper currently understands IFlexibleBakedModel, ISmartItemModel, ISmartBlockModel, and IPerspectiveAwareModel
  */
 public class ItemModelFlexibleCamera implements IFlexibleBakedModel, ISmartItemModel, ISmartBlockModel
 {
-  public ItemModelFlexibleCamera(IBakedModel i_modelToWrap, UpdateLink linkToCurrentInformation)
+  public static ItemModelFlexibleCamera getWrappedModel(IBakedModel modelToWrap, UpdateLink linkToCurrentInformation)
+  {
+    if (modelToWrap instanceof IPerspectiveAwareModel) {
+      return new ItemModelFlexibleCameraPerspectiveAware(modelToWrap, linkToCurrentInformation);
+    } else {
+      return new ItemModelFlexibleCamera(modelToWrap, linkToCurrentInformation);
+    }
+  }
+
+  private ItemModelFlexibleCamera(IBakedModel i_modelToWrap, UpdateLink linkToCurrentInformation)
   {
     updateLink = linkToCurrentInformation;
     iBakedModel = i_modelToWrap;
@@ -88,7 +98,7 @@ public class ItemModelFlexibleCamera implements IFlexibleBakedModel, ISmartItemM
 
   @Override
   public IBakedModel handleItemState(ItemStack stack) {
-    if (iBakedModel instanceof  ISmartItemModel) {
+    if (iBakedModel instanceof ISmartItemModel) {
       IBakedModel baseModel = ((ISmartItemModel)iBakedModel).handleItemState(stack);
       return new ItemModelFlexibleCamera(baseModel, updateLink);
     } else {
@@ -103,6 +113,20 @@ public class ItemModelFlexibleCamera implements IFlexibleBakedModel, ISmartItemM
       return new ItemModelFlexibleCamera(baseModel, updateLink);
     } else {
       return this;
+    }
+  }
+
+  public static class ItemModelFlexibleCameraPerspectiveAware extends ItemModelFlexibleCamera implements IPerspectiveAwareModel
+  {
+    ItemModelFlexibleCameraPerspectiveAware(IBakedModel i_modelToWrap, UpdateLink linkToCurrentInformation)
+    {
+      super(i_modelToWrap, linkToCurrentInformation);
+    }
+
+    @Override
+    public Pair<IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
+      IBakedModel baseModel = getIBakedModel();
+      return ((IPerspectiveAwareModel) baseModel).handlePerspective(cameraTransformType);
     }
   }
 
