@@ -1,10 +1,15 @@
 package minecraftbyexample.mbe14_item_camera_transforms;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.client.model.Attributes;
+import net.minecraftforge.client.model.IFlexibleBakedModel;
+import net.minecraftforge.client.model.ISmartBlockModel;
 import net.minecraftforge.client.model.ISmartItemModel;
 
 import java.util.List;
@@ -21,7 +26,7 @@ import java.util.List;
  *   b) forcedTransform is the transform to apply
  * Models which don't match itemModelToOverride will use their original transform
  */
-public class ItemModelFlexibleCamera implements IBakedModel, ISmartItemModel
+public class ItemModelFlexibleCamera implements IFlexibleBakedModel, ISmartItemModel, ISmartBlockModel
 {
   public ItemModelFlexibleCamera(IBakedModel i_modelToWrap, UpdateLink linkToCurrentInformation)
   {
@@ -37,6 +42,15 @@ public class ItemModelFlexibleCamera implements IBakedModel, ISmartItemModel
   @Override
   public List getGeneralQuads() {
     return iBakedModel.getGeneralQuads();
+  }
+
+  @Override
+  public VertexFormat getFormat() {
+    if (iBakedModel instanceof IFlexibleBakedModel) {
+      return ((IFlexibleBakedModel) iBakedModel).getFormat();
+    } else {
+      return Attributes.DEFAULT_BAKED_FORMAT;
+    }
   }
 
   @Override
@@ -76,6 +90,16 @@ public class ItemModelFlexibleCamera implements IBakedModel, ISmartItemModel
   public IBakedModel handleItemState(ItemStack stack) {
     if (iBakedModel instanceof  ISmartItemModel) {
       IBakedModel baseModel = ((ISmartItemModel)iBakedModel).handleItemState(stack);
+      return new ItemModelFlexibleCamera(baseModel, updateLink);
+    } else {
+      return this;
+    }
+  }
+
+  @Override
+  public IBakedModel handleBlockState(IBlockState state) {
+    if (iBakedModel instanceof ISmartBlockModel) {
+      IBakedModel baseModel = ((ISmartBlockModel)iBakedModel).handleBlockState(state);
       return new ItemModelFlexibleCamera(baseModel, updateLink);
     } else {
       return this;
