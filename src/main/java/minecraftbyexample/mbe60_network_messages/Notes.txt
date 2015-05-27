@@ -39,3 +39,15 @@ Common errors:
 Getting the Side wrong, getting the packet ID wrong (missing, or duplicated).
 Referring to client-side vanilla objects in a server handler (this will appear to work fine in single player or a
  multiplayer hosted using "Open to LAN" but will cause a crash when installed on a dedicated server)
+
+If you get this error:
+ [22:56:00] [Netty Local Client IO #0/ERROR] [FML]: SimpleChannelHandlerWrapper exception
+ ..
+ Caused by: java.lang.InstantiationException: .....
+ ..
+ Caused by: java.lang.NoSuchMethodException: ....
+ It is probably because you have forgotten to add a default constructor to your IMessage, eg
+ public MyMessager() {
+    //  do nothing... make an empty shell to be filled with fromBytes
+ }
+
