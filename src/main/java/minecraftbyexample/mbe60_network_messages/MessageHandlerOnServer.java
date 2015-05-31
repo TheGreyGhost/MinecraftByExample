@@ -1,5 +1,7 @@
 package minecraftbyexample.mbe60_network_messages;
 
+import com.google.common.collect.ImmutableList;
+import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityTNTPrimed;
 import net.minecraft.entity.monster.EntitySnowman;
@@ -8,14 +10,19 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityEgg;
 import net.minecraft.entity.projectile.EntityLargeFireball;
 import net.minecraft.entity.projectile.EntitySnowball;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.network.handshake.NetworkDispatcher;
+import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -73,8 +80,17 @@ public class MessageHandlerOnServer implements IMessageHandler<AirstrikeMessageT
   void processMessage(AirstrikeMessageToServer message, EntityPlayerMP sendingPlayer)
   {
     // first send a message to all clients to render a "target" effect on the ground
-    TargetEffectMessageToClient msg = new TargetEffectMessageToClient(message.getTargetCoordinates());
-    StartupCommon.simpleNetworkWrapper.sendToDimension(msg, sendingPlayer.dimension);
+//    StartupCommon.simpleNetworkWrapper.sendToDimension(msg, sendingPlayer.dimension);  // DO NOT USE sendToDimension, it is buggy
+//    as of build 1419 - see https://github.com/MinecraftForge/MinecraftForge/issues/1908
+
+    int dimension = sendingPlayer.dimension;
+    MinecraftServer minecraftServer = sendingPlayer.mcServer;
+    for (EntityPlayerMP player : (List<EntityPlayerMP>)minecraftServer.getConfigurationManager().playerEntityList) {
+      TargetEffectMessageToClient msg = new TargetEffectMessageToClient(message.getTargetCoordinates());   // must generate a fresh message for every player!
+      if (dimension == player.dimension) {
+        StartupCommon.simpleNetworkWrapper.sendTo(msg, player);
+      }
+    }
 
     // spawn projectiles
     Random random = new Random();
