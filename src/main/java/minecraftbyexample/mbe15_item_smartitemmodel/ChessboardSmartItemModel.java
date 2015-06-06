@@ -222,32 +222,32 @@ public class ChessboardSmartItemModel implements ISmartItemModel {
       case WEST: {
         z1 = z2 = centreLR + width/2.0F;
         z3 = z4 = centreLR - width/2.0F;
-        y1 = y4 = centreUD - width/2.0F;
-        y2 = y3 = centreUD + width/2.0F;
+        y1 = y4 = centreUD - height/2.0F;
+        y2 = y3 = centreUD + height/2.0F;
         x1 = x2 = x3 = x4 = CUBE_MIN - forwardDisplacement;
         break;
       }
       case EAST: {
         z1 = z2 = centreLR - width/2.0F;
         z3 = z4 = centreLR + width/2.0F;
-        y1 = y4 = centreUD - width/2.0F;
-        y2 = y3 = centreUD + width/2.0F;
+        y1 = y4 = centreUD - height/2.0F;
+        y2 = y3 = centreUD + height/2.0F;
         x1 = x2 = x3 = x4 = CUBE_MAX + forwardDisplacement;
         break;
       }
       case NORTH: {
         x1 = x2 = centreLR - width/2.0F;
         x3 = x4 = centreLR + width/2.0F;
-        y1 = y4 = centreUD - width/2.0F;
-        y2 = y3 = centreUD + width/2.0F;
+        y1 = y4 = centreUD - height/2.0F;
+        y2 = y3 = centreUD + height/2.0F;
         z1 = z2 = z3 = z4 = CUBE_MIN - forwardDisplacement;
         break;
       }
       case SOUTH: {
         x1 = x2 = centreLR + width/2.0F;
         x3 = x4 = centreLR - width/2.0F;
-        y1 = y4 = centreUD - width/2.0F;
-        y2 = y3 = centreUD + width/2.0F;
+        y1 = y4 = centreUD - height/2.0F;
+        y2 = y3 = centreUD + height/2.0F;
         z1 = z2 = z3 = z4 = CUBE_MAX + forwardDisplacement;
         break;
       }
