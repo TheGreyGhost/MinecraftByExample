@@ -9,7 +9,10 @@ import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ISmartItemModel;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -111,6 +114,15 @@ public class ChessboardSmartItemModel implements ISmartItemModel {
 
     TextureAtlasSprite chessPieceTexture = Minecraft.getMinecraft().getTextureMapBlocks()
                                                     .getAtlasSprite("minecraft:blocks/diamond_block");
+    // if you want to use your own texture, you can add it to the texture map using code similar to this:
+    //   MinecraftForge.EVENT_BUS.register(new StitcherAddDigitsTexture());
+    //    public class StitcherAddDigitsTexture {
+    //      @SubscribeEvent
+    //      public void stitcherEventPre(TextureStitchEvent.Pre event) {
+    //        ResourceLocation digits = new ResourceLocation("stickmod:items/digits");
+    //        event.map.registerSprite(digits);
+    //      }
+    //    }
 
     List<BakedQuad> returnList = new ArrayList<BakedQuad>(64);
     if (numberOfPieces < MIN_NUMBER_OF_PIECES || numberOfPieces > MAX_NUMBER_OF_PIECES) {
