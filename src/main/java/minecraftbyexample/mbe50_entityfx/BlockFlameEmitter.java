@@ -1,27 +1,28 @@
-package minecraftbyexample.mbe02_block_partial;
+package minecraftbyexample.mbe50_entityfx;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.Random;
+
 /**
  * User: The Grey Ghost
  * Date: 24/12/2014
  *
- * BlockPartial uses a model which doesn't occupy the entire 1x1x1m space, and is made up of two pieces.
- * We can walk over it without colliding.
+ * BlockSimple is a ordinary solid cube with the six faces numbered from 0 - 5.
  * For background information on blocks see here http://greyminecraftcoder.blogspot.com.au/2014/12/blocks-18.html
  */
-public class BlockPartial extends Block
+public class BlockFlameEmitter extends Block
 {
-  public BlockPartial()
+  public BlockFlameEmitter()
   {
     super(Material.rock);
     this.setCreativeTab(CreativeTabs.tabBlock);   // the block will appear on the Blocks tab in creative
@@ -35,7 +36,8 @@ public class BlockPartial extends Block
   }
 
   // used by the renderer to control lighting and visibility of other blocks.
-  // set to false because this block doesn't fill the entire 1x1x1 space
+  // set to true because this block is opaque and occupies the entire 1x1x1 space
+  // not strictly required because the default (super method) is true
   @Override
   public boolean isOpaqueCube() {
     return false;
@@ -43,23 +45,34 @@ public class BlockPartial extends Block
 
   // used by the renderer to control lighting and visibility of other blocks, also by
   // (eg) wall or fence to control whether the fence joins itself to this block
-  // set to false because this block doesn't fill the entire 1x1x1 space
+  // set to true because this block occupies the entire 1x1x1 space
+  // not strictly required because the default (super method) is true
   @Override
   public boolean isFullCube() {
-    return false;
+    return true;
   }
 
-  // render using a BakedModel (mbe02_block_partial.json --> mbe02_block_partial_model.json)
+  // render using a BakedModel (mbe01_block_simple.json --> mbe01_block_simple_model.json)
   // not strictly required because the default (super method) is 3.
   @Override
   public int getRenderType() {
     return 3;
   }
 
-  // by returning a null collision bounding box we stop the player from colliding with it
   @Override
-  public AxisAlignedBB getCollisionBoundingBox(World worldIn, BlockPos pos, IBlockState state)
+  public void randomDisplayTick(World worldIn, BlockPos pos, IBlockState state, Random rand)
   {
-    return null;
+    if (worldIn.isRemote) {
+      double xpos = pos.getX() + 0.5;
+      double ypos = pos.getY() + 1.0;
+      double zpos = pos.getZ() + 0.5;
+      double velocityX = 0; // increase in x position every tick
+      double velocityY = 0; // increase in y position every tick;
+      double velocityZ = 0.05; // increase in z position every tick
+      int [] extraInfo = new int[0];
+
+      worldIn.spawnParticle(EnumParticleTypes.LAVA, xpos, ypos, zpos, velocityX, velocityY, velocityZ, extraInfo);
+    }
   }
+
 }
