@@ -3,6 +3,7 @@ package minecraftbyexample.mbe50_entityfx;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumParticleTypes;
@@ -72,6 +73,8 @@ public class BlockFlameEmitter extends Block
       int [] extraInfo = new int[0];
 
       worldIn.spawnParticle(EnumParticleTypes.LAVA, xpos, ypos, zpos, velocityX, velocityY, velocityZ, extraInfo);
+      FlameFX newEffect = new FlameFX(worldIn, xpos, ypos, zpos, velocityX, velocityY, velocityZ);
+      Minecraft.getMinecraft().effectRenderer.addEffect(newEffect);
     }
   }
 

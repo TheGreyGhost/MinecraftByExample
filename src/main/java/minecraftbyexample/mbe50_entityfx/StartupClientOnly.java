@@ -3,6 +3,7 @@ package minecraftbyexample.mbe50_entityfx;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
@@ -22,6 +23,7 @@ public class StartupClientOnly
 {
   public static void preInitClientOnly()
   {
+    MinecraftForge.EVENT_BUS.register(new TextureStitcherBreathFX());
   }
 
   public static void initClientOnly()

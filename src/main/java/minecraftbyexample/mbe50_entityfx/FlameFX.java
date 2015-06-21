@@ -1,57 +1,65 @@
-///*
-// ** 2012 Januar 1
-// **
-// ** The author disclaims copyright to this source code.  In place of
-// ** a legal notice, here is a blessing:
-// **    May you do good and not evil.
-// **    May you find forgiveness for yourself and forgive others.
-// **    May you share freely, never taking more than you give.
-// */
-//
-//package minecraftbyexample.mbe50_entityfx;
-//
-//import info.ata4.minecraft.MathF;
-//import java.util.List;
-//import net.minecraft.src.*;
-//
-///**
-// * Fluid flame particle effect.
-// *
-// * @author Nico Bergemann <barracuda415 at yahoo.de>
-// */
-//public class FlameFX extends EntityFX {
-//
-//    private Entity owner;
-//
-//    protected float particleMaxSize;
-//
-//    public float smokeChance = 0.1f;
-//    public float largeSmokeChance = 0.3f;
-//    public boolean igniteBlocks = true;
-//    public boolean igniteEntities = true;
-//    public int igniteDamage = 2;
-//    public int igniteDuration = 5;
-//    public float igniteChance = 0.12f;
-//
-//    public FlameFX(World world, double x, double y, double z, double a, double b, double c) {
-//        this(world, x, y, z, a, b, c, 4, 40);
-//    }
-//
-//    public FlameFX(World world, double x, double y, double z, double a, double b, double c, float size, int age) {
-//        super(world, x, y, z, a, b, c);
-//
-//        motionX = a * 0.1 + rand.nextGaussian() * 0.01;
-//        motionY = b * 0.1 + rand.nextGaussian() * 0.01;
-//        motionZ = c * 0.1 + rand.nextGaussian() * 0.01;
-//
-//        Block block = Block.fire;
-//
-//        setParticleTextureIndex(block.getBlockTextureFromSideAndMetadata(0, 0));
-//        particleGravity = block.blockParticleGravity;
-//        particleMaxSize = size + (float)rand.nextGaussian() * (size / 2f);
-//        particleMaxAge = age + (int) (rand.nextFloat() * (age / 2f));
-//    }
-//
+/*
+** 2012 Januar 1
+**
+** The author disclaims copyright to this source code.  In place of
+** a legal notice, here is a blessing:
+**    May you do good and not evil.
+**    May you find forgiveness for yourself and forgive others.
+**    May you share freely, never taking more than you give.
+*/
+
+package minecraftbyexample.mbe50_entityfx;
+
+import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.EntityFX;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.entity.Entity;
+import net.minecraft.init.Blocks;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
+
+import java.util.List;
+
+/**
+* Fluid flame particle effect.
+*
+* @author Nico Bergemann <barracuda415 at yahoo.de>
+*/
+public class FlameFX extends EntityFX {
+    private final ResourceLocation flameRL = new ResourceLocation("minecraftbyexample:entity/flame_fx");
+    private Entity owner;
+
+    protected float particleMaxSize;
+
+    public float smokeChance = 0.1f;
+    public float largeSmokeChance = 0.3f;
+    public boolean igniteBlocks = true;
+    public boolean igniteEntities = true;
+    public int igniteDamage = 2;
+    public int igniteDuration = 5;
+    public float igniteChance = 0.12f;
+
+    public FlameFX(World world, double x, double y, double z, double directionX, double directionY, double directionZ) {
+        this(world, x, y, z, directionX, directionY, directionZ, 4, 40);
+    }
+
+    public FlameFX(World world, double x, double y, double z, double directionX, double directionY, double directionZ,
+                   float size, int age) {
+      super(world, x, y, z, directionX, directionY, directionZ);
+
+      motionX = directionX * 0.1 + rand.nextGaussian() * 0.01;
+      motionY = directionY * 0.1 + rand.nextGaussian() * 0.01;
+      motionZ = directionZ * 0.1 + rand.nextGaussian() * 0.01;
+
+      // set the texture to the flame texture, which we have previously added using TextureStitchEvent
+      TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(flameRL.toString());
+      func_180435_a(sprite);
+      particleGravity = Blocks.fire.blockParticleGravity;  /// arbitrary block!
+      particleMaxSize = size + (float)rand.nextGaussian() * (size / 2f);
+      particleMaxAge = age + (int) (rand.nextFloat() * (age / 2f));
+    }
+
 //    public FlameFX(World world, double x, double y, double z, double a, double b, double c, FlameEmitter ft) {
 //        this(world, x, y, z, a, b, c, ft.flameSize, ft.flameLifetime);
 //
@@ -65,28 +73,34 @@
 //        igniteDuration = ft.igniteDuration;
 //        igniteChance = ft.igniteChance;
 //    }
-//
-//    @Override
-//    public int getFXLayer() {
-//        return 1;
-//    }
-//
-//    @Override
-//    public int getEntityBrightnessForRender(float f) {
-//        return 0xf00000;
-//    }
-//
-//    @Override
-//    public void onUpdate() {
-//        prevPosX = posX;
-//        prevPosY = posY;
-//        prevPosZ = posZ;
-//
-//        float lifetimeRate = (float) particleAge / (float) particleMaxAge;
+
+  /**
+   * Returns 1, which means "use a texture from the blocks + items texture sheet"
+   * @return
+   */
+    @Override
+    public int getFXLayer() {
+        return 1;
+    }
+  
+    @Override
+      public int getBrightnessForRender(float partialTick)
+      {
+        return 0xf000f0;
+      }
+
+    @Override
+    public void onUpdate() {
+        prevPosX = posX;
+        prevPosY = posY;
+        prevPosZ = posZ;
+
+        float lifetimeRate = (float) particleAge / (float) particleMaxAge;
 //        particleScale = 1 + MathF.sinL(lifetimeRate * (float)Math.PI) * particleMaxSize;
-//        setSize(0.5f * particleScale, 0.5f * particleScale);
+      particleScale = 1 +  particleMaxSize;
+        setSize(0.5f * particleScale, 0.5f * particleScale);
 //        yOffset = height / 2f;
-//
+
 //        // spawn a smoke trail after some time
 //        if (smokeChance != 0 && rand.nextFloat() < lifetimeRate && rand.nextFloat() <= smokeChance) {
 //            worldObj.spawnParticle(getSmokeParticleName(), posX, posY, posZ, motionX * 0.5, motionY * 0.5, motionZ * 0.5);
@@ -104,36 +118,36 @@
 //            setEntityDead();
 //            return;
 //        }
-//
-//        motionY += 0.02;
-//
-//        moveEntity(motionX, motionY, motionZ);
-//
-//        if (posY == prevPosY) {
-//            motionX *= 1.1;
-//            motionZ *= 1.1;
-//        }
-//
-//        motionX *= 0.96;
-//        motionY *= 0.96;
-//        motionZ *= 0.96;
-//
-//        if (onGround) {
-//            motionX *= 0.7;
-//            motionZ *= 0.7;
-//        }
-//
-//        // collision ages particles faster
-//        if (isCollided) {
-//            particleAge += 5;
-//        }
-//
+
+        motionY += 0.02;
+
+        moveEntity(motionX, motionY, motionZ);
+
+        if (posY == prevPosY) {
+            motionX *= 1.1;
+            motionZ *= 1.1;
+        }
+
+        motionX *= 0.96;
+        motionY *= 0.96;
+        motionZ *= 0.96;
+
+        if (onGround) {
+            motionX *= 0.7;
+            motionZ *= 0.7;
+        }
+
+        // collision ages particles faster
+        if (isCollided) {
+            particleAge += 5;
+        }
+
 //        // ignite environment
 //        if ((igniteEntities || igniteBlocks) && rand.nextFloat() <= igniteChance) {
 //            igniteEnvironment();
 //        }
-//    }
-//
+    }
+
 //    @Override
 //    public boolean handleWaterMovement() {
 //        return worldObj.handleMaterialAcceleration(boundingBox, Material.water, this);
@@ -247,12 +261,12 @@
 //            }
 //        }
 //    }
-//
-//    protected String getSmokeParticleName() {
-//        if (largeSmokeChance != 0 && rand.nextFloat() <= largeSmokeChance) {
-//            return "largesmoke";
-//        } else {
-//            return "smoke";
-//        }
-//    }
-//}
+
+    protected String getSmokeParticleName() {
+        if (largeSmokeChance != 0 && rand.nextFloat() <= largeSmokeChance) {
+            return "largesmoke";
+        } else {
+            return "smoke";
+        }
+    }
+}
