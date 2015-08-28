@@ -135,7 +135,7 @@ public class CompositeModel implements IFlexibleBakedModel, ISmartBlockModel {
 
   // returns the vertex format for this model (each vertex in the list of quads can have a variety of information
   //   associated with it - for example, not just position and texture information, but also colour, world brightness,
-  //   etc.  Just use DEFAULT_BAKED_FORMAT unless you really know what you're doing...
+  //   etc.)  Just use DEFAULT_BAKED_FORMAT unless you really know what you're doing...
   @Override
   public VertexFormat getFormat() {
     return Attributes.DEFAULT_BAKED_FORMAT;
@@ -144,7 +144,11 @@ public class CompositeModel implements IFlexibleBakedModel, ISmartBlockModel {
   // This method is used to create a suitable IBakedModel based on the IBlockState of the block being rendered.
   // If IBlockState is an instance of IExtendedBlockState, you can use it to pass in any information you want.
   // Instead of creating & returning a new instance, we can just modifying this one's member variables, because it
-  //  is used for rendering immediately after returning
+  //  is used for rendering immediately after returning.
+  // WARNING - this only works if the block rendering is single threaded!  Future versions of Minecraft might change
+  //   the block rendering to be multithreaded, which will cause incorrect models if we modify the this object.
+  //   --> It might be safer to return a new instance of IBakedModel each time.
+  //    Thanks to Herbix for pointing this out.
   @Override
   public IBakedModel handleBlockState(IBlockState iBlockState) {
     if (iBlockState instanceof IExtendedBlockState) {
