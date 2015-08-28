@@ -2,6 +2,9 @@ package minecraftbyexample.mbe10_item_simple;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+
+import java.awt.*;
 
 /**
  * User: The Grey Ghost
@@ -19,4 +22,5 @@ public class ItemSimple extends Item
     this.setMaxStackSize(MAXIMUM_NUMBER_OF_FROGS);
     this.setCreativeTab(CreativeTabs.tabMisc);   // the item will appear on the Miscellaneous tab in creative
   }
+
 }

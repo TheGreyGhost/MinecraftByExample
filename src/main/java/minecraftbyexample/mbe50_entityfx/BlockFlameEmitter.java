@@ -72,7 +72,7 @@ public class BlockFlameEmitter extends Block
       double velocityZ = 0.05; // increase in z position every tick
       int [] extraInfo = new int[0];
 
-      worldIn.spawnParticle(EnumParticleTypes.LAVA, xpos, ypos, zpos, velocityX, velocityY, velocityZ, extraInfo);
+//      worldIn.spawnParticle(EnumParticleTypes.LAVA, xpos, ypos, zpos, velocityX, velocityY, velocityZ, extraInfo);
       FlameFX newEffect = new FlameFX(worldIn, xpos, ypos, zpos, velocityX, velocityY, velocityZ);
       Minecraft.getMinecraft().effectRenderer.addEffect(newEffect);
     }

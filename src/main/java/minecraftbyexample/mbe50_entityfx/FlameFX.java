@@ -10,16 +10,17 @@
 
 package minecraftbyexample.mbe50_entityfx;
 
-import net.minecraft.block.Block;
+import com.sun.javafx.geom.Vec3d;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-
-import java.util.List;
 
 /**
 * Fluid flame particle effect.
@@ -48,9 +49,13 @@ public class FlameFX extends EntityFX {
                    float size, int age) {
       super(world, x, y, z, directionX, directionY, directionZ);
 
-      motionX = directionX * 0.1 + rand.nextGaussian() * 0.01;
-      motionY = directionY * 0.1 + rand.nextGaussian() * 0.01;
-      motionZ = directionZ * 0.1 + rand.nextGaussian() * 0.01;
+      Vec3 direction = new Vec3(directionX, directionY, directionZ).normalize();
+
+      final double INITIAL_SPEED = 0.1; // blocks per tick
+      final double SPEED_VARIATION_FACTOR = 0.1;
+      motionX = direction.xCoord * INITIAL_SPEED * (1 + SPEED_VARIATION_FACTOR * rand.nextGaussian());
+      motionY = direction.yCoord * INITIAL_SPEED * (1 + SPEED_VARIATION_FACTOR * rand.nextGaussian());
+      motionZ = direction.zCoord * INITIAL_SPEED * (1 + SPEED_VARIATION_FACTOR * rand.nextGaussian());
 
       // set the texture to the flame texture, which we have previously added using TextureStitchEvent
       TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(flameRL.toString());
@@ -82,7 +87,7 @@ public class FlameFX extends EntityFX {
     public int getFXLayer() {
         return 1;
     }
-  
+
     @Override
       public int getBrightnessForRender(float partialTick)
       {
@@ -96,41 +101,41 @@ public class FlameFX extends EntityFX {
         prevPosZ = posZ;
 
         float lifetimeRate = (float) particleAge / (float) particleMaxAge;
-//        particleScale = 1 + MathF.sinL(lifetimeRate * (float)Math.PI) * particleMaxSize;
-      particleScale = 1 +  particleMaxSize;
+        particleScale = 1 + MathHelper.sin(lifetimeRate * (float) Math.PI) * particleMaxSize;
         setSize(0.5f * particleScale, 0.5f * particleScale);
-//        yOffset = height / 2f;
+//        yOffset = height / 2f;  todo still necessary?
 
-//        // spawn a smoke trail after some time
-//        if (smokeChance != 0 && rand.nextFloat() < lifetimeRate && rand.nextFloat() <= smokeChance) {
-//            worldObj.spawnParticle(getSmokeParticleName(), posX, posY, posZ, motionX * 0.5, motionY * 0.5, motionZ * 0.5);
-//        }
-//
-//        if (particleAge++ >= particleMaxAge) {
-//            setEntityDead();
-//            return;
-//        }
-//
-//        // extinguish when hitting water
-//        if (handleWaterMovement()) {
-//            worldObj.spawnParticle(getSmokeParticleName(), posX, posY, posZ, 0, 0, 0);
-//
-//            setEntityDead();
-//            return;
-//        }
+        // spawn a smoke trail after some time
+        if (smokeChance != 0 && rand.nextFloat() < lifetimeRate && rand.nextFloat() <= smokeChance) {
+            worldObj.spawnParticle(getSmokeParticleID(), posX, posY, posZ, motionX * 0.5, motionY * 0.5, motionZ * 0.5);
+        }
 
-        motionY += 0.02;
+        if (particleAge++ >= particleMaxAge) {
+            setDead();
+            return;
+        }
+
+        // extinguish when hitting water
+        if (handleWaterMovement()) {
+            worldObj.spawnParticle(getSmokeParticleID(), posX, posY, posZ, 0, 0, 0);
+            setDead();
+            return;
+        }
+
+//        motionY += 0.02;   what's this for?  why rise?
 
         moveEntity(motionX, motionY, motionZ);
 
-        if (posY == prevPosY) {
-            motionX *= 1.1;
-            motionZ *= 1.1;
-        }
+//        if (posY == prevPosY) {
+//            motionX *= 1.1;
+//            motionZ *= 1.1;
+//        }
 
-        motionX *= 0.96;
-        motionY *= 0.96;
-        motionZ *= 0.96;
+        final double SPEED_LOSS_PERCENT_PER_SECOND = 20;
+        final double SPEED_MULT_PER_TICK = 1.0 - SPEED_LOSS_PERCENT_PER_SECOND / 100.0 / 20.0;
+        motionX *= SPEED_MULT_PER_TICK;
+        motionY *= SPEED_MULT_PER_TICK;
+        motionZ *= SPEED_MULT_PER_TICK;
 
         if (onGround) {
             motionX *= 0.7;
@@ -262,11 +267,11 @@ public class FlameFX extends EntityFX {
 //        }
 //    }
 
-    protected String getSmokeParticleName() {
+    protected EnumParticleTypes getSmokeParticleID() {
         if (largeSmokeChance != 0 && rand.nextFloat() <= largeSmokeChance) {
-            return "largesmoke";
+            return EnumParticleTypes.SMOKE_LARGE;
         } else {
-            return "smoke";
+            return EnumParticleTypes.SMOKE_NORMAL;
         }
     }
 }
