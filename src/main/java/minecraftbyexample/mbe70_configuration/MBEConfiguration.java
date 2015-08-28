@@ -21,10 +21,10 @@ import java.util.List;
  * 3) in the MBEConfiguration variables (fields), as native values (integer, double, etc)
  * Usage:
  * Setup:
- * (1) During your mod init(), call MBEConfiguration.init() to
+ * (1) During your mod preInit(), call MBEConfiguration.preInit() to
  *    a) set up the format of the configuration file
  *    b) load the settings from the existing file, or if it doesn't exist yet - create it with default values
- * (2) On the client proxy (not dedicated server), call clientInit() to register an OnConfigChangedEvent handler-
+ * (2) On the client proxy (not dedicated server), call clientPreInit() to register an OnConfigChangedEvent handler-
        your GUI will modify the config object, and when it is closed it will trigger a OnConfigChangedEvent, which
  *     should call syncFromGUI().
  *
@@ -32,7 +32,7 @@ import java.util.List;
  * (3) You can read the fields such as myInteger directly
  * (4) If you modify the configuration fields, you can save them to disk using syncFromFields()
  * (5) To reload the values from disk, call syncFromFile()
- * (6) If you have used a GUI to alter the config values, call syncFromGUI().  (If you called clientInit(), this
+ * (6) If you have used a GUI to alter the config values, call syncFromGUI().  (If you called clientPreInit(), this
  *     will happen automatically)
  *
  * See ForgeModContainer for more examples
@@ -50,7 +50,7 @@ public class MBEConfiguration {
   public static final String CATEGORY_NAME_GENERAL = "category_general";
   public static final String CATEGORY_NAME_OTHER = "category_other";
 
-  public static void init() {
+  public static void preInit() {
   /*
    * Here is where you specify the location from where your config file will be read, or
    * 	created if it is not present.
@@ -65,7 +65,7 @@ public class MBEConfiguration {
     syncFromFile();
   }
 
-  public static void clientInit() {
+  public static void clientPreInit() {
     //register the save config handler to the forge mod loader event bus
     // creates an instance of the static class ConfigEventHandler and has it listen
     // on the FML bus (see Notes and ConfigEventHandler for more information)

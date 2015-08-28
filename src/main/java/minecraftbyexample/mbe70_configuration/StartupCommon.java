@@ -17,7 +17,7 @@ public class StartupCommon
 {
 	public static void preInitCommon()
 	{
-    MBEConfiguration.init();
+    MBEConfiguration.preInit();
     System.out.println("MBE70: myInteger=" + MBEConfiguration.myInteger
                                + "; myBoolean=" + MBEConfiguration.myBoolean
                                + "; myString=" + MBEConfiguration.myString);

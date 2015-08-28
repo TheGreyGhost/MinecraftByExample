@@ -17,7 +17,7 @@ package minecraftbyexample.mbe70_configuration;
 public class StartupClientOnly {
 	public static void preInitClientOnly() 
 	{
-    MBEConfiguration.clientInit();  // used to set up an event handler for the GUI so that the altered values are
+    MBEConfiguration.clientPreInit();  // used to set up an event handler for the GUI so that the altered values are
                                     //  saved back to disk.
 	}
 	
