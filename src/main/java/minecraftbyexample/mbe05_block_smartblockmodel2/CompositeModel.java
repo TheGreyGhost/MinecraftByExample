@@ -48,66 +48,6 @@ public class CompositeModel implements IFlexibleBakedModel, ISmartBlockModel {
   private IBakedModel modelNorth;
   private IBakedModel modelSouth;
 
-  private boolean up = false;
-  private boolean down = false;
-  private boolean west = false;
-  private boolean east = false;
-  private boolean north = false;
-  private boolean south = false;
-
-  // quads that correspond to faces of the cube (up, down, north, south, east, west).  A face may be hidden if
-  //   the model's 'cullface' flag is true and it touches the adjacent block
-  @Override
-  public List<BakedQuad> getFaceQuads(EnumFacing side) {
-    List<BakedQuad> allFaceQuads = new LinkedList<BakedQuad>();
-    allFaceQuads.addAll(modelCore.getFaceQuads(side));
-    if (up) {
-      allFaceQuads.addAll(modelUp.getFaceQuads(side));
-    }
-    if (down) {
-      allFaceQuads.addAll(modelDown.getFaceQuads(side));
-    }
-    if (west) {
-      allFaceQuads.addAll(modelWest.getFaceQuads(side));
-    }
-    if (east) {
-      allFaceQuads.addAll(modelEast.getFaceQuads(side));
-    }
-    if (north) {
-      allFaceQuads.addAll(modelNorth.getFaceQuads(side));
-    }
-    if (south) {
-      allFaceQuads.addAll(modelSouth.getFaceQuads(side));
-    }
-    return allFaceQuads;
-  }
-
-  // general quads that can face in any direction
-  @Override
-  public List<BakedQuad> getGeneralQuads() {
-    List<BakedQuad> allGeneralQuads = new LinkedList<BakedQuad>();
-    allGeneralQuads.addAll(modelCore.getGeneralQuads());
-    if (up) {
-      allGeneralQuads.addAll(modelUp.getGeneralQuads());
-    }
-    if (down) {
-      allGeneralQuads.addAll(modelDown.getGeneralQuads());
-    }
-    if (west) {
-      allGeneralQuads.addAll(modelWest.getGeneralQuads());
-    }
-    if (east) {
-      allGeneralQuads.addAll(modelEast.getGeneralQuads());
-    }
-    if (north) {
-      allGeneralQuads.addAll(modelNorth.getGeneralQuads());
-    }
-    if (south) {
-      allGeneralQuads.addAll(modelSouth.getGeneralQuads());
-    }
-    return allGeneralQuads;
-  }
-
   @Override
   public boolean isAmbientOcclusion() {
     return modelCore.isAmbientOcclusion();
@@ -133,6 +73,18 @@ public class CompositeModel implements IFlexibleBakedModel, ISmartBlockModel {
     return modelCore.getItemCameraTransforms();
   }
 
+  @Override
+  public List<BakedQuad> getFaceQuads(EnumFacing side) {
+    //This should never be called!  The handleBlockState returns an AssembledBakedModel instead of CompositeModel
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public List<BakedQuad> getGeneralQuads() {
+    //This should never be called!  The handleBlockState returns an AssembledBakedModel instead of CompositeModel
+    throw new UnsupportedOperationException();
+  }
+
   // returns the vertex format for this model (each vertex in the list of quads can have a variety of information
   //   associated with it - for example, not just position and texture information, but also colour, world brightness,
   //   etc.)  Just use DEFAULT_BAKED_FORMAT unless you really know what you're doing...
@@ -143,16 +95,31 @@ public class CompositeModel implements IFlexibleBakedModel, ISmartBlockModel {
 
   // This method is used to create a suitable IBakedModel based on the IBlockState of the block being rendered.
   // If IBlockState is an instance of IExtendedBlockState, you can use it to pass in any information you want.
-  // Instead of creating & returning a new instance, we can just modifying this one's member variables, because it
-  //  is used for rendering immediately after returning.
-  // WARNING - this only works if the block rendering is single threaded!  Future versions of Minecraft might change
-  //   the block rendering to be multithreaded, which will cause incorrect models if we modify the this object.
-  //   --> It might be safer to return a new instance of IBakedModel each time.
-  //    Thanks to Herbix for pointing this out.
+  // You must return a new IBakedModel instance each time because the rendering code is multithreaded.
+  //   Alternatively, you can return a cached immutable instance.
+  // But you can't just set some member variables and return "this", because the multiple rendering threads may
+  //   cause the model in one thread to be overwritten by the other thread.  Thanks to Herbix for pointing this out.
+
   @Override
   public IBakedModel handleBlockState(IBlockState iBlockState) {
     if (iBlockState instanceof IExtendedBlockState) {
       IExtendedBlockState iExtendedBlockState = (IExtendedBlockState) iBlockState;
+      return new AssembledBakedModel(iExtendedBlockState);
+    }
+    return new AssembledBakedModel();
+  }
+
+  // AssembledBakedModel represents the model for this particular blockstate
+  // I have implemented it as an inner class but it doesn't have to be.
+  public class AssembledBakedModel implements IBakedModel
+  {
+    public AssembledBakedModel()
+    {
+      // default is all false
+    }
+
+    public AssembledBakedModel(IExtendedBlockState iExtendedBlockState)
+    {
       Boolean linkUp = iExtendedBlockState.getValue(Block3DWeb.LINK_UP);
       if (linkUp != null) {
         up = linkUp;
@@ -178,6 +145,92 @@ public class CompositeModel implements IFlexibleBakedModel, ISmartBlockModel {
         south = linkSouth;
       }
     }
-    return this;
+
+    private boolean up = false;
+    private boolean down = false;
+    private boolean west = false;
+    private boolean east = false;
+    private boolean north = false;
+    private boolean south = false;
+
+    // quads that correspond to faces of the cube (up, down, north, south, east, west).  A face may be hidden if
+    //   the model's 'cullface' flag is true and it touches the adjacent block
+    @Override
+    public List<BakedQuad> getFaceQuads(EnumFacing side) {
+      List<BakedQuad> allFaceQuads = new LinkedList<BakedQuad>();
+      allFaceQuads.addAll(modelCore.getFaceQuads(side));
+      if (up) {
+        allFaceQuads.addAll(modelUp.getFaceQuads(side));
+      }
+      if (down) {
+        allFaceQuads.addAll(modelDown.getFaceQuads(side));
+      }
+      if (west) {
+        allFaceQuads.addAll(modelWest.getFaceQuads(side));
+      }
+      if (east) {
+        allFaceQuads.addAll(modelEast.getFaceQuads(side));
+      }
+      if (north) {
+        allFaceQuads.addAll(modelNorth.getFaceQuads(side));
+      }
+      if (south) {
+        allFaceQuads.addAll(modelSouth.getFaceQuads(side));
+      }
+      return allFaceQuads;
+    }
+
+    // general quads that can face in any direction
+    @Override
+    public List<BakedQuad> getGeneralQuads() {
+      List<BakedQuad> allGeneralQuads = new LinkedList<BakedQuad>();
+      allGeneralQuads.addAll(modelCore.getGeneralQuads());
+      if (up) {
+        allGeneralQuads.addAll(modelUp.getGeneralQuads());
+      }
+      if (down) {
+        allGeneralQuads.addAll(modelDown.getGeneralQuads());
+      }
+      if (west) {
+        allGeneralQuads.addAll(modelWest.getGeneralQuads());
+      }
+      if (east) {
+        allGeneralQuads.addAll(modelEast.getGeneralQuads());
+      }
+      if (north) {
+        allGeneralQuads.addAll(modelNorth.getGeneralQuads());
+      }
+      if (south) {
+        allGeneralQuads.addAll(modelSouth.getGeneralQuads());
+      }
+      return allGeneralQuads;
+    }
+
+    @Override
+    public boolean isAmbientOcclusion() {
+      return modelCore.isAmbientOcclusion();
+    }
+
+    @Override
+    public boolean isGui3d() {
+      return modelCore.isGui3d();
+    }
+
+    @Override
+    public boolean isBuiltInRenderer() {
+      return false;
+    }
+
+    @Override
+    public TextureAtlasSprite getTexture() {
+      return modelCore.getTexture();
+    }
+
+    @Override
+    public ItemCameraTransforms getItemCameraTransforms() {
+      return modelCore.getItemCameraTransforms();
+    }
+
   }
+
 }

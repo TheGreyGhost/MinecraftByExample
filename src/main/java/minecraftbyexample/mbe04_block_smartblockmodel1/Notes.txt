@@ -27,6 +27,7 @@ How it works:
     IExtendedBlockState.
 (5) The IExtendedBlockState is passed to the ISmartBlockModel, which looks up the IBakedModel for the copied block and
     returns it to the caller for rendering.
+BEWARE! Rendering is multithreaded so your ISmartBlockModel must be thread-safe, preferably immutable.
 
 The camouflage block appears in the Blocks tab in the creative inventory.
 

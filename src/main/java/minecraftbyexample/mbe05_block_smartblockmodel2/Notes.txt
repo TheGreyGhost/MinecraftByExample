@@ -26,6 +26,8 @@ How it works:
     models (including or excluding each one depending on which directions have strands) and then
     returns it to the caller for rendering.
 
+BEWARE! Rendering is multithreaded so your ISmartBlockModel must be thread-safe, preferably immutable.
+
 The 3d web block appears in the Blocks tab in the creative inventory.
 
 The pieces you need to understand are located in:

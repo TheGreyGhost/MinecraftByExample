@@ -37,6 +37,7 @@ public class CamouflageISmartBlockModelFactory implements ISmartBlockModel {
   // If IBlockState is an instance of IExtendedBlockState, you can use it to pass in any information you want.
   // Some folks return a new instance of the same ISmartBlockModel; I think it is more logical to return a different
   //   class which implements IBakedModel instead of ISmartBlockModel, but it's a matter of taste.
+  //  BEWARE! Rendering is multithreaded so your ISmartBlockModel must be thread-safe, preferably immutable.
   @Override
   public IBakedModel handleBlockState(IBlockState iBlockState)
   {
@@ -78,32 +79,32 @@ public class CamouflageISmartBlockModelFactory implements ISmartBlockModel {
 
   @Override
   public List getFaceQuads(EnumFacing p_177551_1_) {
-    return null;
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public List getGeneralQuads() {
-    return null;
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public boolean isAmbientOcclusion() {
-    return false;
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public boolean isGui3d() {
-    return false;
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public boolean isBuiltInRenderer() {
-    return false;
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public ItemCameraTransforms getItemCameraTransforms() {
-    return null;
+    throw new UnsupportedOperationException();
   }
 
 }
