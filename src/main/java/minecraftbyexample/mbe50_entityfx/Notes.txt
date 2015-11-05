@@ -1,5 +1,7 @@
 MBE01_BLOCK_SIMPLE
 
+//todo update this documentation!
+
 This example is just a very simple block - an ordinary solid cube with the six faces numbered from 0 - 5.
 It will show you
 1) how to create a Block class and register it
