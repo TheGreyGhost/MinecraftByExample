@@ -45,6 +45,10 @@ If you want more information and explanatory text about the concepts, the follow
 ### Heads Up Display/Overlays
   - [MBE40][40] - simple customisations of the heads up display (hotbar, health meter)
 
+### EntityFX - particle effects
+  - [MBE50][50] - shows how to use vanilla EntityFX; also how to generate your own custom EntityFX
+
+
 ### Network
   - [MBE60][60] - send network messages between client and server
 
@@ -107,6 +111,8 @@ Check out [this video][forge_installation] for more help installing Forge.
 [35]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe35_recipes
 
 [40]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe40_hud_overlay
+
+[50]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe50_entityfx
 
 [60]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe60_network_messages
 

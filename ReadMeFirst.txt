@@ -48,6 +48,9 @@ Recipes (Crafting and Furnaces)
 HeadsUpDisplay - overlays
   MBE40 - simple customisations of the heads up display (hotbar, health meter)
 
+EntityFX - particle effects
+  MBE50 - shows how to use vanilla EntityFX; also how to generate your own custom EntityFX
+
 Network
   MBE60 - send network messages between client and server
 

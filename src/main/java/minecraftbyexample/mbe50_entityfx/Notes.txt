@@ -1,37 +1,30 @@
-MBE01_BLOCK_SIMPLE
+MBE50_ENTITYFX
 
-//todo update this documentation!
+This example shows you how to use some simple EntityFX ("particles").  Vanilla examples are the love hearts when taming
+  an animal; the smoke coming from a burning torch; the sparkles from a portal; see EnumParticleTypes for more examples
 
-This example is just a very simple block - an ordinary solid cube with the six faces numbered from 0 - 5.
-It will show you
-1) how to create a Block class and register it
-2) how to define and register the model for rendering the block
-3) how to define and register the item corresponding to the block (i.e. when the block is shown in the inventory, or in your hand)
+The example is a block (FlameEmitter) which, when you place it in the world:
+1) spits out random vanilla lava particles
+2) if any mobs are nearby - fires a string of fireballs at the mob's head.  Otherwise, fires a string of fireballs straight
+   upwards.  The fireballs are created using a custom texture and have customised movement / aging.
 
 The pieces you need to understand are located in:
-Startup
-BlockSimple
+StartupClientOnly, StartupCommon
+BlockFlameEmitter
+FlameFX
+TextureStitcherBreathFX
 resources\assets\minecraftbyexample\lang\en_US.lang - for the displayed name of the block
-resources\assets\minecraftbyexample\blockstates\mbe01_block_simple - for the blockstate definition
-resources\assets\minecraftbyexample\models\block\mbe01_block_simple_model - for the model used to render the block
-resources\assets\minecraftbyexample\textures\blocks\mbe01_***.png - textures used for the faces of the block.  The particle
-  texture, used for the flying shards when the block is destroyed, is based on the vanilla lapis lazuli block texture.
-resources\assets\minecraftbyexample\models\item\mbe01_block_simple_model - the model for rendering the block as an item
-  (i.e. in your hand, in the inventory, when thrown on the ground)
+
+The example also uses the following files to define the appearance of the block, see mbe02 for more background information
+resources\assets\minecraftbyexample\blockstates\mbe50_block_flame_emitter - for the blockstate definition
+resources\assets\minecraftbyexample\models\block\mbe50_block_flame_emitter - for the model used to render the block
 
 The block will appear in the Blocks tab in the creative inventory.
 
-For background information on
-- blocks: see here http://greyminecraftcoder.blogspot.com.au/2014/12/blocks-18.html
-- rendering blocks: see here http://greyminecraftcoder.blogspot.com.au/p/list-of-topics.html (the topics under the Block Rendering heading)
-
 --------
 Common errors:
-"Missing Model", "Missing texture", etc:
-These are caused when you have specified a filename or path which is not correct, typically:
-1) you've misspelled it
-2) the upper/lower case doesn't match
-3) you've forgotten the resource domain, eg "blockmodel" instead of "minecraftbyexample:blockmodel"
-4) the folder structure of your assets folders is incorrect
-5) If using IntelliJ 14 - the assets isn't be copied to the right place, you need to apply a fix to your build.gradle,
-  see here http://www.minecraftforge.net/forum/index.php/topic,21354.0.html
+- spawning the entityFX on the server side instead of client only.
+- messing up the coordinate settings and/or movement, so that the EntityFX is rendered out of the player's view
+- NoClassDefFoundError when you install your mod on a dedicated server:
+   you have accidentally used client-only code in a part of your code that is invoked on the dedicated server.
+   See here for more info: http://greyminecraftcoder.blogspot.com.au/2013/11/how-forge-starts-up-your-code.html

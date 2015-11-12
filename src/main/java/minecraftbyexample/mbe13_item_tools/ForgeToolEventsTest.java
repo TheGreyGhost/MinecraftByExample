@@ -1,5 +1,6 @@
 package minecraftbyexample.mbe13_item_tools;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -51,9 +52,16 @@ public class ForgeToolEventsTest
   public void playerInteractEvent(PlayerInteractEvent event)
   {
     // only show event if either the test block or the test item is involved
-    if (   (event.world.getBlockState(event.pos) != StartupCommon.blockToolTest)
-            && (event.entityPlayer == null || event.entityPlayer.getCurrentEquippedItem() == null || event.entityPlayer.getCurrentEquippedItem().getItem() != StartupCommon.itemToolsTest)) {
-      return;
+    if (event.pos != null && event.world.getBlockState(event.pos) == StartupCommon.blockToolTest) {
+    } else {
+      ItemStack heldItemStack = (event.entityPlayer == null) ? null : event.entityPlayer.getCurrentEquippedItem();
+      if (heldItemStack == null) {
+        return;
+      }
+      Item heldItem = heldItemStack.getItem();
+      if (heldItem != StartupCommon.itemToolsTest) {
+        return;
+      }
     }
 
     StartupCommon.methodCallLogger.enterMethod("Event.PlayerInteractEvent", "action=" + event.action);

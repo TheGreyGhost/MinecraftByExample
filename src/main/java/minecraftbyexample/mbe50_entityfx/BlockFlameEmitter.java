@@ -5,15 +5,12 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.swing.text.html.parser.Entity;
-import java.util.DoubleSummaryStatistics;
 import java.util.List;
 import java.util.Random;
 
@@ -23,7 +20,7 @@ import java.util.Random;
  *
  * BlockFlameEmitter is a simple block made from a couple of smaller pieces.
  * See mbe02_block_partial for more information
- * The interesting part for EntityFX is randomDisplayTick()... see below
+ * The interesting part for EntityFX is randomDisplayTick(), which spawns our FlameFX... see below.
  */
 public class BlockFlameEmitter extends Block
 {
@@ -68,7 +65,9 @@ public class BlockFlameEmitter extends Block
   // This method is called at random intervals - typically used by blocks which produce occasional effects, like
   //  smoke from a torch or stars from a portal.
   //  In this case, we use it to spawn two different types of EntityFX- vanilla, or custom.
+  // Don't forget     @SideOnly(Side.CLIENT) otherwise this will crash on a dedicated server.
   @Override
+  @SideOnly(Side.CLIENT)
   public void randomDisplayTick(World worldIn, BlockPos pos, IBlockState state, Random rand)
   {
     // EntityFX must be spawned on the client only.
@@ -104,7 +103,7 @@ public class BlockFlameEmitter extends Block
       ypos = pos.getY() + 1.0;
       zpos = pos.getZ() + 0.5;
 
-      EntityMob mobTarget = getNearestTarget(worldIn, xpos, ypos, zpos);
+      EntityMob mobTarget = getNearestTargetableMob(worldIn, xpos, ypos, zpos);
       Vec3 fireballDirection;
       if (mobTarget == null) { // no target: fire straight upwards
         fireballDirection = new Vec3(0.0, 1.0, 0.0);
@@ -141,7 +140,7 @@ public class BlockFlameEmitter extends Block
    * @param zpos
    * @return the nearest mob, or null if none within range.
    */
-  private EntityMob getNearestTarget(World world, double xpos, double ypos, double zpos) {
+  private EntityMob getNearestTargetableMob(World world, double xpos, double ypos, double zpos) {
     final double TARGETING_DISTANCE = 16;
     AxisAlignedBB targetRange = AxisAlignedBB.fromBounds(xpos - TARGETING_DISTANCE,
                                                                 ypos,

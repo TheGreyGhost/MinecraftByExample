@@ -40,6 +40,7 @@ public class FlameFX extends EntityFX
     motionZ = velocityZ;
 
     // set the texture to the flame texture, which we have previously added using TextureStitchEvent
+    //   (see TextureStitcherBreathFX)
     TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(flameRL.toString());
     func_180435_a(sprite);  // initialise the icon to our custom texture
   }
@@ -49,11 +50,10 @@ public class FlameFX extends EntityFX
    * Returns 1, which means "use a texture from the blocks + items texture sheet"
    * The vanilla layers are:
    * normal particles: ignores world brightness lighting map
-   * Layer 0 - uses the particles texture sheet (textures\particle\particles.png)
-   * Layer 1 - uses the blocks + items texture sheet
-   * <p/>
-   * lit particles: changes brightness depening on world lighting i.e. block light + sky light
-   * Layer 3 - uses the blocks + items texture sheet (I think)
+   *   Layer 0 - uses the particles texture sheet (textures\particle\particles.png)
+   *   Layer 1 - uses the blocks + items texture sheet
+   * lit particles: changes brightness depending on world lighting i.e. block light + sky light
+   *   Layer 3 - uses the blocks + items texture sheet (I think)
    *
    * @return
    */
@@ -92,7 +92,10 @@ public class FlameFX extends EntityFX
     prevPosY = posY;
     prevPosZ = posZ;
 
-    moveEntity(motionX, motionY, motionZ);
+    moveEntity(motionX, motionY, motionZ);  // simple linear motion.  You can change speed by changing motionX, motionY,
+      // motionZ every tick.  For example - you can make the particle accelerate downwards due to gravity by
+      // final double GRAVITY_ACCELERATION_PER_TICK = -0.02;
+      // motionY += GRAVITY_ACCELERATION_PER_TICK;
 
     // collision with a block makes the ball disappear.  But does not collide with entities
     if (isCollided) {
@@ -118,12 +121,12 @@ public class FlameFX extends EntityFX
    * 1) the 3D vector direction corresponding to left-right on the viewer's screen (edgeLRdirection)
    * 2) the 3D vector direction corresponding to up-down on the viewer's screen (edgeUDdirection)
    * These two vectors are calculated by the caller.
-   * For example, the top right corner of the quad on the viewer's screen is equal to the centre point of the quad
-   * (x,y,z)
-   * plus the edgeLRdirection vector multiplied by half the quad's width, plus the edgeUDdirection vector multiplied
-   * by the quad's height.
+   * For example, the top right corner of the quad on the viewer's screen is equal to:
+   * the centre point of the quad (x,y,z)
+   * plus the edgeLRdirection vector multiplied by half the quad's width
+   * plus the edgeUDdirection vector multiplied by half the quad's height.
    * NB edgeLRdirectionY is not provided because it's always 0, i.e. the top of the viewer's screen is always directly
-   * up so moving left-right on the viewer's screen doesn't affect the y coordinate position in the world
+   * up, so moving left-right on the viewer's screen doesn't affect the y coordinate position in the world
    *
    * @param worldRenderer
    * @param entity
