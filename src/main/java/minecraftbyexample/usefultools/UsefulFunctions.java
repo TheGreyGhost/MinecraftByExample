@@ -1,5 +1,7 @@
 package minecraftbyexample.usefultools;
 
+import net.minecraft.util.Vec3;
+
 /**
  * User: The Grey Ghost
  * Date: 12/01/2015
@@ -29,5 +31,11 @@ public class UsefulFunctions
     double xFraction = (x - x1) / (x2 - x1);
     return y1 + xFraction * (y2 - y1);
   }
+
+  public static Vec3 scalarMultiply(Vec3 source, double multiplier)
+  {
+    return new Vec3(source.xCoord * multiplier, source.yCoord * multiplier, source.zCoord * multiplier);
+  }
+
 
 }

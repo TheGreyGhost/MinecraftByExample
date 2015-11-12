@@ -49,7 +49,7 @@ public class BlockPartial extends Block
     return false;
   }
 
-  // render using a BakedModel (mbe01_block_simple.json --> mbe01_block_simple_model.json)
+  // render using a BakedModel (mbe02_block_partial.json --> mbe02_block_partial_model.json)
   // not strictly required because the default (super method) is 3.
   @Override
   public int getRenderType() {

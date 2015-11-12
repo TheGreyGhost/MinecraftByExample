@@ -86,6 +86,7 @@ public class TargetEffectMessageToClient implements IMessage
     // for Itemstacks - ByteBufUtils.writeItemStack()
     // for NBT tags ByteBufUtils.writeTag();
     // for Strings: ByteBufUtils.writeUTF8String();
+    System.out.println("TargetEffectMessageToClient:toBytes length=" + buf.readableBytes());  // debugging only
   }
 
   @Override
