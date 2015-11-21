@@ -32,27 +32,19 @@ public class BlockRedstoneSource extends Block
     return true;
   }
 
-  /** The name of this method is rubbish
-   *
+  /** The name of this method is rubbish.  This method is actually used to
+   * @param worldIn
+   * @param pos
+   * @param state
+   * @param side
+   * @return
    */
   @Override
   public int isProvidingWeakPower(IBlockAccess worldIn, BlockPos pos, IBlockState state, EnumFacing side)
   {
+    System.out.println("BlockRedstoneSource::isProvidingWeakPower-pos" + pos.toString() + ", state" + state.toString() + ", side" + side);
     return 15;
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   // the block will render in the SOLID layer.  See http://greyminecraftcoder.blogspot.co.at/2014/12/block-rendering-18.html for more information.
   @SideOnly(Side.CLIENT)

@@ -22,8 +22,8 @@ public class StartupCommon
   public static void preInitCommon()
   {
     // each instance of your block should have a name that is unique within your mod.  use lower case.
-    blockRedstoneSource = (BlockRedstoneSource)(new BlockRedstoneSource().setUnlocalizedName("mbe01_block_simple"));
-    GameRegistry.registerBlock(blockRedstoneSource, "mbe01_block_simple");
+    blockRedstoneSource = (BlockRedstoneSource)(new BlockRedstoneSource().setUnlocalizedName("mbe06_block_redstone_source"));
+    GameRegistry.registerBlock(blockRedstoneSource, "mbe06_block_redstone_source");
     // you don't need to register an item corresponding to the block, GameRegistry.registerBlock does this automatically.
   }
 
