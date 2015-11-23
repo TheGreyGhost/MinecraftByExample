@@ -17,13 +17,13 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
  */
 public class StartupCommon
 {
-  public static BlockRedstoneSource blockRedstoneSource;  // this holds the unique instance of your block
+  public static BlockRedstoneVariableSource blockRedstoneVariableSource;  // this holds the unique instance of your block
 
   public static void preInitCommon()
   {
     // each instance of your block should have a name that is unique within your mod.  use lower case.
-    blockRedstoneSource = (BlockRedstoneSource)(new BlockRedstoneSource().setUnlocalizedName("mbe06_block_redstone_source"));
-    GameRegistry.registerBlock(blockRedstoneSource, "mbe06_block_redstone_source");
+    blockRedstoneVariableSource = (BlockRedstoneVariableSource)(new BlockRedstoneVariableSource().setUnlocalizedName("mbe06_block_redstone_variable_source"));
+    GameRegistry.registerBlock(blockRedstoneVariableSource, "mbe06_block_redstone_variable_source");
     // you don't need to register an item corresponding to the block, GameRegistry.registerBlock does this automatically.
   }
 

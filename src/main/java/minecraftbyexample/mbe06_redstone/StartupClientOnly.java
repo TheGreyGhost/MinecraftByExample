@@ -32,10 +32,10 @@ public class StartupClientOnly
     //  the model for each item is normally done by RenderItem.registerItems(), and this is not currently aware
     //   of any extra items you have created.  Hence you have to do it manually.  This will probably change in future.
     // It must be done in the init phase, not preinit, and must be done on client only.
-    Item itemBlockSimple = GameRegistry.findItem("minecraftbyexample", "mbe06_block_redstone_source");
-    ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation("minecraftbyexample:mbe06_block_redstone_source", "inventory");
+    Item itemBlockMBE06 = GameRegistry.findItem("minecraftbyexample", "mbe06_block_redstone_variable_source");
+    ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation("minecraftbyexample:mbe06_block_redstone_variable_source", "inventory");
     final int DEFAULT_ITEM_SUBTYPE = 0;
-    Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(itemBlockSimple, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
+    Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(itemBlockMBE06, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
   }
 
   public static void postInitClientOnly()
