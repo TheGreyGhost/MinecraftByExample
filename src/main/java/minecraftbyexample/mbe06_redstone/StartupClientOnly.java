@@ -36,6 +36,10 @@ public class StartupClientOnly
     ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation("minecraftbyexample:mbe06_block_redstone_variable_source", "inventory");
     final int DEFAULT_ITEM_SUBTYPE = 0;
     Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(itemBlockMBE06, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
+
+    Item itemBlockMBE06b = GameRegistry.findItem("minecraftbyexample", "mbe06b_block_redstone_target");
+    ModelResourceLocation itemModelResourceLocationB = new ModelResourceLocation("minecraftbyexample:mbe06_block_redstone_target", "inventory");
+    Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(itemBlockMBE06b, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocationB);
   }
 
   public static void postInitClientOnly()

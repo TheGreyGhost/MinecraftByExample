@@ -2,6 +2,23 @@ MBE06_REDSTONE
 
 BlockCompressedPowered
 
+Link to website
+
+to do:
+Target that emits strong power only, when hit by arrow
+Lamp that changes colour - RGB inputs
+Signal strength meter
+Redstone wire - straight only; insulated & non-insulated; 12 types
+
+Ideas
+Lamp signal strength meter
+Mob detector
+Improved redstone wire
+Enhanced delay
+Ramp output
+Defined strength output weak power
+DirectionalOutputStrongOnly
+TransparentLogicBlock - suitable for comparator; weak power
 
 MBE01_BLOCK_SIMPLE
 

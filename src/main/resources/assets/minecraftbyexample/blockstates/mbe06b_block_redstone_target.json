@@ -1,0 +1,8 @@
+{
+    "variants": {
+           "facing=north": { "model": "minecraftbyexample:mbe06b_block_redstone_target_model"},
+            "facing=east": { "model": "minecraftbyexample:mbe06b_block_redstone_target_model", "y": 90 },
+           "facing=south": { "model": "minecraftbyexample:mbe06b_block_redstone_target_model", "y": 180 },
+            "facing=west": { "model": "minecraftbyexample:mbe06b_block_redstone_target_model", "y": 270 }
+    }
+}

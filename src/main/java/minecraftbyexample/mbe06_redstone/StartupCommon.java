@@ -17,7 +17,8 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
  */
 public class StartupCommon
 {
-  public static BlockRedstoneVariableSource blockRedstoneVariableSource;  // this holds the unique instance of your block
+  public static BlockRedstoneVariableSource blockRedstoneVariableSource;
+  public static BlockRedstoneTarget blockRedstoneTarget;
 
   public static void preInitCommon()
   {
@@ -25,6 +26,9 @@ public class StartupCommon
     blockRedstoneVariableSource = (BlockRedstoneVariableSource)(new BlockRedstoneVariableSource().setUnlocalizedName("mbe06_block_redstone_variable_source"));
     GameRegistry.registerBlock(blockRedstoneVariableSource, "mbe06_block_redstone_variable_source");
     // you don't need to register an item corresponding to the block, GameRegistry.registerBlock does this automatically.
+
+    blockRedstoneTarget = (BlockRedstoneTarget)(new BlockRedstoneTarget().setUnlocalizedName("mbe06b_block_redstone_target"));
+    GameRegistry.registerBlock(blockRedstoneTarget, "mbe06_block_redstone_target");
   }
 
   public static void initCommon()

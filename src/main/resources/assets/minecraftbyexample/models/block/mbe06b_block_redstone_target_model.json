@@ -1,0 +1,22 @@
+{
+    "textures": {
+        "particle": "minecraftbyexample:blocks/mbe06b_redstone_target",
+        "wood": "blocks/planks_oak",
+        "target": "minecraftbyexample:blocks/mbe06b_redstone_target"
+    },
+    "elements": [
+        {   "from": [ 0, 0, 15 ],
+            "to": [ 16, 16, 16 ],
+            "faces": {
+              "faces": {
+                "down":  { "uv": [  2,  0, 14,  1 ], "texture": "#wood" },
+                "up":    { "uv": [  2, 15, 14, 16 ], "texture": "#wood" },
+                "north": { "uv": [  2, 13, 14, 14 ], "texture": "#wood" },
+                "south": { "uv": [  2, 13, 14, 14 ], "texture": "#target" },
+                "west":  { "uv": [ 15, 13, 16, 14 ], "texture": "#wood" },
+                "east":  { "uv": [  0, 13,  1, 14 ], "texture": "#wood" }
+              }
+            }
+        }
+    ]
+}
