@@ -28,7 +28,7 @@ public class StartupCommon
     // you don't need to register an item corresponding to the block, GameRegistry.registerBlock does this automatically.
 
     blockRedstoneTarget = (BlockRedstoneTarget)(new BlockRedstoneTarget().setUnlocalizedName("mbe06b_block_redstone_target"));
-    GameRegistry.registerBlock(blockRedstoneTarget, "mbe06_block_redstone_target");
+    GameRegistry.registerBlock(blockRedstoneTarget, "mbe06b_block_redstone_target");
   }
 
   public static void initCommon()

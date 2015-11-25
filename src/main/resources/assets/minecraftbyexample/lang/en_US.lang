@@ -7,6 +7,7 @@ tile.mbe03_block_variants.yellow.name=MBE03 Block Variants Yellow
 tile.mbe04_block_camouflage.name=MBE04 Block Camouflage
 tile.mbe05_block_3d_web.name=MBE05 Block 3D Web
 tile.mbe06_block_redstone_variable_source.name=MBE06 Redstone Variable Source
+tile.mbe06b_block_redstone_target.name=MBE06 Redstone Target
 tile.mbe08_creative_tab_block.name=MBE08 test block
 item.mbe08_creative_tab_item.name=MBE08 test item
 itemGroup.mbe08_creative_tab=MBE08 creative tab
