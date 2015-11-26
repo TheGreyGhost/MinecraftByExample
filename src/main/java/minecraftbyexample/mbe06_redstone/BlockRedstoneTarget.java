@@ -4,15 +4,12 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -20,7 +17,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
-import java.util.Random;
 
 /**
  * User: The Grey Ghost
@@ -49,7 +45,7 @@ public class BlockRedstoneTarget extends Block
 //      {
 //        if (this.wooden)
 //        {
-//          this.checkForArrows(worldIn, pos, state);
+//          this.findMostRecentArrow(worldIn, pos, state);
 //        }
 //        else
 //        {
@@ -62,27 +58,207 @@ public class BlockRedstoneTarget extends Block
 //    }
 //  }
 
+  /**
+   * This block can provide power
+   * @return
+   */
+  @Override
+  public boolean canProvidePower()
+  {
+    return true;
+  }
+
+  /** How much weak power does this block provide to the adjacent block?  In this example - none.
+   * See http://greyminecraftcoder.blogspot.com.au/2015/11/redstone.html for more information
+   * @param worldIn
+   * @param pos the position of this block
+   * @param state the blockstate of this block
+   * @param side the side of the block - eg EAST means that this is to the EAST of the adjacent block.
+   * @return The power provided [0 - 15]
+   */
+  @Override
+  public int isProvidingWeakPower(IBlockAccess worldIn, BlockPos pos, IBlockState state, EnumFacing side)
+  {
+    return 0;
+  }
+
+  /**
+   *  The target provides strong power to the block it's mounted on (hanging on)
+   * @param worldIn
+   * @param pos the position of this block
+   * @param state the blockstate of this block
+   * @param side the side of the block - eg EAST means that this is to the EAST of the adjacent block.
+   * @return The power provided [0 - 15]
+   */
+
+  @Override
+  public int isProvidingStrongPower(IBlockAccess worldIn, BlockPos pos, IBlockState state, EnumFacing side)
+  {
+    EnumFacing targetFacing = (EnumFacing)state.getValue(PROPERTYFACING);
+
+    // only provide strong power through the back of the target.  If the target is facing east, that means
+    //   it provides power to the block which lies to the west.
+    // When this method is called by the adjacent block which lies to the west, side is east.
+
+    // The amount of power provided is related to how the arrow hit the bullseye.
+    //  Bullseye = 15; Outermost ring = 3.
+
+    if (side != targetFacing) return 0;
+    if (!(worldIn instanceof World)) return 0;
+    World world = (World)worldIn;
+    int bestRing = findBestArrowRing(world, pos, state);
+    if (bestRing < 0) return 0;
+
+    System.out.println("bestRing:" + bestRing);
+    return 15 - 2 * bestRing;
+  }
+
+
+  /**
+   * Called with an entity collides with the block.
+   * In this case - we check if an arrow has collided.
+   * @param worldIn
+   * @param pos
+   * @param state
+   * @param entityIn
+   */
   @Override
   public void onEntityCollidedWithBlock(World worldIn, BlockPos pos, IBlockState state, Entity entityIn)
   {
+    EnumFacing targetFacing = (EnumFacing)state.getValue(PROPERTYFACING);
+
     if (!worldIn.isRemote) {
-      if (this.wooden)
-      {
-        if (!((Boolean)state.getValue(POWERED)).booleanValue())
-        {
-          this.checkForArrows(worldIn, pos, state);
+      if (entityIn instanceof EntityArrow) {
+        AxisAlignedBB targetAABB = getCollisionBoundingBox(worldIn, pos, state);
+        List<Entity> embeddedArrows = worldIn.getEntitiesWithinAABB(EntityArrow.class, targetAABB);
+
+        // when a new arrow hits, remove all others which are already embedded
+
+        for (Entity embeddedEntity : embeddedArrows) {
+          if (embeddedEntity.getEntityId() != entityIn.getEntityId()) {
+            embeddedEntity.setDead();
+          }
         }
+
+        // notify my immediate neighbours, and also the immediate neighbours of the block I'm mounted on, because I
+        //  am giving strong power to it.
+        worldIn.notifyNeighborsOfStateChange(pos, this);
+        EnumFacing directionOfNeighbouringWall = targetFacing.getOpposite();
+        worldIn.notifyNeighborsOfStateChange(pos.offset(directionOfNeighbouringWall), this);
+
+//        EntityArrow entityArrow = (EntityArrow)entityIn;
+//        System.out.format("Pos [%.2f, %.2f, %.2f]; rotationPitch %.0f; rotationYaw %.0f\n",
+//                          entityArrow.posX, entityArrow.posY, entityArrow.posZ, entityArrow.rotationPitch, entityArrow.rotationYaw);
+//        AxisAlignedBB targetAABB = getCollisionBoundingBox(worldIn, pos, state);
+//
+//        Vec3 hitLocation = getArrowIntersectionWithTarget(entityArrow, targetAABB);
+//        System.out.format("hitLocation %s\n", String.valueOf(hitLocation));
+//        if (hitLocation != null) {
+//          Vec3 targetCentre = new Vec3( (targetAABB.minX + targetAABB.maxX)/2.0,
+//                                        (targetAABB.minY + targetAABB.maxY)/2.0,
+//                                        (targetAABB.minZ + targetAABB.maxZ)/2.0
+//                                              );
+//          Vec3 hitRelativeToCentre = hitLocation.subtract(targetCentre);
+//          System.out.format("hitRelativeToCentre %s\n", String.valueOf(hitRelativeToCentre));
+//          double yDeviationPixels = hitRelativeToCentre.yCoord * 16.0;
+//          double xDeviationPixels = 0;
+//          double zDeviationPixels = 0;
+//          if (targetFacing == EnumFacing.EAST || targetFacing == EnumFacing.WEST) {
+//            zDeviationPixels = hitRelativeToCentre.zCoord * 16.0;
+//          } else {
+//            xDeviationPixels = hitRelativeToCentre.xCoord * 16.0;
+//          }
+//          System.out.format("hitDeviationPixels [%.1f, %.1f, %.1f]\n", xDeviationPixels, yDeviationPixels, zDeviationPixels);
+//        }
       }
     }
   }
 
-  to do: find intersecting entities. schedule update to pop arrow out.
+  /** For all the arrows stuck in the target, find the one which is the closest to the centre.
+   *
+   * @param worldIn
+   * @param pos
+   * @param state
+   * @return the closest distance to the centre (eg 0->1 = centremost ring , 6 = outermost ring); or <0 for none.
+   */
+  private int findBestArrowRing(World worldIn, BlockPos pos, IBlockState state)
+  {
+    final int MISS_VALUE = -1;
+    EnumFacing targetFacing = (EnumFacing)state.getValue(PROPERTYFACING);
+    AxisAlignedBB targetAABB = getCollisionBoundingBox(worldIn, pos, state);
+    List<Entity> embeddedArrows = worldIn.getEntitiesWithinAABB(EntityArrow.class, targetAABB);
+    if (embeddedArrows.isEmpty()) return MISS_VALUE;
 
-//  private void checkForArrows(World worldIn, BlockPos pos, IBlockState state)
-//  {
-//    this.updateBlockBounds(state);
-//    List list = worldIn.getEntitiesWithinAABB(EntityArrow.class, new AxisAlignedBB((double)pos.getX() + this.minX, (double)pos.getY() + this.minY, (double)pos.getZ() + this.minZ, (double)pos.getX() + this.maxX, (double)pos.getY() + this.maxY, (double)pos.getZ() + this.maxZ));
-//    boolean flag = !list.isEmpty();
+    double closestDistance = Float.MAX_VALUE;
+    for (Entity entity : embeddedArrows) {
+      if (!entity.isDead && entity instanceof EntityArrow) {
+        EntityArrow entityArrow = (EntityArrow) entity;
+        Vec3 hitLocation = getArrowIntersectionWithTarget(entityArrow, targetAABB);
+//        System.out.format("hitLocation %s\n", String.valueOf(hitLocation));
+        if (hitLocation != null) {
+          Vec3 targetCentre = new Vec3((targetAABB.minX + targetAABB.maxX) / 2.0,
+                                              (targetAABB.minY + targetAABB.maxY) / 2.0,
+                                              (targetAABB.minZ + targetAABB.maxZ) / 2.0
+          );
+          Vec3 hitRelativeToCentre = hitLocation.subtract(targetCentre);
+//          System.out.format("hitRelativeToCentre %s\n", String.valueOf(hitRelativeToCentre));
+
+          // Which ring did it hit?  Calculate it as the biggest deviation of y and (x and z) from the centre.
+
+          double xDeviationPixels = 0;
+          double yDeviationPixels = Math.abs(hitRelativeToCentre.yCoord * 16.0);
+          double zDeviationPixels = 0;
+
+          if (targetFacing == EnumFacing.EAST || targetFacing == EnumFacing.WEST) {
+            zDeviationPixels = Math.abs(hitRelativeToCentre.zCoord * 16.0);
+          } else {
+            xDeviationPixels = Math.abs(hitRelativeToCentre.xCoord * 16.0);
+          }
+
+          double maxDeviationPixels = Math.max(yDeviationPixels, Math.max(xDeviationPixels, zDeviationPixels));
+          if (maxDeviationPixels < closestDistance) {
+            closestDistance = maxDeviationPixels;
+            System.out.println("Max deviation:" + maxDeviationPixels);
+          }
+
+        }
+      }
+    }
+
+    if (closestDistance == Float.MAX_VALUE) return MISS_VALUE;
+    final int OUTERMOST_RING = 6;
+    int ringHit = MathHelper.floor_double(closestDistance);
+    return (ringHit <= OUTERMOST_RING) ? ringHit : MISS_VALUE;
+  }
+
+  /**
+   * Find the point [x,y,z] that corresponds to where the arrow has struck the face of the target
+   * @param arrow
+   * @param targetAABB
+   * @return
+   */
+  private static Vec3 getArrowIntersectionWithTarget(EntityArrow arrow, AxisAlignedBB targetAABB)
+  {
+    // create a vector that points in the same direction as the arrow.
+    // Start with a vector pointing south - this corresponds to 0 degrees yaw and 0 degrees pitch
+    // Then rotate about the x-axis to pitch up or down, then rotate about the y axis to yaw
+    Vec3 arrowDirection = new Vec3(0.0, 0.0, 10.0);
+    float rotationPitchRadians = (float)Math.toRadians(arrow.rotationPitch);
+    float rotationYawRadians = (float)Math.toRadians(arrow.rotationYaw);
+
+    arrowDirection = arrowDirection.rotatePitch(-rotationPitchRadians);
+    arrowDirection = arrowDirection.rotateYaw(+rotationYawRadians);
+
+    Vec3 arrowRayOrigin = arrow.getPositionVector();
+    Vec3 arrowRayEndpoint = arrowRayOrigin.add(arrowDirection);
+    MovingObjectPosition hitLocation = targetAABB.calculateIntercept(arrowRayOrigin, arrowRayEndpoint);
+    if (hitLocation == null) return null;
+    if (hitLocation.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK) return null;
+    return hitLocation.hitVec;
+  }
+
+
+//    boolean flag = !embeddedArrows.isEmpty();
 //    boolean flag1 = ((Boolean)state.getValue(POWERED)).booleanValue();
 //
 //    if (flag && !flag1)
@@ -105,7 +281,6 @@ public class BlockRedstoneTarget extends Block
 //    {
 //      worldIn.scheduleUpdate(pos, this, this.tickRate(worldIn));
 //    }
-//  }
 
   // ---- methods to control placement of the target (must be on a solid wall)
 
