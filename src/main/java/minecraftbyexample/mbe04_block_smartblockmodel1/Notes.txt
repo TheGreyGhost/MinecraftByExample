@@ -48,6 +48,7 @@ More background information:
 
 - test code for ISmartBlockModel which generates the model quads using an algorithm instead of using a pre-existing model
   https://github.com/MinecraftForge/MinecraftForge/blob/master/src/test/java/net/minecraftforge/debug/ModelBakeEventDebug.java
+  Also illustrated for items in mbe15_item_smartitemmodel, can be easily adapted to blocks.
 - another way of implementing ISmartBlockModel, also explains IExtendedBlockState
   http://www.minecraftforge.net/forum/index.php/topic,28714.0.html
 - A way to automate insertion of your ISmartBlockModel into the model registry, useful if you have lots of models

@@ -1,8 +1,13 @@
 package minecraftbyexample.mbe06_redstone;
 
+import minecraftbyexample.mbe06_redstone.redstone_meter.TileEntityRedstoneMeter;
+import minecraftbyexample.mbe06_redstone.redstone_meter.TileEntitySpecialRendererRedstoneMeter;
+import minecraftbyexample.mbe21_tileentityspecialrenderer.TileEntityMBE21;
+import minecraftbyexample.mbe21_tileentityspecialrenderer.TileEntitySpecialRendererMBE21;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
@@ -40,6 +45,12 @@ public class StartupClientOnly
     Item itemBlockMBE06b = GameRegistry.findItem("minecraftbyexample", "mbe06b_block_redstone_target");
     ModelResourceLocation itemModelResourceLocationB = new ModelResourceLocation("minecraftbyexample:mbe06b_block_redstone_target", "inventory");
     Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(itemBlockMBE06b, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocationB);
+
+    Item itemBlockMBE06c = GameRegistry.findItem("minecraftbyexample", "mbe06c_block_redstone_meter");
+    ModelResourceLocation itemModelResourceLocationC = new ModelResourceLocation("minecraftbyexample:mbe06c_block_redstone_meter", "inventory");
+    Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(itemBlockMBE06c, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocationC);
+
+    ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRedstoneMeter.class, new TileEntitySpecialRendererRedstoneMeter());
   }
 
   public static void postInitClientOnly()

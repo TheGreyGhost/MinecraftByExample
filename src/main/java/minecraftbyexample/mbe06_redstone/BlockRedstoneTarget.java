@@ -17,6 +17,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * User: The Grey Ghost
@@ -24,7 +25,7 @@ import java.util.List;
  *
  * BlockRedstoneTarget is designed to be hung on a wall.  When an arrow is fired into the target, it emits strong
  *   power into the wall.  The power level depends on which ring of the target the arrow is stuck in:
- *     15 for innermost circle, down to 0 for no arrow (or stuck in the wood)
+ *     15 for the bullseye, decreasing for every ring down to 0 for no arrow (or stuck in the wood)
  * For background information on blocks see here http://greyminecraftcoder.blogspot.com.au/2014/12/blocks-18.html
  */
 public class BlockRedstoneTarget extends Block
@@ -36,27 +37,6 @@ public class BlockRedstoneTarget extends Block
   }
 
   //----- methods related to redstone
-
-//  public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand)
-//  {
-//    if (!worldIn.isRemote)
-//    {
-//      if (((Boolean)state.getValue(POWERED)).booleanValue())
-//      {
-//        if (this.wooden)
-//        {
-//          this.findMostRecentArrow(worldIn, pos, state);
-//        }
-//        else
-//        {
-//          worldIn.setBlockState(pos, state.withProperty(POWERED, Boolean.valueOf(false)));
-//          this.notifyNeighbors(worldIn, pos, (EnumFacing)state.getValue(FACING));
-//          worldIn.playSoundEffect((double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, "random.click", 0.3F, 0.5F);
-//          worldIn.markBlockRangeForRenderUpdate(pos, pos);
-//        }
-//      }
-//    }
-//  }
 
   /**
    * This block can provide power
@@ -98,21 +78,23 @@ public class BlockRedstoneTarget extends Block
 
     // only provide strong power through the back of the target.  If the target is facing east, that means
     //   it provides power to the block which lies to the west.
-    // When this method is called by the adjacent block which lies to the west, side is east.
+    // When this method is called by the adjacent block which lies to the west, the value of the side parameter is EAST.
 
-    // The amount of power provided is related to how the arrow hit the bullseye.
+    // The amount of power provided is related to how close the arrow hit to the bullseye.
     //  Bullseye = 15; Outermost ring = 3.
 
     if (side != targetFacing) return 0;
     if (!(worldIn instanceof World)) return 0;
-    World world = (World)worldIn;
+    World world = (World)worldIn;  // We're provided with IBlockAccess instead of World because this is sometimes called
+                                   //  during rendering, which is multithreaded and might be called using a ChunkCache.
+                                   //  This might mean that the appearance of the adjacent block is sometimes not right,
+                                   //   since we always return 0 for a ChunkCache.  I haven't managed to trigger this
+                                   //  potential bug, but I can't rule it out.
     int bestRing = findBestArrowRing(world, pos, state);
     if (bestRing < 0) return 0;
 
-    System.out.println("bestRing:" + bestRing);
     return 15 - 2 * bestRing;
   }
-
 
   /**
    * Called with an entity collides with the block.
@@ -145,33 +127,24 @@ public class BlockRedstoneTarget extends Block
         worldIn.notifyNeighborsOfStateChange(pos, this);
         EnumFacing directionOfNeighbouringWall = targetFacing.getOpposite();
         worldIn.notifyNeighborsOfStateChange(pos.offset(directionOfNeighbouringWall), this);
-
-//        EntityArrow entityArrow = (EntityArrow)entityIn;
-//        System.out.format("Pos [%.2f, %.2f, %.2f]; rotationPitch %.0f; rotationYaw %.0f\n",
-//                          entityArrow.posX, entityArrow.posY, entityArrow.posZ, entityArrow.rotationPitch, entityArrow.rotationYaw);
-//        AxisAlignedBB targetAABB = getCollisionBoundingBox(worldIn, pos, state);
-//
-//        Vec3 hitLocation = getArrowIntersectionWithTarget(entityArrow, targetAABB);
-//        System.out.format("hitLocation %s\n", String.valueOf(hitLocation));
-//        if (hitLocation != null) {
-//          Vec3 targetCentre = new Vec3( (targetAABB.minX + targetAABB.maxX)/2.0,
-//                                        (targetAABB.minY + targetAABB.maxY)/2.0,
-//                                        (targetAABB.minZ + targetAABB.maxZ)/2.0
-//                                              );
-//          Vec3 hitRelativeToCentre = hitLocation.subtract(targetCentre);
-//          System.out.format("hitRelativeToCentre %s\n", String.valueOf(hitRelativeToCentre));
-//          double yDeviationPixels = hitRelativeToCentre.yCoord * 16.0;
-//          double xDeviationPixels = 0;
-//          double zDeviationPixels = 0;
-//          if (targetFacing == EnumFacing.EAST || targetFacing == EnumFacing.WEST) {
-//            zDeviationPixels = hitRelativeToCentre.zCoord * 16.0;
-//          } else {
-//            xDeviationPixels = hitRelativeToCentre.xCoord * 16.0;
-//          }
-//          System.out.format("hitDeviationPixels [%.1f, %.1f, %.1f]\n", xDeviationPixels, yDeviationPixels, zDeviationPixels);
-//        }
       }
     }
+  }
+
+  /**
+   * Perform a scheduled update for this block
+   * @param worldIn
+   * @param pos
+   * @param state
+   * @param rand
+   */
+  @Override
+  public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand)
+  {
+    // depending on what your block does, you may need to implement updateTick and schedule updateTicks using
+    //         worldIn.scheduleUpdate(pos, this, 4);
+    // For vanilla examples see BlockButton, BlockRedstoneLight
+    // nothing required for this example
   }
 
   /** For all the arrows stuck in the target, find the one which is the closest to the centre.
@@ -194,14 +167,12 @@ public class BlockRedstoneTarget extends Block
       if (!entity.isDead && entity instanceof EntityArrow) {
         EntityArrow entityArrow = (EntityArrow) entity;
         Vec3 hitLocation = getArrowIntersectionWithTarget(entityArrow, targetAABB);
-//        System.out.format("hitLocation %s\n", String.valueOf(hitLocation));
         if (hitLocation != null) {
           Vec3 targetCentre = new Vec3((targetAABB.minX + targetAABB.maxX) / 2.0,
                                               (targetAABB.minY + targetAABB.maxY) / 2.0,
                                               (targetAABB.minZ + targetAABB.maxZ) / 2.0
           );
           Vec3 hitRelativeToCentre = hitLocation.subtract(targetCentre);
-//          System.out.format("hitRelativeToCentre %s\n", String.valueOf(hitRelativeToCentre));
 
           // Which ring did it hit?  Calculate it as the biggest deviation of y and (x and z) from the centre.
 
@@ -218,7 +189,6 @@ public class BlockRedstoneTarget extends Block
           double maxDeviationPixels = Math.max(yDeviationPixels, Math.max(xDeviationPixels, zDeviationPixels));
           if (maxDeviationPixels < closestDistance) {
             closestDistance = maxDeviationPixels;
-            System.out.println("Max deviation:" + maxDeviationPixels);
           }
 
         }
@@ -257,31 +227,6 @@ public class BlockRedstoneTarget extends Block
     return hitLocation.hitVec;
   }
 
-
-//    boolean flag = !embeddedArrows.isEmpty();
-//    boolean flag1 = ((Boolean)state.getValue(POWERED)).booleanValue();
-//
-//    if (flag && !flag1)
-//    {
-//      worldIn.setBlockState(pos, state.withProperty(POWERED, Boolean.valueOf(true)));
-//      this.notifyNeighbors(worldIn, pos, (EnumFacing)state.getValue(FACING));
-//      worldIn.markBlockRangeForRenderUpdate(pos, pos);
-//      worldIn.playSoundEffect((double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, "random.click", 0.3F, 0.6F);
-//    }
-//
-//    if (!flag && flag1)
-//    {
-//      worldIn.setBlockState(pos, state.withProperty(POWERED, Boolean.valueOf(false)));
-//      this.notifyNeighbors(worldIn, pos, (EnumFacing)state.getValue(FACING));
-//      worldIn.markBlockRangeForRenderUpdate(pos, pos);
-//      worldIn.playSoundEffect((double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, "random.click", 0.3F, 0.5F);
-//    }
-//
-//    if (flag)
-//    {
-//      worldIn.scheduleUpdate(pos, this, this.tickRate(worldIn));
-//    }
-
   // ---- methods to control placement of the target (must be on a solid wall)
 
   // When a neighbour changes - check if the supporting wall has been demolished
@@ -298,29 +243,18 @@ public class BlockRedstoneTarget extends Block
   }
 
   /**
-   * Can we place the block at this location
-   *
+   * Can we place the block at this location?
    * @param worldIn
    * @param thisBlockPos    the position of this block (not the neighbour)
    * @param faceOfNeighbour the face of the neighbour that is adjacent to this block.  If I am facing east, with a stone
    *                        block to the east of me, and I click on the westward-pointing face of the block,
-   *                        faceOfNeighbour is west
+   *                        faceOfNeighbour is WEST
    * @return true if the block can be placed here
    */
   public boolean canPlaceBlockOnSide(World worldIn, BlockPos thisBlockPos, EnumFacing faceOfNeighbour)
   {
-    System.out.println("canPlaceBlockOnSide:" + thisBlockPos + "; " + faceOfNeighbour);
     EnumFacing directionOfNeighbour = faceOfNeighbour.getOpposite();
     return adjacentBlockIsASuitableSupport(worldIn, thisBlockPos, directionOfNeighbour);
-  }
-
-  // Is the neighbouring block in the given direction suitable for mounting the target onto?
-  private boolean adjacentBlockIsASuitableSupport(World world, BlockPos thisPos, EnumFacing directionOfNeighbour)
-  {
-    BlockPos neighbourPos = thisPos.offset(directionOfNeighbour);
-    EnumFacing neighbourSide = directionOfNeighbour.getOpposite();
-    boolean DEFAULT_SOLID_VALUE = false;
-    return world.isSideSolid(neighbourPos, neighbourSide, DEFAULT_SOLID_VALUE);
   }
 
   // Create the appropriate state for the block being placed - in this case, figure out which way the target is facing
@@ -333,8 +267,17 @@ public class BlockRedstoneTarget extends Block
     return this.getDefaultState().withProperty(PROPERTYFACING, directionTargetIsPointing);
   }
 
+  // Is the neighbouring block in the given direction suitable for mounting the target onto?
+  private boolean adjacentBlockIsASuitableSupport(World world, BlockPos thisPos, EnumFacing directionOfNeighbour)
+  {
+    BlockPos neighbourPos = thisPos.offset(directionOfNeighbour);
+    EnumFacing neighbourSide = directionOfNeighbour.getOpposite();
+    boolean DEFAULT_SOLID_VALUE = false;
+    return world.isSideSolid(neighbourPos, neighbourSide, DEFAULT_SOLID_VALUE);
+  }
 
   //--- methods related to the appearance of the block
+  //  See MBE03_block_variants for more explanation
 
   // the block will render in the SOLID layer.  See http://greyminecraftcoder.blogspot.co.at/2014/12/block-rendering-18.html for more information.
   @SideOnly(Side.CLIENT)

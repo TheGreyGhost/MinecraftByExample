@@ -1,0 +1,12 @@
+We want to change the appearance of our block based on the amount of redstone power it is receiving.
+You might think that this could be done using
+Block.getActualState() or ISmartBlockModel using getExtendedState()
+however unfortunately this doesn't work.
+The reason is that these methods are provided with an IBlockAccess instead of a World; block rendering is multithreaded and
+  is performed on a cached copy of the world, which only stores some of the information and has no direct access to
+  weak power methods.
+It could be done by storing the redstone power in the block metadata, which would leave no room for any other information
+   (for example- which way the block is facing).
+
+The alternative method we use here is to have a TileEntity draw the moving parts (i.e. the needle), which has access
+   to World and hence all the redstone power methods

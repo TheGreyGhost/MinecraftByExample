@@ -1,5 +1,8 @@
 package minecraftbyexample.mbe06_redstone;
 
+import minecraftbyexample.mbe06_redstone.redstone_meter.BlockRedstoneMeter;
+import minecraftbyexample.mbe06_redstone.redstone_meter.TileEntityRedstoneMeter;
+import minecraftbyexample.mbe21_tileentityspecialrenderer.TileEntityMBE21;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
@@ -19,6 +22,7 @@ public class StartupCommon
 {
   public static BlockRedstoneVariableSource blockRedstoneVariableSource;
   public static BlockRedstoneTarget blockRedstoneTarget;
+  public static BlockRedstoneMeter blockRedstoneMeter;
 
   public static void preInitCommon()
   {
@@ -29,6 +33,12 @@ public class StartupCommon
 
     blockRedstoneTarget = (BlockRedstoneTarget)(new BlockRedstoneTarget().setUnlocalizedName("mbe06b_block_redstone_target"));
     GameRegistry.registerBlock(blockRedstoneTarget, "mbe06b_block_redstone_target");
+
+    blockRedstoneMeter = (BlockRedstoneMeter)(new BlockRedstoneMeter().setUnlocalizedName("mbe06c_block_redstone_meter"));
+    GameRegistry.registerBlock(blockRedstoneMeter, "mbe06b_block_redstone_meter");
+
+    GameRegistry.registerTileEntity(TileEntityRedstoneMeter.class, "mbe06c_tesr_te");
+
   }
 
   public static void initCommon()
