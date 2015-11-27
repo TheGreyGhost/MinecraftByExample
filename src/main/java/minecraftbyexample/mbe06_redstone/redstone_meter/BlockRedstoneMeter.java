@@ -23,6 +23,7 @@ import java.util.Random;
  * Date: 27/11/2015
  *
  * BlockRedstoneMeter is a simple block with an associated TileEntity to render the block's power level.
+ * Normally,
  */
 public class BlockRedstoneMeter extends Block implements ITileEntityProvider
 {
@@ -39,39 +40,36 @@ public class BlockRedstoneMeter extends Block implements ITileEntityProvider
     return new TileEntityRedstoneMeter();
   }
 
-  // Called just after the player places a block.  Sets the TileEntity's initial power level
+  // Called just after the player places a block.
+  // Only called on the server side so it doesn't help us alter rendering on the client side.
   @Override
   public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
     super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
-    updateTileEntityPowerLevel(worldIn, pos);
   }
 
+  // Called when a neighbouring block changes.
+  // Only called on the server side so it doesn't help us alter rendering on the client side.
   @Override
   public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock)
   {
-    // in this case, the changes pass directly to the tileentity and don't need the block to be updated.
-    updateTileEntityPowerLevel(worldIn, pos);
   }
 
   @Override
   public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state)
   {
-    updateTileEntityPowerLevel(worldIn, pos);
   }
 
-  public onUpdate
 
-  // copy the block's power level to the tileentity, for later use by the TileEntitySpecialRenderer
-  private void updateTileEntityPowerLevel(World worldIn, BlockPos pos)
-  {
-    TileEntity tileentity = worldIn.getTileEntity(pos);
-    if (tileentity instanceof TileEntityRedstoneMeter) { // prevent a crash if not the right type, or is null
-      TileEntityRedstoneMeter tileEntityRedstoneMeter = (TileEntityRedstoneMeter) tileentity;
-
-      int powerLevel = worldIn.isBlockIndirectlyGettingPowered(pos);
-      tileEntityRedstoneMeter.setPowerLevel(powerLevel);
-    }
-  }
+//  // copy the block's power level to the tileentity, for later use by the TileEntitySpecialRenderer
+//  private void updateTileEntityPowerLevel(World worldIn, BlockPos pos)
+//  {
+//    TileEntity tileentity = worldIn.getTileEntity(pos);
+//    if (tileentity instanceof TileEntityRedstoneMeter) { // prevent a crash if not the right type, or is null
+//      TileEntityRedstoneMeter tileEntityRedstoneMeter = (TileEntityRedstoneMeter) tileentity;
+//
+//      tileEntityRedstoneMeter.setPowerLevel(powerLevel);
+//    }
+//  }
 
   // -----------------
   // The following methods aren't particularly relevant to this example.  See MBE01, MBE02, MBE03 for more information.

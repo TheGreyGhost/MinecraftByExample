@@ -40,14 +40,22 @@ public class TileEntitySpecialRendererRedstoneMeter extends TileEntitySpecialRen
   {
     if (!(tileEntity instanceof TileEntityRedstoneMeter)) return; // should never happen
     TileEntityRedstoneMeter tileEntityRedstoneMeter = (TileEntityRedstoneMeter) tileEntity;
-    int powerLevel = tileEntityRedstoneMeter.getPowerLevel();
+    double powerLevel = tileEntityRedstoneMeter.getSmoothedNeedlePosition();
     renderNeedleOnFace(powerLevel, relativeX, relativeY, relativeZ, EnumFacing.SOUTH);
     renderNeedleOnFace(powerLevel, relativeX, relativeY, relativeZ, EnumFacing.NORTH);
     renderNeedleOnFace(powerLevel, relativeX, relativeY, relativeZ, EnumFacing.EAST);
     renderNeedleOnFace(powerLevel, relativeX, relativeY, relativeZ, EnumFacing.WEST);
   }
 
-  private void renderNeedleOnFace(int powerLevel, double relativeX, double relativeY, double relativeZ,
+  /**
+   * Render the needle at the current power level
+   * @param powerLevel 0 - 1
+   * @param relativeX the x/y/z distance from the player's eye to the tileentity
+   * @param relativeY
+   * @param relativeZ
+   * @param whichFace which face of the block should the needle render on?
+   */
+  private void renderNeedleOnFace(double powerLevel, double relativeX, double relativeY, double relativeZ,
                                   EnumFacing whichFace)
   {
 
@@ -151,7 +159,7 @@ public class TileEntitySpecialRendererRedstoneMeter extends TileEntitySpecialRen
       // zero degrees is down, increases clockwise with increasing power level
       final double ZERO_ANGLE = 45;
       final double MAX_ANGLE = 315;
-      float needleAngle = (float)UsefulFunctions.interpolate(powerLevel, 0, 15, ZERO_ANGLE, MAX_ANGLE);
+      float needleAngle = (float)UsefulFunctions.interpolate(powerLevel, 0, 1, ZERO_ANGLE, MAX_ANGLE);
 
 //      needleAngle = (float)(System.nanoTime() * 45 / 1e9) % 360;
 //      System.out.format("needleAngle :%.0f\n", needleAngle);
