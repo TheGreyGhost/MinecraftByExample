@@ -1,25 +1,34 @@
 package minecraftbyexample.mbe06_redstone.redstone_meter;
 
-import minecraftbyexample.usefultools.UsefulFunctions;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.awt.*;
 
 /**
  * This is a simple tile entity which is used to retrieve the current power level for rendering in the associated TileEntitySpecialRenderer (TESR)
  */
 public class TileEntityRedstoneMeter extends TileEntity {
 
-  // Retrieve the current power level of the meter
-	public int getPowerLevel() {
-    int powerLevel = this.worldObj.isBlockIndirectlyGettingPowered(this.pos);
-    return powerLevel;
+  // Retrieve the current power level of the meter - the maximum of the four sides (don't look up or down)
+	public int getPowerLevelClient() {
+
+    // int powerLevel = this.worldObj.isBlockIndirectlyGettingPowered(this.pos);  // if input can come from any side, use this line
+
+    int maxPowerFound = 0;
+    for (EnumFacing whichFace : EnumFacing.HORIZONTALS) {
+      int powerLevel = this.worldObj.getRedstonePower(this.pos, whichFace);
+      maxPowerFound = Math.max(powerLevel, maxPowerFound);
+    }
+    return maxPowerFound;
   }
 
   // return the smoothed position of the needle
@@ -36,14 +45,60 @@ public class TileEntityRedstoneMeter extends TileEntity {
 
     updateToCurrentTime(elapsedTime);
 
-    int newPowerLevel = getPowerLevel();
+    int newPowerLevel = getPowerLevelClient();
     if (newPowerLevel != lastPowerLevel) {
       lastPowerLevel = newPowerLevel;
-      double targetNeedlePosition = getPowerLevel() / 15.0;
+      double targetNeedlePosition = getPowerLevelClient() / 15.0;
       calculateMovementTimepoints(timeNow, targetNeedlePosition);
     }
     return needleposition;
   }
+
+  public void onScheduledUpdateTick()
+  {
+
+  }
+
+   /**
+   *
+   * @param worldIn
+   * @param pos
+   */
+  private void scheduleFlasherUpdate(World worldIn, BlockPos pos,
+                                     TileEntityRedstoneMeter tileEntityRedstoneMeter, boolean newState)
+  {
+    int powerLevel = tileEntityRedstoneMeter.getStoredPowerLevel();
+    if (powerLevel == 0) {   // always off
+      newState = false;
+    } else if (powerLevel == 15) { // always on
+      newState = true;
+    } else {  // flashing: slowest = 1 second in 8 seconds; fastest = 0.5 seconds in 1 second.
+      final int LOWEST_POWER = 1;
+      final int HIGHEST_POWER = 14;
+      final int SLOWEST_ON_TIME = 20; // ticks
+      final int FASTEST_ON_TIME = 10; // ticks
+      final int SLOWEST_PERIOD = 160; // ticks
+      final int FASTEST_PERIOD = 20;  // ticks
+      int periodTicks = (int)UsefulFunctions.interpolate(powerLevel, LOWEST_POWER, HIGHEST_POWER, SLOWEST_PERIOD, FASTEST_PERIOD);
+      int onTicks = (int)UsefulFunctions.interpolate(powerLevel, LOWEST_POWER, HIGHEST_POWER, SLOWEST_ON_TIME, FASTEST_ON_TIME);
+
+    }
+    tileEntityRedstoneMeter.setPowerOutputState(newState);
+  }
+
+  private ScheduledTogglingOutput scheduledTogglingOutput = new ScheduledTogglingOutput();
+
+  public int getStoredPowerLevel()
+  {
+    return storedPowerLevel;
+  }
+  public void setStoredPowerLevel(int storedPowerLevel)
+  {
+    this.storedPowerLevel = storedPowerLevel;
+  }
+
+  private int storedPowerLevel;
+
 
   // ------- We smooth out the pointer's motion using some equations of motion:
   //  1) steady acceleration to maximum velocity:
@@ -168,7 +223,8 @@ public class TileEntityRedstoneMeter extends TileEntity {
   //---------- general TileEntity methods
 	// When the world loads from disk, the server needs to send the TileEntity information to the client
 	//  it uses getDescriptionPacket() and onDataPacket() to do this
-  // In this case, the power level is recalculated every tick on the client anyway, so we don't need to store anything extra.
+  // In this case, the power level is recalculated every tick on the client anyway, so we don't need to send anything,
+  //   but we need to store the power level on the server, to allow for proper calculation of the redstone power
 	@Override
 	public Packet getDescriptionPacket() {
 		NBTTagCompound nbtTagCompound = new NBTTagCompound();
@@ -187,14 +243,18 @@ public class TileEntityRedstoneMeter extends TileEntity {
 	public void writeToNBT(NBTTagCompound parentNBTTagCompound)
 	{
 		super.writeToNBT(parentNBTTagCompound); // The super call is required to save the tiles location
-	}
+    parentNBTTagCompound.setInteger("storedPowerLevel", storedPowerLevel);
+  }
 
 	// This is where you load the data that you saved in writeToNBT
 	@Override
 	public void readFromNBT(NBTTagCompound parentNBTTagCompound)
 	{
 		super.readFromNBT(parentNBTTagCompound); // The super call is required to load the tiles location
-	}
+    storedPowerLevel = parentNBTTagCompound.getInteger("storedPowerLevel");  // defaults to 0 if not found
+    if (storedPowerLevel < 0 ) storedPowerLevel = 0;
+    if (storedPowerLevel > 15 ) storedPowerLevel = 15;
+  }
 
 	/**
 	 * Don't render the needle if the player is too far away
