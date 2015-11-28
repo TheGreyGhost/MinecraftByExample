@@ -35,7 +35,7 @@ public class StartupCommon
     GameRegistry.registerBlock(blockRedstoneTarget, "mbe06b_block_redstone_target");
 
     blockRedstoneMeter = (BlockRedstoneMeter)(new BlockRedstoneMeter().setUnlocalizedName("mbe06c_block_redstone_meter"));
-    GameRegistry.registerBlock(blockRedstoneMeter, "mbe06b_block_redstone_meter");
+    GameRegistry.registerBlock(blockRedstoneMeter, "mbe06c_block_redstone_meter");
 
     GameRegistry.registerTileEntity(TileEntityRedstoneMeter.class, "mbe06c_tesr_te");
 

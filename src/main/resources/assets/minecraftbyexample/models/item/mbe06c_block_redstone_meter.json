@@ -1,0 +1,20 @@
+{
+  "parent": "minecraftbyexample:block/mbe06c_block_redstone_meter_model",
+  "display": {
+    "thirdperson":{
+      "rotation": [10, -45, 170],
+      "translation": [-0.50, -0.25, -2.75],
+      "scale": [0.38, 0.38, 0.38]
+    },
+    "firstperson":{
+      "rotation": [0, 0, 0],
+      "translation": [0.00, 3.75, 0.00],
+      "scale": [1.00, 1.00, 1.00]
+    },
+    "gui":{
+      "rotation": [0, 0, 0],
+      "translation": [0.00, 0.00, 0.00],
+      "scale": [1.00, 1.00, 1.00]
+    }
+  }
+}
