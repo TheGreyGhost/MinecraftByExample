@@ -9,6 +9,7 @@ tile.mbe05_block_3d_web.name=MBE05 Block 3D Web
 tile.mbe06_block_redstone_variable_source.name=MBE06 Redstone Variable Source
 tile.mbe06b_block_redstone_target.name=MBE06b Redstone Target
 tile.mbe06c_block_redstone_meter.name=MBE06c Redstone Signal Meter
+tile.mbe06d_block_redstone_coloured_lamp.name=MBE06d Redstone Coloured Lamp
 tile.mbe08_creative_tab_block.name=MBE08 test block
 item.mbe08_creative_tab_item.name=MBE08 test item
 itemGroup.mbe08_creative_tab=MBE08 creative tab

@@ -60,7 +60,6 @@ public class BlockRedstoneVariableSource extends Block
   public int isProvidingWeakPower(IBlockAccess worldIn, BlockPos pos, IBlockState state, EnumFacing side)
   {
     Integer powerIndex = (Integer)state.getValue(POWER_INDEX);
-    System.out.println("BlockRedstoneSource::isProvidingWeakPower[" +powerIndex + "] -pos" + pos.toString() + ", state" + state.toString() + ", side" + side);
 
     if (powerIndex < 0) {
       powerIndex = 0;

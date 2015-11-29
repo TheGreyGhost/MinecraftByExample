@@ -3,7 +3,7 @@
     "particle": "minecraftbyexample:blocks/mbe06d/mbe06d_coloured_lamp_top",
     "bottom": "blocks/obsidian",
     "top": "minecraftbyexample:blocks/mbe06d/mbe06d_coloured_lamp_top",
-    "side_none": "minecraftbyexample:blocks/mbe06d/mbe06d_coloured_lamp_side_red",
+    "side_none": "minecraftbyexample:blocks/mbe06d/mbe06d_coloured_lamp_side_none",
     "side_red": "minecraftbyexample:blocks/mbe06d/mbe06d_coloured_lamp_side_red",
     "side_green": "minecraftbyexample:blocks/mbe06d/mbe06d_coloured_lamp_side_green",
     "side_blue": "minecraftbyexample:blocks/mbe06d/mbe06d_coloured_lamp_side_blue",

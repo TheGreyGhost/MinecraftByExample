@@ -60,7 +60,8 @@ public class BlockRedstoneColouredLamp extends Block implements ITileEntityProvi
   public IBlockState onBlockPlaced(World worldIn, BlockPos thisBlockPos, EnumFacing faceOfNeighbour,
                                    float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
   {
-    EnumFacing directionTargetIsPointing = faceOfNeighbour;
+//    EnumFacing directionTargetIsPointing = faceOfNeighbour;
+    EnumFacing directionTargetIsPointing = (placer == null) ? EnumFacing.NORTH : EnumFacing.fromAngle(placer.rotationYaw);
     return this.getDefaultState().withProperty(PROPERTYFACING, directionTargetIsPointing);
   }
 
@@ -105,16 +106,49 @@ public class BlockRedstoneColouredLamp extends Block implements ITileEntityProvi
     return rgbColour;
   }
 
-  // update the block state depending on the current lamp colour (which is stored in the tile entity)
+  /**
+   * Determine if this block can make a redstone connection on the side provided,
+   * Useful to control which sides are inputs and outputs for redstone wires.
+   *
+   * @param world The current world
+   * @param pos Block position in world
+   * @param side The side that is trying to make the connection, CAN BE NULL
+   * @return True to make the connection
+   */
+  public boolean canConnectRedstone(IBlockAccess world, BlockPos pos, EnumFacing side)
+  {
+    if (side == null) return false;
+    if (side == EnumFacing.UP || side == EnumFacing.DOWN) return false;
+
+    IBlockState blockState = world.getBlockState(pos);
+    EnumFacing blockFacingDirection = (EnumFacing)blockState.getValue(PROPERTYFACING);
+
+    if (side == blockFacingDirection) return false;
+    return true;
+  }
+
+ STILL TO DO: fix up the "none" texture.  Check if can lay redstone on top of block.  Explanations.
+        Fix up attachment logic.  Check to make sure colour is correct on updates / modifications / reloads
+//  // update the block state depending on the current lamp colour (which is stored in the tile entity)
+//  @Override
+//  public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+//  {
+//    TileEntity tileEntity = worldIn.getTileEntity(pos);
+//    if (tileEntity instanceof TileEntityRedstoneColouredLamp) {
+//      TileEntityRedstoneColouredLamp tileEntityRedstoneColouredLamp = (TileEntityRedstoneColouredLamp)tileEntity;
+//      int rgbColour = tileEntityRedstoneColouredLamp.getRGBcolour();
+//      return getDefaultState().withProperty(PROPERTY_RBG_COLOUR, rgbColour);
+//    }
+//    return state;
+//  }
+
+  // this method isn't required if your properties only depend on the stored metadata.
+  // it is required if:
+  // 1) you are making a multiblock which stores information in other blocks eg BlockBed, BlockDoor
+  // 2) your block's state depends on other neighbours (eg BlockFence)
   @Override
   public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
   {
-    TileEntity tileEntity = worldIn.getTileEntity(pos);
-    if (tileEntity instanceof TileEntityRedstoneColouredLamp) {
-      TileEntityRedstoneColouredLamp tileEntityRedstoneColouredLamp = (TileEntityRedstoneColouredLamp)tileEntity;
-      int rgbColour = tileEntityRedstoneColouredLamp.getRGBcolour();
-      return getDefaultState().withProperty(PROPERTY_RBG_COLOUR, rgbColour);
-    }
     return state;
   }
 
@@ -140,13 +174,12 @@ public class BlockRedstoneColouredLamp extends Block implements ITileEntityProvi
 
   // ---------methods related to storing information about the block (which way it's facing)
 
-  // BlockRedstoneColouredLamp has two properties:
+  // BlockRedstoneColouredLamp has one property
   //PROPERTYFACING for which way the target points (east, west, north, south).  EnumFacing is a standard used by vanilla for a number of blocks.
   //    eg EAST means that the red and white rings on the target are pointing east
-  //PROPERTY_RGB_COLOUR which holds the current colour of the lamp.
   public static final PropertyDirection PROPERTYFACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
-  public static final PropertyInteger PROPERTY_RBG_COLOUR =
-          PropertyInteger.create("rgb_colour", 0, Integer.MAX_VALUE );
+//  public static final PropertyInteger PROPERTY_RBG_COLOUR =
+//          PropertyInteger.create("rgb_colour", 0, Integer.MAX_VALUE );
 
   // getStateFromMeta, getMetaFromState are used to interconvert between the block's property values and
   //   the stored metadata (which must be an integer in the range 0 - 15 inclusive)
@@ -184,10 +217,12 @@ public class BlockRedstoneColouredLamp extends Block implements ITileEntityProvi
   @Override
   protected BlockState createBlockState()
   {
-    IProperty [] listedProperties = new IProperty[] {PROPERTYFACING}; // only one listed property
-    IUnlistedProperty[] unlistedProperties =
-            new IUnlistedProperty[] {new Properties.PropertyAdapter<Integer>(PROPERTY_RBG_COLOUR)};
-    return new ExtendedBlockState(this, listedProperties, unlistedProperties);
+//    IProperty [] listedProperties = new IProperty[] {PROPERTYFACING}; // only one listed property
+//    IUnlistedProperty[] unlistedProperties =
+//            new IUnlistedProperty[] {new Properties.PropertyAdapter<Integer>(PROPERTY_RBG_COLOUR)};
+//    return new ExtendedBlockState(this, listedProperties, unlistedProperties);
+    return new BlockState(this, new IProperty[] {PROPERTYFACING});
+
   }
 
   // -----------------
@@ -223,8 +258,14 @@ public class BlockRedstoneColouredLamp extends Block implements ITileEntityProvi
   @SideOnly(Side.CLIENT)
   public int colorMultiplier(IBlockAccess worldIn, BlockPos pos, int renderPass)
   {
-    IBlockState iblockstate = worldIn.getBlockState(pos);
-    int rgbColour = (Integer)iblockstate.getValue(PROPERTY_RBG_COLOUR);
+    int rgbColour = 0;
+    TileEntity tileEntity = worldIn.getTileEntity(pos);
+    if (tileEntity instanceof TileEntityRedstoneColouredLamp) {
+      TileEntityRedstoneColouredLamp tileEntityRedstoneColouredLamp = (TileEntityRedstoneColouredLamp)tileEntity;
+      rgbColour = tileEntityRedstoneColouredLamp.getRGBcolour();
+    }
+//    IBlockState iblockstate = worldIn.getBlockState(pos);
+//    int rgbColour = (Integer)iblockstate.getValue(PROPERTY_RBG_COLOUR);
     return rgbColour;
   }
 

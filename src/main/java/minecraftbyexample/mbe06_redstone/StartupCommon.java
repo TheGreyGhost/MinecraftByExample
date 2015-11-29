@@ -1,6 +1,7 @@
 package minecraftbyexample.mbe06_redstone;
 
 import minecraftbyexample.mbe06_redstone.input.BlockRedstoneColouredLamp;
+import minecraftbyexample.mbe06_redstone.input.TileEntityRedstoneColouredLamp;
 import minecraftbyexample.mbe06_redstone.input_and_output.BlockRedstoneMeter;
 import minecraftbyexample.mbe06_redstone.input_and_output.TileEntityRedstoneMeter;
 import minecraftbyexample.mbe06_redstone.output_only.BlockRedstoneTarget;
@@ -45,6 +46,7 @@ public class StartupCommon
     blockRedstoneColouredLamp = (BlockRedstoneColouredLamp)(new BlockRedstoneColouredLamp()
             .setUnlocalizedName("mbe06d_block_redstone_coloured_lamp"));
     GameRegistry.registerBlock(blockRedstoneColouredLamp, "mbe06d_block_redstone_coloured_lamp");
+    GameRegistry.registerTileEntity(TileEntityRedstoneColouredLamp.class, "mbe06d_te_redstone_coloured_lamp");
 
   }
 
