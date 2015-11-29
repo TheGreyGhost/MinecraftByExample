@@ -1,4 +1,4 @@
-package minecraftbyexample.mbe06_redstone.redstone_meter;
+package minecraftbyexample.mbe06_redstone.input_and_output;
 
 import minecraftbyexample.usefultools.UsefulFunctions;
 import net.minecraft.client.renderer.GlStateManager;
@@ -8,9 +8,6 @@ import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Vec3;
-import org.lwjgl.Sys;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -58,19 +55,6 @@ public class TileEntitySpecialRendererRedstoneMeter extends TileEntitySpecialRen
   private void renderNeedleOnFace(double powerLevel, double relativeX, double relativeY, double relativeZ,
                                   EnumFacing whichFace)
   {
-
-    // the gem changes its appearance and animation as the player approaches.
-    // When the player is a long distance away, the gem is dark, resting in the hopper, and does not rotate.
-    // As the player approaches closer than 16 blocks, the gem first starts to glow brighter and to spin anti-clockwise
-    // When the player gets closer than 4 blocks, the gem is at maximum speed and brightness, and starts to levitate above the pedestal
-    // Once the player gets closer than 2 blocks, the gem reaches maximum height.
-
-    // the appearance and animation of the gem is hence made up of several parts:
-    // 1) the colour of the gem, which is contained in the tileEntity
-    // 2) the brightness of the gem, which depends on player distance
-    // 3) the distance that the gem rises above the pedestal, which depends on player distance
-    // 4) the speed at which the gem is spinning, which depends on player distance.
-
     double needleSpindleX = 0.5;
     double needleSpindleY = 0.5;
     double needleSpindleZ = 0.5;
@@ -104,35 +88,6 @@ public class TileEntitySpecialRendererRedstoneMeter extends TileEntitySpecialRen
       }
     }
 
-//    Vec3 playerEye = new Vec3(0.0, 0.0, 0.0);
-//    Vec3 needleSpindlePos = new Vec3(relativeX + needleSpindleX, relativeY + needleSpindleY, relativeZ + needleSpindleZ);
-//    double playerDistance = playerEye.distanceTo(needleSpindlePos);
-
-//    final double DISTANCE_FOR_MIN_SPIN = 8.0;
-//    final double DISTANCE_FOR_MAX_SPIN = 4.0;
-//    final double DISTANCE_FOR_MIN_GLOW = 16.0;
-//    final double DISTANCE_FOR_MAX_GLOW = 4.0;
-//    final double DISTANCE_FOR_MIN_LEVITATE = 4.0;
-//    final double DISTANCE_FOR_MAX_LEVITATE = 2.0;
-//
-//    final double MIN_LEVITATE_HEIGHT = 0.0;
-//    final double MAX_LEVITATE_HEIGHT = 0.5;
-//    double gemCentreOffsetX = needleSpindleX;
-//    double gemCentreOffsetY = needleSpindleY + UsefulFunctions.interpolate(playerDistance, DISTANCE_FOR_MIN_LEVITATE, DISTANCE_FOR_MAX_LEVITATE,
-//            MIN_LEVITATE_HEIGHT, MAX_LEVITATE_HEIGHT);
-//    double gemCentreOffsetZ = needleSpindleZ;
-//
-//    final double MIN_GLOW = 0.0;
-//    final double MAX_GLOW = 1.0;
-//    double glowMultiplier = UsefulFunctions.interpolate(playerDistance, DISTANCE_FOR_MIN_GLOW, DISTANCE_FOR_MAX_GLOW,
-//            MIN_GLOW, MAX_GLOW);
-//
-//    final double MIN_REV_PER_SEC = 0.0;
-//    final double MAX_REV_PER_SEC = 0.5;
-//    double revsPerSecond = UsefulFunctions.interpolate(playerDistance, DISTANCE_FOR_MIN_SPIN, DISTANCE_FOR_MAX_SPIN,
-//            MIN_REV_PER_SEC, MAX_REV_PER_SEC);
-//    double angularPositionInDegrees = tileEntityRedstoneMeter.getNextAngularPosition(revsPerSecond);
-
     try {
       // save the transformation matrix and the rendering attributes, so that we can restore them after rendering.  This
       //   prevents us disrupting any vanilla TESR that render after ours.
@@ -141,9 +96,9 @@ public class TileEntitySpecialRendererRedstoneMeter extends TileEntitySpecialRen
       GL11.glPushMatrix();
       GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
 
-      // First we need to set up the translation so that we render our gem with the centre point at 0,0,0
+      // First we need to set up the translation so that we render our needle with the centre point at 0,0,0
       // Our model is set up so that the centre is the spindle of the needle, i.e. the point that the needle rotates around
-      // when the renderTileEntityAt method is called, the tessellator is set up so that drawing a dot at [0,0,0] corresponds to the player's eyes
+      // When the renderTileEntityAt method is called, the tessellator is set up so that drawing a dot at [0,0,0] corresponds to the player's eyes
       // This means that, in order to draw a dot at the TileEntity [x,y,z], we need to translate the reference frame by the difference between the
       // two points, i.e. by the [relativeX, relativeY, relativeZ] passed to the method.  If you then draw a cube from [0,0,0] to [1,1,1], it will
       // render exactly over the top of the TileEntity's block.
@@ -161,22 +116,15 @@ public class TileEntitySpecialRendererRedstoneMeter extends TileEntitySpecialRen
       final double MAX_ANGLE = 315;
       float needleAngle = (float)UsefulFunctions.interpolate(powerLevel, 0, 1, ZERO_ANGLE, MAX_ANGLE);
 
-//      needleAngle = (float)(System.nanoTime() * 45 / 1e9) % 360;
-//      System.out.format("needleAngle :%.0f\n", needleAngle);
-
       GlStateManager.rotate(faceRotationAngle, 0, 1, 0);   // rotate around the vertical axis to make face correct direction
 
       GlStateManager.rotate(-needleAngle, 0, 0, 1);   // rotate around the Z axis (our model is designed that way).  -ve because
                                                       //  we need to rotate clockwise but rotate expects anticlockwise
 
-//      final double GEM_HEIGHT = 0.5;        // desired render height of the gem
-//      final double MODEL_HEIGHT = 1.0;      // actual height of the gem in the vertexTable
-//      final double SCALE_FACTOR = GEM_HEIGHT / MODEL_HEIGHT;
-//      GlStateManager.scale(SCALE_FACTOR, SCALE_FACTOR, SCALE_FACTOR);
-
       Tessellator tessellator = Tessellator.getInstance();
       WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-//      this.bindTexture(gemTexture);         // texture for the needle appearance - just use
+//      this.bindTexture(needleTexture);         // we don't need a texture for the needle appearance - we're just using
+                                                 //  solid colour
 
       // set the key rendering flags appropriately...
       GL11.glDisable(GL11.GL_LIGHTING);     // turn off "item" lighting (face brightness depends on which direction it is facing)

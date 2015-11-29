@@ -1,14 +1,11 @@
-package minecraftbyexample.mbe06_redstone.redstone_meter;
+package minecraftbyexample.mbe06_redstone.input_and_output;
 
-import minecraftbyexample.mbe21_tileentityspecialrenderer.TileEntityMBE21;
-import minecraftbyexample.usefultools.UsefulFunctions;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
@@ -19,7 +16,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.awt.*;
 import java.util.Random;
 
 /**
@@ -32,7 +28,8 @@ import java.util.Random;
  * We use a TileEntity because
  * 1) that's the easiest way to get the block's power level on the client side, without
  *   having to use metadata.
- * 2) our block needs to store the input power level, for later use when others call the isProvidingWeakPower()
+ * 2) our block needs to store the input power level, for later use when others call the isProvidingWeakPower().
+ *    for the reason why, see http://greyminecraftcoder.blogspot.com.au/2015/11/redstone.html
  */
 public class BlockRedstoneMeter extends Block implements ITileEntityProvider
 {
@@ -105,7 +102,7 @@ public class BlockRedstoneMeter extends Block implements ITileEntityProvider
     return 0;
   }
 
-  // Retrieve the current power level of the meter - the maximum of the four sides EAST, WEST, NORTH, SOUTH
+  // Retrieve the current input power level of the meter - the maximum of the four sides EAST, WEST, NORTH, SOUTH
   //   (don't look UP or DOWN)
   private int getPowerLevelInput(World world, BlockPos pos) {
 
@@ -120,7 +117,7 @@ public class BlockRedstoneMeter extends Block implements ITileEntityProvider
     return maxPowerFound;
   }
 
-  // ------ various block methods that react to changes and are responsible for updating the redstone information
+  // ------ various block methods that react to changes and are responsible for updating the redstone power information
 
   // Called just after the player places a block.
   // Only called on the server side so it doesn't help us alter rendering on the client side.
@@ -130,7 +127,7 @@ public class BlockRedstoneMeter extends Block implements ITileEntityProvider
   }
 
   // Called when a neighbouring block changes.
-  // Only called on the server side so it doesn't help us alter rendering on the client side.
+  // Only called on the server side- so it doesn't help us alter rendering on the client side.
   @Override
   public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock)
   {
@@ -142,6 +139,8 @@ public class BlockRedstoneMeter extends Block implements ITileEntityProvider
 
       boolean currentOutputState = tileEntityRedstoneMeter.getOutputState();
       tileEntityRedstoneMeter.setPowerLevel(powerLevel);
+          // this method will also schedule the next tick using call world.scheduleUpdate(pos, block, lastTickDelay);
+
       if (currentOutputState != tileEntityRedstoneMeter.getOutputState()) {
         worldIn.notifyNeighborsOfStateChange(pos, this);
       }
@@ -149,7 +148,7 @@ public class BlockRedstoneMeter extends Block implements ITileEntityProvider
   }
 
   // Our flashing output uses scheduled ticks to toggle the output.
-  //  This is done by calling  world.scheduleUpdate(pos, block, numberOfTicksToDelay);
+  //  Scheduling of ticks is by calling  world.scheduleUpdate(pos, block, numberOfTicksToDelay);
   //
   @Override
   public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand)
@@ -160,6 +159,8 @@ public class BlockRedstoneMeter extends Block implements ITileEntityProvider
 
       boolean currentOutputState = tileEntityRedstoneMeter.getOutputState();
       tileEntityRedstoneMeter.onScheduledUpdateTick();
+        // this method will also schedule the next tick using call world.scheduleUpdate(pos, block, lastTickDelay);
+
       if (currentOutputState != tileEntityRedstoneMeter.getOutputState()) {
         worldIn.notifyNeighborsOfStateChange(pos, this);
       }

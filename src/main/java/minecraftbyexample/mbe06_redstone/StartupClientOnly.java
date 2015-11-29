@@ -1,9 +1,7 @@
 package minecraftbyexample.mbe06_redstone;
 
-import minecraftbyexample.mbe06_redstone.redstone_meter.TileEntityRedstoneMeter;
-import minecraftbyexample.mbe06_redstone.redstone_meter.TileEntitySpecialRendererRedstoneMeter;
-import minecraftbyexample.mbe21_tileentityspecialrenderer.TileEntityMBE21;
-import minecraftbyexample.mbe21_tileentityspecialrenderer.TileEntitySpecialRendererMBE21;
+import minecraftbyexample.mbe06_redstone.input_and_output.TileEntityRedstoneMeter;
+import minecraftbyexample.mbe06_redstone.input_and_output.TileEntitySpecialRendererRedstoneMeter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
@@ -50,7 +48,8 @@ public class StartupClientOnly
     ModelResourceLocation itemModelResourceLocationC = new ModelResourceLocation("minecraftbyexample:mbe06c_block_redstone_meter", "inventory");
     Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(itemBlockMBE06c, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocationC);
 
-    ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRedstoneMeter.class, new TileEntitySpecialRendererRedstoneMeter());
+    ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRedstoneMeter.class,
+                                                 new TileEntitySpecialRendererRedstoneMeter());
   }
 
   public static void postInitClientOnly()

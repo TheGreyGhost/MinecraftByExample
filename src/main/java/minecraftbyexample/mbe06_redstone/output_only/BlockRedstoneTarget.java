@@ -1,4 +1,4 @@
-package minecraftbyexample.mbe06_redstone;
+package minecraftbyexample.mbe06_redstone.output_only;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;

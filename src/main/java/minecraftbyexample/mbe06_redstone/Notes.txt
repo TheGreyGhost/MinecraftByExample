@@ -1,5 +1,13 @@
 MBE06_REDSTONE
 
+There are a number of redstone examples in this package; grouped into three types
+power source blocks ("output_only") which provide redstone power to other blocks, but don't accept input from other
+  Vanilla examples are BlockCompressedPowered, BlockButton
+power consumer blocks ("input_only") which accept redstone input from other blocks but don't provide it to others
+  Vanilla example is BlockRedstoneLight
+mixed blocks ("input_and_output") which accept redstone input and also provide output to others
+  Vanilla examples are BlockRedstoneRepeater, BlockRedstoneComparator
+
 BlockCompressedPowered
 
 Link to website

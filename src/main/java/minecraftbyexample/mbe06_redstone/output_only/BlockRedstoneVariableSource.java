@@ -1,4 +1,4 @@
-package minecraftbyexample.mbe06_redstone;
+package minecraftbyexample.mbe06_redstone.output_only;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -34,6 +34,47 @@ public class BlockRedstoneVariableSource extends Block
   {
     super(Material.rock);
     this.setCreativeTab(CreativeTabs.tabBlock);   // the block will appear on the Blocks tab in creative
+  }
+
+  //-------------------- methods related to redstone
+
+  /**
+   * This block can provide power
+   * @return
+   */
+  @Override
+  public boolean canProvidePower()
+  {
+    return true;
+  }
+
+  /** How much weak power does this block provide to the adjacent block?
+   * See http://greyminecraftcoder.blogspot.com.au/2015/11/redstone.html for more information
+   * @param worldIn
+   * @param pos the position of this block
+   * @param state the blockstate of this block
+   * @param side the side of the block - eg EAST means that this is to the EAST of the adjacent block.
+   * @return The power provided [0 - 15]
+   */
+  @Override
+  public int isProvidingWeakPower(IBlockAccess worldIn, BlockPos pos, IBlockState state, EnumFacing side)
+  {
+    Integer powerIndex = (Integer)state.getValue(POWER_INDEX);
+    System.out.println("BlockRedstoneSource::isProvidingWeakPower[" +powerIndex + "] -pos" + pos.toString() + ", state" + state.toString() + ", side" + side);
+
+    if (powerIndex < 0) {
+      powerIndex = 0;
+    } else if (powerIndex > MAXIMUM_POWER_INDEX) {
+      powerIndex = MAXIMUM_POWER_INDEX;
+    }
+    return POWER_VALUES[powerIndex];
+  }
+
+  // The variable source block does not provide strong power.  See BlockButton for a example of a block which does.
+  @Override
+  public int isProvidingStrongPower(IBlockAccess worldIn, BlockPos pos, IBlockState state, EnumFacing side)
+  {
+    return 0;
   }
 
   //--------- methods associated with storing the currently-selected power
@@ -99,47 +140,6 @@ public class BlockRedstoneVariableSource extends Block
   {
     worldIn.notifyNeighborsOfStateChange(pos, this);
     super.breakBlock(worldIn, pos, state);
-  }
-
-  //-------------------- methods related to redstone
-
-  /**
-   * This block can provide power
-   * @return
-   */
-  @Override
-  public boolean canProvidePower()
-  {
-    return true;
-  }
-
-  /** How much weak power does this block provide to the adjacent block?
-   * See http://greyminecraftcoder.blogspot.com.au/2015/11/redstone.html for more information
-   * @param worldIn
-   * @param pos the position of this block
-   * @param state the blockstate of this block
-   * @param side the side of the block - eg EAST means that this is to the EAST of the adjacent block.
-   * @return The power provided [0 - 15]
-   */
-  @Override
-  public int isProvidingWeakPower(IBlockAccess worldIn, BlockPos pos, IBlockState state, EnumFacing side)
-  {
-    Integer powerIndex = (Integer)state.getValue(POWER_INDEX);
-    System.out.println("BlockRedstoneSource::isProvidingWeakPower[" +powerIndex + "] -pos" + pos.toString() + ", state" + state.toString() + ", side" + side);
-
-    if (powerIndex < 0) {
-      powerIndex = 0;
-    } else if (powerIndex > MAXIMUM_POWER_INDEX) {
-      powerIndex = MAXIMUM_POWER_INDEX;
-    }
-    return POWER_VALUES[powerIndex];
-  }
-
-  // The variable source block does not provide strong power.  See BlockButton for a example of a block which does.
-  @Override
-  public int isProvidingStrongPower(IBlockAccess worldIn, BlockPos pos, IBlockState state, EnumFacing side)
-  {
-    return 0;
   }
 
   //----- methods related to the block's appearance (see MBE01_BLOCK_SIMPLE and MBE02_BLOCK_PARTIAL)

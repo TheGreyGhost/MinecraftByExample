@@ -1,4 +1,4 @@
-package minecraftbyexample.mbe06_redstone.redstone_meter;
+package minecraftbyexample.mbe06_redstone.input_and_output;
 
 import net.minecraft.block.Block;
 import net.minecraft.util.BlockPos;

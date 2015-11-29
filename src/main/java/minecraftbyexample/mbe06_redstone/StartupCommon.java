@@ -1,8 +1,9 @@
 package minecraftbyexample.mbe06_redstone;
 
-import minecraftbyexample.mbe06_redstone.redstone_meter.BlockRedstoneMeter;
-import minecraftbyexample.mbe06_redstone.redstone_meter.TileEntityRedstoneMeter;
-import minecraftbyexample.mbe21_tileentityspecialrenderer.TileEntityMBE21;
+import minecraftbyexample.mbe06_redstone.input_and_output.BlockRedstoneMeter;
+import minecraftbyexample.mbe06_redstone.input_and_output.TileEntityRedstoneMeter;
+import minecraftbyexample.mbe06_redstone.output_only.BlockRedstoneTarget;
+import minecraftbyexample.mbe06_redstone.output_only.BlockRedstoneVariableSource;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
