@@ -49,73 +49,6 @@ public class BlockRedstoneMeter extends Block implements ITileEntityProvider
     return new TileEntityRedstoneMeter();
   }
 
-  // Called just after the player places a block.
-  // Only called on the server side so it doesn't help us alter rendering on the client side.
-  @Override
-  public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-    super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
-  }
-
-  // Called when a neighbouring block changes.
-  // Only called on the server side so it doesn't help us alter rendering on the client side.
-  @Override
-  public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock)
-  {
-    // calculate the power level from neighbours and store in our TileEntity for later use in isProvidingWeakPower()
-    int powerLevel = getPowerLevelInput(worldIn, pos);
-    TileEntity tileentity = worldIn.getTileEntity(pos);
-    if (tileentity instanceof TileEntityRedstoneMeter) { // prevent a crash if not the right type, or is null
-      TileEntityRedstoneMeter tileEntityRedstoneMeter = (TileEntityRedstoneMeter) tileentity;
-
-      int oldStoredPowerLevel = tileEntityRedstoneMeter.getStoredPowerLevel();
-      tileEntityRedstoneMeter.setStoredPowerLevel(powerLevel);
-
-      if (oldStoredPowerLevel != powerLevel) {
-        worldIn.notifyNeighborsOfStateChange(pos, this);
-        final boolean FLASH_ON_IMMEDIATELY = true;
-        scheduleFlasherUpdate(worldIn, pos, tileEntityRedstoneMeter, FLASH_ON_IMMEDIATELY);
-      }
-    }
-
-  }
-
-    // ---- the following are copied from BlockRedstoneComparator.  I'm not 100% sure it's necessary to manually
-    //   setTileEntity, removeTileEntity, etc, but I figure copying vanilla is a good rule
-  @Override
-  public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state)
-  {
-    super.onBlockAdded(worldIn, pos, state);
-    worldIn.setTileEntity(pos, this.createNewTileEntity(worldIn, 0));
-  }
-
-  public void breakBlock(World worldIn, BlockPos pos, IBlockState state)
-  {
-    super.breakBlock(worldIn, pos, state);
-    worldIn.removeTileEntity(pos);
-    worldIn.notifyNeighborsOfStateChange(pos, this);
-  }
-
-  // Retrieve the current power level of the meter - the maximum of the four sides EAST, WEST, NORTH, SOUTH
-  //   (don't look UP or DOWN)
-  public int getPowerLevelInput(World world, BlockPos pos) {
-
-    // int powerLevel = this.worldObj.isBlockIndirectlyGettingPowered(this.pos);  // if input can come from any side, use this line
-
-    int maxPowerFound = 0;
-    for (EnumFacing whichFace : EnumFacing.HORIZONTALS) {
-      int powerLevel = world.getRedstonePower(pos, whichFace);
-      maxPowerFound = Math.max(powerLevel, maxPowerFound);
-    }
-    return maxPowerFound;
-  }
-
-
-  @Override
-  public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand)
-  {
-
-  }
-
   // ------ methods relevant to redstone
   //  The methods below are used to provide power to neighbours.
   //  If you are looking for the rendering redstone calculations, look in TileEntityRedstoneMeter.getPowerLevelClient()
@@ -150,7 +83,7 @@ public class BlockRedstoneMeter extends Block implements ITileEntityProvider
     TileEntity tileentity = worldIn.getTileEntity(pos);
     if (tileentity instanceof TileEntityRedstoneMeter) { // prevent a crash if not the right type, or is null
       TileEntityRedstoneMeter tileEntityRedstoneMeter = (TileEntityRedstoneMeter) tileentity;
-      isOutputOn = tileEntityRedstoneMeter.isPowerOutputState();
+      isOutputOn = tileEntityRedstoneMeter.getOutputState();
     }
 
     final int OUTPUT_POWER_WHEN_ON = 15;
@@ -172,7 +105,84 @@ public class BlockRedstoneMeter extends Block implements ITileEntityProvider
     return 0;
   }
 
-    // -----------------
+  // Retrieve the current power level of the meter - the maximum of the four sides EAST, WEST, NORTH, SOUTH
+  //   (don't look UP or DOWN)
+  private int getPowerLevelInput(World world, BlockPos pos) {
+
+    // int powerLevel = this.worldObj.isBlockIndirectlyGettingPowered(this.pos);  // if input can come from any side, use this line
+
+    int maxPowerFound = 0;
+    for (EnumFacing whichFace : EnumFacing.HORIZONTALS) {
+      BlockPos neighborPos = pos.offset(whichFace);
+      int powerLevel = world.getRedstonePower(neighborPos, whichFace);
+      maxPowerFound = Math.max(powerLevel, maxPowerFound);
+    }
+    return maxPowerFound;
+  }
+
+  // ------ various block methods that react to changes and are responsible for updating the redstone information
+
+  // Called just after the player places a block.
+  // Only called on the server side so it doesn't help us alter rendering on the client side.
+  @Override
+  public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+    super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
+  }
+
+  // Called when a neighbouring block changes.
+  // Only called on the server side so it doesn't help us alter rendering on the client side.
+  @Override
+  public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock)
+  {
+    // calculate the power level from neighbours and store in our TileEntity for later use in isProvidingWeakPower()
+    int powerLevel = getPowerLevelInput(worldIn, pos);
+    TileEntity tileentity = worldIn.getTileEntity(pos);
+    if (tileentity instanceof TileEntityRedstoneMeter) { // prevent a crash if not the right type, or is null
+      TileEntityRedstoneMeter tileEntityRedstoneMeter = (TileEntityRedstoneMeter) tileentity;
+
+      boolean currentOutputState = tileEntityRedstoneMeter.getOutputState();
+      tileEntityRedstoneMeter.setPowerLevel(powerLevel);
+      if (currentOutputState != tileEntityRedstoneMeter.getOutputState()) {
+        worldIn.notifyNeighborsOfStateChange(pos, this);
+      }
+    }
+  }
+
+  // Our flashing output uses scheduled ticks to toggle the output.
+  //  This is done by calling  world.scheduleUpdate(pos, block, numberOfTicksToDelay);
+  //
+  @Override
+  public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand)
+  {
+    TileEntity tileentity = worldIn.getTileEntity(pos);
+    if (tileentity instanceof TileEntityRedstoneMeter) { // prevent a crash if not the right type, or is null
+      TileEntityRedstoneMeter tileEntityRedstoneMeter = (TileEntityRedstoneMeter) tileentity;
+
+      boolean currentOutputState = tileEntityRedstoneMeter.getOutputState();
+      tileEntityRedstoneMeter.onScheduledUpdateTick();
+      if (currentOutputState != tileEntityRedstoneMeter.getOutputState()) {
+        worldIn.notifyNeighborsOfStateChange(pos, this);
+      }
+    }
+  }
+
+  // ---- the following are copied from BlockRedstoneComparator.  I'm not 100% sure it's necessary to manually
+  //   setTileEntity, removeTileEntity, etc, but I figure copying vanilla is a good rule
+  @Override
+  public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state)
+  {
+    super.onBlockAdded(worldIn, pos, state);
+    worldIn.setTileEntity(pos, this.createNewTileEntity(worldIn, 0));
+  }
+
+  public void breakBlock(World worldIn, BlockPos pos, IBlockState state)
+  {
+    super.breakBlock(worldIn, pos, state);
+    worldIn.removeTileEntity(pos);
+    worldIn.notifyNeighborsOfStateChange(pos, this);
+  }
+
+  // -----------------
   // The following methods aren't particularly relevant to this example.  See MBE01, MBE02, MBE03 for more information.
   @SideOnly(Side.CLIENT)
   public EnumWorldBlockLayer getBlockLayer()

@@ -1,5 +1,6 @@
 package minecraftbyexample.mbe06_redstone.redstone_meter;
 
+import minecraftbyexample.usefultools.UsefulFunctions;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -25,7 +26,8 @@ public class TileEntityRedstoneMeter extends TileEntity {
 
     int maxPowerFound = 0;
     for (EnumFacing whichFace : EnumFacing.HORIZONTALS) {
-      int powerLevel = this.worldObj.getRedstonePower(this.pos, whichFace);
+      BlockPos neighborPos = pos.offset(whichFace);
+      int powerLevel = this.worldObj.getRedstonePower(neighborPos, whichFace);
       maxPowerFound = Math.max(powerLevel, maxPowerFound);
     }
     return maxPowerFound;
@@ -54,36 +56,43 @@ public class TileEntityRedstoneMeter extends TileEntity {
     return needleposition;
   }
 
+  public boolean getOutputState()
+  {
+    return scheduledTogglingOutput.isOn();
+  }
+
+  /** whenever a scheduled block update occurs, call this method
+   *
+   */
   public void onScheduledUpdateTick()
   {
-
+    scheduledTogglingOutput.onUpdateTick(this.getWorld(), this.getPos(), this.getBlockType());
   }
 
    /**
-   *
-   * @param worldIn
-   * @param pos
+   *  Change the stored power level (alters the flashing rate of the power output)
    */
-  private void scheduleFlasherUpdate(World worldIn, BlockPos pos,
-                                     TileEntityRedstoneMeter tileEntityRedstoneMeter, boolean newState)
+  public void setPowerLevel(int newPowerLevel)
   {
-    int powerLevel = tileEntityRedstoneMeter.getStoredPowerLevel();
-    if (powerLevel == 0) {   // always off
-      newState = false;
-    } else if (powerLevel == 15) { // always on
-      newState = true;
-    } else {  // flashing: slowest = 1 second in 8 seconds; fastest = 0.5 seconds in 1 second.
+    if (newPowerLevel == storedPowerLevel) return;
+    storedPowerLevel = newPowerLevel;
+    if (newPowerLevel == 0) {   // always off
+      scheduledTogglingOutput.setSteadyOutput(false);
+    } else if (newPowerLevel == 15) { // always on
+      scheduledTogglingOutput.setSteadyOutput(true);
+    } else {
+          // flashing: slowest = 1 seconds in 4 seconds; fastest = 0.25 seconds in 0.5 seconds.
       final int LOWEST_POWER = 1;
       final int HIGHEST_POWER = 14;
       final int SLOWEST_ON_TIME = 20; // ticks
-      final int FASTEST_ON_TIME = 10; // ticks
-      final int SLOWEST_PERIOD = 160; // ticks
-      final int FASTEST_PERIOD = 20;  // ticks
-      int periodTicks = (int)UsefulFunctions.interpolate(powerLevel, LOWEST_POWER, HIGHEST_POWER, SLOWEST_PERIOD, FASTEST_PERIOD);
-      int onTicks = (int)UsefulFunctions.interpolate(powerLevel, LOWEST_POWER, HIGHEST_POWER, SLOWEST_ON_TIME, FASTEST_ON_TIME);
-
+      final int FASTEST_ON_TIME = 5; // ticks
+      final int SLOWEST_PERIOD = 80; // ticks
+      final int FASTEST_PERIOD = 10;  // ticks
+      int periodTicks = (int)UsefulFunctions.interpolate(newPowerLevel, LOWEST_POWER, HIGHEST_POWER, SLOWEST_PERIOD, FASTEST_PERIOD);
+      int onTicks = (int) UsefulFunctions
+              .interpolate(newPowerLevel, LOWEST_POWER, HIGHEST_POWER, SLOWEST_ON_TIME, FASTEST_ON_TIME);
+      scheduledTogglingOutput.setToggleRate(this.getWorld(), this.getPos(), this.getBlockType(), onTicks, periodTicks);
     }
-    tileEntityRedstoneMeter.setPowerOutputState(newState);
   }
 
   private ScheduledTogglingOutput scheduledTogglingOutput = new ScheduledTogglingOutput();
@@ -91,10 +100,6 @@ public class TileEntityRedstoneMeter extends TileEntity {
   public int getStoredPowerLevel()
   {
     return storedPowerLevel;
-  }
-  public void setStoredPowerLevel(int storedPowerLevel)
-  {
-    this.storedPowerLevel = storedPowerLevel;
   }
 
   private int storedPowerLevel;

@@ -13,8 +13,9 @@ import static com.google.common.base.Preconditions.checkArgument;
  *
  * Typical usage:
  * (1) create the ScheduledTogglingOutput
- * (2) call changeToggleRate() to change the on time and/or the period (on time + off time).  This will schedule
- *     a block update as appropriate, using world.scheduleUpdate()
+ * (2) a) call setToggleRate() to change the on time and/or the period (on time + off time).  This will schedule
+ *     a block update as appropriate, using world.scheduleUpdate(); or
+ *     b) call setSteadyOutput to stop toggling and just stay at one value
  * (3) when the block update occurs, call onUpdateTick(), which will toggle output if it's time, and will schedule the
  *     next block update as appropriate
  * (4) use isOn() to determine the flasher state
@@ -22,22 +23,40 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public class ScheduledTogglingOutput
 {
-  public void changeToggleRate(World world, BlockPos pos, Block block, int onTimeTicks, int periodTicks)
+  /**
+   * Start toggling the output on and off.
+   * @param world
+   * @param pos
+   * @param block
+   * @param onTimeTicks the number of ticks for the output to remain true
+   * @param periodTicks the period of the output cycle, i.e. ticks spent true plus ticks spent false
+   */
+  public void setToggleRate(World world, BlockPos pos, Block block, int onTimeTicks, int periodTicks)
   {
     checkArgument(periodTicks >= 0, "expected periodTicks %s to be >=0", periodTicks);
     checkArgument(onTimeTicks >= 0 && onTimeTicks <= periodTicks,
                   "expected onTimeTicks %s to be >=0 and <= periodTicks %s", onTimeTicks, periodTicks);
-    togglingIsActive = false;
     if (onTimeTicks == 0) {
-      outputState = false;
+      setSteadyOutput(false);
     } else if (onTimeTicks == periodTicks) {
-      outputState = true;
+      setSteadyOutput(true);
     } else {
+      onTicks = onTimeTicks;
+      offTicks = periodTicks - onTimeTicks;
       togglingIsActive = true;
+      final boolean FORCE_RESET = true;
+      scheduleNextTick(world, pos, block, FORCE_RESET);
     }
-    onTicks = onTimeTicks;
-    offTicks = periodTicks - onTimeTicks;
-    scheduleNextTick(world, pos, block, true);
+  }
+
+  /** Stop toggling and just provide a steady output value
+   *
+   * @param output the steady output
+   */
+  public void setSteadyOutput(boolean output)
+  {
+    togglingIsActive = false;
+    outputState = output;
   }
 
   /**
@@ -50,7 +69,8 @@ public class ScheduledTogglingOutput
     if (ticksTillOutputStateChange == 0) {
         outputState = !outputState;
     }
-    scheduleNextTick(world, pos, block, false);
+    final boolean FORCE_RESET = true;
+    scheduleNextTick(world, pos, block, !FORCE_RESET);
   }
 
   private void scheduleNextTick(World world, BlockPos pos, Block block, boolean reset)
