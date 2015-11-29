@@ -50,6 +50,11 @@ public class StartupClientOnly
 
     ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRedstoneMeter.class,
                                                  new TileEntitySpecialRendererRedstoneMeter());
+
+    Item itemBlockMBE06d = GameRegistry.findItem("minecraftbyexample", "mbe06d_block_redstone_coloured_lamp");
+    ModelResourceLocation itemModelResourceLocationD = new ModelResourceLocation("minecraftbyexample:mbe06d_block_redstone_coloured_lamp", "inventory");
+    Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(itemBlockMBE06d, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocationD);
+
   }
 
   public static void postInitClientOnly()

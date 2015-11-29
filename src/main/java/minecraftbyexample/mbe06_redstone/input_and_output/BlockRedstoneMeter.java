@@ -205,4 +205,6 @@ public class BlockRedstoneMeter extends Block implements ITileEntityProvider
   public int getRenderType() {
     return 3;
   }
+
+
 }
