@@ -20,6 +20,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.util.MathHelper;
+import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
@@ -60,7 +61,6 @@ public class BlockRedstoneColouredLamp extends Block implements ITileEntityProvi
   public IBlockState onBlockPlaced(World worldIn, BlockPos thisBlockPos, EnumFacing faceOfNeighbour,
                                    float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
   {
-//    EnumFacing directionTargetIsPointing = faceOfNeighbour;
     EnumFacing directionTargetIsPointing = (placer == null) ? EnumFacing.NORTH : EnumFacing.fromAngle(placer.rotationYaw);
     return this.getDefaultState().withProperty(PROPERTYFACING, directionTargetIsPointing);
   }
@@ -112,7 +112,7 @@ public class BlockRedstoneColouredLamp extends Block implements ITileEntityProvi
    *
    * @param world The current world
    * @param pos Block position in world
-   * @param side The side that is trying to make the connection, CAN BE NULL
+   * @param side The side of the redstone block that is trying to make the connection, CAN BE NULL
    * @return True to make the connection
    */
   public boolean canConnectRedstone(IBlockAccess world, BlockPos pos, EnumFacing side)
@@ -120,27 +120,16 @@ public class BlockRedstoneColouredLamp extends Block implements ITileEntityProvi
     if (side == null) return false;
     if (side == EnumFacing.UP || side == EnumFacing.DOWN) return false;
 
+    // we can connect to three of the four side faces - if the block is facing north, then we can
+    //  connect to WEST, SOUTH, or EAST.
+
+    EnumFacing whichFaceOfLamp = side.getOpposite();
     IBlockState blockState = world.getBlockState(pos);
     EnumFacing blockFacingDirection = (EnumFacing)blockState.getValue(PROPERTYFACING);
 
-    if (side == blockFacingDirection) return false;
+    if (whichFaceOfLamp == blockFacingDirection) return false;
     return true;
   }
-
- STILL TO DO: fix up the "none" texture.  Check if can lay redstone on top of block.  Explanations.
-        Fix up attachment logic.  Check to make sure colour is correct on updates / modifications / reloads
-//  // update the block state depending on the current lamp colour (which is stored in the tile entity)
-//  @Override
-//  public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
-//  {
-//    TileEntity tileEntity = worldIn.getTileEntity(pos);
-//    if (tileEntity instanceof TileEntityRedstoneColouredLamp) {
-//      TileEntityRedstoneColouredLamp tileEntityRedstoneColouredLamp = (TileEntityRedstoneColouredLamp)tileEntity;
-//      int rgbColour = tileEntityRedstoneColouredLamp.getRGBcolour();
-//      return getDefaultState().withProperty(PROPERTY_RBG_COLOUR, rgbColour);
-//    }
-//    return state;
-//  }
 
   // this method isn't required if your properties only depend on the stored metadata.
   // it is required if:
@@ -175,17 +164,14 @@ public class BlockRedstoneColouredLamp extends Block implements ITileEntityProvi
   // ---------methods related to storing information about the block (which way it's facing)
 
   // BlockRedstoneColouredLamp has one property
-  //PROPERTYFACING for which way the target points (east, west, north, south).  EnumFacing is a standard used by vanilla for a number of blocks.
-  //    eg EAST means that the red and white rings on the target are pointing east
+  // PROPERTYFACING for which way the lamp points (east, west, north, south).  EnumFacing is a standard used by vanilla for a number of blocks.
   public static final PropertyDirection PROPERTYFACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
-//  public static final PropertyInteger PROPERTY_RBG_COLOUR =
-//          PropertyInteger.create("rgb_colour", 0, Integer.MAX_VALUE );
 
   // getStateFromMeta, getMetaFromState are used to interconvert between the block's property values and
   //   the stored metadata (which must be an integer in the range 0 - 15 inclusive)
   // The property is encoded as:
   // - lower two bits = facing direction (i.e. 0, 1, 2, 3)
-  //  the lamp colour isn't stored in metadata; it is copied from the tileentity in Block.getActualState()
+  //  the lamp colour isn't stored in metadata; it is copied from the tileentity
   @Override
   public IBlockState getStateFromMeta(int meta)
   {
@@ -203,26 +189,10 @@ public class BlockRedstoneColouredLamp extends Block implements ITileEntityProvi
   }
 
   // necessary to define which properties your blocks use - will also affect the variants listed in the blockstates model file
-  // Vanilla BlockState is composed of listed properties only.  A variant is created for each combination of listed
-  //   properties; for example two properties ON(true/false) and READY(true/false) would give rise to four variants
-  //   [on=true, ready=true]
-  //   [on=false, ready=true]
-  //   [on=true, ready=false]
-  //   [on=false, ready=false]
-  // Forge adds ExtendedBlockState, which has two types of property:
-  // - listed properties (like vanilla), and
-  // - unlisted properties, which can be used to convey information but do not cause extra variants to be created.
-  // In this example, we use listed property to store the facing (affects choice of block model)
-  //   and then unlisted property to store the current colour
   @Override
   protected BlockState createBlockState()
   {
-//    IProperty [] listedProperties = new IProperty[] {PROPERTYFACING}; // only one listed property
-//    IUnlistedProperty[] unlistedProperties =
-//            new IUnlistedProperty[] {new Properties.PropertyAdapter<Integer>(PROPERTY_RBG_COLOUR)};
-//    return new ExtendedBlockState(this, listedProperties, unlistedProperties);
     return new BlockState(this, new IProperty[] {PROPERTYFACING});
-
   }
 
   // -----------------
@@ -248,8 +218,9 @@ public class BlockRedstoneColouredLamp extends Block implements ITileEntityProvi
     return 3;
   }
 
-  /** Changes the colour of the lamp section
-   *
+  /** Changes the colour of the lamp (the "tintindex" overlay only).
+   *  This is the technique used by BlockGrass to change colour in different biomes.
+   *  It's also used by BlockRedstoneWire to change the redness of the wire based on the power level
    * @param worldIn
    * @param pos
    * @param renderPass
@@ -264,14 +235,13 @@ public class BlockRedstoneColouredLamp extends Block implements ITileEntityProvi
       TileEntityRedstoneColouredLamp tileEntityRedstoneColouredLamp = (TileEntityRedstoneColouredLamp)tileEntity;
       rgbColour = tileEntityRedstoneColouredLamp.getRGBcolour();
     }
-//    IBlockState iblockstate = worldIn.getBlockState(pos);
-//    int rgbColour = (Integer)iblockstate.getValue(PROPERTY_RBG_COLOUR);
     return rgbColour;
   }
 
   // Change the lighting value based on the lamp colour
   @Override
   public int getLightValue(IBlockAccess world, BlockPos pos) {
+
     int rgbColour = 0;
     TileEntity tileEntity = world.getTileEntity(pos);
     if (tileEntity instanceof TileEntityRedstoneColouredLamp) {
@@ -297,4 +267,5 @@ public class BlockRedstoneColouredLamp extends Block implements ITileEntityProvi
                                                   MIN_LIGHT_VALUE, MAX_LIGHT_VALUE);
     return lightValue;
   }
+
 }
