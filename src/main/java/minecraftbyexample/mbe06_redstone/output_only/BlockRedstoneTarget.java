@@ -254,6 +254,9 @@ public class BlockRedstoneTarget extends Block
   public boolean canPlaceBlockOnSide(World worldIn, BlockPos thisBlockPos, EnumFacing faceOfNeighbour)
   {
     EnumFacing directionOfNeighbour = faceOfNeighbour.getOpposite();
+    if (directionOfNeighbour == EnumFacing.DOWN || directionOfNeighbour == EnumFacing.UP) {
+      return false;
+    }
     return adjacentBlockIsASuitableSupport(worldIn, thisBlockPos, directionOfNeighbour);
   }
 
@@ -263,6 +266,7 @@ public class BlockRedstoneTarget extends Block
                                    float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
   {
     EnumFacing directionTargetIsPointing = faceOfNeighbour;
+//    if
 
     return this.getDefaultState().withProperty(PROPERTYFACING, directionTargetIsPointing);
   }
