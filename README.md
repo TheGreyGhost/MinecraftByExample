@@ -21,6 +21,7 @@ If you want more information and explanatory text about the concepts, the follow
   - [MBE03][03] - a block (coloured signpost) with multiple variants- four colours, can be placed facing in four directions
   - [MBE04][04] - a camouflage ("secret door") block which copies the appearance of adjacent blocks - uses ISmartBlockModel
   - [MBE05][05] - a 3D web which joins to neighbours in all six directions - uses ISmartBlockModel and ICustomModelLoader
+  - [MBE06][06] - several different types of block which use redstone
   - [MBE08][08] - how to add a creative tab for organising your custom blocks / items
 
 ### Items
@@ -94,6 +95,7 @@ Check out [this video][forge_installation] for more help installing Forge.
 [03]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe03_block_variants
 [04]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe04_block_smartblockmodel1
 [05]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe05_block_smartblockmodel2
+[06]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe06_redstone
 [08]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe08_creative_tab
 
 [10]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe10_item_simple

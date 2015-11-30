@@ -24,6 +24,7 @@ Blocks
   MBE03 - a block (coloured signpost) with multiple variants- four colours, can be placed facing in four directions
   MBE04 - a camouflage ("secret door") block which copies the appearance of adjacent blocks - uses ISmartBlockModel
   MBE05 - a 3D web which joins to neighbours in all six directions - uses ISmartBlockModel and ICustomModelLoader
+  MBE06 - several different types of block which use redstone
   MBE08 - how to add a creative tab for organising your custom blocks / items
 
 Items
