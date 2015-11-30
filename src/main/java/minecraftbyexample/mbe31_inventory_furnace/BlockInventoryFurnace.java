@@ -152,6 +152,7 @@ public class BlockInventoryFurnace extends BlockContainer
 	private static final int FOUR_SIDE_LIGHT_VALUE = 15; // light value for four sides burning
 	private static final int ONE_SIDE_LIGHT_VALUE = 8;  // light value for a single side burning
 
+  @Override
 	public int getLightValue(IBlockAccess world, BlockPos pos) {
 		int lightValue = 0;
 		IBlockState blockState = getActualState(getDefaultState(), world, pos);

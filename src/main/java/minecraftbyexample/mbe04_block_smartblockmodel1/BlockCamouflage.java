@@ -92,7 +92,7 @@ public class BlockCamouflage extends Block {
     return new ExtendedBlockState(this, listedProperties, unlistedProperties);
   }
 
-  // this method uses the block state and BlockPos to update the unlisted COPIEDBLOCK property in IExtendedBlockState based
+  // this method uses the block state and BlockPos to update the unlisted POWER_LEVEL property in IExtendedBlockState based
   // on non-metadata information.  This is then conveyed to the ISmartBlockModel during rendering.
   // In this case, we look around the camouflage block to find a suitable adjacent block it should camouflage itself as
   @Override
@@ -112,7 +112,7 @@ public class BlockCamouflage extends Block {
     return state;  //for debugging - useful spot for a breakpoint.  Not necessary.
   }
 
-  // the COPIEDBLOCK property is used to store the identity of the block that BlockCamouflage will copy
+  // the POWER_LEVEL property is used to store the identity of the block that BlockCamouflage will copy
   public static final UnlistedPropertyCopiedBlock COPIEDBLOCK = new UnlistedPropertyCopiedBlock();
 
   // Select the best adjacent block to camouflage as.

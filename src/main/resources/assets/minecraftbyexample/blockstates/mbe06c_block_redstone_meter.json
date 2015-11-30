@@ -1,0 +1,5 @@
+{
+    "variants": {
+        "normal": { "model": "minecraftbyexample:mbe06c_block_redstone_meter_model" }
+    }
+}

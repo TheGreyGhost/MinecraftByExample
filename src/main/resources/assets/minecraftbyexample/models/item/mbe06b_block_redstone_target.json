@@ -1,0 +1,25 @@
+{
+  "parent": "minecraftbyexample:block/mbe06b_block_redstone_target_model",
+  "display": {
+    "thirdperson":{
+      "rotation": [270, 277, 0],
+      "translation": [-0.25, -0.50, -2.50],
+      "scale": [0.38, 0.38, 0.38]
+    },
+    "firstperson":{
+      "rotation": [0, 108, 0],
+      "translation": [0.00, 0.00, 0.00],
+      "scale": [1.00, 1.00, 1.00]
+    },
+    "gui":{
+      "rotation": [0, 0, 0],
+      "translation": [0.00, 0.00, 0.00],
+      "scale": [1.00, 1.00, 1.00]
+    },
+    "head":{
+      "rotation": [0, 0, 0],
+      "translation": [0.00, 0.00, 0.00],
+      "scale": [1.00, 1.00, 1.00]
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+    "variants": {
+      "power_index=0": { "model": "minecraftbyexample:mbe06_block_redstone_variable_source0_model" },
+      "power_index=1": { "model": "minecraftbyexample:mbe06_block_redstone_variable_source1_model" },
+      "power_index=2": { "model": "minecraftbyexample:mbe06_block_redstone_variable_source2_model" },
+      "power_index=3": { "model": "minecraftbyexample:mbe06_block_redstone_variable_source3_model" },
+      "power_index=4": { "model": "minecraftbyexample:mbe06_block_redstone_variable_source4_model" }
+    }
+}
