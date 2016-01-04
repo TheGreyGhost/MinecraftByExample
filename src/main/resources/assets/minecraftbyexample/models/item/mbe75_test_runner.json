@@ -1,0 +1,18 @@
+{
+    "parent": "builtin/generated",
+    "textures": {
+        "layer0": "minecraftbyexample:items/mbe75_test_runner_icon"
+    },
+    "display": {
+      "thirdperson":{
+        "rotation": [-90, 0, 0],
+        "translation": [0.00, 1.00, -3.00],
+        "scale": [0.55, 0.55, 0.55]
+      },
+      "firstperson":{
+        "rotation": [342, 317, 343],
+        "translation": [5.50, 4.25, 0.50],
+        "scale": [1.70, 1.70, 1.70]
+      }
+    }
+}
