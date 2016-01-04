@@ -1,6 +1,8 @@
 package minecraftbyexample.testingarea;
 
 import minecraftbyexample.mbe01_block_simple.BlockSimple;
+import minecraftbyexample.mbe10_item_simple.ItemSimple;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
  * User: The Grey Ghost
@@ -23,6 +25,8 @@ public class StartupCommon
   public static BlockSimple block1;
   public static BlockSimple block2;
 
+  public static Item
+
   public static void preInitCommon()
   {
 //    block1 = (BlockSimple)(new BlockSimple().setUnlocalizedName("test_block1"));
@@ -38,6 +42,11 @@ public class StartupCommon
 //    GameRegistry.registerBlock(blockTestNumberedPart, "test_numbered_part");
 //
 //    MethodCallLogger.test();
+
+    // each instance of your item should have a name that is unique within your mod.  use lower case.
+    itemSimple = (ItemSimple)(new ItemSimple().setUnlocalizedName("mbe10_item_simple"));
+    GameRegistry.registerItem(itemSimple, "mbe10_item_simple");
+
   }
 
   public static void initCommon()

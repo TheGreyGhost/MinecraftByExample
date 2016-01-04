@@ -1,5 +1,9 @@
 package minecraftbyexample.testingarea;
 
+import minecraftbyexample.mbe10_item_simple.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+
 /**
  * User: The Grey Ghost
  * Date: 24/12/2014
@@ -37,6 +41,13 @@ public class StartupClientOnly
 //    Item itemBlock2 = GameRegistry.findItem("minecraftbyexample", "test_block2");
 //    itemModelResourceLocation = new ModelResourceLocation("minecraftbyexample:test_block2", "inventory");
 //    Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(itemBlock2, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
+
+    // required in order for the renderer to know how to render your item.  Likely to change in the near future.
+    ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation("minecraftbyexample:mbe10_item_simple", "inventory");
+    final int DEFAULT_ITEM_SUBTYPE = 0;
+    Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(
+      minecraftbyexample.mbe10_item_simple.StartupCommon.itemSimple, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
+
   }
 
   public static void postInitClientOnly()
