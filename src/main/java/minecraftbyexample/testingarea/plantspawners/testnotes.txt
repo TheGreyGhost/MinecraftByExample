@@ -1,0 +1,12 @@
+todo: need to rethink this
+- these utility classes need to
+1) provide a way to spawn the desired plant at the desired location
+2) identify the plant from an iBlockState and place it at another location if suitable.
+
+First is easy - use the appropriate Spawner with the type information as appropriate - no need to unify these
+Second - the block chooses the appropriate class, and the class then looks at the iBlockState to identify the
+  relevant type
+This is done using the main type to generate sub-types
+
+Registration of all types is done by the main utility which calls each class in turn
+

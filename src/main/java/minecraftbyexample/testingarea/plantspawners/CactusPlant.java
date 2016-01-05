@@ -13,7 +13,7 @@ import java.util.Random;
 /**
 * Created by EveryoneElse on 3/01/2016.
 */ // copied from WorldGenCactus
-public class CactusSpawner extends NewPlantSpawner {
+public class CactusPlant extends Plant {
   @Override
   public boolean trySpawnNewPlant(World world, BlockPos blockPos, Random random) {
     boolean success = false;
@@ -30,16 +30,25 @@ public class CactusSpawner extends NewPlantSpawner {
     return success;
   }
 
-  public static Collection<Block> getSpawnablePlants() {
-    return ImmutableList.of((Block) Blocks.cactus);
+  public static class CactusPlantFactory extends PlantFactory
+  {
+    public Plant getPlantFromBlockState(IBlockState iBlockState)
+    {
+      if (iBlockState == null || iBlockState.getBlock() != Blocks.cactus) return null;
+      return new CactusPlant();
+    }
+
+    public Collection<Block> getBlocksUsedByThisPlant() {
+      return ImmutableList.of((Block) Blocks.cactus);
+    }
   }
 
-  @Override
-  public boolean tryClonePlant(World world, BlockPos sourcePlantPos, BlockPos destinationPlantPos, Random random) {
-    IBlockState iBlockState = world.getBlockState(sourcePlantPos);
-    if (iBlockState.getBlock() == Blocks.cactus) {
-      return trySpawnNewPlant(world, destinationPlantPos, random);
-    }
-    return false;
-  }
+//  @Override
+//  public boolean tryClonePlant(World world, BlockPos sourcePlantPos, BlockPos destinationPlantPos, Random random) {
+//    IBlockState iBlockState = world.getBlockState(sourcePlantPos);
+//    if (iBlockState.getBlock() == Blocks.cactus) {
+//      return trySpawnNewPlant(world, destinationPlantPos, random);
+//    }
+//    return false;
+//  }
 }
