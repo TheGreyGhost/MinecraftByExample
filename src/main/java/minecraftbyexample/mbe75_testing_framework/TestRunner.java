@@ -1,5 +1,6 @@
 package minecraftbyexample.mbe75_testing_framework;
 
+import minecraftbyexample.testingarea.plantspawners.TestPlantClasses;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLadder;
 import net.minecraft.command.CommandClone;
@@ -24,7 +25,9 @@ public class TestRunner
     boolean success = false;
     switch (testNumber) {
       case 1: {
-        success = test1(worldIn, playerIn);
+//        success = test1(worldIn, playerIn);  // todo restore
+        TestPlantClasses testPlantClasses = new TestPlantClasses();
+        testPlantClasses.test1(worldIn, playerIn);
         break;
       }
       default: {

@@ -13,10 +13,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
-todo test in dedicatedserver, test in remote
-update readme
-create blog page
-
 /**
  * User: The Grey Ghost
  * Date: 04/01/2016

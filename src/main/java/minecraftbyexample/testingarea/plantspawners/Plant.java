@@ -14,31 +14,23 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Created by TGG on 3/01/2016.
+ * The Plant superclass consolidates all the various vanilla plants to allow two operations:
+ * 1) create the plant at a target location without having to switch() based on the type of plant
+ * 2) take a copy of an existing plant at a given location (so it can be planted elsewhere)
+ *
+ * Typical usage:
+ * 1) create a plant, either using the subclass' constructor (eg new CactusPlant()), or alternatively
+ *   getPlantFromBlockState()
+ * 2) trySpawnNewPlant() to spawn the plant at the desired location
+ *
+ * To extend for new Plants:
+ * 1) Add a new MyPlant extends Plant
+ * 2) update Plant.initialisePlantFactories() to add the MyPlant factory
  */
-//todo:need to rethink this
-//        -these utility classes need to
-//        1)provide a way to spawn the desired plant at the desired location
-//        2)identify the plant from an iBlockState and place it at another location if suitable.
-//
-//        First is easy-use the appropriate Spawner with the type information as appropriate-no need to unify these
-//        Second-the block chooses the appropriate
-//
-//class, and the
-//
-//class then looks at the iBlockState to identify the
-//  relevant type
-//This is done using the main type to generate sub-types
-//
-//Registration of all types is done by the main utility which calls each
-//
-//class in turn
-//
 
 public abstract class Plant {
   /**
-   * Attempt to spawn the plant at the given block location.
-   * 1) checks if this is a suitable location for the plant
-   * 2) if so, generate it
+
    *
    * @param world
    * @param blockPos the position where the base of the plant will spawn.  eg for dirt - one above the dirt block
@@ -47,6 +39,19 @@ public abstract class Plant {
    */
   abstract public boolean trySpawnNewPlant(World world, BlockPos blockPos, Random random);
 
+  /**
+   * Cause the plant to grow (eg crops)
+   * @param world
+   * @param blockPos the block position of the plant
+   * @param growthAmount percentage to grow by (must be >=0, but can be >100%).
+   */
+  abstract public void grow(World world, BlockPos blockPos, float growthAmount);
+
+  /**
+   * For a given iBlockState, return the corresponding Plant
+   * @param iBlockState
+   * @return the corresponding plant, or null if not a Plant.
+   */
   public static Plant getPlantFromBlockState(IBlockState iBlockState)
   {
     checkNotNull(iBlockState);
@@ -63,7 +68,6 @@ public abstract class Plant {
   }
 
   protected final static int SET_BLOCKSTATE_FLAG = 3;  // update flag setting to use for setBlockState
-//  final static Collection<NewPlantSpawner> allSpawners = ImmutableList.of(aa)
 
   private final static Map<Block, PlantFactory> factoriesByBlocks = initialisePlantFactories();
 
@@ -71,6 +75,7 @@ public abstract class Plant {
   {
     ImmutableMap.Builder<Block, PlantFactory> builder = ImmutableMap.builder();
     addPlantFactory(builder, new CactusPlant.CactusPlantFactory());
+    addPlantFactory(builder, new FlowersPlant.FlowersPlantFactory());
     return builder.build();
   }
 
