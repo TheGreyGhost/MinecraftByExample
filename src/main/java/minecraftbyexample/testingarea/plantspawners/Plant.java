@@ -76,6 +76,7 @@ public abstract class Plant {
     ImmutableMap.Builder<Block, PlantFactory> builder = ImmutableMap.builder();
     addPlantFactory(builder, new CactusPlant.CactusPlantFactory());
     addPlantFactory(builder, new FlowersPlant.FlowersPlantFactory());
+    addPlantFactory(builder, new PlantDoublePlant.DoublePlantFactory());
     return builder.build();
   }
 

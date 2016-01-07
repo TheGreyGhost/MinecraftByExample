@@ -30,6 +30,11 @@ public class TestRunner
         testPlantClasses.test1(worldIn, playerIn);
         break;
       }
+      case 2: {
+        TestPlantClasses testPlantClasses = new TestPlantClasses();
+        testPlantClasses.test2(worldIn, playerIn);
+        break;
+      }
       default: {
         System.out.println("Test Number " + testNumber + " does not exist on server side.");
         return false;

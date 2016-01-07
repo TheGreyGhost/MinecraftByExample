@@ -1,6 +1,5 @@
 package minecraftbyexample.testingarea.plantspawners;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFlower;
@@ -54,9 +53,6 @@ public class FlowersPlant extends Plant {
       }
       return allFlowerBlocks.build();
     }
-  }
-
-  private FlowersPlant() {
   }
 
   private FlowersPlant(IBlockState i_blockState)

@@ -1,5 +1,6 @@
 package minecraftbyexample.testingarea.plantspawners;
 
+import net.minecraft.block.BlockDoublePlant;
 import net.minecraft.block.BlockFlower;
 import net.minecraft.block.BlockLadder;
 import net.minecraft.block.state.IBlockState;
@@ -22,7 +23,12 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class TestPlantClasses
 {
 
-  // dummy test: check the correct functioning of the plants
+  /** tests of the Plant classes - place, copy, grow
+   *
+   * @param worldIn
+   * @param playerIn
+   * @return
+   */
   public boolean test1(World worldIn, EntityPlayer playerIn)
   {
     BlockPos sourceRegionOrigin = new BlockPos(0, 204, 0);
@@ -64,6 +70,12 @@ public class TestPlantClasses
       flowersPlant.trySpawnNewPlant(worldIn, testRegionOriginA.add(nextxpos++, 1, 0), random);
     }
 
+    for (BlockDoublePlant.EnumPlantType plantType : BlockDoublePlant.EnumPlantType.values()) {
+      PlantDoublePlant plantDoublePlant = new PlantDoublePlant(plantType);
+      plantDoublePlant.trySpawnNewPlant(worldIn, testRegionOriginA.add(nextxpos++, 1, 0), random);
+
+    }
+
     // test getPlantFromBlockState
     for (int x = 0; x < SOURCE_REGION_SIZE_X; ++x) {
       BlockPos sourceBlockPos = testRegionOriginA.add(x, 1, 0);
@@ -82,18 +94,57 @@ public class TestPlantClasses
       Plant plantToGrow = Plant.getPlantFromBlockState(iBlockState);
       plantToGrow.grow(worldIn, blockPos, 1.0F);
     }
-//
-//    // testA: replace stone with wood; ladder should remain
-//    worldIn.setBlockState(testRegionOriginA.add(1, 0, 1), Blocks.log.getDefaultState());
-//    success &= worldIn.getBlockState(testRegionOriginA.add(2, 0, 1)).getBlock() == Blocks.ladder;
-//
-//    // testB: replace stone with glass; ladder should be destroyed
-//    worldIn.setBlockState(testRegionOriginB.add(1, 0, 1), Blocks.glass.getDefaultState());
-//    success &= worldIn.getBlockState(testRegionOriginB.add(2, 0, 1)).getBlock() == Blocks.air;
-//
-//    // testC: replace stone with diamond block; ladder should remain
-//    worldIn.setBlockState(testRegionOriginC.add(1, 0, 1), Blocks.diamond_block.getDefaultState());
-//    success &= worldIn.getBlockState(testRegionOriginC.add(2, 0, 1)).getBlock() == Blocks.ladder;
+
+    return success;
+  }
+
+  /** tests of the Plant classes - copy plants which were placed by player
+   *
+   * @param worldIn
+   * @param playerIn
+   * @return
+   */
+  public boolean test2(World worldIn, EntityPlayer playerIn)
+  {
+    BlockPos sourceRegionOrigin = new BlockPos(0, 220, 2);
+    BlockPos eraseRegionOrigin = new BlockPos(0, 220, 0);
+    final int SOURCE_REGION_SIZE_X = 40;
+    final int SOURCE_REGION_SIZE_Y = 6;
+    final int SOURCE_REGION_SIZE_Z = 1;
+
+    BlockPos testRegionOriginA = new BlockPos(0, 220, 4);
+//    BlockPos testRegionOriginB = new BlockPos(10, 220, 6);
+//    BlockPos testRegionOriginC = new BlockPos(15, 220, 0);
+
+    teleportPlayerToTestRegion(playerIn, testRegionOriginA.south(5));  // teleport the player nearby so you can watch
+
+    for (int x = 0; x < SOURCE_REGION_SIZE_X; ++x) {
+      worldIn.setBlockState(eraseRegionOrigin.add(x, 0, 0), Blocks.dirt.getDefaultState());
+      worldIn.setBlockState(sourceRegionOrigin.add(x, 0, 0), Blocks.dirt.getDefaultState());
+    }
+
+
+    // copy the test blocks to the destination region
+    copyTestRegion(playerIn, eraseRegionOrigin, testRegionOriginA,
+                          SOURCE_REGION_SIZE_X, SOURCE_REGION_SIZE_Y, SOURCE_REGION_SIZE_Z);
+//    copyTestRegion(playerIn, sourceRegionOrigin, testRegionOriginB,
+//                          SOURCE_REGION_SIZE_X, SOURCE_REGION_SIZE_Y, SOURCE_REGION_SIZE_Z);
+//    copyTestRegion(playerIn, sourceRegionOrigin, testRegionOriginC,
+//                          SOURCE_REGION_SIZE_X, SOURCE_REGION_SIZE_Y, SOURCE_REGION_SIZE_Z);
+
+    final long SEED = 47;
+    Random random = new Random(SEED);
+
+    boolean success = true;
+    // test getPlantFromBlockState on plants placed by player
+    for (int x = 0; x < SOURCE_REGION_SIZE_X; ++x) {
+      BlockPos sourceBlockPos = sourceRegionOrigin.add(x, 1, 0);
+      IBlockState iBlockState = worldIn.getBlockState(sourceBlockPos);
+      Plant sourcePlant = Plant.getPlantFromBlockState(iBlockState);
+      if (sourcePlant != null) {
+        sourcePlant.trySpawnNewPlant(worldIn, testRegionOriginA.add(x, 1, 0), random);
+      }
+    }
 
     return success;
   }
