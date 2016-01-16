@@ -77,6 +77,11 @@ public abstract class Plant {
     addPlantFactory(builder, new CactusPlant.CactusPlantFactory());
     addPlantFactory(builder, new FlowersPlant.FlowersPlantFactory());
     addPlantFactory(builder, new PlantDoublePlant.DoublePlantFactory());
+    addPlantFactory(builder, new SaplingPlant.SaplingPlantFactory());
+    addPlantFactory(builder, new WaterLilyPlant.WaterLilyPlantFactory());
+    addPlantFactory(builder, new TallGrassPlant.TallGrassPlantFactory());
+    addPlantFactory(builder, new VinesPlant.VinePlantFactory());
+    addPlantFactory(builder, new ReedsPlant.ReedsPlantFactory());
     return builder.build();
   }
 
