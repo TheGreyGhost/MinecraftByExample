@@ -10,3 +10,12 @@ This is done using the main type to generate sub-types
 
 Registration of all types is done by the main utility which calls each class in turn
 
+potato
+carrot
+wheat
+sugarcane
+
+BlockPotato, BLockCarrot = BlockCrops
+wheat = BlockCrops direct.
+
+

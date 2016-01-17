@@ -37,9 +37,13 @@ public class TestPlantClasses
     final int SOURCE_REGION_SIZE_X = 40;
     final int SOURCE_REGION_SIZE_Y = 20;
     final int SOURCE_REGION_SIZE_Z = 10;
+    final int FARMLAND_X_START = 30;
 
     for (int x = 0; x < SOURCE_REGION_SIZE_X; ++x) {
       worldIn.setBlockState(sourceRegionOrigin.add(x, 0, 0), Blocks.dirt.getDefaultState());
+    }
+    for (int x = FARMLAND_X_START; x < SOURCE_REGION_SIZE_X; ++x) {
+      worldIn.setBlockState(sourceRegionOrigin.add(x, 0, 0), Blocks.farmland.getDefaultState());
     }
 
     BlockPos testRegionOriginA = new BlockPos(0, 180, 10);
@@ -86,6 +90,13 @@ public class TestPlantClasses
       grassPlant.trySpawnNewPlant(worldIn, testRegionOriginA.add(nextxpos++,1,0), random);
     }
     worldIn.setBlockState(testRegionOriginA.add(nextxpos,1,0), Blocks.stone.getDefaultState());
+
+    nextxpos = FARMLAND_X_START;
+
+    for (CropsPlant.CropType cropType : CropsPlant.CropType.values()) {
+      CropsPlant cropsPlant = new CropsPlant(cropType);
+      cropsPlant.trySpawnNewPlant(worldIn, testRegionOriginA.add(nextxpos++, 1, 0), random);
+    }
 
     // test getPlantFromBlockState
     for (int x = 0; x < SOURCE_REGION_SIZE_X; ++x) {

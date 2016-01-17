@@ -82,6 +82,7 @@ public abstract class Plant {
     addPlantFactory(builder, new TallGrassPlant.TallGrassPlantFactory());
     addPlantFactory(builder, new VinesPlant.VinePlantFactory());
     addPlantFactory(builder, new ReedsPlant.ReedsPlantFactory());
+    addPlantFactory(builder, new CropsPlant.CropPlantFactory());
     return builder.build();
   }
 
