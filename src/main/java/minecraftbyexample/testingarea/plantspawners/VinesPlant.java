@@ -25,19 +25,19 @@ public class VinesPlant extends Plant {
         success = true;
         switch (facing) {
           case NORTH: {
-            vineToPlace = vineToPlace.withProperty(BlockVine.NORTH, true);
-            break;
-          }
-          case SOUTH: {
             vineToPlace = vineToPlace.withProperty(BlockVine.SOUTH, true);
             break;
           }
+          case SOUTH: {
+            vineToPlace = vineToPlace.withProperty(BlockVine.NORTH, true);
+            break;
+          }
           case EAST: {
-            vineToPlace = vineToPlace.withProperty(BlockVine.EAST, true);
+            vineToPlace = vineToPlace.withProperty(BlockVine.WEST, true);
             break;
           }
           case WEST: {
-            vineToPlace = vineToPlace.withProperty(BlockVine.WEST, true);
+            vineToPlace = vineToPlace.withProperty(BlockVine.EAST, true);
             break;
           }
           default: {

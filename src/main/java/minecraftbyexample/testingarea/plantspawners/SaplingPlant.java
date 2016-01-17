@@ -42,7 +42,8 @@ public class SaplingPlant extends Plant {
   {
     BlockSapling blockSapling = (BlockSapling)saplingBlockState.getBlock();
     Random random = new Random();
-    blockSapling.grow(world, blockPos, saplingBlockState, random);
+    IBlockState primedSapling = saplingBlockState.withProperty(BlockSapling.STAGE, 1);
+    blockSapling.grow(world, blockPos, primedSapling, random);
   }
 
   public static class SaplingPlantFactory extends PlantFactory
