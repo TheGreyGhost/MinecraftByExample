@@ -2,6 +2,7 @@ package minecraftbyexample.testingarea;
 
 import net.minecraft.client.renderer.block.model.ItemTransformVec3f;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.TRSRTransformation;
 import org.apache.commons.lang3.tuple.Pair;
@@ -15,20 +16,20 @@ import javax.vecmath.Vector3f;
 public class TestTransformation {
 
   public boolean test1(World worldIn, EntityPlayer playerIn) {
+    BlockPos playerPos = playerIn.getPosition();
     Vector3f translation = new Vector3f(0, 0, 0);
     Vector3f scale = new Vector3f(1, 1, 1);
-    Vector3f rotation = new Vector3f(0, 0, 0);
+    Vector3f rotation = new Vector3f(360.0F / 16 * (playerPos.getX() % 16),
+                                     360.0F / 16 * (playerPos.getY() % 16),
+                                     360.0F / 16 * (playerPos.getZ() % 16));
 
     ItemTransformVec3f testVec = new ItemTransformVec3f(rotation, translation, scale);
     TRSRTransformation transformation = new TRSRTransformation(testVec);
-
 
     Vector3f newScale = transformation.getScale();
     Pair<Matrix3f, Vector3f> affinePair = transformation.toAffine(transformation.getMatrix());
     Matrix3f newRotationScaleM = affinePair.getLeft();
     Vector3f newTranslation = affinePair.getRight();
-
-
 
     System.out.format("translation:%s\n", translation.toString());
     System.out.format("newTranslation:%s\n", newTranslation.toString());

@@ -1,5 +1,6 @@
 package minecraftbyexample.mbe75_testing_framework;
 
+import minecraftbyexample.testingarea.TestTransformation;
 import minecraftbyexample.testingarea.plantspawners.TestPlantClasses;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLadder;
@@ -56,6 +57,11 @@ public class TestRunner
 
     switch (testNumber) {
       case -1: {  // dummy (do nothing) - can never be called, just to prevent unreachable code compiler error
+        break;
+      }
+      case 4: {
+        TestTransformation testTransformation = new TestTransformation();
+        testTransformation.test1(worldIn, playerIn);
         break;
       }
       default: {
