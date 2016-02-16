@@ -3,6 +3,8 @@ MBE14_ITEM_CAMERA_TRANSFORMS
 When you create a custom item, you need to provide ItemCameraTransforms for it.  This example is an interactive
   tool to help you get the transforms right.
 
+Code has been moved to a separate project to keep it up to date.
+See https://github.com/TheGreyGhost/ItemTransformHelper
 See also http://www.planetminecraft.com/mod/item-transform-helper---interactively-rotate-scale-translate/
 
 How to use:

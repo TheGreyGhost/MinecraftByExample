@@ -14,7 +14,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.List;
 
 todo test in dedicatedserver, test in remote
-update readme
 create blog page
 
 /**
@@ -22,6 +21,11 @@ create blog page
  * Date: 04/01/2016
  *
  * ItemTestRunner is used to trigger a test case
+ * Usage:
+ * 1) register as an item
+ * 2) when the user right clicks while holding the item, the item will call
+ *    TestRunner.runClientSideTest(n) and TestRunner.runServerSideTest(n)
+ *    where n is the stacksize - eg a stack of 10 test items will run test 10.
  */
 public class ItemTestRunner extends Item
 {

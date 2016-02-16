@@ -13,7 +13,9 @@ import net.minecraft.world.World;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * Example test runner which is called when the player activate the testrunner item.
+ * Example test runner which is called when the player activate the ItemTestRunner
+ * 1) runServerSideTest() is called on the server side, and
+ * 2) runClientSideTest() is called on the client side
  * Has an example test of the ladder's behaviour.
  * Created by TGG on 4/01/2016.
  */

@@ -1,6 +1,8 @@
 MBE75_TESTING_FRAMEWORK
 
-This example is a useful tool that can help you automate testing of your classes in-game.
+This example is a useful tool that can help you automate testing of your classes in-game.  This helps make debugging a
+  whole lot easier, and is extremely useful for regression testing when you update your mod to the next Forge release
+   (which always seems to break a pile of stuff you didn't expect!)
 Unit testing using JUnit or similar is easy enough for standalone classes you write, but it's not much good for
   classes which rely on vanilla classes such as World, EntityPlayer, or similar.  It's almost impossible to mock or
   stub these without all sorts of brittle tricks.

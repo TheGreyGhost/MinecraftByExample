@@ -32,7 +32,6 @@ public class ClientOnlyProxy extends CommonProxy
     minecraftbyexample.mbe11_item_variants.StartupClientOnly.preInitClientOnly();
     minecraftbyexample.mbe12_item_nbt_animate.StartupClientOnly.preInitClientOnly();
     minecraftbyexample.mbe13_item_tools.StartupClientOnly.preInitClientOnly();
-    minecraftbyexample.mbe14_item_camera_transforms.StartupClientOnly.preInitClientOnly();
     minecraftbyexample.mbe15_item_smartitemmodel.StartupClientOnly.preInitClientOnly();
     minecraftbyexample.mbe20_tileentity_data.StartupClientOnly.preInitClientOnly();
     minecraftbyexample.mbe21_tileentityspecialrenderer.StartupClientOnly.preInitClientOnly();
@@ -66,7 +65,6 @@ public class ClientOnlyProxy extends CommonProxy
     minecraftbyexample.mbe11_item_variants.StartupClientOnly.initClientOnly();
     minecraftbyexample.mbe12_item_nbt_animate.StartupClientOnly.initClientOnly();
     minecraftbyexample.mbe13_item_tools.StartupClientOnly.initClientOnly();
-    minecraftbyexample.mbe14_item_camera_transforms.StartupClientOnly.initClientOnly();
     minecraftbyexample.mbe15_item_smartitemmodel.StartupClientOnly.initClientOnly();
     minecraftbyexample.mbe20_tileentity_data.StartupClientOnly.initClientOnly();
     minecraftbyexample.mbe21_tileentityspecialrenderer.StartupClientOnly.initClientOnly();
@@ -99,7 +97,6 @@ public class ClientOnlyProxy extends CommonProxy
     minecraftbyexample.mbe11_item_variants.StartupClientOnly.postInitClientOnly();
     minecraftbyexample.mbe12_item_nbt_animate.StartupClientOnly.postInitClientOnly();
     minecraftbyexample.mbe13_item_tools.StartupClientOnly.postInitClientOnly();
-    minecraftbyexample.mbe14_item_camera_transforms.StartupClientOnly.postInitClientOnly();
     minecraftbyexample.mbe15_item_smartitemmodel.StartupClientOnly.postInitClientOnly();
     minecraftbyexample.mbe20_tileentity_data.StartupClientOnly.postInitClientOnly();
     minecraftbyexample.mbe21_tileentityspecialrenderer.StartupClientOnly.postInitClientOnly();

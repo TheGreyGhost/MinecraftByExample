@@ -58,6 +58,9 @@ Network
 Configuration GUI
   MBE70 - configuration file linked to the "mod options" button GUI on the mods list screen
 
+Testing tools
+  MBE75 - a tool to help you automate testing of your classes in-game.
+
 How to use this example project-
 A) You can browse directly in GitHub, or alternatively download it as a zip and browse it locally.
 
