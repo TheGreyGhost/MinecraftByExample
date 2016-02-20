@@ -24,17 +24,17 @@ public class ClientOnlyProxy extends CommonProxy
     minecraftbyexample.mbe01_block_simple.StartupClientOnly.preInitClientOnly();
     minecraftbyexample.mbe02_block_partial.StartupClientOnly.preInitClientOnly();
     minecraftbyexample.mbe03_block_variants.StartupClientOnly.preInitClientOnly();
-//    minecraftbyexample.mbe04_block_smartblockmodel1.StartupClientOnly.preInitClientOnly();  todo
-//    minecraftbyexample.mbe05_block_smartblockmodel2.StartupClientOnly.preInitClientOnly();  todo
-//    minecraftbyexample.mbe06_redstone.StartupClientOnly.preInitClientOnly();  todo
+    minecraftbyexample.mbe04_block_smartblockmodel1.StartupClientOnly.preInitClientOnly();
+    minecraftbyexample.mbe05_block_smartblockmodel2.StartupClientOnly.preInitClientOnly();
+    minecraftbyexample.mbe06_redstone.StartupClientOnly.preInitClientOnly();
     minecraftbyexample.mbe08_creative_tab.StartupClientOnly.preInitClientOnly();
     minecraftbyexample.mbe10_item_simple.StartupClientOnly.preInitClientOnly();
     minecraftbyexample.mbe11_item_variants.StartupClientOnly.preInitClientOnly();
     minecraftbyexample.mbe12_item_nbt_animate.StartupClientOnly.preInitClientOnly();
     minecraftbyexample.mbe13_item_tools.StartupClientOnly.preInitClientOnly();
-//    minecraftbyexample.mbe15_item_smartitemmodel.StartupClientOnly.preInitClientOnly();  todo
+    minecraftbyexample.mbe15_item_smartitemmodel.StartupClientOnly.preInitClientOnly();
     minecraftbyexample.mbe20_tileentity_data.StartupClientOnly.preInitClientOnly();
-//    minecraftbyexample.mbe21_tileentityspecialrenderer.StartupClientOnly.preInitClientOnly();  todo
+    minecraftbyexample.mbe21_tileentityspecialrenderer.StartupClientOnly.preInitClientOnly();
     minecraftbyexample.mbe30_inventory_basic.StartupClientOnly.preInitClientOnly();
     minecraftbyexample.mbe31_inventory_furnace.StartupClientOnly.preInitClientOnly();
     minecraftbyexample.mbe35_recipes.StartupClientOnly.preInitClientOnly();
@@ -57,17 +57,17 @@ public class ClientOnlyProxy extends CommonProxy
     minecraftbyexample.mbe01_block_simple.StartupClientOnly.initClientOnly();
     minecraftbyexample.mbe02_block_partial.StartupClientOnly.initClientOnly();
     minecraftbyexample.mbe03_block_variants.StartupClientOnly.initClientOnly();
-//    minecraftbyexample.mbe04_block_smartblockmodel1.StartupClientOnly.initClientOnly();  todo
-//    minecraftbyexample.mbe05_block_smartblockmodel2.StartupClientOnly.initClientOnly();  todo
-//    minecraftbyexample.mbe06_redstone.StartupClientOnly.initClientOnly();  todo
+    minecraftbyexample.mbe04_block_smartblockmodel1.StartupClientOnly.initClientOnly();
+    minecraftbyexample.mbe05_block_smartblockmodel2.StartupClientOnly.initClientOnly();
+    minecraftbyexample.mbe06_redstone.StartupClientOnly.initClientOnly();
     minecraftbyexample.mbe08_creative_tab.StartupClientOnly.initClientOnly();
     minecraftbyexample.mbe10_item_simple.StartupClientOnly.initClientOnly();
     minecraftbyexample.mbe11_item_variants.StartupClientOnly.initClientOnly();
     minecraftbyexample.mbe12_item_nbt_animate.StartupClientOnly.initClientOnly();
     minecraftbyexample.mbe13_item_tools.StartupClientOnly.initClientOnly();
-//    minecraftbyexample.mbe15_item_smartitemmodel.StartupClientOnly.initClientOnly();  todo
+    minecraftbyexample.mbe15_item_smartitemmodel.StartupClientOnly.initClientOnly();
     minecraftbyexample.mbe20_tileentity_data.StartupClientOnly.initClientOnly();
-//    minecraftbyexample.mbe21_tileentityspecialrenderer.StartupClientOnly.initClientOnly();  todo
+    minecraftbyexample.mbe21_tileentityspecialrenderer.StartupClientOnly.initClientOnly();
     minecraftbyexample.mbe30_inventory_basic.StartupClientOnly.initClientOnly();
     minecraftbyexample.mbe31_inventory_furnace.StartupClientOnly.initClientOnly();
     minecraftbyexample.mbe35_recipes.StartupClientOnly.initClientOnly();
@@ -89,17 +89,17 @@ public class ClientOnlyProxy extends CommonProxy
     minecraftbyexample.mbe01_block_simple.StartupClientOnly.postInitClientOnly();
     minecraftbyexample.mbe02_block_partial.StartupClientOnly.postInitClientOnly();
     minecraftbyexample.mbe03_block_variants.StartupClientOnly.postInitClientOnly();
-//    minecraftbyexample.mbe04_block_smartblockmodel1.StartupClientOnly.postInitClientOnly();  todo
-//    minecraftbyexample.mbe05_block_smartblockmodel2.StartupClientOnly.postInitClientOnly();  todo
-//    minecraftbyexample.mbe06_redstone.StartupClientOnly.postInitClientOnly();  todo
+    minecraftbyexample.mbe04_block_smartblockmodel1.StartupClientOnly.postInitClientOnly();
+    minecraftbyexample.mbe05_block_smartblockmodel2.StartupClientOnly.postInitClientOnly();
+    minecraftbyexample.mbe06_redstone.StartupClientOnly.postInitClientOnly();
     minecraftbyexample.mbe08_creative_tab.StartupClientOnly.postInitClientOnly();
     minecraftbyexample.mbe10_item_simple.StartupClientOnly.postInitClientOnly();
     minecraftbyexample.mbe11_item_variants.StartupClientOnly.postInitClientOnly();
     minecraftbyexample.mbe12_item_nbt_animate.StartupClientOnly.postInitClientOnly();
     minecraftbyexample.mbe13_item_tools.StartupClientOnly.postInitClientOnly();
-//    minecraftbyexample.mbe15_item_smartitemmodel.StartupClientOnly.postInitClientOnly();  todo
+    minecraftbyexample.mbe15_item_smartitemmodel.StartupClientOnly.postInitClientOnly();
     minecraftbyexample.mbe20_tileentity_data.StartupClientOnly.postInitClientOnly();
-//    minecraftbyexample.mbe21_tileentityspecialrenderer.StartupClientOnly.postInitClientOnly();  todo
+    minecraftbyexample.mbe21_tileentityspecialrenderer.StartupClientOnly.postInitClientOnly();
     minecraftbyexample.mbe30_inventory_basic.StartupClientOnly.postInitClientOnly();
     minecraftbyexample.mbe31_inventory_furnace.StartupClientOnly.postInitClientOnly();
     minecraftbyexample.mbe35_recipes.StartupClientOnly.postInitClientOnly();

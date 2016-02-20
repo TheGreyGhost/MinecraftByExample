@@ -57,8 +57,8 @@ public class ChessboardSmartItemModel implements ISmartItemModel {
   }
 
   @Override
-  public TextureAtlasSprite getTexture() {
-    return baseChessboardModel.getTexture();
+  public TextureAtlasSprite getParticleTexture() {
+    return baseChessboardModel.getParticleTexture();
   }
 
   // for the difference between face quads and general quads, see here

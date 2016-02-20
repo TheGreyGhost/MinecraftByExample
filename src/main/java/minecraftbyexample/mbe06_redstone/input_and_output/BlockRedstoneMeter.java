@@ -28,7 +28,7 @@ import java.util.Random;
  * We use a TileEntity because
  * 1) that's the easiest way to get the block's power level on the client side, without
  *   having to use metadata.
- * 2) our block needs to store the input power level, for later use when others call the isProvidingWeakPower().
+ * 2) our block needs to store the input power level, for later use when others call the getWeakPower().
  *    for the reason why, see http://greyminecraftcoder.blogspot.com.au/2015/11/redstone.html
  */
 public class BlockRedstoneMeter extends Block implements ITileEntityProvider
@@ -70,7 +70,7 @@ public class BlockRedstoneMeter extends Block implements ITileEntityProvider
    * @return The power provided [0 - 15]
    */
   @Override
-  public int isProvidingWeakPower(IBlockAccess worldIn, BlockPos pos, IBlockState state, EnumFacing side)
+  public int getWeakPower(IBlockAccess worldIn, BlockPos pos, IBlockState state, EnumFacing side)
   {
     if (side != EnumFacing.UP && side != EnumFacing.DOWN) {
       return 0;
@@ -97,7 +97,7 @@ public class BlockRedstoneMeter extends Block implements ITileEntityProvider
    */
 
   @Override
-  public int isProvidingStrongPower(IBlockAccess worldIn, BlockPos pos, IBlockState state, EnumFacing side)
+  public int getStrongPower(IBlockAccess worldIn, BlockPos pos, IBlockState state, EnumFacing side)
   {
     return 0;
   }

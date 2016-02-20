@@ -17,7 +17,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  *  1) on the client side - retrieve the current power level for rendering in the associated TileEntitySpecialRenderer (TESR)
  *  2) on the server side
  *     a) used to store the current power level.  This is necessary due to the way that the redstone signals propagate,
- *        e.g. isProvidingWeakPower() must retrieve a stored value and not calculate it from neighbours.
+ *        e.g. getWeakPower() must retrieve a stored value and not calculate it from neighbours.
  *        see here for more information http://greyminecraftcoder.blogspot.com.au/2015/11/redstone.html
  *     b) used to flash the output at a defined rate using block tick scheduling.
  */

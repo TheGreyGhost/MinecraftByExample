@@ -4,9 +4,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ITickable;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -19,7 +19,7 @@ import java.awt.*;
  * It also triggers a block render update and relighting check on the client when it detects that the lamp colour
  *   has changed.
  */
-public class TileEntityRedstoneColouredLamp extends TileEntity implements IUpdatePlayerListBox {
+public class TileEntityRedstoneColouredLamp extends TileEntity implements ITickable {
 
 	public int getRGBcolour() {
 		return rgbColour;

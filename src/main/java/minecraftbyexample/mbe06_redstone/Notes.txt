@@ -49,6 +49,6 @@ For background information on
 --------
 Common errors:
 * forgetting about the difference between server <--> client and the need to keep the client synchronised
-* forgetting to store the power information needed by the query methods eg isProvidingWeakPower()
+* forgetting to store the power information needed by the query methods eg getWeakPower()
 * getting the face / side parameter wrong (opposite direction) in the various redstone methods
 * getting confused by the rubbish misleading names for the redstone methods

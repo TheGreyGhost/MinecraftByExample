@@ -64,8 +64,8 @@ public class CompositeModel implements IFlexibleBakedModel, ISmartBlockModel {
   }
 
   @Override
-  public TextureAtlasSprite getTexture() {
-    return modelCore.getTexture();
+  public TextureAtlasSprite getParticleTexture() {
+    return modelCore.getParticleTexture();
   }
 
   @Override
@@ -222,8 +222,8 @@ public class CompositeModel implements IFlexibleBakedModel, ISmartBlockModel {
     }
 
     @Override
-    public TextureAtlasSprite getTexture() {
-      return modelCore.getTexture();
+    public TextureAtlasSprite getParticleTexture() {
+      return modelCore.getParticleTexture();
     }
 
     @Override

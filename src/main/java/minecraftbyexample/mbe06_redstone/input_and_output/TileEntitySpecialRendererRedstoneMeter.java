@@ -6,6 +6,9 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import org.lwjgl.opengl.GL11;
@@ -144,7 +147,7 @@ public class TileEntitySpecialRendererRedstoneMeter extends TileEntitySpecialRen
       final int BLOCK_LIGHT_VALUE = 0;
       OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, SKY_LIGHT_VALUE * 16.0F, BLOCK_LIGHT_VALUE * 16.0F);
 
-      worldrenderer.startDrawing(GL11.GL_TRIANGLES);
+      worldrenderer.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION);
       addNeedleVertices(worldrenderer);
       tessellator.draw();
 
@@ -159,8 +162,8 @@ public class TileEntitySpecialRendererRedstoneMeter extends TileEntitySpecialRen
     // needle is a triangle pointing down, the rotation spindle is at [0,0,0]
     // anticlockwise vertices -> it is facing south
 
-    worldrenderer.addVertex( 0.00, -0.45, 0.00);  // tip (pointer) of needle
-    worldrenderer.addVertex( 0.05,  0.05, 0.00);  // stub - one side
-    worldrenderer.addVertex( -0.05,  0.05, 0.00);  // stub - other side
+    worldrenderer.pos( 0.00, -0.45, 0.00).endVertex();  // tip (pointer) of needle
+    worldrenderer.pos( 0.05,  0.05, 0.00).endVertex();  // stub - one side
+    worldrenderer.pos(-0.05,  0.05, 0.00).endVertex();  // stub - other side
   }
 }

@@ -57,7 +57,7 @@ public class BlockRedstoneVariableSource extends Block
    * @return The power provided [0 - 15]
    */
   @Override
-  public int isProvidingWeakPower(IBlockAccess worldIn, BlockPos pos, IBlockState state, EnumFacing side)
+  public int getWeakPower(IBlockAccess worldIn, BlockPos pos, IBlockState state, EnumFacing side)
   {
     Integer powerIndex = (Integer)state.getValue(POWER_INDEX);
 
@@ -71,7 +71,7 @@ public class BlockRedstoneVariableSource extends Block
 
   // The variable source block does not provide strong power.  See BlockButton for a example of a block which does.
   @Override
-  public int isProvidingStrongPower(IBlockAccess worldIn, BlockPos pos, IBlockState state, EnumFacing side)
+  public int getStrongPower(IBlockAccess worldIn, BlockPos pos, IBlockState state, EnumFacing side)
   {
     return 0;
   }

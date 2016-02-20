@@ -20,17 +20,17 @@ public abstract class CommonProxy {
     minecraftbyexample.mbe01_block_simple.StartupCommon.preInitCommon();
     minecraftbyexample.mbe02_block_partial.StartupCommon.preInitCommon();
     minecraftbyexample.mbe03_block_variants.StartupCommon.preInitCommon();
-//    minecraftbyexample.mbe04_block_smartblockmodel1.StartupCommon.preInitCommon();  todo
-//    minecraftbyexample.mbe05_block_smartblockmodel2.StartupCommon.preInitCommon(); todo
-//    minecraftbyexample.mbe06_redstone.StartupCommon.preInitCommon();   todo
+    minecraftbyexample.mbe04_block_smartblockmodel1.StartupCommon.preInitCommon();
+    minecraftbyexample.mbe05_block_smartblockmodel2.StartupCommon.preInitCommon();
+    minecraftbyexample.mbe06_redstone.StartupCommon.preInitCommon();
     minecraftbyexample.mbe08_creative_tab.StartupCommon.preInitCommon();
     minecraftbyexample.mbe10_item_simple.StartupCommon.preInitCommon();
     minecraftbyexample.mbe11_item_variants.StartupCommon.preInitCommon();
     minecraftbyexample.mbe12_item_nbt_animate.StartupCommon.preInitCommon();
     minecraftbyexample.mbe13_item_tools.StartupCommon.preInitCommon();
-//    minecraftbyexample.mbe15_item_smartitemmodel.StartupCommon.preInitCommon();  todo
+    minecraftbyexample.mbe15_item_smartitemmodel.StartupCommon.preInitCommon();
     minecraftbyexample.mbe20_tileentity_data.StartupCommon.preInitCommon();
-//    minecraftbyexample.mbe21_tileentityspecialrenderer.StartupCommon.preInitCommon();  todo
+    minecraftbyexample.mbe21_tileentityspecialrenderer.StartupCommon.preInitCommon();
     minecraftbyexample.mbe30_inventory_basic.StartupCommon.preInitCommon();
     minecraftbyexample.mbe31_inventory_furnace.StartupCommon.preInitCommon();
     minecraftbyexample.mbe35_recipes.StartupCommon.preInitCommon();
@@ -52,17 +52,17 @@ public abstract class CommonProxy {
     minecraftbyexample.mbe01_block_simple.StartupCommon.initCommon();
     minecraftbyexample.mbe02_block_partial.StartupCommon.initCommon();
     minecraftbyexample.mbe03_block_variants.StartupCommon.initCommon();
-//    minecraftbyexample.mbe04_block_smartblockmodel1.StartupCommon.initCommon();  todo
-//    minecraftbyexample.mbe05_block_smartblockmodel2.StartupCommon.initCommon();  todo
-//    minecraftbyexample.mbe06_redstone.StartupCommon.initCommon();  todo
+    minecraftbyexample.mbe04_block_smartblockmodel1.StartupCommon.initCommon();
+    minecraftbyexample.mbe05_block_smartblockmodel2.StartupCommon.initCommon();
+    minecraftbyexample.mbe06_redstone.StartupCommon.initCommon();
     minecraftbyexample.mbe08_creative_tab.StartupCommon.initCommon();
     minecraftbyexample.mbe10_item_simple.StartupCommon.initCommon();
     minecraftbyexample.mbe11_item_variants.StartupCommon.initCommon();
     minecraftbyexample.mbe12_item_nbt_animate.StartupCommon.initCommon();
     minecraftbyexample.mbe13_item_tools.StartupCommon.initCommon();
-//    minecraftbyexample.mbe15_item_smartitemmodel.StartupCommon.initCommon();  todo
+    minecraftbyexample.mbe15_item_smartitemmodel.StartupCommon.initCommon();
     minecraftbyexample.mbe20_tileentity_data.StartupCommon.initCommon();
-//    minecraftbyexample.mbe21_tileentityspecialrenderer.StartupCommon.initCommon();  todo
+    minecraftbyexample.mbe21_tileentityspecialrenderer.StartupCommon.initCommon();
     minecraftbyexample.mbe30_inventory_basic.StartupCommon.initCommon();
     minecraftbyexample.mbe31_inventory_furnace.StartupCommon.initCommon();
     minecraftbyexample.mbe35_recipes.StartupCommon.initCommon();
@@ -83,17 +83,17 @@ public abstract class CommonProxy {
     minecraftbyexample.mbe01_block_simple.StartupCommon.postInitCommon();
     minecraftbyexample.mbe02_block_partial.StartupCommon.postInitCommon();
     minecraftbyexample.mbe03_block_variants.StartupCommon.postInitCommon();
-//    minecraftbyexample.mbe04_block_smartblockmodel1.StartupCommon.postInitCommon();  todo
-//    minecraftbyexample.mbe05_block_smartblockmodel2.StartupCommon.postInitCommon();  todo
-//    minecraftbyexample.mbe06_redstone.StartupCommon.postInitCommon();
+    minecraftbyexample.mbe04_block_smartblockmodel1.StartupCommon.postInitCommon();
+    minecraftbyexample.mbe05_block_smartblockmodel2.StartupCommon.postInitCommon();
+    minecraftbyexample.mbe06_redstone.StartupCommon.postInitCommon();
     minecraftbyexample.mbe08_creative_tab.StartupCommon.postInitCommon();
     minecraftbyexample.mbe10_item_simple.StartupCommon.postInitCommon();
     minecraftbyexample.mbe11_item_variants.StartupCommon.postInitCommon();
     minecraftbyexample.mbe12_item_nbt_animate.StartupCommon.postInitCommon();
     minecraftbyexample.mbe13_item_tools.StartupCommon.postInitCommon();
-//    minecraftbyexample.mbe15_item_smartitemmodel.StartupCommon.postInitCommon();  todo
+    minecraftbyexample.mbe15_item_smartitemmodel.StartupCommon.postInitCommon();
     minecraftbyexample.mbe20_tileentity_data.StartupCommon.postInitCommon();
-//    minecraftbyexample.mbe21_tileentityspecialrenderer.StartupCommon.postInitCommon();  todo
+    minecraftbyexample.mbe21_tileentityspecialrenderer.StartupCommon.postInitCommon();
     minecraftbyexample.mbe30_inventory_basic.StartupCommon.postInitCommon();
     minecraftbyexample.mbe31_inventory_furnace.StartupCommon.postInitCommon();
     minecraftbyexample.mbe35_recipes.StartupCommon.postInitCommon();

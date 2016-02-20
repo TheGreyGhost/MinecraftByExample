@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
@@ -130,7 +131,7 @@ public class TileEntitySpecialRendererMBE21 extends TileEntitySpecialRenderer
       final int BLOCK_LIGHT_VALUE = 0;
       OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, SKY_LIGHT_VALUE * 16.0F, BLOCK_LIGHT_VALUE * 16.0F);
 
-      worldrenderer.startDrawing(GL11.GL_TRIANGLES);
+      worldrenderer.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
       addGemVertices(worldrenderer);
       tessellator.draw();
 
@@ -171,7 +172,9 @@ public class TileEntitySpecialRendererMBE21 extends TileEntitySpecialRenderer
               };
 
     for (double [] vertex : vertexTable) {
-      worldrenderer.addVertexWithUV(vertex[0], vertex[1], vertex[2], vertex[3], vertex[4]);
+      worldrenderer.pos(vertex[0], vertex[1], vertex[2])
+                   .tex(vertex[3], vertex[4])
+                   .endVertex();
     }
   }
 

@@ -57,7 +57,7 @@ public class BlockRedstoneTarget extends Block
    * @return The power provided [0 - 15]
    */
   @Override
-  public int isProvidingWeakPower(IBlockAccess worldIn, BlockPos pos, IBlockState state, EnumFacing side)
+  public int getWeakPower(IBlockAccess worldIn, BlockPos pos, IBlockState state, EnumFacing side)
   {
     return 0;
   }
@@ -72,7 +72,7 @@ public class BlockRedstoneTarget extends Block
    */
 
   @Override
-  public int isProvidingStrongPower(IBlockAccess worldIn, BlockPos pos, IBlockState state, EnumFacing side)
+  public int getStrongPower(IBlockAccess worldIn, BlockPos pos, IBlockState state, EnumFacing side)
   {
     EnumFacing targetFacing = (EnumFacing)state.getValue(PROPERTYFACING);
 
@@ -112,11 +112,11 @@ public class BlockRedstoneTarget extends Block
     if (!worldIn.isRemote) {
       if (entityIn instanceof EntityArrow) {
         AxisAlignedBB targetAABB = getCollisionBoundingBox(worldIn, pos, state);
-        List<Entity> embeddedArrows = worldIn.getEntitiesWithinAABB(EntityArrow.class, targetAABB);
+        List<EntityArrow> embeddedArrows = worldIn.getEntitiesWithinAABB(EntityArrow.class, targetAABB);
 
         // when a new arrow hits, remove all others which are already embedded
 
-        for (Entity embeddedEntity : embeddedArrows) {
+        for (EntityArrow embeddedEntity : embeddedArrows) {
           if (embeddedEntity.getEntityId() != entityIn.getEntityId()) {
             embeddedEntity.setDead();
           }
@@ -159,11 +159,11 @@ public class BlockRedstoneTarget extends Block
     final int MISS_VALUE = -1;
     EnumFacing targetFacing = (EnumFacing)state.getValue(PROPERTYFACING);
     AxisAlignedBB targetAABB = getCollisionBoundingBox(worldIn, pos, state);
-    List<Entity> embeddedArrows = worldIn.getEntitiesWithinAABB(EntityArrow.class, targetAABB);
+    List<EntityArrow> embeddedArrows = worldIn.getEntitiesWithinAABB(EntityArrow.class, targetAABB);
     if (embeddedArrows.isEmpty()) return MISS_VALUE;
 
     double closestDistance = Float.MAX_VALUE;
-    for (Entity entity : embeddedArrows) {
+    for (EntityArrow entity : embeddedArrows) {
       if (!entity.isDead && entity instanceof EntityArrow) {
         EntityArrow entityArrow = (EntityArrow) entity;
         Vec3 hitLocation = getArrowIntersectionWithTarget(entityArrow, targetAABB);

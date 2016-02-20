@@ -70,8 +70,8 @@ public class CamouflageISmartBlockModelFactory implements ISmartBlockModel {
   // getTexture is used directly when player is inside the block.  The game will crash if you don't use something
   //   meaningful here.
   @Override
-  public TextureAtlasSprite getTexture() {
-    return modelWhenNotCamouflaged.getTexture();
+  public TextureAtlasSprite getParticleTexture() {
+    return modelWhenNotCamouflaged.getParticleTexture();
   }
 
   // The methods below are all unused for CamouflageISmartBlockModelFactory because we always return a vanilla model

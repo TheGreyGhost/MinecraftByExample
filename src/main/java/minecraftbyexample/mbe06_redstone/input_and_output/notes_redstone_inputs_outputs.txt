@@ -24,7 +24,7 @@ The third alternative method we use here is to have a TileEntitySpecialRenderer 
 
 For (2):
 The key thing to understand is that the block must store its power level somehow on the server side, due to the way that
-  redstone power is propagated - in particular isProvidingWeakPower() is provided with IBlockAccess not World;
+  redstone power is propagated - in particular getWeakPower() is provided with IBlockAccess not World;
   see here for further explanation http://greyminecraftcoder.blogspot.com.au/2015/11/redstone.html.
   In this example, we use a TileEntity to store the power level information (similar to a BlockRedstoneComparator).
 
