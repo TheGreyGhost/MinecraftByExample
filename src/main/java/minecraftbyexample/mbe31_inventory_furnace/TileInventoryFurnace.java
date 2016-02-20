@@ -10,13 +10,9 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.*;
 import net.minecraft.world.EnumSkyBlock;
 
 import java.util.Arrays;
@@ -31,7 +27,7 @@ import java.util.Arrays;
  * The fuel slots are used in parallel.  The more slots burning in parallel, the faster the cook time.
  * The code is heavily based on TileEntityFurnace.
  */
-public class TileInventoryFurnace extends TileEntity implements IInventory, IUpdatePlayerListBox {
+public class TileInventoryFurnace extends TileEntity implements IInventory, ITickable {
 	// Create and initialize the itemStacks variable that will store store the itemStacks
 	public static final int FUEL_SLOTS_COUNT = 4;
 	public static final int INPUT_SLOTS_COUNT = 5;
@@ -502,7 +498,7 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, IUpd
 	 * @return
 	 */
 	@Override
-	public ItemStack getStackInSlotOnClosing(int slotIndex) {
+	public ItemStack removeStackFromSlot(int slotIndex) {
 		ItemStack itemStack = getStackInSlot(slotIndex);
 		if (itemStack != null) setInventorySlotContents(slotIndex, null);
 		return itemStack;

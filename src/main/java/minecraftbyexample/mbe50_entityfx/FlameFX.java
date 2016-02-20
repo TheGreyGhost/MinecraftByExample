@@ -4,10 +4,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import org.lwjgl.opengl.GL11;
 
 /**
  * User: The Grey Ghost
@@ -42,7 +45,7 @@ public class FlameFX extends EntityFX
     // set the texture to the flame texture, which we have previously added using TextureStitchEvent
     //   (see TextureStitcherBreathFX)
     TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(flameRL.toString());
-    func_180435_a(sprite);  // initialise the icon to our custom texture
+    setParticleIcon(sprite);  // initialise the icon to our custom texture
   }
 
   /**
@@ -69,6 +72,11 @@ public class FlameFX extends EntityFX
   {
     final int FULL_BRIGHTNESS_VALUE = 0xf000f0;
     return FULL_BRIGHTNESS_VALUE;
+
+    // if you want the brightness to be the local illumination (from block light and sky light) you can just use
+    //  Entity.getBrightnessForRender() base method, which contains:
+    //    BlockPos blockpos = new BlockPos(this.posX, this.posY + (double)this.getEyeHeight(), this.posZ);
+    //    return this.worldObj.isBlockLoaded(blockpos) ? this.worldObj.getCombinedLight(blockpos, 0) : 0;
   }
 
   // this function is used by EffectRenderer.addEffect() to determine whether depthmask writing should be on or not.
@@ -77,7 +85,7 @@ public class FlameFX extends EntityFX
   //   otherwise translucent objects (such as water) render over the top of our breath, even if the breath is in front
   //  of the water and not behind
   @Override
-  public float func_174838_j()
+  public float getAlpha()
   {
     return 1.0F;
   }
@@ -138,7 +146,7 @@ public class FlameFX extends EntityFX
    * @param edgeUDdirectionZ edgeUDdirection[XYZ] is the vector direction pointing up-down on the player's screen
    */
   @Override
-  public void func_180434_a(WorldRenderer worldRenderer, Entity entity, float partialTick,
+  public void renderParticle(WorldRenderer worldRenderer, Entity entity, float partialTick,
                             float edgeLRdirectionX, float edgeUDdirectionY, float edgeLRdirectionZ,
                             float edgeUDdirectionX, float edgeUDdirectionZ)
   {
@@ -154,23 +162,45 @@ public class FlameFX extends EntityFX
     double y = this.prevPosY + (this.posY - this.prevPosY) * partialTick - interpPosY;
     double z = this.prevPosZ + (this.posZ - this.prevPosZ) * partialTick - interpPosZ;
 
-    worldRenderer.setColorRGBA_F(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha);
-    worldRenderer.addVertexWithUV(x - edgeLRdirectionX * scaleLR - edgeUDdirectionX * scaleUD,
-                                         y - edgeUDdirectionY * scaleUD,
-                                         z - edgeLRdirectionZ * scaleLR - edgeUDdirectionZ * scaleUD,
-                                         maxU, maxV);
-    worldRenderer.addVertexWithUV(x - edgeLRdirectionX * scaleLR + edgeUDdirectionX * scaleUD,
-                                         y + edgeUDdirectionY * scaleUD,
-                                         z - edgeLRdirectionZ * scaleLR + edgeUDdirectionZ * scaleUD,
-                                         maxU, minV);
-    worldRenderer.addVertexWithUV(x + edgeLRdirectionX * scaleLR + edgeUDdirectionX * scaleUD,
-                                         y + edgeUDdirectionY * scaleUD,
-                                         z + edgeLRdirectionZ * scaleLR + edgeUDdirectionZ * scaleUD,
-                                         minU, minV);
-    worldRenderer.addVertexWithUV(x + edgeLRdirectionX * scaleLR - edgeUDdirectionX * scaleUD,
-                                         y - edgeUDdirectionY * scaleUD,
-                                         z + edgeLRdirectionZ * scaleLR - edgeUDdirectionZ * scaleUD,
-                                         minU, maxV);
+
+    // "lightmap" changes the brightness of the particle depending on the local illumination (block light, sky light)
+    //  in this example, it's held constant, but we still need to add it to each vertex anyway.
+    int combinedBrightness = this.getBrightnessForRender(partialTick);
+    int skyLightTimes16 = combinedBrightness >> 16 & 65535;
+    int blockLightTimes16 = combinedBrightness & 65535;
+
+    // the caller has already initiated rendering, using:
+//    worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+
+    worldRenderer.pos(x - edgeLRdirectionX * scaleLR - edgeUDdirectionX * scaleUD,
+                      y - edgeUDdirectionY * scaleUD,
+                      z - edgeLRdirectionZ * scaleLR - edgeUDdirectionZ * scaleUD)
+                 .tex(maxU, maxV)
+                 .color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha)
+                 .lightmap(skyLightTimes16, blockLightTimes16)
+                 .endVertex();
+    worldRenderer.pos(x - edgeLRdirectionX * scaleLR + edgeUDdirectionX * scaleUD,
+            y + edgeUDdirectionY * scaleUD,
+            z - edgeLRdirectionZ * scaleLR + edgeUDdirectionZ * scaleUD)
+            .tex(maxU, minV)
+            .color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha)
+            .lightmap(skyLightTimes16, blockLightTimes16)
+            .endVertex();
+    worldRenderer.pos(x + edgeLRdirectionX * scaleLR + edgeUDdirectionX * scaleUD,
+            y + edgeUDdirectionY * scaleUD,
+            z + edgeLRdirectionZ * scaleLR + edgeUDdirectionZ * scaleUD)
+            .tex(minU, minV)
+            .color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha)
+            .lightmap(skyLightTimes16, blockLightTimes16)
+            .endVertex();
+    worldRenderer.pos(x + edgeLRdirectionX * scaleLR - edgeUDdirectionX * scaleUD,
+            y - edgeUDdirectionY * scaleUD,
+            z + edgeLRdirectionZ * scaleLR - edgeUDdirectionZ * scaleUD)
+            .tex(minU, maxV)
+            .color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha)
+            .lightmap(skyLightTimes16, blockLightTimes16)
+            .endVertex();
+
   }
 
 }

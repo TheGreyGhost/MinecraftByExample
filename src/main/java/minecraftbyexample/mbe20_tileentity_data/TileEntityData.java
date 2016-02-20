@@ -12,9 +12,9 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.ITickable;
 import net.minecraft.world.World;
 
 import java.util.Arrays;
@@ -27,7 +27,7 @@ import java.util.Random;
  * This is a simple tile entity which stores some data
  * When placed, it waits for 10 seconds then replaces itself with a random block
  */
-public class TileEntityData extends TileEntity implements IUpdatePlayerListBox {
+public class TileEntityData extends TileEntity implements ITickable {
 
 	private final int INVALID_VALUE = -1;
 	private int ticksLeftTillDisappear = INVALID_VALUE;  // the time (in ticks) left until the block disappears
@@ -154,7 +154,7 @@ public class TileEntityData extends TileEntity implements IUpdatePlayerListBox {
 		int numberOfEntries = Math.min(doubleArrayNBT.tagCount(), testDoubleArray.length);
 		double [] readDoubleArray = new double[numberOfEntries];
 		for (int i = 0; i < numberOfEntries; ++i) {
-			 readDoubleArray[i] = doubleArrayNBT.getDouble(i);
+			 readDoubleArray[i] = doubleArrayNBT.getDoubleAt(i);
 		}
 		if (doubleArrayNBT.tagCount() != numberOfEntries || !Arrays.equals(readDoubleArray, testDoubleArray)) {
 			System.err.println("testDoubleArray mismatch:" + readDoubleArray);
@@ -176,8 +176,7 @@ public class TileEntityData extends TileEntity implements IUpdatePlayerListBox {
 		}
 	}
 
-	// Since our TileEntity implements IUpdatePlayerListBox, we get an update method which is called once per tick (20 times / second)
-	//    (yes, the name IUpdatePlayerListBox is misleading)
+	// Since our TileEntity implements ITickable, we get an update method which is called once per tick (20 times / second)
 	// When the timer elapses, replace our block with a random one.
 	@Override
 	public void update() {

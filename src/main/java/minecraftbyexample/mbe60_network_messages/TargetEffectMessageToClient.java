@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
  * 1) User creates a TargetEffectMessageToClient(targetCoordinates)
  * 2) simpleNetworkWrapper.sendToDimension(targetEffectMessageToClient);
  * 3) network code calls targetEffectMessageToClient.toBytes() to copy the message member variables to a ByteBuffer, ready for sending
- * ... bytes are sent over the network and arrive at the server....
+ * ... bytes are sent over the network and arrive at the client....
  * 4) network code creates TargetEffectMessageToClient()
  * 5) network code calls targetEffectMessageToClient.fromBytes() to read from the ByteBuffer into the member variables
  * 6) the handler.onMessage(targetEffectMessageToClient) is called to process the message
