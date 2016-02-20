@@ -73,9 +73,6 @@ If you want more information and explanatory text about the concepts, the follow
            choose yes you can run the gradle build task from inside IntelliJ.  For most users, there's no other difference.
         3. If you imported the gradle project, you should run the gradle task 'getIntellijRuns' afterwards to get the Run and Debug
            configurations.
-        4. Note- if you are copying the code to your own project, don't forget to add this line to the end of your build.gradle
-           file, otherwise your assets won't work (see [here][IntellijFix]):<br>
-           sourceSets { main { output.resourcesDir = output.classesDir } }
     6. If using Eclipse:
         1. Open the Project.
         2. Right click on the project, select "Run As" > "Run Configurations..."

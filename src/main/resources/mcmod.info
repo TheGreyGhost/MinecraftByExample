@@ -1,9 +1,9 @@
 [
 {
   "modid": "minecraftbyexample",
-  "name": "Minecraft By Example (mcmod_info)",
-  "description": "Minecraft By Example (mcmod_info)",
-  "version": "1.0_mcmod_info",
+  "name": "Minecraft By Example",
+  "description": "Minecraft By Example",
+  "version": "1.0",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
