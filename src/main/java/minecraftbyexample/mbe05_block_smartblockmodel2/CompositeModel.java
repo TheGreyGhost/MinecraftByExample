@@ -1,6 +1,7 @@
 package minecraftbyexample.mbe05_block_smartblockmodel2;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -66,9 +67,13 @@ public class CompositeModel implements IFlexibleBakedModel, ISmartBlockModel {
     return false;
   }
 
+  // used for block breaking shards
   @Override
   public TextureAtlasSprite getParticleTexture() {
-    return modelCore.getParticleTexture();
+    TextureAtlasSprite textureAtlasSprite = Minecraft.getMinecraft().getTextureMapBlocks()
+                                                     .getAtlasSprite("minecraftbyexample:blocks/mbe05_block_3d_web");
+
+    return textureAtlasSprite;
   }
 
   @Override

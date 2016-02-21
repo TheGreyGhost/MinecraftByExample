@@ -27,14 +27,6 @@ public class WebModel implements IModel {
 
     public static final ResourceLocation TEXTURE_SHEET = new ResourceLocation("minecraftbyexample:blocks/mbe05_block_3d_web");
 
-//    public static final ModelResourceLocation MODEL_CORE = new ModelResourceLocation("minecraftbyexample:block/mbe05_block_web_core_model");
-//  public static final ModelResourceLocation MODEL_UP = new ModelResourceLocation("minecraftbyexample:block/mbe05_block_web_up_model");
-//  public static final ModelResourceLocation MODEL_DOWN = new ModelResourceLocation("minecraftbyexample:block/mbe05_block_web_down_model");
-//  public static final ModelResourceLocation MODEL_NORTH = new ModelResourceLocation("minecraftbyexample:block/mbe05_block_web_north_model");
-//  public static final ModelResourceLocation MODEL_SOUTH = new ModelResourceLocation("minecraftbyexample:block/mbe05_block_web_south_model");
-//  public static final ModelResourceLocation MODEL_WEST = new ModelResourceLocation("minecraftbyexample:block/mbe05_block_web_west_model");
-//  public static final ModelResourceLocation MODEL_EAST = new ModelResourceLocation("minecraftbyexample:block/mbe05_block_web_east_model");
-
     public static final ModelResourceLocation MODEL_CORE = new ModelResourceLocation("minecraftbyexample:mbe05_web_subblocks/mbe05_block_web_core_model");
     public static final ModelResourceLocation MODEL_UP = new ModelResourceLocation("minecraftbyexample:mbe05_web_subblocks/mbe05_block_web_up_model");
     public static final ModelResourceLocation MODEL_DOWN = new ModelResourceLocation("minecraftbyexample:mbe05_web_subblocks/mbe05_block_web_down_model");
