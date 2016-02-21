@@ -1,0 +1,5 @@
+{
+    "variants": {
+        "normal": { "model": "minecraftbyexample:mbe05_block_web_up_model" }
+    }
+}

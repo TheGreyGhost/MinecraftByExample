@@ -24,6 +24,9 @@ import java.util.List;
  *   (eg the up model connects the core to the top face of the block)
  * An IBakedModel is just a list of quads; the composite model is created by concatenating the quads from the relevant
  *   subcomponents.
+ *
+ *   BEWARE! Rendering is multithreaded so your ISmartBlockModel must be thread-safe, preferably immutable.
+
  */
 public class CompositeModel implements IFlexibleBakedModel, ISmartBlockModel {
 

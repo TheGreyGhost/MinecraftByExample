@@ -18,7 +18,8 @@ How it works:
     recognises the smartmodel tag and creates an WebModel (implements IModel).
 (4) The IModel (WebModel) is then "baked" to form an ISmartBlockModel.  During baking, the WebModel loads and bakes the
     models for each of the seven subcomponents (a central "core" plus one model for each of the six strands that can
-    extend up, down, east, west, north, or south).  Each of these models is defined using .json as usual.
+    extend up, down, east, west, north, or south).  Each of these models is defined using vanilla .json model and a
+    blockstates file as usual.  (The blockstates file is necessary to get vanilla to load the model)
 (5) During the render, Block3DWeb.getExtendedBlockState is called, which looks at the block's neighbours to see which
     strands should be drawn (a strand is drawn to each solid neighbour).  The yes/no for each strand is then stored in
     the IExtendedBlockState.
@@ -38,7 +39,10 @@ ModelLoader3DWeb
 WebModel
 resources\assets\minecraftbyexample\lang\en_US.lang - for the displayed name of the block
 resources\assets\minecraftbyexample\blockstates\mbe05_block_3D_web - for the blockstate definition
+
 resources\assets\minecraftbyexample\models\block\mbe05_block_web_****_model - where **** is eg core, up, down, etc (sub-component models)
+resources\assets\minecraftbyexample\blockstates\mbe05_web_subblocks\mbe05_block_web_****_model - for the blockstates definition for the sub-components
+
 resources\assets\minecraftbyexample\models\item\mbe05_block_3D_web - the model for rendering as an item
 resources\assets\minecraftbyexample\textures\blocks\mbe05_block_3D_web - the base texture used for all components
 
