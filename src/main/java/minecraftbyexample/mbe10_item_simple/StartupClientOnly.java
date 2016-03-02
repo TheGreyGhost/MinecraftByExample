@@ -2,6 +2,7 @@ package minecraftbyexample.mbe10_item_simple;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraftforge.client.model.ModelLoader;
 
 /**
  * User: The Grey Ghost
@@ -20,17 +21,17 @@ public class StartupClientOnly
 {
   public static void preInitClientOnly()
   {
+    // required in order for the renderer to know how to render your item.
+    ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation("minecraftbyexample:mbe10_item_simple", "inventory");
+    final int DEFAULT_ITEM_SUBTYPE = 0;
+    ModelLoader.setCustomModelResourceLocation(StartupCommon.itemSimple, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
   }
 
   public static void initClientOnly()
   {
-    // required in order for the renderer to know how to render your item.  Likely to change in the near future.
-    ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation("minecraftbyexample:mbe10_item_simple", "inventory");
-    final int DEFAULT_ITEM_SUBTYPE = 0;
-    Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(StartupCommon.itemSimple, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
   }
 
-public static void postInitClientOnly()
+  public static void postInitClientOnly()
   {
   }
 }

@@ -41,20 +41,23 @@ public class StartupClientOnly
     ModelLoader.setCustomStateMapper(StartupCommon.block3DWeb, ignoreState);
 
     ModelLoaderRegistry.registerLoader(new ModelLoader3DWeb());
-  }
 
-  public static void initClientOnly()
-  {
     // This is currently necessary in order to make your block render properly when it is an item (i.e. in the inventory
     //   or in your hand or thrown on the ground).
     // Minecraft knows to look for the item model based on the GameRegistry.registerBlock.  However the registration of
     //  the model for each item is normally done by RenderItem.registerItems(), and this is not currently aware
-    //   of any extra items you have created.  Hence you have to do it manually.  This will probably change in future.
-    // It must be done in the init phase, not preinit, and must be done on client only.
+    //   of any extra items you have created.  Hence you have to do it manually.
+    // It must be done on client only, and must be done after the block has been created in Common.preinit().
+
     Item itemBlockCamouflage = GameRegistry.findItem("minecraftbyexample", "mbe05_block_3d_web");
     ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation("minecraftbyexample:mbe05_block_3d_web", "inventory");
     final int DEFAULT_ITEM_SUBTYPE = 0;
-    Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(itemBlockCamouflage, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
+    ModelLoader.setCustomModelResourceLocation(itemBlockCamouflage, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
+  }
+
+  public static void initClientOnly()
+  {
+
   }
 
   public static void postInitClientOnly()

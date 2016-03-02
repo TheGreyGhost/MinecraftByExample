@@ -3,6 +3,7 @@ package minecraftbyexample.mbe12_item_nbt_animate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraftforge.client.model.ModelLoader;
 
 /**
  * User: The Grey Ghost
@@ -30,14 +31,14 @@ public class StartupClientOnly
             "minecraftbyexample:mbe12_item_nbt_animate_4",
             "minecraftbyexample:mbe12_item_nbt_animate_5"
     );
+    // required in order for the renderer to know how to render your item.  Likely to change in the near future.
+    ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation("minecraftbyexample:mbe12_item_nbt_animate_still", "inventory");
+    final int DEFAULT_ITEM_SUBTYPE = 0;
+    ModelLoader.setCustomModelResourceLocation(StartupCommon.itemNBTAnimate, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
   }
 
   public static void initClientOnly()
   {
-    // required in order for the renderer to know how to render your item.  Likely to change in the near future.
-    ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation("minecraftbyexample:mbe12_item_nbt_animate_still", "inventory");
-    final int DEFAULT_ITEM_SUBTYPE = 0;
-    Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(StartupCommon.itemNBTAnimate, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
   }
 
   public static void postInitClientOnly()

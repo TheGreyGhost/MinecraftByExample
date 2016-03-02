@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
@@ -30,28 +31,29 @@ public class StartupClientOnly
             "minecraftbyexample:mbe03_block_variants_green",
             "minecraftbyexample:mbe03_block_variants_red",
             "minecraftbyexample:mbe03_block_variants_yellow");
-  }
 
-  public static void initClientOnly()
-  {
     // This is currently necessary in order to make your block render properly when it is an item (i.e. in the inventory
     //   or in your hand or thrown on the ground).
     // Minecraft knows to look for the item model based on the GameRegistry.registerBlock.  However the registration of
     //  the model for each item is normally done by RenderItem.registerItems(), and this is not currently aware
-    //   of any extra items you have created.  Hence you have to do it manually.  This will probably change in future.
-    // It must be done in the init phase, not preinit, and must be done on client only.
-    Item itemBlockVariants = GameRegistry.findItem("minecraftbyexample", "mbe03_block_variants");
+    //   of any extra items you have created.  Hence you have to do it manually.
+    // It must be done on client only, and must be done after the block has been created in Common.preinit().
+
     ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation("minecraftbyexample:mbe03_block_variants_blue", "inventory");
-    Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(itemBlockVariants, BlockVariants.EnumColour.BLUE.getMetadata(), itemModelResourceLocation);
+    ModelLoader.setCustomModelResourceLocation(itemBlockVariants, BlockVariants.EnumColour.BLUE.getMetadata(), itemModelResourceLocation);
 
     itemModelResourceLocation = new ModelResourceLocation("minecraftbyexample:mbe03_block_variants_green", "inventory");
-    Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(itemBlockVariants, BlockVariants.EnumColour.GREEN.getMetadata(), itemModelResourceLocation);
+    ModelLoader.setCustomModelResourceLocation(itemBlockVariants, BlockVariants.EnumColour.GREEN.getMetadata(), itemModelResourceLocation);
 
     itemModelResourceLocation = new ModelResourceLocation("minecraftbyexample:mbe03_block_variants_red", "inventory");
-    Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(itemBlockVariants, BlockVariants.EnumColour.RED.getMetadata(), itemModelResourceLocation);
+    ModelLoader.setCustomModelResourceLocation(itemBlockVariants, BlockVariants.EnumColour.RED.getMetadata(), itemModelResourceLocation);
 
     itemModelResourceLocation = new ModelResourceLocation("minecraftbyexample:mbe03_block_variants_yellow", "inventory");
-    Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(itemBlockVariants, BlockVariants.EnumColour.YELLOW.getMetadata(), itemModelResourceLocation);
+    ModelLoader.setCustomModelResourceLocation(itemBlockVariants, BlockVariants.EnumColour.YELLOW.getMetadata(), itemModelResourceLocation);
+  }
+
+  public static void initClientOnly()
+  {
   }
 
   public static void postInitClientOnly()

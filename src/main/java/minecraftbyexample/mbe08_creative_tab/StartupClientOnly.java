@@ -3,6 +3,7 @@ package minecraftbyexample.mbe08_creative_tab;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
@@ -24,18 +25,18 @@ public class StartupClientOnly
 {
   public static void preInitClientOnly()
   {
-  }
-
-  public static void initClientOnly()
-  {
-    // required in order for the renderer to know how to render your item.  Likely to change in the near future.
+    // required in order for the renderer to know how to render your item.
     ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation("minecraftbyexample:mbe08_creative_tab_item", "inventory");
     final int DEFAULT_ITEM_SUBTYPE = 0;
-    Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(StartupCommon.testItem, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
+    ModelLoader.setCustomModelResourceLocation(StartupCommon.testItem, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
 
     Item itemBlock = GameRegistry.findItem("minecraftbyexample", "mbe08_creative_tab_block");
     itemModelResourceLocation = new ModelResourceLocation("minecraftbyexample:mbe08_creative_tab_block", "inventory");
-    Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(itemBlock, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
+    ModelLoader.setCustomModelResourceLocation(itemBlock, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);  }
+
+  public static void initClientOnly()
+  {
+
   }
 
   public static void postInitClientOnly()
