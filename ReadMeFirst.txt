@@ -14,6 +14,7 @@ to more than one example are the MinecraftByExample, CommonProxy, ClientOnlyProx
 
 If you want more information and explanatory text about the concepts, the following links might be useful
 Guide to how Minecraft works-  http://greyminecraftcoder.blogspot.com.au/p/list-of-topics.html
+The Official Forge documentation- http://mcforge.readthedocs.org/en/latest/
 Forge Modding articles- http://www.wuppy29.com/minecraft/modding-tutorials/forge-modding-1-8
 Forge Tutorials listing- http://www.minecraftforge.net/forum/index.php/board,120.0.html
 

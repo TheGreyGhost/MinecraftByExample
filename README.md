@@ -12,6 +12,7 @@ If you want more information and explanatory text about the concepts, the follow
 
   - [Guide to how Minecraft works][greyminecraftcoder]
   - [Forge Modding articles][wuppy]
+  - [The Official Forge documentation][forgedocs]
   - [Forge Tutorials listing][tutorials_forum]
 
 ####For earlier versions, see the relevant GitHub branch:
@@ -89,6 +90,7 @@ Check out [this video][forge_installation] for more help installing Forge.
 
 [main_classes]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample
 [greyminecraftcoder]: http://greyminecraftcoder.blogspot.com.au/p/list-of-topics.html
+[forgedocs]:http://mcforge.readthedocs.org/en/latest/
 [wuppy]: http://www.wuppy29.com/minecraft/modding-tutorials/forge-modding-1-8
 [tutorials_forum]: http://www.minecraftforge.net/forum/index.php/board,120.0.html
 
