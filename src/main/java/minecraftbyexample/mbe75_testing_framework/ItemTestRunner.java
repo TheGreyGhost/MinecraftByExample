@@ -30,7 +30,7 @@ public class ItemTestRunner extends Item
   {
     final int MAX_TEST_NUMBER = 64;
     this.setMaxStackSize(MAX_TEST_NUMBER);
-    this.setCreativeTab(CreativeTabs.tabMisc);   // the item will appear on the Miscellaneous tab in creative
+    this.setCreativeTab(CreativeTabs.MISC);   // the item will appear on the Miscellaneous tab in creative
   }
 
   /**

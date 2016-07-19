@@ -9,6 +9,15 @@ Output Directory: C:\Users\tgg\Documents\JavaSources\MinecraftByExample\build\cl
 Output root - Directory Content - 'resources' directory contents of \MinecraftByExample\src\main\
 6) Add Artifact to Minecraft Client configuration
 
+Converting from 1.8.9 to 1.10.2
+1) Download MDK.
+2) Install into a test directory and gradle setupDecompWorkspace -Dorg.gradle.jvmargs=-Xmx2G
+3) IntelliJ import from repository into MinecraftByExample1-10-2
+4) Copy all files from test directory into MinecraftByExample1-10-2, except update build.gradle with version info instead
+5) In MinecraftByExample1-10-2 run gradlew idea setupIntelliJruns
+6) Start IntelliJ.
+
+
 Ideas for future topics
 
 Blocks -
