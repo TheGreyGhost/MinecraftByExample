@@ -1,11 +1,9 @@
 package minecraftbyexample.mbe01_block_simple;
 
-import minecraftbyexample.mbe10_item_simple.*;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
  * User: The Grey Ghost
@@ -30,7 +28,7 @@ public class StartupClientOnly
     //  the model for each item is normally done by RenderItem.registerItems(), and this is not currently aware
     //   of any extra items you have created.  Hence you have to do it manually.
     // It must be done on client only, and must be done after the block has been created in Common.preinit().
-    Item itemBlockSimple = GameRegistry.findItem("minecraftbyexample", "mbe01_block_simple");
+    Item itemBlockSimple = Item.REGISTRY.getObject(new ResourceLocation("minecraftbyexample", "mbe01_block_simple"));
     ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation("minecraftbyexample:mbe01_block_simple", "inventory");
     final int DEFAULT_ITEM_SUBTYPE = 0;
     ModelLoader.setCustomModelResourceLocation(itemBlockSimple, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);

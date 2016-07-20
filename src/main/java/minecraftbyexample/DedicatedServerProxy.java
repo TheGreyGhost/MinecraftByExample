@@ -37,7 +37,7 @@ public class DedicatedServerProxy extends CommonProxy
   public boolean playerIsInCreativeMode(EntityPlayer player) {
     if (player instanceof EntityPlayerMP) {
       EntityPlayerMP entityPlayerMP = (EntityPlayerMP) player;
-      return entityPlayerMP.theItemInWorldManager.isCreative();
+      return entityPlayerMP.interactionManager.isCreative();
     }
     return false;
   }

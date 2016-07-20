@@ -3,6 +3,7 @@ package minecraftbyexample.mbe02_block_partial;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
@@ -29,7 +30,7 @@ public class StartupClientOnly
     //  the model for each item is normally done by RenderItem.registerItems(), and this is not currently aware
     //   of any extra items you have created.  Hence you have to do it manually.
     // It must be done on client only, and must be done after the block has been created in Common.preinit().
-    Item itemBlockPartial = GameRegistry.findItem("minecraftbyexample", "mbe02_block_partial");
+    Item itemBlockPartial = Item.REGISTRY.getObject(new ResourceLocation("minecraftbyexample", "mbe02_block_partial"));
     ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation("minecraftbyexample:mbe02_block_partial", "inventory");
     final int DEFAULT_ITEM_SUBTYPE = 0;
     ModelLoader.setCustomModelResourceLocation(itemBlockPartial, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);  }

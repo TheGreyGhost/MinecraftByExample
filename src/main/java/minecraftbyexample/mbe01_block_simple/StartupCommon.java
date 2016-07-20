@@ -1,5 +1,6 @@
 package minecraftbyexample.mbe01_block_simple;
 
+import net.minecraft.item.ItemBlock;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
@@ -21,10 +22,26 @@ public class StartupCommon
 
   public static void preInitCommon()
   {
-    // each instance of your block should have a name that is unique within your mod.  use lower case.
-    blockSimple = (BlockSimple)(new BlockSimple().setUnlocalizedName("mbe01_block_simple"));
-    GameRegistry.registerBlock(blockSimple, "mbe01_block_simple");
-    // you don't need to register an item corresponding to the block, GameRegistry.registerBlock does this automatically.
+    // each instance of your block should have two names:
+    // 1) a registry name that is used to uniquely identify this block.  Should be unique within your mod.  use lower case.
+    // 2) an 'unlocalised name' that is used to retrieve the text name of your block in the player's language.  For example-
+    //    the unlocalised name might be "water", which is printed on the user's screen as "Wasser" in German or
+    //    "aqua" in Italian.
+    //
+    //    Multiple blocks can have the same unlocalised name - for example
+    //  +----RegistryName----+---UnlocalisedName----+
+    //  |  flowing_water     +       water          |
+    //  |  stationary_water  +       water          |
+    //  +--------------------+----------------------+
+    //
+    blockSimple = (BlockSimple)(new BlockSimple().setUnlocalizedName("mbe01_block_simple_unlocalised_name"));
+    blockSimple.setRegistryName("mbe01_block_simple_registry_name");
+    GameRegistry.register(blockSimple);
+
+    // We also need to create and register an ItemBlock for this block otherwise it won't appear in the inventory
+    ItemBlock itemBlockSimple = new ItemBlock(blockSimple);
+    itemBlockSimple.setRegistryName(blockSimple.getRegistryName());
+    GameRegistry.register(itemBlockSimple);
   }
 
   public static void initCommon()

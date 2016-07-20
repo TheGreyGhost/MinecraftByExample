@@ -1,0 +1,222 @@
+Changes from 1.8.9 to 1.10.2
+
+EntityPlayerMP.theItemInWorldManager -> EntityPlayerMP.interactionManager
+EnumWorldBlockLayer -> BlockRenderLayer
+GameRegistry.findItem -> Item.REGISTRY.getObject(new ResourceLocation(...))
+Material.rock etc have new names
+CreativeTabs.blocks etc have new names
+
+Changed registration methods for blocks and items
+
+EnumWorldBlockLayer ->  BlockRenderLayer
+
+BlockState has become BlockStateContainer?
+
+
+
+
+-----------
+
+New block & Item registration:
+
+Instead of creating your Block and registering it with GameRegistry.registerBlock, create your Block, set its registry name (using the IForgeRegistryEntry#setRegistryName method or one of the overloads from IForgeRegistryEntry.Impl, all of which are inherited by the Block class) and register it with GameRegistry.register.
+
+You also need to create the ItemBlock, set its registry name to the Block's registry name and register it with GameRegistry.register.
+
+The same process applies to any other IForgeRegistryEntry implementation (e.g. Item, BiomeGenBase, SoundEvent): create the instance, set its registry name and then register it with GameRegistry.register.
+
+ModelLoader.setCustomModelResourceLocation and ModelLoader.setCustomMeshDefinition take exactly the same arguments as the corresponding overloads of ItemModelMesher#register. The main difference is that they need to be called in preInit rather than init.
+
+Never use unlocalised names for anything other than translation purposes, there's no reason to use getUnlocalizedName().substring(5) anywhere in your code. The default model loaded for every Item is the one with its registry name (which is unrelated to the unlocalised name), so use the registry name for the default model location.
+
+If you want, you can set the unlocalised name to the full registry name so it includes your mod ID (avoiding conflicts with other mods).
+
+You can see how I register my Blocks here. This uses Java 8's lambdas/method references, if you're targeting Java 6/7 you'd need to use Guava's functional interfaces and anonymous classes instead (or an alternative solution).
+
+You can see how I register models for my Blocks/Items here.
+
+	/**
+	 * Register a Block with a custom ItemBlock class.
+	 *
+	 * @param <BLOCK>     The Block type
+	 * @param block       The Block instance
+	 * @param itemFactory A function that creates the ItemBlock instance, or null if no ItemBlock should be created
+	 * @return The Block instance
+	 */
+	protected static <BLOCK extends Block> BLOCK registerBlock(BLOCK block, @Nullable Function<BLOCK, ItemBlock> itemFactory) {
+		GameRegistry.register(block);
+
+		if (itemFactory != null) {
+			final ItemBlock itemBlock = itemFactory.apply(block);
+
+			GameRegistry.register(itemBlock.setRegistryName(block.getRegistryName()));
+		}
+
+		blocks.add(block);
+		return block;
+	}
+
+
+
+-----------
+Hey,
+
+If you're wanting to learn how to use the new registry system, then look no further, I'll give you a step by step guide on using it for both blocks and items.
+
+For Items:
+1) Create your Item Instance.
+2) Set your "Registry Name" against the Item Instance.
+3) Set the unlocalizedname against the Item Instance, you don't need to substring it.
+4) Register your Item.
+
+For Blocks:
+1) Create your Block instance.
+2) Set the registry name against the block instance.
+3) Set the unlocalizedname against the instance.
+4) Create your ItemBlock Instance.
+5) Set the ItemBlock registry name to the block instance registry name.
+6) Set the ItemBlock unlocalizedname to the block instances unlocalizedname.
+7) Register Block
+8) Register ItemBlock
+
+
+----------------
+Models:
+@SideOnly(Side.CLIENT)
+public class ModModelManager {
+	public static final ModModelManager INSTANCE = new ModModelManager();
+
+	private static final String FLUID_MODEL_PATH = Constants.RESOURCE_PREFIX + "fluid";
+
+	private ModModelManager() {
+	}
+
+	public void registerAllModels() {
+		registerFluidModels();
+		registerBlockModels();
+		registerItemModels();
+	}
+
+	private void registerFluidModels() {
+		ModFluids.modFluidBlocks.forEach(this::registerFluidModel);
+	}
+
+	private void registerFluidModel(IFluidBlock fluidBlock) {
+		final Item item = Item.getItemFromBlock((Block) fluidBlock);
+
+		ModelBakery.registerItemVariants(item);
+
+		ModelResourceLocation modelResourceLocation = new ModelResourceLocation(FLUID_MODEL_PATH, fluidBlock.getFluid().getName());
+
+		ModelLoader.setCustomMeshDefinition(item, MeshDefinitionFix.create(stack -> modelResourceLocation));
+
+		ModelLoader.setCustomStateMapper((Block) fluidBlock, new StateMapperBase() {
+			@Override
+			protected ModelResourceLocation getModelResourceLocation(IBlockState p_178132_1_) {
+				return modelResourceLocation;
+			}
+		});
+
+		itemsRegistered.add(item);
+	}
+
+	private void registerBlockModels() {
+		ModelLoader.setCustomStateMapper(ModBlocks.waterGrass, new StateMap.Builder().ignore(BlockLiquid.LEVEL).build());
+
+		registerBlockItemModel(ModBlocks.rightClickTest, new ModelResourceLocation(ModBlocks.rightClickTest.getRegistryName(), "has_ender_eye=false"));
+
+		for (EnumDyeColor color : EnumDyeColor.values()) {
+			registerBlockItemModelForMeta(ModBlocks.coloredRotatable, color.getMetadata(), String.format("color=%s,facing=north", color.getName()));
+			registerBlockItemModelForMeta(ModBlocks.coloredMultiRotatable, color.getMetadata(), String.format("color=%s,face_rotation=up,facing=north", color.getName()));
+
+			BlockColouredSlab.EnumColourGroup colourGroup = BlockColouredSlab.EnumColourGroup.getGroupForColour(color);
+			if (colourGroup != null) {
+				registerBlockItemModelForMeta(ModBlocks.stainedClaySlabs.getSlabGroupByColourGroup(colourGroup).singleSlab, colourGroup.getOffsetMetadata(color), String.format("colour=%s,half=bottom", color.getName()));
+			}
+		}
+
+		for (BlockVariants.EnumType enumType : BlockVariants.EnumType.values()) {
+			registerBlockItemModelForMeta(ModBlocks.variants, enumType.getMeta(), "variant=" + enumType.getName());
+		}
+
+		registerBlockItemModel(ModBlocks.mirrorPlane, new ModelResourceLocation(ModBlocks.mirrorPlane.getRegistryName(), "horizontal_rotation=north,vertical_rotation=up"));
+
+		ModBlocks.blocks.stream().filter(block -> !itemsRegistered.contains(Item.getItemFromBlock(block))).forEach(this::registerBlockItemModel);
+	}
+
+	private void registerBlockItemModel(Block block) {
+		Item item = Item.getItemFromBlock(block);
+		if (item != null) {
+			registerItemModel(item);
+		}
+	}
+
+	private void registerBlockItemModel(Block block, String modelLocation) {
+		registerItemModel(Item.getItemFromBlock(block), modelLocation);
+	}
+
+	private void registerBlockItemModel(Block block, ModelResourceLocation fullModelLocation) {
+		registerItemModel(Item.getItemFromBlock(block), fullModelLocation);
+	}
+
+	private void registerBlockItemModelForMeta(Block block, int metadata, String variant) {
+		registerItemModelForMeta(Item.getItemFromBlock(block), metadata, variant);
+	}
+
+	private final Set<Item> itemsRegistered = new HashSet<>();
+
+	private void registerItemModels() {
+		// Register items with custom model names first
+		registerItemModel(ModItems.snowballLauncher, "minecraft:fishing_rod");
+		registerItemModel(ModItems.unicodeTooltips, "minecraft:rabbit");
+		registerItemModel(ModItems.swapTestA, "minecraft:brick");
+		registerItemModel(ModItems.swapTestB, "minecraft:netherbrick");
+		registerItemModel(ModItems.blockDebugger, "minecraft:nether_star");
+		registerItemModel(ModItems.woodenHarvestSword, "minecraft:wooden_sword");
+		registerItemModel(ModItems.diamondHarvestSword, "minecraft:diamond_sword");
+		registerItemModel(ModItems.clearer, "minecraft:nether_star");
+		registerItemModel(ModItems.heightTester, "minecraft:compass");
+		registerItemModel(ModItems.heavy, "minecraft:brick");
+		registerItemModel(ModItems.entityTest, "minecraft:porkchop");
+		registerItemModel(ModItems.blockDestroyer, "minecraft:tnt_minecart");
+		registerItemModel(ModItems.replacementHelmet, "minecraft:chainmail_helmet");
+		registerItemModel(ModItems.replacementChestplate, "minecraft:chainmail_chestplate");
+		registerItemModel(ModItems.repacementLeggings, "minecraft:chainmail_leggings");
+		registerItemModel(ModItems.replacementBoots, "minecraft:chainmail_boots");
+		registerItemModel(ModItems.pigSpawnerFinite, "minecraft:porkchop");
+		registerItemModel(ModItems.pigSpawnerInfinite, "minecraft:porkchop");
+		registerItemModel(ModItems.respawner, "minecraft:clock");
+		registerItemModel(ModItems.lootTableTest, "minecraft:gold_ingot");
+
+		// Then register items with default model names
+		ModItems.items.stream().filter(item -> !itemsRegistered.contains(item)).forEach(this::registerItemModel);
+	}
+
+	private void registerItemModel(Item item) {
+		registerItemModel(item, item.getRegistryName().toString());
+	}
+
+	private void registerItemModel(Item item, String modelLocation) {
+		final ModelResourceLocation fullModelLocation = new ModelResourceLocation(modelLocation, "inventory");
+		registerItemModel(item, fullModelLocation);
+	}
+
+	private void registerItemModel(Item item, ModelResourceLocation fullModelLocation) {
+		ModelBakery.registerItemVariants(item, fullModelLocation); // Ensure the custom model is loaded and prevent the default model from being loaded
+		registerItemModel(item, MeshDefinitionFix.create(stack -> fullModelLocation));
+	}
+
+	private void registerItemModel(Item item, ItemMeshDefinition meshDefinition) {
+		itemsRegistered.add(item);
+		ModelLoader.setCustomMeshDefinition(item, meshDefinition);
+	}
+
+	private void registerItemModelForMeta(Item item, int metadata, String variant) {
+		registerItemModelForMeta(item, metadata, new ModelResourceLocation(item.getRegistryName(), variant));
+	}
+
+	private void registerItemModelForMeta(Item item, int metadata, ModelResourceLocation modelResourceLocation) {
+		itemsRegistered.add(item);
+		ModelLoader.setCustomModelResourceLocation(item, metadata, modelResourceLocation);
+	}
+}
