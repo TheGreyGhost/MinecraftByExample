@@ -1,5 +1,6 @@
 package minecraftbyexample.mbe03_block_variants;
 
+import net.minecraft.item.ItemBlock;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
@@ -18,16 +19,30 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 public class StartupCommon
 {
   public static BlockVariants blockVariants;  // this holds the unique instance of your block
+  public static ItemBlockVariants itemBlockVariants;  // this holds the unique ItemBlock instance corresponding to your block
 
   public static void preInitCommon()
   {
-    // each instance of your block should have a name that is unique within your mod.  use lower case.
-    blockVariants = (BlockVariants)(new BlockVariants().setUnlocalizedName("mbe03_block_variants"));
-    GameRegistry.registerBlock(blockVariants, ItemBlockVariants.class, "mbe03_block_variants");
-    // you don't need to register any items corresponding to the block, GameRegistry.registerBlock does this automatically
-    //   when you supply the custom Item class (ItemVariants), creating an item with ItemVariants(blockVariants)
-    //  You can access that item using GameRegistry.findItem
+    // each instance of your block should have two names:
+    // 1) a registry name that is used to uniquely identify this block.  Should be unique within your mod.  use lower case.
+    // 2) an 'unlocalised name' that is used to retrieve the text name of your block in the player's language.  For example-
+    //    the unlocalised name might be "water", which is printed on the user's screen as "Wasser" in German or
+    //    "aqua" in Italian.
+    //
+    //    Multiple blocks can have the same unlocalised name - for example
+    //  +----RegistryName----+---UnlocalisedName----+
+    //  |  flowing_water     +       water          |
+    //  |  stationary_water  +       water          |
+    //  +--------------------+----------------------+
+    //
+    blockVariants = (BlockVariants)(new BlockVariants().setUnlocalizedName("mbe03_block_variants_unlocalised_name"));
+    blockVariants.setRegistryName("mbe03_block_variants_registry_name");
+    GameRegistry.register(blockVariants);
 
+    // We also need to create and register an ItemBlock for this block otherwise it won't appear in the inventory
+    itemBlockVariants = new ItemBlockVariants(blockVariants);
+    itemBlockVariants.setRegistryName(blockVariants.getRegistryName());
+    GameRegistry.register(itemBlockVariants);
   }
 
   public static void initCommon()

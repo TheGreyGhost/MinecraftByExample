@@ -1,5 +1,6 @@
 package minecraftbyexample.mbe02_block_partial;
 
+import net.minecraft.item.ItemBlock;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
@@ -18,13 +19,31 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 public class StartupCommon
 {
   public static BlockPartial blockPartial;  // this holds the unique instance of your block
+  public static ItemBlock itemBlockPartial;  // this holds the instance of the ItemBlock for your Block
 
   public static void preInitCommon()
   {
-    // each instance of your block should have a name that is unique within your mod.  use lower case.
-    blockPartial = (BlockPartial)(new BlockPartial().setUnlocalizedName("mbe02_block_partial"));
-    GameRegistry.registerBlock(blockPartial, "mbe02_block_partial");
-    // you don't need to register an item corresponding to the block, GameRegistry.registerBlock does this automatically.
+    // each instance of your block should have two names:
+    // 1) a registry name that is used to uniquely identify this block.  Should be unique within your mod.  use lower case.
+    // 2) an 'unlocalised name' that is used to retrieve the text name of your block in the player's language.  For example-
+    //    the unlocalised name might be "water", which is printed on the user's screen as "Wasser" in German or
+    //    "aqua" in Italian.
+    //
+    //    Multiple blocks can have the same unlocalised name - for example
+    //  +----RegistryName----+---UnlocalisedName----+
+    //  |  flowing_water     +       water          |
+    //  |  stationary_water  +       water          |
+    //  +--------------------+----------------------+
+    //
+    blockPartial = (BlockPartial)(new BlockPartial().setUnlocalizedName("mbe02_block_partial_unlocalised_name"));
+    blockPartial.setRegistryName("mbe02_block_partial_registry_name");
+    GameRegistry.register(blockPartial);
+
+    // We also need to create and register an ItemBlock for this block otherwise it won't appear in the inventory
+    itemBlockPartial = new ItemBlock(blockPartial);
+    itemBlockPartial.setRegistryName(blockPartial.getRegistryName());
+    GameRegistry.register(itemBlockPartial);
+
   }
 
   public static void initCommon()

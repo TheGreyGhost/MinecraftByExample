@@ -1,4 +1,4 @@
-MinecraftByExample [1.8.9]
+MinecraftByExample [1.10.2]
 ==========================
 
 The purpose of MinecraftByExample is to give simple working examples of the important concepts in Minecraft and Forge.
@@ -20,6 +20,7 @@ Forge Tutorials listing- http://www.minecraftforge.net/forum/index.php/board,120
 
 For earlier versions, see the relevant GitHub branch
   1.8: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-8final
+  1.8.9: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-8-9final
 
 List of examples
 Blocks

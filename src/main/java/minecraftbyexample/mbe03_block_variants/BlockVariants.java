@@ -5,13 +5,15 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -30,26 +32,30 @@ import java.util.List;
  * - has variants (can face in four directions, and can be four different colours)
  * We can walk over it without colliding.
  * For background information on blocks see here http://greyminecraftcoder.blogspot.com.au/2014/12/blocks-18.html
+ * For a couple of the methods below the Forge guys have marked it as deprecated.  But you still need to override those
+ *   "deprecated" block methods.  What they mean is "when you want to find out if a block is (eg) isOpaqueCube(),
+ *   don't call block.isOpaqueCube(), call iBlockState.isOpaqueCube() instead".
+ * If that doesn't make sense to you yet, don't worry.  Just ignore the "deprecated method" warning.
  */
 public class BlockVariants extends Block
 {
   public BlockVariants()
   {
-    super(Material.rock);
-    this.setCreativeTab(CreativeTabs.tabBlock);   // the block will appear on the Blocks tab in creative
+    super(Material.ROCK);
+    this.setCreativeTab(CreativeTabs.BUILDING_BLOCKS);   // the block will appear on the Blocks tab in creative
   }
 
   // the block will render in the CUTOUT layer.  See http://greyminecraftcoder.blogspot.co.at/2014/12/block-rendering-18.html for more information.
   @SideOnly(Side.CLIENT)
-  public EnumWorldBlockLayer getBlockLayer()
+  public BlockRenderLayer getBlockLayer()
   {
-    return EnumWorldBlockLayer.CUTOUT;
+    return BlockRenderLayer.CUTOUT;
   }
 
   // used by the renderer to control lighting and visibility of other blocks.
   // set to false because this block doesn't fill the entire 1x1x1 space
   @Override
-  public boolean isOpaqueCube() {
+  public boolean isOpaqueCube(IBlockState iBlockState) {
     return false;
   }
 
@@ -57,22 +63,22 @@ public class BlockVariants extends Block
   // (eg) wall or fence to control whether the fence joins itself to this block
   // set to false because this block doesn't fill the entire 1x1x1 space
   @Override
-  public boolean isFullCube() {
+  public boolean isFullCube(IBlockState iBlockState) {
     return false;
   }
 
   // render using a BakedModel (mbe01_block_simple.json --> mbe01_block_simple_model.json)
   // not strictly required because the default (super method) is 3.
   @Override
-  public int getRenderType() {
-    return 3;
+  public EnumBlockRenderType getRenderType(IBlockState iBlockState) {
+    return EnumBlockRenderType.MODEL;
   }
 
   // by returning a null collision bounding box we stop the player from colliding with it
   @Override
-  public AxisAlignedBB getCollisionBoundingBox(World worldIn, BlockPos pos, IBlockState state)
+  public AxisAlignedBB getCollisionBoundingBox(IBlockState state, World worldIn, BlockPos pos)
   {
-    return null;
+    return NULL_AABB;
   }
 
   // Our block has two properties:
@@ -107,14 +113,14 @@ public class BlockVariants extends Block
 
   // getStateFromMeta, getMetaFromState are used to interconvert between the block's property values and
   //   the stored metadata (which must be an integer in the range 0 - 15 inclusive)
-  // The property is encode as:
+  // The property is encoded as:
   // - lower two bits = facing direction (i.e. 0, 1, 2, 3)
   // - upper two bits = colour (i.e. 0, 4, 8, 12)
   @Override
   public IBlockState getStateFromMeta(int meta)
   {
     EnumFacing facing = EnumFacing.getHorizontal(meta);
-    int colourbits = (meta & 0x0c) >> 2; // 0x0c is hexadecimal, in binary 1100
+    int colourbits = (meta & 0x0c) >> 2; // 0x0c is hexadecimal, in binary 1100 - the upper two bits, corresponding to the colour
     EnumColour colour = EnumColour.byMetadata(colourbits);
     return this.getDefaultState().withProperty(PROPERTYCOLOUR, colour).withProperty(PROPERTYFACING, facing);
   }
@@ -143,9 +149,9 @@ public class BlockVariants extends Block
   // necessary to define which properties your blocks use
   // will also affect the variants listed in the blockstates model file
   @Override
-  protected BlockState createBlockState()
+  protected BlockStateContainer createBlockState()
   {
-    return new BlockState(this, new IProperty[] {PROPERTYFACING, PROPERTYCOLOUR});
+    return new BlockStateContainer(this, new IProperty[] {PROPERTYFACING, PROPERTYCOLOUR});
   }
 
   // when the block is placed, set the appropriate facing direction based on which way the player is looking

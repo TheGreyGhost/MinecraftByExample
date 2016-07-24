@@ -18,8 +18,8 @@ public abstract class CommonProxy {
 //	  minecraftbyexample.mbe70_configuration.StartupCommon.preInitCommon();
 
     minecraftbyexample.mbe01_block_simple.StartupCommon.preInitCommon();
-//    minecraftbyexample.mbe02_block_partial.StartupCommon.preInitCommon();
-//    minecraftbyexample.mbe03_block_variants.StartupCommon.preInitCommon();
+    minecraftbyexample.mbe02_block_partial.StartupCommon.preInitCommon();
+    minecraftbyexample.mbe03_block_variants.StartupCommon.preInitCommon();
 //    minecraftbyexample.mbe04_block_smartblockmodel1.StartupCommon.preInitCommon();
 //    minecraftbyexample.mbe05_block_smartblockmodel2.StartupCommon.preInitCommon();
 //    minecraftbyexample.mbe06_redstone.StartupCommon.preInitCommon();
@@ -50,8 +50,8 @@ public abstract class CommonProxy {
 //	minecraftbyexample.mbe70_configuration.StartupCommon.initCommon();
 	  
     minecraftbyexample.mbe01_block_simple.StartupCommon.initCommon();
-//    minecraftbyexample.mbe02_block_partial.StartupCommon.initCommon();
-//    minecraftbyexample.mbe03_block_variants.StartupCommon.initCommon();
+    minecraftbyexample.mbe02_block_partial.StartupCommon.initCommon();
+    minecraftbyexample.mbe03_block_variants.StartupCommon.initCommon();
 //    minecraftbyexample.mbe04_block_smartblockmodel1.StartupCommon.initCommon();
 //    minecraftbyexample.mbe05_block_smartblockmodel2.StartupCommon.initCommon();
 //    minecraftbyexample.mbe06_redstone.StartupCommon.initCommon();
@@ -81,8 +81,8 @@ public abstract class CommonProxy {
 //	minecraftbyexample.mbe70_configuration.StartupCommon.postInitCommon();
 	  
     minecraftbyexample.mbe01_block_simple.StartupCommon.postInitCommon();
-//    minecraftbyexample.mbe02_block_partial.StartupCommon.postInitCommon();
-//    minecraftbyexample.mbe03_block_variants.StartupCommon.postInitCommon();
+    minecraftbyexample.mbe02_block_partial.StartupCommon.postInitCommon();
+    minecraftbyexample.mbe03_block_variants.StartupCommon.postInitCommon();
 //    minecraftbyexample.mbe04_block_smartblockmodel1.StartupCommon.postInitCommon();
 //    minecraftbyexample.mbe05_block_smartblockmodel2.StartupCommon.postInitCommon();
 //    minecraftbyexample.mbe06_redstone.StartupCommon.postInitCommon();

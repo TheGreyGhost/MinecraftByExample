@@ -22,8 +22,8 @@ public class ClientOnlyProxy extends CommonProxy
 //    minecraftbyexample.mbe70_configuration.StartupClientOnly.preInitClientOnly();
     
     minecraftbyexample.mbe01_block_simple.StartupClientOnly.preInitClientOnly();
-//    minecraftbyexample.mbe02_block_partial.StartupClientOnly.preInitClientOnly();
-//    minecraftbyexample.mbe03_block_variants.StartupClientOnly.preInitClientOnly();
+    minecraftbyexample.mbe02_block_partial.StartupClientOnly.preInitClientOnly();
+    minecraftbyexample.mbe03_block_variants.StartupClientOnly.preInitClientOnly();
 //    minecraftbyexample.mbe04_block_smartblockmodel1.StartupClientOnly.preInitClientOnly();
 //    minecraftbyexample.mbe05_block_smartblockmodel2.StartupClientOnly.preInitClientOnly();
 //    minecraftbyexample.mbe06_redstone.StartupClientOnly.preInitClientOnly();
@@ -55,8 +55,8 @@ public class ClientOnlyProxy extends CommonProxy
 //    minecraftbyexample.mbe70_configuration.StartupClientOnly.initClientOnly();
     
     minecraftbyexample.mbe01_block_simple.StartupClientOnly.initClientOnly();
-//    minecraftbyexample.mbe02_block_partial.StartupClientOnly.initClientOnly();
-//    minecraftbyexample.mbe03_block_variants.StartupClientOnly.initClientOnly();
+    minecraftbyexample.mbe02_block_partial.StartupClientOnly.initClientOnly();
+    minecraftbyexample.mbe03_block_variants.StartupClientOnly.initClientOnly();
 //    minecraftbyexample.mbe04_block_smartblockmodel1.StartupClientOnly.initClientOnly();
 //    minecraftbyexample.mbe05_block_smartblockmodel2.StartupClientOnly.initClientOnly();
 //    minecraftbyexample.mbe06_redstone.StartupClientOnly.initClientOnly();
@@ -87,8 +87,8 @@ public class ClientOnlyProxy extends CommonProxy
 //    minecraftbyexample.mbe70_configuration.StartupClientOnly.postInitClientOnly();
 
     minecraftbyexample.mbe01_block_simple.StartupClientOnly.postInitClientOnly();
-//    minecraftbyexample.mbe02_block_partial.StartupClientOnly.postInitClientOnly();
-//    minecraftbyexample.mbe03_block_variants.StartupClientOnly.postInitClientOnly();
+    minecraftbyexample.mbe02_block_partial.StartupClientOnly.postInitClientOnly();
+    minecraftbyexample.mbe03_block_variants.StartupClientOnly.postInitClientOnly();
 //    minecraftbyexample.mbe04_block_smartblockmodel1.StartupClientOnly.postInitClientOnly();
 //    minecraftbyexample.mbe05_block_smartblockmodel2.StartupClientOnly.postInitClientOnly();
 //    minecraftbyexample.mbe06_redstone.StartupClientOnly.postInitClientOnly();

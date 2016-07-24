@@ -1,6 +1,6 @@
 package minecraftbyexample.usefultools;
 
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 
 /**
  * User: The Grey Ghost
@@ -32,9 +32,9 @@ public class UsefulFunctions
     return y1 + xFraction * (y2 - y1);
   }
 
-  public static Vec3 scalarMultiply(Vec3 source, double multiplier)
+  public static Vec3d scalarMultiply(Vec3d source, double multiplier)
   {
-    return new Vec3(source.xCoord * multiplier, source.yCoord * multiplier, source.zCoord * multiplier);
+    return new Vec3d(source.xCoord * multiplier, source.yCoord * multiplier, source.zCoord * multiplier);
   }
 
 

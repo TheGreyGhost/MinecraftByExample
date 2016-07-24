@@ -19,6 +19,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 public class StartupCommon
 {
   public static BlockSimple blockSimple;  // this holds the unique instance of your block
+  public static ItemBlock itemBlockSimple;  // this holds the unique instance of the ItemBlock corresponding to your block
 
   public static void preInitCommon()
   {
@@ -39,7 +40,7 @@ public class StartupCommon
     GameRegistry.register(blockSimple);
 
     // We also need to create and register an ItemBlock for this block otherwise it won't appear in the inventory
-    ItemBlock itemBlockSimple = new ItemBlock(blockSimple);
+    itemBlockSimple = new ItemBlock(blockSimple);
     itemBlockSimple.setRegistryName(blockSimple.getRegistryName());
     GameRegistry.register(itemBlockSimple);
   }

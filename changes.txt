@@ -1,19 +1,22 @@
 Changes from 1.8.9 to 1.10.2
 
 EntityPlayerMP.theItemInWorldManager -> EntityPlayerMP.interactionManager
-EnumWorldBlockLayer -> BlockRenderLayer
+BlockRenderLayer -> BlockRenderLayer
 GameRegistry.findItem -> Item.REGISTRY.getObject(new ResourceLocation(...))
 Material.rock etc have new names
 CreativeTabs.blocks etc have new names
 
-Changed registration methods for blocks and items
+For better or for worse, they have changed the registration methods for blocks and items; ItemBlocks also require
+  explicit registration of the Item (previously, Forge did it automatically).
 
-EnumWorldBlockLayer ->  BlockRenderLayer
+BlockRenderLayer ->  BlockRenderLayer
 
-BlockState has become BlockStateContainer?
+BlockState has become BlockStateContainer
 
 
+AxisAlignedBB, ModelResourceLocation, and BlockPos have moved.
 
+todo: understand why some item default appearance is now face-on instead of isometric
 
 -----------
 

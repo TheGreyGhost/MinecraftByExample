@@ -18,7 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
@@ -198,9 +198,9 @@ public class BlockRedstoneColouredLamp extends Block implements ITileEntityProvi
   // -----------------
   // The following methods control the appearance of the block.
   @SideOnly(Side.CLIENT)
-  public EnumWorldBlockLayer getBlockLayer()
+  public BlockRenderLayer getBlockLayer()
   {
-    return EnumWorldBlockLayer.CUTOUT_MIPPED;
+    return BlockRenderLayer.CUTOUT_MIPPED;
   }
 
   @Override

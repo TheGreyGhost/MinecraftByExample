@@ -9,7 +9,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -58,9 +58,9 @@ public class BlockMBE21 extends Block implements ITileEntityProvider
   // -----------------
   // The following methods aren't particularly relevant to this example.  See MBE01, MBE02, MBE03 for more information.
   @SideOnly(Side.CLIENT)
-  public EnumWorldBlockLayer getBlockLayer()
+  public BlockRenderLayer getBlockLayer()
   {
-    return EnumWorldBlockLayer.CUTOUT_MIPPED;
+    return BlockRenderLayer.CUTOUT_MIPPED;
   }
 
   @Override

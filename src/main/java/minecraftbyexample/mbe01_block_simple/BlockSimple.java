@@ -5,7 +5,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -15,6 +15,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  *
  * BlockSimple is a ordinary solid cube with the six faces numbered from 0 - 5.
  * For background information on blocks see here http://greyminecraftcoder.blogspot.com.au/2014/12/blocks-18.html
+ *
+ * For a couple of the methods below the Forge guys have marked it as deprecated.  But you still need to override those
+ *   "deprecated" block methods.  What they mean is "when you want to find out if a block is (eg) isOpaqueCube(),
+ *   don't call block.isOpaqueCube(), call iBlockState.isOpaqueCube() instead".
+ * If that doesn't make sense to you yet, don't worry.  Just ignore the "deprecated method" warning.
  */
 public class BlockSimple extends Block
 {
@@ -49,9 +54,9 @@ public class BlockSimple extends Block
   }
 
   // render using a BakedModel (mbe01_block_simple.json --> mbe01_block_simple_model.json)
-  // not strictly required because the default (super method) is 3.
+  // not strictly required because the default (super method) is MODEL.
   @Override
-  public int getRenderType(IBlockState iBlockState) {
-    return 3;
+  public EnumBlockRenderType getRenderType(IBlockState iBlockState) {
+    return EnumBlockRenderType.MODEL;
   }
 }
