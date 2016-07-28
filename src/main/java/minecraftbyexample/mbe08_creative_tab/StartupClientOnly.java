@@ -1,7 +1,6 @@
 package minecraftbyexample.mbe08_creative_tab;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -30,9 +29,8 @@ public class StartupClientOnly
     final int DEFAULT_ITEM_SUBTYPE = 0;
     ModelLoader.setCustomModelResourceLocation(StartupCommon.testItem, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
 
-    Item itemBlock = GameRegistry.findItem("minecraftbyexample", "mbe08_creative_tab_block");
     itemModelResourceLocation = new ModelResourceLocation("minecraftbyexample:mbe08_creative_tab_block", "inventory");
-    ModelLoader.setCustomModelResourceLocation(itemBlock, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);  }
+    ModelLoader.setCustomModelResourceLocation(StartupCommon.testItemBlock, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);  }
 
   public static void initClientOnly()
   {

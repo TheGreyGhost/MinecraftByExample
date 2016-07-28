@@ -5,6 +5,7 @@ import net.minecraft.block.BlockHardenedClay;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemSword;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -29,6 +30,7 @@ public class StartupCommon
   public static AllMbeItemsTab allMbeItemsTab;        // will hold our second custom creative tab displaying all MBE items
 
   public static Block testBlock;
+  public static ItemBlock testItemBlock;  // the itemBlock corresponding to testBlock
   public static Item testItem;
 
   public static void preInitCommon()
@@ -50,17 +52,25 @@ public class StartupCommon
       @Override
       @SideOnly(Side.CLIENT)
       public Item getTabIconItem() {
-        return Items.gold_nugget;
+        return Items.GOLD_NUGGET;
       }
     };
 
 //  The lines below create a test block and item instance that are going to be added to the creative tabs.
 //  An item can be listed on multiple tabs by overriding Item.getCreativeTabs()
 //  A block can only be listed on one tab, unless you give it a custom ItemBlock which overrides .getCreativeTabs()
-    testBlock = new BlockHardenedClay().setUnlocalizedName("mbe08_creative_tab_block").setCreativeTab(customTab);
-    testItem = new ItemSword(Item.ToolMaterial.GOLD).setUnlocalizedName("mbe08_creative_tab_item").setCreativeTab(customTab);
-    GameRegistry.registerBlock(testBlock, "mbe08_creative_tab_block");
-    GameRegistry.registerItem(testItem, "mbe08_creative_tab_item");
+    testBlock = new BlockHardenedClay().setUnlocalizedName("mbe08_creative_tab_block_unlocalised_name").setCreativeTab(customTab);
+    testBlock.setRegistryName("mbe08_creative_tab_block_registry_name");
+    GameRegistry.register(testBlock);
+    // register the itemblock corresponding to the block
+    testItemBlock = new ItemBlock(testBlock);
+    testItemBlock.setRegistryName(testBlock.getRegistryName());
+    GameRegistry.register(testItemBlock);
+
+    // add an item (an item without a corresponding block)
+    testItem = new ItemSword(Item.ToolMaterial.GOLD).setUnlocalizedName("mbe08_creative_tab_item_unlocalised_name").setCreativeTab(customTab);
+    testItem.setRegistryName("mbe08_creative_tab_item_registry_name");
+    GameRegistry.register(testItem);
 
     allMbeItemsTab = new AllMbeItemsTab("mbe08_creative_tab_all_MBE");
   }

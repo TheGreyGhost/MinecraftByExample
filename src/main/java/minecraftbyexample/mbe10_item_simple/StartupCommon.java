@@ -22,8 +22,9 @@ public class StartupCommon
   public static void preInitCommon()
   {
     // each instance of your item should have a name that is unique within your mod.  use lower case.
-    itemSimple = (ItemSimple)(new ItemSimple().setUnlocalizedName("mbe10_item_simple"));
-    GameRegistry.registerItem(itemSimple, "mbe10_item_simple");
+    itemSimple = (ItemSimple)(new ItemSimple().setUnlocalizedName("mbe10_item_simple_unlocalised_name"));
+    itemSimple.setRegistryName("mbe10_item_simple_registry_name");
+    GameRegistry.register(itemSimple);
   }
 
   public static void initCommon()

@@ -20,7 +20,7 @@ public class ItemSimple extends Item
   {
     final int MAXIMUM_NUMBER_OF_FROGS = 6;
     this.setMaxStackSize(MAXIMUM_NUMBER_OF_FROGS);
-    this.setCreativeTab(CreativeTabs.tabMisc);   // the item will appear on the Miscellaneous tab in creative
+    this.setCreativeTab(CreativeTabs.MISC);   // the item will appear on the Miscellaneous tab in creative
   }
 
 }

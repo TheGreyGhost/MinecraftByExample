@@ -3,6 +3,7 @@ package minecraftbyexample.mbe08_creative_tab;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -20,14 +21,14 @@ public class AllMbeItemsTab extends CreativeTabs {
   @Override
   @SideOnly(Side.CLIENT)
   public Item getTabIconItem() {
-    return Items.book;
+    return Items.BOOK;
   }
 
   @Override
-  public void displayAllReleventItems(List itemsToShowOnTab)
+  @SideOnly(Side.CLIENT)
+  public void displayAllRelevantItems(List<ItemStack> itemsToShowOnTab)
   {
-    for (Object itemObject : Item.itemRegistry) {
-      Item item = (Item)itemObject;
+    for (Item item : Item.REGISTRY) {
       if (item != null) {
         if (item.getUnlocalizedName().contains(".mbe")) {
           item.getSubItems(item, this, itemsToShowOnTab);  // add all sub items to the list
