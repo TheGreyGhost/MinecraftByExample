@@ -18,6 +18,17 @@ AxisAlignedBB, ModelResourceLocation, and BlockPos have moved.
 
 todo: understand why some item default appearance is now face-on instead of isometric
 
+For some reason, not longer copied assets to the run folder:
+C:\Users\TGG\IdeaProjects\MinecraftByExample1-10-2\out\production\MinecraftByExample1-10-2\assets\minecraftbyexample
+See FMLClientHandler::addModAsResource()
+
+Addition of left and right hand means the item transforms have changed.
+Now have:
+    "thirdperson_righthand":
+    "thirdperson_lefthand":
+    "firstperson_righthand":
+    "firstperson_lefthand":
+
 -----------
 
 New block & Item registration:
