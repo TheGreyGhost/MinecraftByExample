@@ -14,7 +14,7 @@ Converting from 1.8.9 to 1.10.2
 2) Install into a test directory and gradle setupDecompWorkspace -Dorg.gradle.jvmargs=-Xmx2G
 3) IntelliJ import from repository into MinecraftByExample1-10-2
 4) Copy all files from test directory into MinecraftByExample1-10-2, except update build.gradle with version info instead
-5) In MinecraftByExample1-10-2 run gradlew idea setupIntelliJruns
+5) In MinecraftByExample1-10-2 run gradlew idea genIntelliJruns
 6) Start IntelliJ.
 
 

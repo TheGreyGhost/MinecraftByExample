@@ -13,6 +13,7 @@ BlockRenderLayer ->  BlockRenderLayer
 
 BlockState has become BlockStateContainer
 
+WorldRenderer has become VertexBuffer
 
 AxisAlignedBB, ModelResourceLocation, and BlockPos have moved.
 
@@ -28,6 +29,11 @@ Now have:
     "thirdperson_lefthand":
     "firstperson_righthand":
     "firstperson_lefthand":
+
+ISmartItemModel, ISmartBlockModel, IFlexibleBakedModel are all gone
+They are no longer there because they are no longer needed.
+IBakedModel now has has a IBlockState argument in getQuads and ItemOverrideList (returned from IBakedModel#getOverrides) has the functionality of ISmartItemModel.
+
 
 -----------
 
