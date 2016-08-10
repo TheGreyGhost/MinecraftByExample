@@ -161,7 +161,7 @@ public class MBEConfiguration {
     // boolean
     final boolean MY_BOOL_DEFAULT_VALUE = true;
     Property propMyBool = config.get(CATEGORY_NAME_GENERAL, "myBoolean", MY_BOOL_DEFAULT_VALUE);
-    propMyBool.comment = "Configuration boolean (myBoolean)";
+    propMyBool.setComment("Configuration boolean (myBoolean)");
     propMyBool.setLanguageKey("gui.mbe70_configuration.myBoolean").setRequiresMcRestart(true);
 
     // double
@@ -176,7 +176,7 @@ public class MBEConfiguration {
     // string
     final String MY_STRING_DEFAULT_VALUE = "default";
     Property propMyString = config.get(CATEGORY_NAME_GENERAL, "myString", MY_STRING_DEFAULT_VALUE);
-    propMyString.comment = "Configuration string (myString)";
+    propMyString.setComment("Configuration string (myString)");
     propMyString.setLanguageKey("gui.mbe70_configuration.myString").setRequiresWorldRestart(true);
 
     // list of integer values
@@ -189,7 +189,7 @@ public class MBEConfiguration {
     final String COLOUR_DEFAULT_VALUE = "red";
     final String [] COLOUR_CHOICES = {"blue", "red", "yellow"};
     Property propColour = config.get(CATEGORY_NAME_OTHER, "myColour", COLOUR_DEFAULT_VALUE);
-    propColour.comment = "Configuration string (myColour): blue, red, yellow";
+    propColour.setComment("Configuration string (myColour): blue, red, yellow");
     propColour.setLanguageKey("gui.mbe70_configuration.myColour").setRequiresWorldRestart(true);
     propColour.setValidValues(COLOUR_CHOICES);
 
@@ -271,10 +271,10 @@ public class MBEConfiguration {
      */
     @SubscribeEvent(priority = EventPriority.NORMAL)
     public void onEvent(ConfigChangedEvent.OnConfigChangedEvent event) {
-      if (MinecraftByExample.MODID.equals(event.modID)
-              && !event.isWorldRunning) {
-        if (event.configID.equals(CATEGORY_NAME_GENERAL)
-            || event.configID.equals(CATEGORY_NAME_OTHER) ) {
+      if (MinecraftByExample.MODID.equals(event.getModID())
+              && !event.isWorldRunning()) {
+        if (event.getConfigID().equals(CATEGORY_NAME_GENERAL)
+            || event.getConfigID().equals(CATEGORY_NAME_OTHER) ) {
           syncFromGUI();
         }
       }

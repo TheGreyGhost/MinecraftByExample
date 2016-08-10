@@ -43,46 +43,46 @@ public class StartupCommon
     //  see http://greyminecraftcoder.blogspot.com/2015/02/recipes.html for illustrations of these recipes
 
     // a) Shaped recipe without metadata - emerald surrounded by diamond makes ender eye
-    GameRegistry.addRecipe(new ItemStack(Items.ender_eye), new Object[]{
+    GameRegistry.addRecipe(new ItemStack(Items.ENDER_EYE), new Object[]{
             ".D.",
             "DED",
             ".D.",
-                  'D', Items.diamond,
-                  'E', Items.emerald     // note carefully - 'E' not "E" !
+                  'D', Items.DIAMOND,
+                  'E', Items.EMERALD     // note carefully - 'E' not "E" !
     });
 
     // note - smaller grids are also possible, you don't need to fill up the entire 3x3 space.
 
     // b) shaped recipe with metadata - cobblestone surrounded by red dye makes redstone
     final int RED_DYE_DAMAGE_VALUE = EnumDyeColor.RED.getDyeDamage();
-    GameRegistry.addRecipe(new ItemStack(Items.redstone), new Object[]{
+    GameRegistry.addRecipe(new ItemStack(Items.REDSTONE), new Object[]{
             "RRR",
             "RCR",
             "RRR",
-                  'C', Blocks.cobblestone,
-                  'R', new ItemStack(Items.dye, 1, RED_DYE_DAMAGE_VALUE)
+                  'C', Blocks.COBBLESTONE,
+                  'R', new ItemStack(Items.DYE, 1, RED_DYE_DAMAGE_VALUE)
     });
 
     // c) shaped recipe for items which are damaged, or which have a metadata you want to ignore
     //      wooden sword (any damage value) in a cobblestone shell plus iron ingot makes iron sword
-    GameRegistry.addRecipe(new ItemStack(Items.iron_sword), new Object[]{
+    GameRegistry.addRecipe(new ItemStack(Items.IRON_SWORD), new Object[]{
             "CIC",
             "CWC",
             "CCC",
-                  'C', Blocks.cobblestone,
-                  'W', new ItemStack(Items.wooden_sword, 1, OreDictionary.WILDCARD_VALUE),
-                  'I', Items.iron_ingot
+                  'C', Blocks.COBBLESTONE,
+                  'W', new ItemStack(Items.WOODEN_SWORD, 1, OreDictionary.WILDCARD_VALUE),
+                  'I', Items.IRON_INGOT
     });
 
     // for comparison - this recipe only words with an undamaged wooden sword
     //   wooden sword (undamaged) in a cobblestone shell plus gold ingot makes gold sword
-    GameRegistry.addRecipe(new ItemStack(Items.golden_sword), new Object[]{
+    GameRegistry.addRecipe(new ItemStack(Items.GOLDEN_SWORD), new Object[]{
             "CIC",
             "CWC",
             "CCC",
-            'C', Blocks.cobblestone,
-            'W', Items.wooden_sword,
-            'I', Items.gold_ingot
+            'C', Blocks.COBBLESTONE,
+            'W', Items.WOODEN_SWORD,
+            'I', Items.GOLD_INGOT
     });
 
     // d) Shapeless recipe - blue dye plus yellow dye makes two green dye
@@ -90,10 +90,10 @@ public class StartupCommon
     final int YELLOW_DYE_DAMAGE_VALUE = EnumDyeColor.YELLOW.getDyeDamage();
     final int GREEN_DYE_DAMAGE_VALUE = EnumDyeColor.GREEN.getDyeDamage();
     final int NUMBER_OF_GREEN_DYE_PRODUCED = 2;
-    GameRegistry.addShapelessRecipe(new ItemStack(Items.dye, NUMBER_OF_GREEN_DYE_PRODUCED, GREEN_DYE_DAMAGE_VALUE),
+    GameRegistry.addShapelessRecipe(new ItemStack(Items.DYE, NUMBER_OF_GREEN_DYE_PRODUCED, GREEN_DYE_DAMAGE_VALUE),
             new Object[] {
-                    new ItemStack(Items.dye, 1, YELLOW_DYE_DAMAGE_VALUE),
-                    new ItemStack(Items.dye, 1, BLUE_DYE_DAMAGE_VALUE)
+                    new ItemStack(Items.DYE, 1, YELLOW_DYE_DAMAGE_VALUE),
+                    new ItemStack(Items.DYE, 1, BLUE_DYE_DAMAGE_VALUE)
     });
 
     // g) Shaped Ore recipe - any type of tree leaves arranged around sticks makes a sapling
@@ -101,11 +101,11 @@ public class StartupCommon
     //    For example - an ore recipe which uses "logWood" will accept a log of spruce, oak, birch, pine, etc.
     //    If your mod registers its balsawood log using  OreDictionary.registerOre("logWood", BalsaWood), then your
     //    BalsaWood log will also be accepted in the recipe.
-    IRecipe saplingRecipe = new ShapedOreRecipe(new ItemStack(Blocks.sapling), new Object[] {
+    IRecipe saplingRecipe = new ShapedOreRecipe(new ItemStack(Blocks.SAPLING), new Object[] {
             "LLL",
             "LSL",
             ".S.",
-            'S', Items.stick,   // can use ordinary items, blocks, itemstacks in ShapedOreRecipe
+            'S', Items.STICK,   // can use ordinary items, blocks, itemstacks in ShapedOreRecipe
             'L', "treeLeaves",  // look in OreDictionary for vanilla definitions
     });
     GameRegistry.addRecipe(saplingRecipe);
@@ -113,12 +113,12 @@ public class StartupCommon
     // h) by default, recipes are automatically mirror-imaged, i.e. you can flip the recipe left<--> right and it will
     //    produce the same output.  This one isn't.  Only works for OreRecipes, but you can make ShapedOreRecipe from vanilla
     //    Items or Blocks too (see (g) above)
-    IRecipe unmirroredRecipe = new ShapedOreRecipe(new ItemStack(Items.cauldron), new Object[] {
+    IRecipe unmirroredRecipe = new ShapedOreRecipe(new ItemStack(Items.CAULDRON), new Object[] {
             false,
             "III",
             "I..",
             "III",
-            'I', Items.iron_ingot
+            'I', Items.IRON_INGOT
     });
     GameRegistry.addRecipe(unmirroredRecipe);
 
@@ -130,7 +130,7 @@ public class StartupCommon
     final float CAKE_SMELT_XP = 0.0F;   // negative XP would probably cause a problem :)
     final int NUMBER_OF_ITEMS = 1;
     final int CHARCOAL_METADATA_VALUE = 1;
-    GameRegistry.addSmelting(Items.cake, new ItemStack(Items.coal, NUMBER_OF_ITEMS, CHARCOAL_METADATA_VALUE), CAKE_SMELT_XP);
+    GameRegistry.addSmelting(Items.CAKE, new ItemStack(Items.COAL, NUMBER_OF_ITEMS, CHARCOAL_METADATA_VALUE), CAKE_SMELT_XP);
 
     // e) fuel - use wheat as fuel in a furnace
     //   We use an anonymous class... you can use an ordinary class instead if you prefer.
@@ -139,7 +139,7 @@ public class StartupCommon
       public int getBurnTime(ItemStack fuel) {
         final int BURN_TIME_SECONDS = 5;
         final int TICKS_PER_SECOND = 20;
-        if (fuel != null && fuel.getItem() == Items.wheat) {
+        if (fuel != null && fuel.getItem() == Items.WHEAT) {
           return BURN_TIME_SECONDS * TICKS_PER_SECOND;
         } else {
           return 0;
