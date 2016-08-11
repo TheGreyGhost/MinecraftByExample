@@ -38,7 +38,7 @@ public abstract class CommonProxy {
 //    minecraftbyexample.mbe50_entityfx.StartupCommon.preInitCommon();
 //    minecraftbyexample.mbe60_network_messages.StartupCommon.preInitCommon();
 //    minecraftbyexample.mbe75_testing_framework.StartupCommon.preInitCommon();
-//    minecraftbyexample.testingarea.StartupCommon.preInitCommon();
+    minecraftbyexample.testingarea.StartupCommon.preInitCommon();
   }
 
   /**
@@ -70,7 +70,7 @@ public abstract class CommonProxy {
 //    minecraftbyexample.mbe50_entityfx.StartupCommon.initCommon();
 //    minecraftbyexample.mbe60_network_messages.StartupCommon.initCommon();
 //    minecraftbyexample.mbe75_testing_framework.StartupCommon.initCommon();
-//    minecraftbyexample.testingarea.StartupCommon.initCommon();
+    minecraftbyexample.testingarea.StartupCommon.initCommon();
   }
 
   /**
@@ -101,7 +101,7 @@ public abstract class CommonProxy {
 //    minecraftbyexample.mbe50_entityfx.StartupCommon.postInitCommon();
 //    minecraftbyexample.mbe60_network_messages.StartupCommon.postInitCommon();
 //    minecraftbyexample.mbe75_testing_framework.StartupCommon.postInitCommon();
-//    minecraftbyexample.testingarea.StartupCommon.postInitCommon();
+    minecraftbyexample.testingarea.StartupCommon.postInitCommon();
   }
 
   // helper to determine whether the given player is in creative mode
