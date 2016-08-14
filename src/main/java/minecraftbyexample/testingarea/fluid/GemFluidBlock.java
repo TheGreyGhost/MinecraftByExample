@@ -1,7 +1,5 @@
 package minecraftbyexample.testingarea.fluid;
 
-import minecraftbyexample.testingarea.fluid.GemFluid;
-import minecraftbyexample.testingarea.fluid.MaterialGemLiquid;
 import org.apache.commons.lang3.StringUtils;
 
 import net.minecraft.block.material.MapColor;

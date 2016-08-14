@@ -8,7 +8,9 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class GFluids 
-{	
+{
+	static { FluidRegistry.enableUniversalBucket(); }
+
 	public static GemFluid amethyst = new GemFluid("amethyst", MapColor.PURPLE);
 	
 	public static void createFluids()
