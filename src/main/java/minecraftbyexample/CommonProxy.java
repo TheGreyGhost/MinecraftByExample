@@ -25,7 +25,7 @@ public abstract class CommonProxy {
 //    minecraftbyexample.mbe06_redstone.StartupCommon.preInitCommon();
     minecraftbyexample.mbe08_creative_tab.StartupCommon.preInitCommon();
     minecraftbyexample.mbe10_item_simple.StartupCommon.preInitCommon();
-//    minecraftbyexample.mbe11_item_variants.StartupCommon.preInitCommon();
+    minecraftbyexample.mbe11_item_variants.StartupCommon.preInitCommon();
 //    minecraftbyexample.mbe12_item_nbt_animate.StartupCommon.preInitCommon();
 //    minecraftbyexample.mbe13_item_tools.StartupCommon.preInitCommon();
 //    minecraftbyexample.mbe15_item_smartitemmodel.StartupCommon.preInitCommon();
@@ -57,7 +57,7 @@ public abstract class CommonProxy {
 //    minecraftbyexample.mbe06_redstone.StartupCommon.initCommon();
     minecraftbyexample.mbe08_creative_tab.StartupCommon.initCommon();
     minecraftbyexample.mbe10_item_simple.StartupCommon.initCommon();
-//    minecraftbyexample.mbe11_item_variants.StartupCommon.initCommon();
+    minecraftbyexample.mbe11_item_variants.StartupCommon.initCommon();
 //    minecraftbyexample.mbe12_item_nbt_animate.StartupCommon.initCommon();
 //    minecraftbyexample.mbe13_item_tools.StartupCommon.initCommon();
 //    minecraftbyexample.mbe15_item_smartitemmodel.StartupCommon.initCommon();
@@ -88,7 +88,7 @@ public abstract class CommonProxy {
 //    minecraftbyexample.mbe06_redstone.StartupCommon.postInitCommon();
     minecraftbyexample.mbe08_creative_tab.StartupCommon.postInitCommon();
     minecraftbyexample.mbe10_item_simple.StartupCommon.postInitCommon();
-//    minecraftbyexample.mbe11_item_variants.StartupCommon.postInitCommon();
+    minecraftbyexample.mbe11_item_variants.StartupCommon.postInitCommon();
 //    minecraftbyexample.mbe12_item_nbt_animate.StartupCommon.postInitCommon();
 //    minecraftbyexample.mbe13_item_tools.StartupCommon.postInitCommon();
 //    minecraftbyexample.mbe15_item_smartitemmodel.StartupCommon.postInitCommon();

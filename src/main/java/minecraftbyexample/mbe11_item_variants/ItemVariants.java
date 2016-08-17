@@ -126,27 +126,27 @@ public class ItemVariants extends Item
     return s;
   }
 
-  // when rendering, choose the colour multiplier based on the contents
-  // we want layer 0 (the bottle glass) to be unaffected (return white as the multiplier)
-  // layer 1 will change colour depending on the contents.
-  @SideOnly(Side.CLIENT)
-  @Override
-  public int getColorFromItemStack(ItemStack stack, int renderLayer)
-  {
-    switch (renderLayer) {
-      case 0: return Color.WHITE.getRGB();
-      case 1: {
-        int metadata = stack.getMetadata();
-        int contentsBits = metadata & 0x03;
-        EnumBottleContents contents = EnumBottleContents.byMetadata(contentsBits);
-        return contents.getRenderColour().getRGB();
-      }
-      default: {
-        // oops! should never get here.
-        return Color.BLACK.getRGB();
-      }
-    }
-  }
+//  // when rendering, choose the colour multiplier based on the contents
+//  // we want layer 0 (the bottle glass) to be unaffected (return white as the multiplier)
+//  // layer 1 will change colour depending on the contents.
+//  @SideOnly(Side.CLIENT)
+//  @Override
+//  public int getColorFromItemStack(ItemStack stack, int renderLayer)
+//  {
+//    switch (renderLayer) {
+//      case 0: return Color.WHITE.getRGB();
+//      case 1: {
+//        int metadata = stack.getMetadata();
+//        int contentsBits = metadata & 0x03;
+//        EnumBottleContents contents = EnumBottleContents.byMetadata(contentsBits);
+//        return contents.getRenderColour().getRGB();
+//      }
+//      default: {
+//        // oops! should never get here.
+//        return Color.BLACK.getRGB();
+//      }
+//    }
+//  }
 
   // create a new enum for our liquid contents, with some supporting methods to convert to & from metadata, and to get
   //  human-readable names for a description.

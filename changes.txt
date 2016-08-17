@@ -43,6 +43,20 @@ onItemUseXXXX methods have a different return value; changed to include which Ha
     playerIn.setItemInUse(itemStackIn, this.getMaxItemUseDuration(itemStackIn)); replaced by playerIn.setActiveHand(hand)
 
 ItemColors instead of getColorFromItemStack
+call registerItemColorHandler with IItemColor
+Minecraft.getItemColors()  (tint index)
+
+Items have a propertyOverride for animation -?
+They are starting to abstract methods to getters
+eg
+DAMAGED_GETTER
+DAMAGE_GETTER
+LEFT_HANDED_GETTER
+---> ItemPropertyGetter
+
+The item file has overrides in it, to look up a model based on one or more particular predicates
+
+Minecraft.getBlockColors()  (colorMultiplier - from blockstate, position, tintindex)
 
 
 -----------

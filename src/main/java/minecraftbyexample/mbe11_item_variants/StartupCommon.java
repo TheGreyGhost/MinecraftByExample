@@ -21,9 +21,21 @@ public class StartupCommon
 
   public static void preInitCommon()
   {
-    // each instance of your item should have a name that is unique within your mod.  use lower case.
-    itemVariants = (ItemVariants)(new ItemVariants().setUnlocalizedName("mbe11_item_variants"));
-    GameRegistry.registerItem(itemVariants, "mbe11_item_variants");
+    // each instance of your item should have two names:
+    // 1) a registry name that is used to uniquely identify this item.  Should be unique within your mod.  use lower case.
+    // 2) an 'unlocalised name' that is used to retrieve the text name of your item in the player's language.  For example-
+    //    the unlocalised name might be "water", which is printed on the user's screen as "Wasser" in German or
+    //    "aqua" in Italian.
+    //
+    //    Multiple items can have the same unlocalised name - for example
+    //  +----RegistryName-------+----UnlocalisedName----+
+    //  |  burning_candle       +       candle          |
+    //  |  extinguished_candle  +       candle          |
+    //  +-----------------------+-----------------------+
+    //
+    itemVariants = (ItemVariants)(new ItemVariants().setUnlocalizedName("mbe11_item_variants_unlocalised_name"));
+    itemVariants.setRegistryName("mbe11_item_variants_registry_name");
+    GameRegistry.register(itemVariants);
  }
 
   public static void initCommon()
