@@ -47,6 +47,8 @@ call registerItemColorHandler with IItemColor
 Minecraft.getItemColors()  (tint index)
 
 Items have a propertyOverride for animation -?
+
+are itemoverrides the same as the ItemPropertyGetter properties?
 They are starting to abstract methods to getters
 eg
 DAMAGED_GETTER
@@ -58,6 +60,9 @@ The item file has overrides in it, to look up a model based on one or more parti
 
 Minecraft.getBlockColors()  (colorMultiplier - from blockstate, position, tintindex)
 
+EntityPlayer.isUsingItem() -> .isHandActive()
+
+Sound effects now by ENUM not string
 
 -----------
 

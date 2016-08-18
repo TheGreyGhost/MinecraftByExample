@@ -120,4 +120,8 @@ public class ClientOnlyProxy extends CommonProxy
     }
     return false;
   }
+
+  @Override
+  public boolean isDedicatedServer() {return false;}
+
 }

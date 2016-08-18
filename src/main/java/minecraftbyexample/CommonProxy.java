@@ -108,4 +108,9 @@ public abstract class CommonProxy {
   //  not necessary for most examples
   abstract public boolean playerIsInCreativeMode(EntityPlayer player);
 
+  /**
+   * is this a dedicated server?
+   * @return true if this is a dedicated server, false otherwise
+   */
+  abstract public boolean isDedicatedServer();
 }

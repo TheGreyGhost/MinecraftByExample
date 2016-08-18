@@ -41,5 +41,9 @@ public class DedicatedServerProxy extends CommonProxy
     }
     return false;
   }
+
+  @Override
+  public boolean isDedicatedServer() {return true;}
+
 }
 
