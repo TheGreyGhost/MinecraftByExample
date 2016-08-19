@@ -36,6 +36,10 @@ public class ItemNBTAnimate extends Item
     this.setMaxStackSize(1);
     this.setCreativeTab(CreativeTabs.MISC);   // items will appear on the Miscellaneous creative tab
 
+    // We use a PropertyOverride for this item to change the appearance depending on the state of the property.
+    //  See ItemNBTanimationTimer for more information.
+    // Note - you must not addPropertyOverride on the DedicatedServer otherwise it will crash the game when
+    //   your mod is run on a dedicated server, because IItemPropertyGetter does not exist
     if (!MinecraftByExample.proxy.isDedicatedServer()) {
       this.addPropertyOverride(new ResourceLocation("angle"), new ItemNBTanimationTimer());
     }

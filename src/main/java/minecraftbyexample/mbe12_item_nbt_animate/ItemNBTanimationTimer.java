@@ -35,6 +35,9 @@ import javax.annotation.Nullable;
  *
  * See also ItemClock and ItemCompass
  *
+ * This class should not be used in a DedicatedServer because IItemPropertyGetter does not exist there.
+ *
+ *
  * Created by TGG on 18/08/2016.
  */
 public class ItemNBTanimationTimer implements IItemPropertyGetter {
