@@ -1,0 +1,29 @@
+{
+  "parent": "item/generated",  //builtin or item?
+  "textures": {
+    "layer0": "minecraftbyexample:items/mbe12_item_nbt_animate_0"
+  },
+  "display": {
+    "thirdperson": {
+      "rotation": [ -90, 0, 0 ],
+      "translation": [ 0, 1, -3 ],
+      "scale": [ 0.44, 0.44, 0.44 ]
+    },
+    "firstperson": {
+      "rotation": [ 0, -135, 25 ],
+      "translation": [ 0, 4, 2 ],
+      "scale": [ 1.36, 1.36, 1.36 ]
+    }
+  },
+  "overrides": [
+    { "predicate": { "chargefraction": 0.000000 }, "model": "minecraftbyexample:items/mbe12_item_nbt_animate" },
+    { "predicate": { "chargefraction": 0.000000 }, "model": "minecraftbyexample:items/mbe12_item_nbt_animate_1" },
+    { "predicate": { "chargefraction": 0.000000 }, "model": "minecraftbyexample:items/mbe12_item_nbt_animate_2" }, HALFWAY UP TO HERE
+    { "predicate": { "chargefraction": 0.000000 }, "model": "minecraftbyexample:items/mbe12_item_nbt_animate_3" },
+    { "predicate": { "chargefraction": 0.000000 }, "model": "minecraftbyexample:items/mbe12_item_nbt_animate_4" },
+    { "predicate": { "chargefraction": 0.984375 }, "model": "minecraftbyexample:items/mbe12_item_nbt_animate_5" }
+  ]
+}
+
+
+The predicate can refer to itself.
