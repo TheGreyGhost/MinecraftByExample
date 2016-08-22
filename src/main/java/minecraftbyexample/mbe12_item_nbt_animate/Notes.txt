@@ -11,7 +11,7 @@ This example is an Item that stores extra information in NBT and also illustrate
 The example will show you
 1) how to store NBT within an item
 2) how to add the enchanted "glint" to an item
-3) how to change the item appearance while it is being used (similar to a bow)
+3) how to change the item appearance while it is being used (similar to a bow) - using "overrides"
 4) how to change the 'tool tips' for the item, i.e. the text that appears when your cursor hovers over the item
 
 The pieces you need to understand are located in:

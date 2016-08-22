@@ -17,6 +17,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -39,9 +40,9 @@ public class ItemNBTAnimate extends Item
     // We use a PropertyOverride for this item to change the appearance depending on the state of the property.
     //  See ItemNBTanimationTimer for more information.
     // Note - you must not addPropertyOverride on the DedicatedServer otherwise it will crash the game when
-    //   your mod is run on a dedicated server, because IItemPropertyGetter does not exist
+    //   your mod is run on a dedicated server, because IItemPropertyGetter does not exist there
     if (!MinecraftByExample.proxy.isDedicatedServer()) {
-      this.addPropertyOverride(new ResourceLocation("angle"), new ItemNBTanimationTimer());
+      this.addPropertyOverride(new ResourceLocation("chargefraction"), new ItemNBTanimationTimer());
     }
   }
 
@@ -118,16 +119,24 @@ public class ItemNBTAnimate extends Item
       return stack;
     }
 
-    // teleport
-    if (!worldIn.isRemote) { // server side only - will automatically update to client
-      double x = nbtTagCompound.getDouble("X");  // returns a default if not present
-      double y = nbtTagCompound.getDouble("Y");
-      double z = nbtTagCompound.getDouble("Z");
-      if (entityLiving instanceof EntityPlayerMP) { // should be an EntityPlayerMP check first just to be sure to avoid crash
-        EntityPlayerMP entityPlayerMP = (EntityPlayerMP)entityLiving;
+    double x = nbtTagCompound.getDouble("X");  // returns a default if not present
+    double y = nbtTagCompound.getDouble("Y");
+    double z = nbtTagCompound.getDouble("Z");
 
+    // teleport
+
+    // on the client side, play the sound locally
+    // on the server side, teleport the player and play the sound for all other players nearby except this player
+    //  (doing it this way reduces the perceived lag for this player, i.e the sound plays instantly, instead of being
+    //   delayed while the message goes to the server and comes back again)
+    if (worldIn.isRemote) {  // client side
+      worldIn.playSound(x, y, z, SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F, false);
+    } else {  // server side
+      if (entityLiving instanceof EntityPlayerMP) { // should be an EntityPlayerMP; check first just to be sure to avoid crash
+        EntityPlayerMP entityPlayerMP = (EntityPlayerMP)entityLiving;
         entityPlayerMP.connection.setPlayerLocation(x, y, z, entityPlayerMP.rotationYaw, entityPlayerMP.rotationPitch);
-        worldIn.playSound(x, y, z, SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F, false);
+        final EntityPlayerMP dontPlayForThisPlayer = entityPlayerMP;
+        worldIn.playSound(dontPlayForThisPlayer, x, y, z, SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
       }
     }
     return null;
