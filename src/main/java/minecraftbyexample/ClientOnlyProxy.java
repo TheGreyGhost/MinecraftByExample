@@ -29,8 +29,8 @@ public class ClientOnlyProxy extends CommonProxy
 //    minecraftbyexample.mbe06_redstone.StartupClientOnly.preInitClientOnly();
     minecraftbyexample.mbe08_creative_tab.StartupClientOnly.preInitClientOnly();
     minecraftbyexample.mbe10_item_simple.StartupClientOnly.preInitClientOnly();
-//    minecraftbyexample.mbe11_item_variants.StartupClientOnly.preInitClientOnly();
-//    minecraftbyexample.mbe12_item_nbt_animate.StartupClientOnly.preInitClientOnly();
+    minecraftbyexample.mbe11_item_variants.StartupClientOnly.preInitClientOnly();
+    minecraftbyexample.mbe12_item_nbt_animate.StartupClientOnly.preInitClientOnly();
 //    minecraftbyexample.mbe13_item_tools.StartupClientOnly.preInitClientOnly();
 //    minecraftbyexample.mbe15_item_smartitemmodel.StartupClientOnly.preInitClientOnly();
 //    minecraftbyexample.mbe20_tileentity_data.StartupClientOnly.preInitClientOnly();
@@ -40,9 +40,9 @@ public class ClientOnlyProxy extends CommonProxy
     minecraftbyexample.mbe35_recipes.StartupClientOnly.preInitClientOnly();
 //    minecraftbyexample.mbe40_hud_overlay.StartupClientOnly.preInitClientOnly();
 //    minecraftbyexample.mbe50_entityfx.StartupClientOnly.preInitClientOnly();
-//    minecraftbyexample.mbe60_network_messages.StartupClientOnly.preInitClientOnly();
+    minecraftbyexample.mbe60_network_messages.StartupClientOnly.preInitClientOnly();
 //    minecraftbyexample.mbe75_testing_framework.StartupClientOnly.preInitClientOnly();
-//    minecraftbyexample.testingarea.StartupClientOnly.preInitClientOnly();
+    minecraftbyexample.testingarea.StartupClientOnly.preInitClientOnly();
   }
 
   /**
@@ -62,8 +62,8 @@ public class ClientOnlyProxy extends CommonProxy
 //    minecraftbyexample.mbe06_redstone.StartupClientOnly.initClientOnly();
     minecraftbyexample.mbe08_creative_tab.StartupClientOnly.initClientOnly();
     minecraftbyexample.mbe10_item_simple.StartupClientOnly.initClientOnly();
-//    minecraftbyexample.mbe11_item_variants.StartupClientOnly.initClientOnly();
-//    minecraftbyexample.mbe12_item_nbt_animate.StartupClientOnly.initClientOnly();
+    minecraftbyexample.mbe11_item_variants.StartupClientOnly.initClientOnly();
+    minecraftbyexample.mbe12_item_nbt_animate.StartupClientOnly.initClientOnly();
 //    minecraftbyexample.mbe13_item_tools.StartupClientOnly.initClientOnly();
 //    minecraftbyexample.mbe15_item_smartitemmodel.StartupClientOnly.initClientOnly();
 //    minecraftbyexample.mbe20_tileentity_data.StartupClientOnly.initClientOnly();
@@ -73,9 +73,9 @@ public class ClientOnlyProxy extends CommonProxy
     minecraftbyexample.mbe35_recipes.StartupClientOnly.initClientOnly();
 //    minecraftbyexample.mbe40_hud_overlay.StartupClientOnly.initClientOnly();
 //    minecraftbyexample.mbe50_entityfx.StartupClientOnly.initClientOnly();
-//    minecraftbyexample.mbe60_network_messages.StartupClientOnly.initClientOnly();
+    minecraftbyexample.mbe60_network_messages.StartupClientOnly.initClientOnly();
 //    minecraftbyexample.mbe75_testing_framework.StartupClientOnly.initClientOnly();
-//    minecraftbyexample.testingarea.StartupClientOnly.initClientOnly();
+    minecraftbyexample.testingarea.StartupClientOnly.initClientOnly();
   }
 
   /**
@@ -94,8 +94,8 @@ public class ClientOnlyProxy extends CommonProxy
 //    minecraftbyexample.mbe06_redstone.StartupClientOnly.postInitClientOnly();
     minecraftbyexample.mbe08_creative_tab.StartupClientOnly.postInitClientOnly();
     minecraftbyexample.mbe10_item_simple.StartupClientOnly.postInitClientOnly();
-//    minecraftbyexample.mbe11_item_variants.StartupClientOnly.postInitClientOnly();
-//    minecraftbyexample.mbe12_item_nbt_animate.StartupClientOnly.postInitClientOnly();
+    minecraftbyexample.mbe11_item_variants.StartupClientOnly.postInitClientOnly();
+    minecraftbyexample.mbe12_item_nbt_animate.StartupClientOnly.postInitClientOnly();
 //    minecraftbyexample.mbe13_item_tools.StartupClientOnly.postInitClientOnly();
 //    minecraftbyexample.mbe15_item_smartitemmodel.StartupClientOnly.postInitClientOnly();
 //    minecraftbyexample.mbe20_tileentity_data.StartupClientOnly.postInitClientOnly();
@@ -105,9 +105,9 @@ public class ClientOnlyProxy extends CommonProxy
     minecraftbyexample.mbe35_recipes.StartupClientOnly.postInitClientOnly();
 //    minecraftbyexample.mbe40_hud_overlay.StartupClientOnly.postInitClientOnly();
 //    minecraftbyexample.mbe50_entityfx.StartupClientOnly.postInitClientOnly();
-//    minecraftbyexample.mbe60_network_messages.StartupClientOnly.postInitClientOnly();
+    minecraftbyexample.mbe60_network_messages.StartupClientOnly.postInitClientOnly();
 //    minecraftbyexample.mbe75_testing_framework.StartupClientOnly.postInitClientOnly();
-//    minecraftbyexample.testingarea.StartupClientOnly.postInitClientOnly();
+    minecraftbyexample.testingarea.StartupClientOnly.postInitClientOnly();
   }
 
   @Override
@@ -120,4 +120,8 @@ public class ClientOnlyProxy extends CommonProxy
     }
     return false;
   }
+
+  @Override
+  public boolean isDedicatedServer() {return false;}
+
 }

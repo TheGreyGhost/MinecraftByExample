@@ -1,0 +1,54 @@
+public final class GBlocks
+{
+/*
+ * Gem Blocks
+ * Hardness = mohsScale / 2
+ * Example: Diamond mohsScale is 10, so hardness is 5.0F
+ * Usage: new GemBlock("block_name", hardness);
+ * Example: new GemBlock("diamond_block", 5.0F)
+ */
+	public static GemBlock amethyst = new GemBlock("amethyst", 3.5F);
+
+--------------
+public class GemBlock extends Block
+{
+	public static final PropertyBool altTexture = PropertyBool.create("16x");
+	private String gem;
+	public GemBlock(String g, float hardness)
+	{
+		super(Material.IRON);
+		this.gem = g;
+		setUnlocalizedName(gem + "_block");
+		setRegistryName(gem + "_block");
+		setCreativeTab(GemmaryTabs.Blocks);
+		setHardness(hardness);
+		setDefaultState(blockState.getBaseState().withProperty(altTexture, Gemmary.altTextures));
+	}
+
+	public String getOreDictGem()
+	{
+		return "gem" + StringUtils.capitalize(gem);
+	}
+
+	public boolean isBeaconBase(IBlockAccess worldObj, BlockPos pos, BlockPos beacon)
+	{
+		return true;
+	}
+
+	public IBlockState getStateFromMeta(int meta)
+	{
+		return getDefaultState().withProperty(altTexture, Gemmary.altTextures);
+	}
+
+	public int getMetaFromState(IBlockState ibs)
+	{
+		if(ibs.getValue(altTexture)) return 1;
+		else return 0;
+	}
+
+	protected BlockStateContainer createBlockState()
+	{
+		return new BlockStateContainer(this, new IProperty[] {altTexture});
+	}
+}
+---------------------

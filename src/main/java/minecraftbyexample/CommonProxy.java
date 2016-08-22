@@ -25,8 +25,8 @@ public abstract class CommonProxy {
 //    minecraftbyexample.mbe06_redstone.StartupCommon.preInitCommon();
     minecraftbyexample.mbe08_creative_tab.StartupCommon.preInitCommon();
     minecraftbyexample.mbe10_item_simple.StartupCommon.preInitCommon();
-//    minecraftbyexample.mbe11_item_variants.StartupCommon.preInitCommon();
-//    minecraftbyexample.mbe12_item_nbt_animate.StartupCommon.preInitCommon();
+    minecraftbyexample.mbe11_item_variants.StartupCommon.preInitCommon();
+    minecraftbyexample.mbe12_item_nbt_animate.StartupCommon.preInitCommon();
 //    minecraftbyexample.mbe13_item_tools.StartupCommon.preInitCommon();
 //    minecraftbyexample.mbe15_item_smartitemmodel.StartupCommon.preInitCommon();
 //    minecraftbyexample.mbe20_tileentity_data.StartupCommon.preInitCommon();
@@ -36,9 +36,9 @@ public abstract class CommonProxy {
     minecraftbyexample.mbe35_recipes.StartupCommon.preInitCommon();
 //    minecraftbyexample.mbe40_hud_overlay.StartupCommon.preInitCommon();
 //    minecraftbyexample.mbe50_entityfx.StartupCommon.preInitCommon();
-//    minecraftbyexample.mbe60_network_messages.StartupCommon.preInitCommon();
+    minecraftbyexample.mbe60_network_messages.StartupCommon.preInitCommon();
 //    minecraftbyexample.mbe75_testing_framework.StartupCommon.preInitCommon();
-//    minecraftbyexample.testingarea.StartupCommon.preInitCommon();
+    minecraftbyexample.testingarea.StartupCommon.preInitCommon();
   }
 
   /**
@@ -57,8 +57,8 @@ public abstract class CommonProxy {
 //    minecraftbyexample.mbe06_redstone.StartupCommon.initCommon();
     minecraftbyexample.mbe08_creative_tab.StartupCommon.initCommon();
     minecraftbyexample.mbe10_item_simple.StartupCommon.initCommon();
-//    minecraftbyexample.mbe11_item_variants.StartupCommon.initCommon();
-//    minecraftbyexample.mbe12_item_nbt_animate.StartupCommon.initCommon();
+    minecraftbyexample.mbe11_item_variants.StartupCommon.initCommon();
+    minecraftbyexample.mbe12_item_nbt_animate.StartupCommon.initCommon();
 //    minecraftbyexample.mbe13_item_tools.StartupCommon.initCommon();
 //    minecraftbyexample.mbe15_item_smartitemmodel.StartupCommon.initCommon();
 //    minecraftbyexample.mbe20_tileentity_data.StartupCommon.initCommon();
@@ -68,9 +68,9 @@ public abstract class CommonProxy {
     minecraftbyexample.mbe35_recipes.StartupCommon.initCommon();
 //    minecraftbyexample.mbe40_hud_overlay.StartupCommon.initCommon();
 //    minecraftbyexample.mbe50_entityfx.StartupCommon.initCommon();
-//    minecraftbyexample.mbe60_network_messages.StartupCommon.initCommon();
+    minecraftbyexample.mbe60_network_messages.StartupCommon.initCommon();
 //    minecraftbyexample.mbe75_testing_framework.StartupCommon.initCommon();
-//    minecraftbyexample.testingarea.StartupCommon.initCommon();
+    minecraftbyexample.testingarea.StartupCommon.initCommon();
   }
 
   /**
@@ -88,8 +88,8 @@ public abstract class CommonProxy {
 //    minecraftbyexample.mbe06_redstone.StartupCommon.postInitCommon();
     minecraftbyexample.mbe08_creative_tab.StartupCommon.postInitCommon();
     minecraftbyexample.mbe10_item_simple.StartupCommon.postInitCommon();
-//    minecraftbyexample.mbe11_item_variants.StartupCommon.postInitCommon();
-//    minecraftbyexample.mbe12_item_nbt_animate.StartupCommon.postInitCommon();
+    minecraftbyexample.mbe11_item_variants.StartupCommon.postInitCommon();
+    minecraftbyexample.mbe12_item_nbt_animate.StartupCommon.postInitCommon();
 //    minecraftbyexample.mbe13_item_tools.StartupCommon.postInitCommon();
 //    minecraftbyexample.mbe15_item_smartitemmodel.StartupCommon.postInitCommon();
 //    minecraftbyexample.mbe20_tileentity_data.StartupCommon.postInitCommon();
@@ -99,13 +99,18 @@ public abstract class CommonProxy {
     minecraftbyexample.mbe35_recipes.StartupCommon.postInitCommon();
 //    minecraftbyexample.mbe40_hud_overlay.StartupCommon.postInitCommon();
 //    minecraftbyexample.mbe50_entityfx.StartupCommon.postInitCommon();
-//    minecraftbyexample.mbe60_network_messages.StartupCommon.postInitCommon();
+    minecraftbyexample.mbe60_network_messages.StartupCommon.postInitCommon();
 //    minecraftbyexample.mbe75_testing_framework.StartupCommon.postInitCommon();
-//    minecraftbyexample.testingarea.StartupCommon.postInitCommon();
+    minecraftbyexample.testingarea.StartupCommon.postInitCommon();
   }
 
   // helper to determine whether the given player is in creative mode
   //  not necessary for most examples
   abstract public boolean playerIsInCreativeMode(EntityPlayer player);
 
+  /**
+   * is this a dedicated server?
+   * @return true if this is a dedicated server, false otherwise
+   */
+  abstract public boolean isDedicatedServer();
 }

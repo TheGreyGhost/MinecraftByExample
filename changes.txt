@@ -15,7 +15,9 @@ BlockState has become BlockStateContainer
 
 WorldRenderer has become VertexBuffer
 
-AxisAlignedBB, ModelResourceLocation, and BlockPos have moved.
+Vec3 has become Vec3d
+
+AxisAlignedBB, ModelResourceLocation, and BlockPos have moved packages
 
 The appearance of some items and blocks has changed because the isGui3D no longer affects the rotation, i.e.
   3D blocks previously defaulted to an isometric view, but now they are the same as the default face-on view.
@@ -35,6 +37,32 @@ Now have:
 ISmartItemModel, ISmartBlockModel, IFlexibleBakedModel are all gone
 They are no longer there because they are no longer needed.
 IBakedModel now has has a IBlockState argument in getQuads and ItemOverrideList (returned from IBakedModel#getOverrides) has the functionality of ISmartItemModel.
+
+onItemUseXXXX methods have a different return value; changed to include which Hand is being used
+
+    playerIn.setItemInUse(itemStackIn, this.getMaxItemUseDuration(itemStackIn)); replaced by playerIn.setActiveHand(hand)
+
+ItemColors instead of getColorFromItemStack
+call registerItemColorHandler with IItemColor
+Minecraft.getItemColors()  (tint index)
+
+Items have a propertyOverride for animation -?
+
+are itemoverrides the same as the ItemPropertyGetter properties?
+They are starting to abstract methods to getters
+eg
+DAMAGED_GETTER
+DAMAGE_GETTER
+LEFT_HANDED_GETTER
+---> ItemPropertyGetter
+
+The item file has overrides in it, to look up a model based on one or more particular predicates
+
+Minecraft.getBlockColors()  (colorMultiplier - from blockstate, position, tintindex)
+
+EntityPlayer.isUsingItem() -> .isHandActive()
+
+Sound effects now by ENUM not string
 
 -----------
 
