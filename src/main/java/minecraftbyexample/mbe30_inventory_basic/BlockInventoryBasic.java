@@ -108,7 +108,6 @@ public class BlockInventoryBasic extends Block
 	// the block is smaller than a full cube, specify dimensions here
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
-		// TODO Auto-generated method stub
 		return new AxisAlignedBB(1/16.0F, 0, 1/16.0F, 15/16.0F, 8/16.0F, 15/16.0F);
 	}
 
