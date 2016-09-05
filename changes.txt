@@ -64,6 +64,9 @@ EntityPlayer.isUsingItem() -> .isHandActive()
 
 Sound effects now by ENUM not string
 
+TileEntity synching is changed from getDescriptionPacket() and onDataPacket() to:
+  getUpdatePacket(), getUpdateTag(), onDataPacket(), and handleUpdateTag()
+
 -----------
 
 New block & Item registration:

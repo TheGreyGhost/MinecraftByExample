@@ -36,7 +36,7 @@ public class ClientOnlyProxy extends CommonProxy
 //    minecraftbyexample.mbe20_tileentity_data.StartupClientOnly.preInitClientOnly();
 //    minecraftbyexample.mbe21_tileentityspecialrenderer.StartupClientOnly.preInitClientOnly();
     minecraftbyexample.mbe30_inventory_basic.StartupClientOnly.preInitClientOnly();
-//    minecraftbyexample.mbe31_inventory_furnace.StartupClientOnly.preInitClientOnly();
+    minecraftbyexample.mbe31_inventory_furnace.StartupClientOnly.preInitClientOnly();
     minecraftbyexample.mbe35_recipes.StartupClientOnly.preInitClientOnly();
 //    minecraftbyexample.mbe40_hud_overlay.StartupClientOnly.preInitClientOnly();
 //    minecraftbyexample.mbe50_entityfx.StartupClientOnly.preInitClientOnly();
@@ -69,7 +69,7 @@ public class ClientOnlyProxy extends CommonProxy
 //    minecraftbyexample.mbe20_tileentity_data.StartupClientOnly.initClientOnly();
 //    minecraftbyexample.mbe21_tileentityspecialrenderer.StartupClientOnly.initClientOnly();
     minecraftbyexample.mbe30_inventory_basic.StartupClientOnly.initClientOnly();
-//    minecraftbyexample.mbe31_inventory_furnace.StartupClientOnly.initClientOnly();
+    minecraftbyexample.mbe31_inventory_furnace.StartupClientOnly.initClientOnly();
     minecraftbyexample.mbe35_recipes.StartupClientOnly.initClientOnly();
 //    minecraftbyexample.mbe40_hud_overlay.StartupClientOnly.initClientOnly();
 //    minecraftbyexample.mbe50_entityfx.StartupClientOnly.initClientOnly();
@@ -101,7 +101,7 @@ public class ClientOnlyProxy extends CommonProxy
 //    minecraftbyexample.mbe20_tileentity_data.StartupClientOnly.postInitClientOnly();
 //    minecraftbyexample.mbe21_tileentityspecialrenderer.StartupClientOnly.postInitClientOnly();
     minecraftbyexample.mbe30_inventory_basic.StartupClientOnly.postInitClientOnly();
-//    minecraftbyexample.mbe31_inventory_furnace.StartupClientOnly.postInitClientOnly();
+    minecraftbyexample.mbe31_inventory_furnace.StartupClientOnly.postInitClientOnly();
     minecraftbyexample.mbe35_recipes.StartupClientOnly.postInitClientOnly();
 //    minecraftbyexample.mbe40_hud_overlay.StartupClientOnly.postInitClientOnly();
 //    minecraftbyexample.mbe50_entityfx.StartupClientOnly.postInitClientOnly();
