@@ -98,6 +98,7 @@ Some extra help for installation of forge:
 https://www.youtube.com/watch?v=8VEdtQLuLO0&feature=youtu.be
 
 With thank to these helpful folks:
+Alvaropp,
 Brandon3035,
 twrightsman (greekphysique)
 Nephroid,

@@ -44,7 +44,7 @@ If you want more information and explanatory text about the concepts, the follow
   - [MBE21][21] - *using the TileEntitySpecialRenderer to render unusual shapes or animations*
 
 ### Containers (Inventories)
-  - [MBE30][30] - *a simple container for storing items in the world - similar to a Chest*
+  - [MBE30][30] - a simple container for storing items in the world - similar to a Chest
   - [MBE31][31] - *a functional container such as a Furnace or Crafting Table*
 
 ### Recipes (Crafting/Furnace)
@@ -140,6 +140,7 @@ Check out [this video][forge_installation] for more help installing Forge.
 [version1-8-9]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-8-9final
 
 With thanks to these helpful folks:
+alvaropp, 
 Brandon3035,
 twrightsman (greekphysique),
 Nephroid,

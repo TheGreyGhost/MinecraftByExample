@@ -2,6 +2,7 @@ package minecraftbyexample.mbe30_inventory_basic;
 
 import minecraftbyexample.MinecraftByExample;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -30,9 +31,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * inventory's contents when harvested. The actual storage is handled by the tile entity.
  */
 
-//Note that in 1.10.*, extending BlockContainer can cause rendering problems. As this example just needs a custom
-// tile entity, we can just extend Block and add the tile entity manually using hasTileEntity() and createTileEntity().
-public class BlockInventoryBasic extends Block
+//Note that in 1.10.*, extending BlockContainer can cause rendering problems if you don't extend getRenderType()
+// If you don't want to extend BlockContainer, make sure to add the tile entity manually,
+//   using hasTileEntity() and createTileEntity().  See BlockContainer for a couple of other important methods you may
+//  need to implement.
+
+public class BlockInventoryBasic extends BlockContainer
 {   
 	public BlockInventoryBasic()
 	{
@@ -40,13 +44,21 @@ public class BlockInventoryBasic extends Block
 		this.setCreativeTab(CreativeTabs.BUILDING_BLOCKS);     // the block will appear on the Blocks tab.
 	}
 
-	// Called when the block is placed or loaded client side to get the tile entity for the block
-	// Should return a new instance of the tile entity for the block
-	@Override
-	public TileEntity createTileEntity(World worldIn, IBlockState state) {
-		return new TileEntityInventoryBasic();
-	}
+  /**
+   * Create the Tile Entity for this block.
+   * If your block doesn't extend BlockContainer, use createTileEntity(World worldIn, IBlockState state) instead
+   * @param worldIn
+   * @param meta
+   * @return
+   */
 
+  @Override
+  public TileEntity createNewTileEntity(World worldIn, int meta) {
+    return new TileEntityInventoryBasic();
+  }
+
+  // not needed if your block implements ITileEntityProvider (in this case implemented by BlockContainer), but it
+  //  doesn't hurt to include it anyway...
 	@Override
 	public boolean hasTileEntity(IBlockState state)
 	{
@@ -134,4 +146,13 @@ public class BlockInventoryBasic extends Block
 	{
 		return false;
 	}
+
+  // render using a BakedModel (mbe30_inventory_basic.json --> mbe30_inventory_basic_model.json)
+  // required because the default (super method) is INVISIBLE for BlockContainers.
+  @Override
+  public EnumBlockRenderType getRenderType(IBlockState iBlockState) {
+    return EnumBlockRenderType.MODEL;
+  }
+
+
 }

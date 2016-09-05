@@ -9,6 +9,8 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
  * User: brandon3055
  * Date: 06/01/2015
  *
+ * Converted to 10.1.2 by alvaropp
+ *
  * The Startup class for this example is called during startup, in the following order:
  *  preInitCommon
  *  preInitClientOnly
