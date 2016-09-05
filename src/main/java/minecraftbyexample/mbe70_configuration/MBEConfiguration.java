@@ -2,6 +2,7 @@ package minecraftbyexample.mbe70_configuration;
 
 import minecraftbyexample.MinecraftByExample;
 
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
@@ -77,7 +78,7 @@ public class MBEConfiguration {
 		 * instance of the static class ConfigEventHandler and has it listen on
 		 * the core Forge event bus (see Notes and ConfigEventHandler for more information).
 		 */
-		net.minecraftforge.common.MinecraftForge.EVENT_BUS.register(new ConfigEventHandler());
+		MinecraftForge.EVENT_BUS.register(new ConfigEventHandler());
 	}
 
 	public static Configuration getConfig() {

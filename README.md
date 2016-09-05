@@ -141,6 +141,7 @@ Check out [this video][forge_installation] for more help installing Forge.
 
 With thanks to these helpful folks:
 alvaropp, 
+yooksi,
 Brandon3035,
 twrightsman (greekphysique),
 Nephroid,
