@@ -45,7 +45,7 @@ If you want more information and explanatory text about the concepts, the follow
 
 ### Containers (Inventories)
   - [MBE30][30] - a simple container for storing items in the world - similar to a Chest
-  - [MBE31][31] - *a functional container such as a Furnace or Crafting Table*
+  - [MBE31][31] - a functional container such as a Furnace or Crafting Table
 
 ### Recipes (Crafting/Furnace)
   - [MBE35][35] - some typical example crafting recipes and furnace (smelting) recipes
