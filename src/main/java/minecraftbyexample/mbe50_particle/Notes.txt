@@ -1,7 +1,8 @@
-MBE50_ENTITYFX
+MBE50_PARTICLE
 
-This example shows you how to use some simple EntityFX ("particles").  Vanilla examples are the love hearts when taming
-  an animal; the smoke coming from a burning torch; the sparkles from a portal; see EnumParticleTypes for more examples
+This example shows you how to use some simple Particles (formerly called "EntityFX").
+  Vanilla examples are the love hearts when taming an animal; the smoke coming from a burning torch;
+  the sparkles from a portal; see EnumParticleTypes for more examples
 
 The example is a block (FlameEmitter) which, when you place it in the world:
 1) spits out random vanilla lava particles
@@ -23,8 +24,8 @@ The block will appear in the Blocks tab in the creative inventory.
 
 --------
 Common errors:
-- spawning the entityFX on the server side instead of client only.
-- messing up the coordinate settings and/or movement, so that the EntityFX is rendered out of the player's view
+- spawning the Particle on the server side instead of client only.
+- messing up the coordinate settings and/or movement, so that the Particle is rendered out of the player's view
 - NoClassDefFoundError when you install your mod on a dedicated server:
    you have accidentally used client-only code in a part of your code that is invoked on the dedicated server.
    See here for more info: http://greyminecraftcoder.blogspot.com.au/2013/11/how-forge-starts-up-your-code.html

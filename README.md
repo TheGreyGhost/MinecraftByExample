@@ -53,8 +53,8 @@ If you want more information and explanatory text about the concepts, the follow
 ### Heads Up Display/Overlays
   - [MBE40][40] - *simple customisations of the heads up display (hotbar, health meter)*
 
-### EntityFX - particle effects
-  - [MBE50][50] - *shows how to use vanilla EntityFX; also how to generate your own custom EntityFX*
+### Particles - particle effects
+  - [MBE50][50] - shows how to use vanilla Particles; also how to generate your own custom Particles
 
 ### Network
   - [MBE60][60] - send network messages between client and server

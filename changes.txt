@@ -67,6 +67,8 @@ Sound effects now by ENUM not string
 TileEntity synching is changed from getDescriptionPacket() and onDataPacket() to:
   getUpdatePacket(), getUpdateTag(), onDataPacket(), and handleUpdateTag()
 
+entity.setDead() is entity.setExpired()
+
 -----------
 
 New block & Item registration:
