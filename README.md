@@ -36,11 +36,11 @@ If you want more information and explanatory text about the concepts, the follow
   - [MBE11][11] - an item with multiple variants - rendered using multiple models and multiple layers
   - [MBE12][12] - an item that stores extra information in NBT, also illustrates the "in use" animation similar to drawing a bow
   - [MBE13][13] - *customise Mining behaviour of Blocks and Items - several test classes that show how mining works*
-  - [MBE14][14] - *an interactive helper tool to adjust the ItemCameraTransforms for your custom item*
+  - [MBE14][14] - an interactive helper tool to adjust the ItemCameraTransforms for your custom item
   - [MBE15][15] - *a chessboard item with 1 - 64 pieces; uses ISmartItemModel*
 
 ### TileEntities
-  - [MBE20][20] - *using a tile entity to store information about a block - also shows examples of using NBT storage*
+  - [MBE20][20] - using a tile entity to store information about a block - also shows examples of using NBT storage
   - [MBE21][21] - *using the TileEntitySpecialRenderer to render unusual shapes or animations*
 
 ### Containers (Inventories)
