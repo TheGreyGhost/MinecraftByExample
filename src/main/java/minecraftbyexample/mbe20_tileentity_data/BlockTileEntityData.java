@@ -78,12 +78,10 @@ public class BlockTileEntityData extends Block implements ITileEntityProvider
     return false;
   }
 
-  // render using a BakedModel (mbe30_inventory_basic.json --> mbe30_inventory_basic_model.json)
+  // render using a BakedModel
   // not required because the default (super method) is MODEL
   @Override
   public EnumBlockRenderType getRenderType(IBlockState iBlockState) {
     return EnumBlockRenderType.MODEL;
   }
-
-
 }

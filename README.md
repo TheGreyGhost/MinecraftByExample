@@ -41,7 +41,7 @@ If you want more information and explanatory text about the concepts, the follow
 
 ### TileEntities
   - [MBE20][20] - using a tile entity to store information about a block - also shows examples of using NBT storage
-  - [MBE21][21] - *using the TileEntitySpecialRenderer to render unusual shapes or animations*
+  - [MBE21][21] - using the TileEntitySpecialRenderer to render unusual shapes or animations
 
 ### Containers (Inventories)
   - [MBE30][30] - a simple container for storing items in the world - similar to a Chest
@@ -51,7 +51,7 @@ If you want more information and explanatory text about the concepts, the follow
   - [MBE35][35] - some typical example crafting recipes and furnace (smelting) recipes
 
 ### Heads Up Display/Overlays
-  - [MBE40][40] - *simple customisations of the heads up display (hotbar, health meter)*
+  - [MBE40][40] - simple customisations of the heads up display (hotbar, health meter)
 
 ### Particles - particle effects
   - [MBE50][50] - shows how to use vanilla Particles; also how to generate your own custom Particles
