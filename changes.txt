@@ -19,6 +19,11 @@ Vec3 has become Vec3d
 
 AxisAlignedBB, ModelResourceLocation, and BlockPos have moved packages
 
+MovingObjectPosition is RayTraceResult
+
+BlockBounds are now replaced with AABB
+ChangeBlockBounds based on state is all by pull, not push.  Uses final AABB.
+
 The appearance of some items and blocks has changed because the isGui3D no longer affects the rotation, i.e.
   3D blocks previously defaulted to an isometric view, but now they are the same as the default face-on view.
   isGui3D now affects lighting only.
