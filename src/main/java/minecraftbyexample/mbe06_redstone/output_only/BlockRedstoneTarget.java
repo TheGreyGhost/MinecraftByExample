@@ -232,7 +232,8 @@ public class BlockRedstoneTarget extends Block
   // ---- methods to control placement of the target (must be on a solid wall)
 
   // When a neighbour changes - check if the supporting wall has been demolished
-  public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock)
+  @Override
+  public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block neighborBlock)
   {
     if (!worldIn.isRemote) { // server side only
       EnumFacing enumfacing = (EnumFacing) state.getValue(PROPERTYFACING);
