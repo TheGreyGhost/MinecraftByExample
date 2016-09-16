@@ -295,22 +295,21 @@ public class BlockRedstoneTarget extends Block
   }
 
   // used by the renderer to control lighting and visibility of other blocks.
-  // set to true because this block is opaque and occupies the entire 1x1x1 space
-  // not strictly required because the default (super method) is true
+  // set to false because this block doesn't fill the entire 1x1x1 space
   @Override
-  public boolean isOpaqueCube(IBlockState iBlockState) {
-    return true;
+  public boolean isOpaqueCube(IBlockState iBlockState)
+  {
+    return false;
   }
 
   // used by the renderer to control lighting and visibility of other blocks, also by
   // (eg) wall or fence to control whether the fence joins itself to this block
-  // set to true because this block occupies the entire 1x1x1 space
-  // not strictly required because the default (super method) is true
+  // set to false because this block doesn't fill the entire 1x1x1 space
   @Override
-  public boolean isFullCube(IBlockState iBlockState) {
-    return true;
+  public boolean isFullCube(IBlockState iBlockState)
+  {
+    return false;
   }
-
   // render using a BakedModel (mbe01_block_simple.json --> mbe01_block_simple_model.json)
   // not strictly required because the default (super method) is MODEL.
   @Override
@@ -318,9 +317,9 @@ public class BlockRedstoneTarget extends Block
     return EnumBlockRenderType.MODEL;
   }
 
+
   @Override
-  @Nullable
-  public AxisAlignedBB getCollisionBoundingBox(IBlockState state, World worldIn, BlockPos pos)
+  public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
   {
     EnumFacing facing = (EnumFacing) state.getValue(PROPERTYFACING);
 
@@ -329,13 +328,13 @@ public class BlockRedstoneTarget extends Block
         return  NORTH_AABB;
       }
       case WEST: {
-        return  SOUTH_AABB;
+        return WEST_AABB;
       }
       case EAST: {
         return  EAST_AABB;
       }
       case SOUTH: {
-        return  WEST_AABB;
+        return SOUTH_AABB;
       }
     }
     return FULL_BLOCK_AABB;
