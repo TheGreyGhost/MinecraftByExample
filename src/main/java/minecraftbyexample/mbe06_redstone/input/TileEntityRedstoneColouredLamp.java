@@ -1,16 +1,16 @@
 package minecraftbyexample.mbe06_redstone.input;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ITickable;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 
 /**
@@ -44,36 +44,61 @@ public class TileEntityRedstoneColouredLamp extends TileEntity implements ITicka
     if (previousRGBcolor != currentRGBcolour) {
       previousRGBcolor = currentRGBcolour;
       if (worldObj.isRemote) {
-        worldObj.markBlockForUpdate(pos);
+        IBlockState iblockstate = this.worldObj.getBlockState(pos);
+        final int FLAGS = 3;  // I'm not sure what these flags do, exactly.
+        this.worldObj.notifyBlockUpdate(pos, iblockstate, iblockstate, FLAGS);
       }
       worldObj.checkLightFor(EnumSkyBlock.BLOCK, pos);
     }
 
   }
 
-	// When the world loads from disk, or when the block is updated, the server needs to send the TileEntity information to the client
-	//  it uses getDescriptionPacket() and onDataPacket() to do this
-	@Override
-	public Packet getDescriptionPacket() {
-		NBTTagCompound nbtTagCompound = new NBTTagCompound();
-		writeToNBT(nbtTagCompound);
-		int metadata = getBlockMetadata();
-		return new S35PacketUpdateTileEntity(this.pos, metadata, nbtTagCompound);
-	}
+  //	// When the world loads from disk, the server needs to send the TileEntity information to the client
+//	//  it uses getUpdatePacket(), getUpdateTag(), onDataPacket(), and handleUpdateTag() to do this
+  @Override
+  @Nullable
+  public SPacketUpdateTileEntity getUpdatePacket()
+  {
+    NBTTagCompound updateTagDescribingTileEntityState = getUpdateTag();
+    int metadata = getBlockMetadata();
+    return new SPacketUpdateTileEntity(this.pos, metadata, updateTagDescribingTileEntityState);
+  }
 
-	@Override
-	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
-		readFromNBT(pkt.getNbtCompound());
-	}
+  @Override
+  public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+    NBTTagCompound updateTagDescribingTileEntityState = pkt.getNbtCompound();
+    handleUpdateTag(updateTagDescribingTileEntityState);
+  }
+
+  /* Creates a tag containing the TileEntity information, used by vanilla to transmit from server to client
+     Warning - although our getUpdatePacket() uses this method, vanilla also calls it directly, so don't remove it.
+   */
+  @Override
+  public NBTTagCompound getUpdateTag()
+  {
+    NBTTagCompound nbtTagCompound = new NBTTagCompound();
+    writeToNBT(nbtTagCompound);
+    return nbtTagCompound;
+  }
+
+  /* Populates this TileEntity with information from the tag, used by vanilla to transmit from server to client
+   Warning - although our onDataPacket() uses this method, vanilla also calls it directly, so don't remove it.
+ */
+  @Override
+  public void handleUpdateTag(NBTTagCompound tag)
+  {
+    this.readFromNBT(tag);
+  }
 
 	// This is where you save any data that
 	//  - you don't want to lose when the tile entity unloads
   //  - you want to transmit to the client
 	@Override
-	public void writeToNBT(NBTTagCompound parentNBTTagCompound)
+	public NBTTagCompound writeToNBT(NBTTagCompound parentNBTTagCompound)
 	{
 		super.writeToNBT(parentNBTTagCompound); // The super call is required to save the tiles location
   	parentNBTTagCompound.setInteger("rgb_colour", rgbColour);
+    return parentNBTTagCompound;
 	}
 
 	// This is where you load the data that you saved in writeToNBT

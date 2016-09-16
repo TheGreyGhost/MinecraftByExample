@@ -8,9 +8,10 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -35,8 +36,8 @@ public class BlockRedstoneMeter extends Block implements ITileEntityProvider
 {
   public BlockRedstoneMeter()
   {
-    super(Material.iron);
-    this.setCreativeTab(CreativeTabs.tabBlock);   // the block will appear on the Blocks tab in creative
+    super(Material.IRON);
+    this.setCreativeTab(CreativeTabs.BUILDING_BLOCKS);   // the block will appear on the Blocks tab in creative
   }
 
   // Called when the block is placed or loaded client side to get the tile entity for the block
@@ -55,7 +56,7 @@ public class BlockRedstoneMeter extends Block implements ITileEntityProvider
    * @return
    */
   @Override
-  public boolean canProvidePower()
+  public boolean canProvidePower(IBlockState iBlockState)
   {
     return true;
   }
@@ -70,7 +71,7 @@ public class BlockRedstoneMeter extends Block implements ITileEntityProvider
    * @return The power provided [0 - 15]
    */
   @Override
-  public int getWeakPower(IBlockAccess worldIn, BlockPos pos, IBlockState state, EnumFacing side)
+  public int getWeakPower(IBlockState state, IBlockAccess worldIn, BlockPos pos,  EnumFacing side)
   {
     if (side != EnumFacing.UP && side != EnumFacing.DOWN) {
       return 0;
@@ -88,7 +89,7 @@ public class BlockRedstoneMeter extends Block implements ITileEntityProvider
   }
 
   /**
-   *  The target provides strong power to the block it's mounted on (hanging on)
+   *  The redstone meter doesn't provide strong power to any other block.
    * @param worldIn
    * @param pos the position of this block
    * @param state the blockstate of this block
@@ -97,7 +98,7 @@ public class BlockRedstoneMeter extends Block implements ITileEntityProvider
    */
 
   @Override
-  public int getStrongPower(IBlockAccess worldIn, BlockPos pos, IBlockState state, EnumFacing side)
+  public int getStrongPower(IBlockState state, IBlockAccess worldIn, BlockPos pos, EnumFacing side)
   {
     return 0;
   }
@@ -106,7 +107,7 @@ public class BlockRedstoneMeter extends Block implements ITileEntityProvider
   //   (don't look UP or DOWN)
   private int getPowerLevelInput(World world, BlockPos pos) {
 
-    // int powerLevel = this.worldObj.isBlockIndirectlyGettingPowered(this.pos);  // if input can come from any side, use this line
+//    int powerLevel = world.isBlockIndirectlyGettingPowered(pos);  // if input can come from any side, use this line
 
     int maxPowerFound = 0;
     for (EnumFacing whichFace : EnumFacing.HORIZONTALS) {
@@ -129,7 +130,7 @@ public class BlockRedstoneMeter extends Block implements ITileEntityProvider
   // Called when a neighbouring block changes.
   // Only called on the server side- so it doesn't help us alter rendering on the client side.
   @Override
-  public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock)
+  public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block neighborBlock)
   {
     // calculate the power level from neighbours and store in our TileEntity for later use in isProvidingWeakPower()
     int powerLevel = getPowerLevelInput(worldIn, pos);
@@ -191,20 +192,27 @@ public class BlockRedstoneMeter extends Block implements ITileEntityProvider
     return BlockRenderLayer.CUTOUT_MIPPED;
   }
 
+  // used by the renderer to control lighting and visibility of other blocks.
+  // set to true because this block is opaque and occupies the entire 1x1x1 space
+  // not strictly required because the default (super method) is true
   @Override
-  public boolean isOpaqueCube() {
-    return false;
+  public boolean isOpaqueCube(IBlockState iBlockState) {
+    return true;
   }
 
+  // used by the renderer to control lighting and visibility of other blocks, also by
+  // (eg) wall or fence to control whether the fence joins itself to this block
+  // set to true because this block occupies the entire 1x1x1 space
+  // not strictly required because the default (super method) is true
   @Override
-  public boolean isFullCube() {
-    return false;
+  public boolean isFullCube(IBlockState iBlockState) {
+    return true;
   }
 
+  // render using a BakedModel (mbe01_block_simple.json --> mbe01_block_simple_model.json)
+  // not strictly required because the default (super method) is MODEL.
   @Override
-  public int getRenderType() {
-    return 3;
+  public EnumBlockRenderType getRenderType(IBlockState iBlockState) {
+    return EnumBlockRenderType.MODEL;
   }
-
-
 }

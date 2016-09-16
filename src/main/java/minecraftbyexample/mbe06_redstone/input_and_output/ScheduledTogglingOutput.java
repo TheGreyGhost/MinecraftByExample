@@ -1,7 +1,7 @@
 package minecraftbyexample.mbe06_redstone.input_and_output;
 
 import net.minecraft.block.Block;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -14,7 +14,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * Typical usage:
  * (1) create the ScheduledTogglingOutput
  * (2) a) call setToggleRate() to change the on time and/or the period (on time + off time).  This will schedule
- *     a block update as appropriate, using world.scheduleUpdate(); or
+ *        a block update as appropriate, using world.scheduleUpdate(); or
  *     b) call setSteadyOutput to stop toggling and just stay at one value
  * (3) when the block update occurs, call onUpdateTick(), which will toggle output if it's time, and will schedule the
  *     next block update as appropriate

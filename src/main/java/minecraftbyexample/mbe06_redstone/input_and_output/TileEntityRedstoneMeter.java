@@ -4,13 +4,15 @@ import minecraftbyexample.usefultools.UsefulFunctions;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nullable;
 
 /**
  * This TileEntity is used for two main purposes:
@@ -28,7 +30,7 @@ public class TileEntityRedstoneMeter extends TileEntity {
   // Retrieve the current power level of the meter - the maximum of the four sides (don't look up or down)
 	public int getPowerLevelClient() {
 
-    // int powerLevel = this.worldObj.isBlockIndirectlyGettingPowered(this.pos);  // if input can come from any side, use this line
+//    int powerLevel = this.worldObj.isBlockIndirectlyGettingPowered(this.pos);  // if input can come from any side, use this line
 
     int maxPowerFound = 0;
     for (EnumFacing whichFace : EnumFacing.HORIZONTALS) {
@@ -52,10 +54,10 @@ public class TileEntityRedstoneMeter extends TileEntity {
     return smoothNeedleMovement.getSmoothedNeedlePosition();
   }
 
-  final double NEEDLE_ACCELERATION = 0.4; // acceleration in units per square second
-  final double NEEDLE_MAX_SPEED = 0.4;    // maximum needle movement speed in units per second
-  SmoothNeedleMovement smoothNeedleMovement = new SmoothNeedleMovement(NEEDLE_ACCELERATION, NEEDLE_MAX_SPEED);
-  int lastPowerLevel = -1;
+  private final double NEEDLE_ACCELERATION = 0.4; // acceleration in units per square second
+  private final double NEEDLE_MAX_SPEED = 0.4;    // maximum needle movement speed in units per second
+  private SmoothNeedleMovement smoothNeedleMovement = new SmoothNeedleMovement(NEEDLE_ACCELERATION, NEEDLE_MAX_SPEED);
+  private int lastPowerLevel = -1;
 
   // -------- server side methods used to keep track of the current power level and alter the output signal state
 
@@ -104,39 +106,65 @@ public class TileEntityRedstoneMeter extends TileEntity {
 
 
   //---------- general TileEntity methods
-	// When the world loads from disk, the server needs to send the TileEntity information to the client
-	//  it uses getDescriptionPacket() and onDataPacket() to do this
+  // When the world loads from disk, the server needs to send the TileEntity information to the client
+  //  it uses getUpdatePacket(), getUpdateTag(), onDataPacket(), and handleUpdateTag() to do this
+  // The tag information is loaded and saved using writeToNBT and readFromNBT.
   // In this case, the power level is recalculated every tick on the client anyway, so we don't need to send anything,
-  //   but we need to store the power level on the server, to allow for proper calculation of the redstone power
-	@Override
-	public Packet getDescriptionPacket() {
-		NBTTagCompound nbtTagCompound = new NBTTagCompound();
-		writeToNBT(nbtTagCompound);
-		int metadata = getBlockMetadata();
-		return new S35PacketUpdateTileEntity(this.pos, metadata, nbtTagCompound);
-	}
+  //   but we do need to store the power level on the server, to allow for proper calculation of the redstone power
+  //  The update packet methods are shown here for information, even though they're not needed for this example.
 
-	@Override
-	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
-		readFromNBT(pkt.getNbtCompound());
-	}
-
-	// This is where you save any data that you don't want to lose when the tile entity unloads
-	@Override
-	public void writeToNBT(NBTTagCompound parentNBTTagCompound)
-	{
-		super.writeToNBT(parentNBTTagCompound); // The super call is required to save the tiles location
+  // This is where you save any data that you don't want to lose when the tile entity unloads
+  @Override
+  public NBTTagCompound writeToNBT(NBTTagCompound parentNBTTagCompound)
+  {
+    super.writeToNBT(parentNBTTagCompound); // The super call is required to save the tiles location
     parentNBTTagCompound.setInteger("storedPowerLevel", storedPowerLevel);
+    return parentNBTTagCompound;
   }
 
-	// This is where you load the data that you saved in writeToNBT
-	@Override
-	public void readFromNBT(NBTTagCompound parentNBTTagCompound)
-	{
-		super.readFromNBT(parentNBTTagCompound); // The super call is required to load the tiles location
+  // This is where you load the data that you saved in writeToNBT
+  @Override
+  public void readFromNBT(NBTTagCompound parentNBTTagCompound)
+  {
+    super.readFromNBT(parentNBTTagCompound); // The super call is required to load the tiles location
     storedPowerLevel = parentNBTTagCompound.getInteger("storedPowerLevel");  // defaults to 0 if not found
     if (storedPowerLevel < 0 ) storedPowerLevel = 0;
     if (storedPowerLevel > 15 ) storedPowerLevel = 15;
+  }
+
+  @Override
+  @Nullable
+  public SPacketUpdateTileEntity getUpdatePacket()
+  {
+    NBTTagCompound updateTagDescribingTileEntityState = getUpdateTag();
+    int metadata = getBlockMetadata();
+    return new SPacketUpdateTileEntity(this.pos, metadata, updateTagDescribingTileEntityState);
+  }
+
+  @Override
+  public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+    NBTTagCompound updateTagDescribingTileEntityState = pkt.getNbtCompound();
+    handleUpdateTag(updateTagDescribingTileEntityState);
+  }
+
+  /* Creates a tag containing the TileEntity information, used by vanilla to transmit from server to client
+     Warning - although our getUpdatePacket() uses this method, vanilla also calls it directly, so don't remove it.
+   */
+  @Override
+  public NBTTagCompound getUpdateTag()
+  {
+    NBTTagCompound nbtTagCompound = new NBTTagCompound();
+    writeToNBT(nbtTagCompound);
+    return nbtTagCompound;
+  }
+
+  /* Populates this TileEntity with information from the tag, used by vanilla to transmit from server to client
+   Warning - although our onDataPacket() uses this method, vanilla also calls it directly, so don't remove it.
+ */
+  @Override
+  public void handleUpdateTag(NBTTagCompound tag)
+  {
+    this.readFromNBT(tag);
   }
 
 	/**

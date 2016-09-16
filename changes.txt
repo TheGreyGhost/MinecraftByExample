@@ -74,6 +74,14 @@ TileEntity synching is changed from getDescriptionPacket() and onDataPacket() to
 
 entity.setDead() is entity.setExpired()
 
+Block.onNeighborBlockChange()  is neighborChanged()
+
+BlockColors instead of Block.colorMultiplier()
+call registerItemColorHandler with IItemColor
+Minecraft.getItemColors()  (tint index)
+
+
+
 -----------
 
 New block & Item registration:

@@ -4,11 +4,9 @@ import minecraftbyexample.usefultools.UsefulFunctions;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import org.lwjgl.opengl.GL11;
@@ -125,7 +123,7 @@ public class TileEntitySpecialRendererRedstoneMeter extends TileEntitySpecialRen
                                                       //  we need to rotate clockwise but rotate expects anticlockwise
 
       Tessellator tessellator = Tessellator.getInstance();
-      WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+      VertexBuffer vertexBuffer = tessellator.getBuffer();
 //      this.bindTexture(needleTexture);         // we don't need a texture for the needle appearance - we're just using
                                                  //  solid colour
 
@@ -147,8 +145,8 @@ public class TileEntitySpecialRendererRedstoneMeter extends TileEntitySpecialRen
       final int BLOCK_LIGHT_VALUE = 0;
       OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, SKY_LIGHT_VALUE * 16.0F, BLOCK_LIGHT_VALUE * 16.0F);
 
-      worldrenderer.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION);
-      addNeedleVertices(worldrenderer);
+      vertexBuffer.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION);
+      addNeedleVertices(vertexBuffer);
       tessellator.draw();
 
     } finally {
@@ -158,12 +156,14 @@ public class TileEntitySpecialRendererRedstoneMeter extends TileEntitySpecialRen
   }
 
   // add the vertices for drawing the needle.  Normally you would use a model loader for a more complicated shape
-  private void addNeedleVertices(WorldRenderer worldrenderer) {
-    // needle is a triangle pointing down, the rotation spindle is at [0,0,0]
-    // anticlockwise vertices -> it is facing south
+  private void addNeedleVertices(VertexBuffer vertexBuffer) {
+    // needle is a triangle pointing down, the rotation spindle is at [0,0,0] and the spindle points north-south,
+    //  i.e. the needle renders in the z=0 plane; rotating the needle around the spindle will make the needle point
+    //  down, east, up, west.
+    // anticlockwise vertices -> the spindle is facing south, i.e. the needle will display on the south side of a block
 
-    worldrenderer.pos( 0.00, -0.45, 0.00).endVertex();  // tip (pointer) of needle
-    worldrenderer.pos( 0.05,  0.05, 0.00).endVertex();  // stub - one side
-    worldrenderer.pos(-0.05,  0.05, 0.00).endVertex();  // stub - other side
+    vertexBuffer.pos(0.00, -0.45, 0.00).endVertex();  // tip (pointer) of needle
+    vertexBuffer.pos(0.05, 0.05, 0.00).endVertex();  // stub - one side
+    vertexBuffer.pos(-0.05, 0.05, 0.00).endVertex();  // stub - other side
   }
 }
