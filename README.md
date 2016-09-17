@@ -16,6 +16,7 @@ If you want more information and explanatory text about the concepts, the follow
   - [Forge Modding articles][wuppy]
   - [The Official Forge documentation][forgedocs]
   - [Forge Tutorials listing][tutorials_forum]
+  - [List of Good Tutorials][list_of_tutorials]
 
 ####For earlier versions, see the relevant GitHub branch:
  - MBE for Forge 1.8: [1-8final][version1-8]
@@ -35,7 +36,7 @@ If you want more information and explanatory text about the concepts, the follow
   - [MBE10][10] - a simple item
   - [MBE11][11] - an item with multiple variants - rendered using multiple models and multiple layers
   - [MBE12][12] - an item that stores extra information in NBT, also illustrates the "in use" animation similar to drawing a bow
-  - [MBE13][13] - *customise Mining behaviour of Blocks and Items - several test classes that show how mining works*
+  - [MBE13][13] - customise Mining behaviour of Blocks and Items - several test classes that show how mining works
   - [MBE14][14] - an interactive helper tool to adjust the ItemCameraTransforms for your custom item
   - [MBE15][15] - *a chessboard item with 1 - 64 pieces; uses ISmartItemModel*
 
@@ -96,6 +97,7 @@ Check out [this video][forge_installation] for more help installing Forge.
 [forgedocs]:http://mcforge.readthedocs.org/en/latest/
 [wuppy]: http://www.wuppy29.com/minecraft/modding-tutorials/forge-modding-1-8
 [tutorials_forum]: http://www.minecraftforge.net/forum/index.php/board,120.0.html
+[list_of_tutorials]: http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/modification-development/2716947-can-we-start-a-thorough-list-of-really-good
 
 [01]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe01_block_simple
 [02]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe02_block_partial
