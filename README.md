@@ -28,7 +28,7 @@ If you want more information and explanatory text about the concepts, the follow
   - [MBE03][03] - a block (coloured signpost) with multiple variants- four colours, can be placed facing in four directions
   - [MBE04][04] - *a camouflage ("secret door") block which copies the appearance of adjacent blocks - uses ISmartBlockModel*
   - [MBE05][05] - *a 3D web which joins to neighbours in all six directions - uses ISmartBlockModel and ICustomModelLoader*
-  - [MBE06][06] - *several different types of block which use redstone*
+  - [MBE06][06] - several different types of block which use redstone
   - [MBE08][08] - how to add a creative tab for organising your custom blocks / items
 
 ### Items
