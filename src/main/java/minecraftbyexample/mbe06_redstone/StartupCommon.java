@@ -56,7 +56,7 @@ public class StartupCommon
 
     blockRedstoneMeter = (BlockRedstoneMeter)(new BlockRedstoneMeter()
             .setUnlocalizedName("mbe06c_block_redstone_meter_unlocalised_name"));
-    blockRedstoneMeter.setRegistryName("mbe06c_block_redstone_meter_registry_name_registry_name");
+    blockRedstoneMeter.setRegistryName("mbe06c_block_redstone_meter_registry_name");
     GameRegistry.register(blockRedstoneMeter);
 
     itemBlockRedstoneMeter = new ItemBlock(blockRedstoneMeter);

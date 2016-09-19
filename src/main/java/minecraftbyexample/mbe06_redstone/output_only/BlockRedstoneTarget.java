@@ -114,7 +114,8 @@ public class BlockRedstoneTarget extends Block
     if (!worldIn.isRemote) {
       if (entityIn instanceof EntityArrow) {
         AxisAlignedBB targetAABB = getCollisionBoundingBox(state, worldIn, pos);
-        List<EntityArrow> embeddedArrows = worldIn.getEntitiesWithinAABB(EntityArrow.class, targetAABB);
+        AxisAlignedBB targetAABBinWorld = targetAABB.offset(pos);
+        List<EntityArrow> embeddedArrows = worldIn.getEntitiesWithinAABB(EntityArrow.class, targetAABBinWorld);
 
         // when a new arrow hits, remove all others which are already embedded
 
@@ -161,18 +162,19 @@ public class BlockRedstoneTarget extends Block
     final int MISS_VALUE = -1;
     EnumFacing targetFacing = (EnumFacing)state.getValue(PROPERTYFACING);
     AxisAlignedBB targetAABB = getCollisionBoundingBox(state, worldIn, pos);
-    List<EntityArrow> embeddedArrows = worldIn.getEntitiesWithinAABB(EntityArrow.class, targetAABB);
+    AxisAlignedBB targetAABBinWorld = targetAABB.offset(pos);
+    List<EntityArrow> embeddedArrows = worldIn.getEntitiesWithinAABB(EntityArrow.class, targetAABBinWorld);
     if (embeddedArrows.isEmpty()) return MISS_VALUE;
 
     double closestDistance = Float.MAX_VALUE;
     for (EntityArrow entity : embeddedArrows) {
       if (!entity.isDead && entity instanceof EntityArrow) {
         EntityArrow entityArrow = (EntityArrow) entity;
-        Vec3d hitLocation = getArrowIntersectionWithTarget(entityArrow, targetAABB);
+        Vec3d hitLocation = getArrowIntersectionWithTarget(entityArrow, targetAABBinWorld);
         if (hitLocation != null) {
-          Vec3d targetCentre = new Vec3d((targetAABB.minX + targetAABB.maxX) / 2.0,
-                                              (targetAABB.minY + targetAABB.maxY) / 2.0,
-                                              (targetAABB.minZ + targetAABB.maxZ) / 2.0
+          Vec3d targetCentre = new Vec3d((targetAABBinWorld.minX + targetAABBinWorld.maxX) / 2.0,
+                                              (targetAABBinWorld.minY + targetAABBinWorld.maxY) / 2.0,
+                                              (targetAABBinWorld.minZ + targetAABBinWorld.maxZ) / 2.0
           );
           Vec3d hitRelativeToCentre = hitLocation.subtract(targetCentre);
 
@@ -295,32 +297,39 @@ public class BlockRedstoneTarget extends Block
   }
 
   // used by the renderer to control lighting and visibility of other blocks.
-  // set to true because this block is opaque and occupies the entire 1x1x1 space
-  // not strictly required because the default (super method) is true
+  // set to false because this block doesn't fill the entire 1x1x1 space
   @Override
-  public boolean isOpaqueCube(IBlockState iBlockState) {
-    return true;
+  public boolean isOpaqueCube(IBlockState iBlockState)
+  {
+    return false;
   }
 
   // used by the renderer to control lighting and visibility of other blocks, also by
   // (eg) wall or fence to control whether the fence joins itself to this block
-  // set to true because this block occupies the entire 1x1x1 space
-  // not strictly required because the default (super method) is true
+  // set to false because this block doesn't fill the entire 1x1x1 space
   @Override
-  public boolean isFullCube(IBlockState iBlockState) {
-    return true;
+  public boolean isFullCube(IBlockState iBlockState)
+  {
+    return false;
   }
 
-  // render using a BakedModel (mbe01_block_simple.json --> mbe01_block_simple_model.json)
+  // render using a BakedModel
   // not strictly required because the default (super method) is MODEL.
   @Override
   public EnumBlockRenderType getRenderType(IBlockState iBlockState) {
     return EnumBlockRenderType.MODEL;
   }
 
+  /**
+   * Returns the borders of the target, depends on which way it is facing.
+   * Used by the vanilla getCollisionBox.
+   * @param state
+   * @param source
+   * @param pos
+   * @return the AxisAlignedBoundingBox of the target, origin at [0,0,0].
+   */
   @Override
-  @Nullable
-  public AxisAlignedBB getCollisionBoundingBox(IBlockState state, World worldIn, BlockPos pos)
+  public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
   {
     EnumFacing facing = (EnumFacing) state.getValue(PROPERTYFACING);
 
@@ -329,13 +338,13 @@ public class BlockRedstoneTarget extends Block
         return  NORTH_AABB;
       }
       case WEST: {
-        return  SOUTH_AABB;
+        return WEST_AABB;
       }
       case EAST: {
         return  EAST_AABB;
       }
       case SOUTH: {
-        return  WEST_AABB;
+        return SOUTH_AABB;
       }
     }
     return FULL_BLOCK_AABB;

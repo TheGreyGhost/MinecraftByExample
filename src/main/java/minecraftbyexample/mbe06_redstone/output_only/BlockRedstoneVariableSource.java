@@ -157,20 +157,18 @@ public class BlockRedstoneVariableSource extends Block
   }
 
   // used by the renderer to control lighting and visibility of other blocks.
-  // set to true because this block is opaque and occupies the entire 1x1x1 space
-  // not strictly required because the default (super method) is true
+  // set to false because this block doesn't occupy the entire 1x1x1 space
   @Override
   public boolean isOpaqueCube(IBlockState iBlockState) {
-    return true;
+    return false;
   }
 
   // used by the renderer to control lighting and visibility of other blocks, also by
   // (eg) wall or fence to control whether the fence joins itself to this block
-  // set to true because this block occupies the entire 1x1x1 space
-  // not strictly required because the default (super method) is true
+  // set to false because this block doesn't occupy the entire 1x1x1 space
   @Override
   public boolean isFullCube(IBlockState iBlockState) {
-    return true;
+    return false;
   }
 
   // render using a BakedModel
