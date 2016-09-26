@@ -1,16 +1,12 @@
-package minecraftbyexample.mbe04_block_smartblockmodel1;
+package minecraftbyexample.mbe04_block_dynamic_block_model1;
 
-import minecraftbyexample.mbe04_block_dynamic_block_model1.UnlistedPropertyCopiedBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.BlockRenderLayer;
@@ -97,8 +93,8 @@ public class BlockCamouflage extends Block {
     return new ExtendedBlockState(this, listedProperties, unlistedProperties);
   }
 
-  // this method uses the block state and BlockPos to update the unlisted POWER_LEVEL property in IExtendedBlockState based
-  // on non-metadata information.  This is then conveyed to the ISmartBlockModel during rendering.
+  // this method uses the block state and BlockPos to update the unlisted COPIEDBLOCK property in IExtendedBlockState based
+  // on non-metadata information.  This is then conveyed to the IBakedModel#getQuads during rendering.
   // In this case, we look around the camouflage block to find a suitable adjacent block it should camouflage itself as
   @Override
   public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
@@ -117,13 +113,13 @@ public class BlockCamouflage extends Block {
     return state;  //for debugging - useful spot for a breakpoint.  Not necessary.
   }
 
-  // the POWER_LEVEL property is used to store the identity of the block that BlockCamouflage will copy
+  // the COPIEDBLOCK property is used to store the identity of the block that BlockCamouflage will copy
   public static final UnlistedPropertyCopiedBlock COPIEDBLOCK = new UnlistedPropertyCopiedBlock();
 
   // Select the best adjacent block to camouflage as.
   // Algorithm is:
   // 1) Ignore any blocks which are not solid (CUTOUTS or TRANSLUCENT).  Ignore adjacent camouflage.
-  // 2) If there are more than one type of solid block, choose the type with the most
+  // 2) If there are more than one type of solid block, choose the type which is present on the greatest number of sides
   // 3) In case of a tie, prefer the type which span opposite sides of the blockpos, for example:
   //       up and down; east and west; north and south.
   // 4) If still a tie, look again for spans on both sides, counting adjacent camouflage blocks as a span
@@ -141,9 +137,9 @@ public class BlockCamouflage extends Block {
                                                facing.getFrontOffsetZ());
       IBlockState adjacentIBS = world.getBlockState(adjacentPosition);
       Block adjacentBlock = adjacentIBS.getBlock();
-      if (adjacentBlock != Blocks.air
+      if (adjacentBlock != Blocks.AIR
           && adjacentBlock.getBlockLayer() == BlockRenderLayer.SOLID
-          && adjacentBlock.isOpaqueCube()) {
+          && adjacentBlock.isOpaqueCube(adjacentIBS)) {
         adjacentSolidBlocks.put(facing, adjacentIBS);
         if (adjacentBlockCount.containsKey(adjacentIBS)) {
           adjacentBlockCount.put(adjacentIBS, 1 + adjacentBlockCount.get(adjacentIBS));
