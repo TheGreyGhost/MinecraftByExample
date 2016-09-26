@@ -1,16 +1,20 @@
 package minecraftbyexample.mbe04_block_smartblockmodel1;
 
+import minecraftbyexample.mbe04_block_dynamic_block_model1.UnlistedPropertyCopiedBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -34,8 +38,8 @@ import java.util.TreeMap;
 public class BlockCamouflage extends Block {
   public BlockCamouflage()
   {
-    super(Material.circuits);                     // ensures the player can walk through the block
-    this.setCreativeTab(CreativeTabs.tabBlock);   // the block will appear on the Blocks tab in creative
+    super(Material.CIRCUITS);                     // ensures the player can walk through the block
+    this.setCreativeTab(CreativeTabs.BUILDING_BLOCKS);   // the block will appear on the Blocks tab in creative
   }
 
   // the block will render in the SOLID layer.  See http://greyminecraftcoder.blogspot.co.at/2014/12/block-rendering-18.html for more information.
@@ -49,7 +53,7 @@ public class BlockCamouflage extends Block {
   // set to true because this block is opaque and occupies the entire 1x1x1 space
   // not strictly required because the default (super method) is true
   @Override
-  public boolean isOpaqueCube() {
+  public boolean isOpaqueCube(IBlockState iBlockState) {
     return true;
   }
 
@@ -58,22 +62,22 @@ public class BlockCamouflage extends Block {
   // set to true because this block occupies the entire 1x1x1 space
   // not strictly required because the default (super method) is true
   @Override
-  public boolean isFullCube() {
+  public boolean isFullCube(IBlockState iBlockState) {
     return true;
   }
 
   // render using an IBakedModel
-  // not strictly required because the default (super method) is 3.
+  // not strictly required because the default (super method) is MODEL.
   @Override
-  public int getRenderType() {
-    return 3;
+  public EnumBlockRenderType getRenderType(IBlockState iBlockState) {
+    return EnumBlockRenderType.MODEL;
   }
 
-  // by returning a null collision bounding box, we stop the player from colliding with it
+  // by returning a null collision bounding box we stop the player from colliding with it
   @Override
-  public AxisAlignedBB getCollisionBoundingBox(World worldIn, BlockPos pos, IBlockState state)
+  public AxisAlignedBB getCollisionBoundingBox(IBlockState state, World worldIn, BlockPos pos)
   {
-    return null;
+    return NULL_AABB;
   }
 
   // createBlockState is used to define which properties your blocks possess
@@ -87,7 +91,7 @@ public class BlockCamouflage extends Block {
   // - listed properties (like vanilla), and
   // - unlisted properties, which can be used to convey information but do not cause extra variants to be created.
   @Override
-  protected BlockState createBlockState() {
+  protected BlockStateContainer createBlockState() {
     IProperty [] listedProperties = new IProperty[0]; // no listed properties
     IUnlistedProperty [] unlistedProperties = new IUnlistedProperty[] {COPIEDBLOCK};
     return new ExtendedBlockState(this, listedProperties, unlistedProperties);
@@ -127,7 +131,7 @@ public class BlockCamouflage extends Block {
   // 6) If no suitable adjacent blocks, return Block.air
   private IBlockState selectBestAdjacentBlock(IBlockAccess world, BlockPos blockPos)
   {
-    final IBlockState UNCAMOUFLAGED_BLOCK = Blocks.air.getDefaultState();
+    final IBlockState UNCAMOUFLAGED_BLOCK = Blocks.AIR.getDefaultState();
     TreeMap<EnumFacing, IBlockState> adjacentSolidBlocks = new TreeMap<EnumFacing, IBlockState>();
 
     HashMap<IBlockState, Integer> adjacentBlockCount = new HashMap<IBlockState, Integer>();

@@ -1,4 +1,4 @@
-MBE04_BLOCK_SMARTBLOCKMODEL1
+MBE04_BLOCK_DYNAMIC_BLOCK_MODEL1
 Based on code by Herbix and RainWarrior
 This example shows how to use IBakedModel#getQuads to dynamically generate a model in conjunction with ModelBakeEvent
 Normal blocks can only have up to 16 different states, and you need to create a blockstates JSON file which handles
