@@ -24,9 +24,14 @@ public class CamouflageBakedModel implements IBakedModel {
     modelWhenNotCamouflaged = unCamouflagedModel;
   }
 
-  // create a tag (ModelResourceLocation) for our model.
-  public static final ModelResourceLocation modelResourceLocation
-          = new ModelResourceLocation("minecraftbyexample:mbe04_block_camouflage");
+  // create a blockstates tag (ModelResourceLocation) for our block
+  public static final ModelResourceLocation blockStatesFileName
+          = new ModelResourceLocation("minecraftbyexample:mbe04_block_camouflage_registry_name");
+
+  // create a variant tag (ModelResourceLocation) for our block
+  public static final ModelResourceLocation variantTag
+          = new ModelResourceLocation("minecraftbyexample:mbe04_block_camouflage_registry_name", "normal");
+
 
   // return a list of the quads making up the model.
   // We choose the model based on the IBlockstate provided by the caller.
@@ -37,9 +42,6 @@ public class CamouflageBakedModel implements IBakedModel {
 
   // This method is used to create a suitable IBakedModel based on the IBlockState of the block being rendered.
   // If IBlockState is an instance of IExtendedBlockState, you can use it to pass in any information you want.
-  // Some folks return a new instance of the same ISmartBlockModel; I think it is more logical to return a different
-  //   class which implements IBakedModel instead of ISmartBlockModel, but it's a matter of taste.
-  //  BEWARE! Rendering is multithreaded so your ISmartBlockModel must be thread-safe, preferably immutable.
 
   private IBakedModel handleBlockState(@Nullable IBlockState iBlockState)
   {

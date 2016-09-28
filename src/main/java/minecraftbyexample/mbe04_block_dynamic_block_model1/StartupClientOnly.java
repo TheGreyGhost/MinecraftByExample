@@ -3,10 +3,8 @@ package minecraftbyexample.mbe04_block_dynamic_block_model1;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
-import net.minecraft.item.Item;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
  * User: The Grey Ghost
@@ -33,7 +31,7 @@ public class  StartupClientOnly
     StateMapperBase ignoreState = new StateMapperBase() {
       @Override
       protected ModelResourceLocation getModelResourceLocation(IBlockState iBlockState) {
-        return CamouflageBakedModel.modelResourceLocation;
+        return CamouflageBakedModel.variantTag;
       }
     };
     ModelLoader.setCustomStateMapper(StartupCommon.blockCamouflage, ignoreState);

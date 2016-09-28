@@ -26,11 +26,11 @@ public class ModelBakeEventHandler {
     // Find the existing mapping for CamouflageBakedModel - it will have been added automatically because
     //  we registered a custom BlockStateMapper for it (using ModelLoader.setCustomStateMapper)
     // Replace the mapping with our CamouflageBakedModel.
-    Object object =  event.getModelRegistry().getObject(CamouflageBakedModel.modelResourceLocation);
+    Object object =  event.getModelRegistry().getObject(CamouflageBakedModel.variantTag);
     if (object instanceof IBakedModel) {
       IBakedModel existingModel = (IBakedModel)object;
       CamouflageBakedModel customModel = new CamouflageBakedModel(existingModel);
-      event.getModelRegistry().putObject(CamouflageBakedModel.modelResourceLocation, customModel);
+      event.getModelRegistry().putObject(CamouflageBakedModel.variantTag, customModel);
     }
   }
 }
