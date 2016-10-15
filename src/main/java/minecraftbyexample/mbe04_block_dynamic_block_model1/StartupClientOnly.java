@@ -27,7 +27,7 @@ public class  StartupClientOnly
     // For example, the BlockStone granite variant has a BlockStateMap entry that looks like
     //   "stone[variant=granite]" (iBlockState)  -> "minecraft:granite#normal" (ModelResourceLocation)
     // For the camouflage block, we ignore the iBlockState completely and always return the same ModelResourceLocation,
-    //   which is done using the anonymous class below
+    //   which is done using the anonymous class below.
     StateMapperBase ignoreState = new StateMapperBase() {
       @Override
       protected ModelResourceLocation getModelResourceLocation(IBlockState iBlockState) {
@@ -35,6 +35,9 @@ public class  StartupClientOnly
       }
     };
     ModelLoader.setCustomStateMapper(StartupCommon.blockCamouflage, ignoreState);
+    // NB If your block has multiple variants and you want vanilla to load a model for each variant, you don't need a
+    //   custom state mapper.
+    // You can see examples of vanilla custom state mappers in BlockModelShapes.registerAllBlocks()
 
     // ModelBakeEvent will be used to add our CamouflageBakedModel to the ModelManager's registry (the
     //  registry used to map all the ModelResourceLocations to IBlockModels).  For the stone example there is a map from

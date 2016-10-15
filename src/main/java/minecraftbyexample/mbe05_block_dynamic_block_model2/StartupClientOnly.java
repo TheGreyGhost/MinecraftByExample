@@ -1,10 +1,8 @@
-package minecraftbyexample.mbe05_block_smartblockmodel2;
+package minecraftbyexample.mbe05_block_dynamic_block_model2;
 
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
@@ -35,7 +33,7 @@ public class StartupClientOnly
     StateMapperBase ignoreState = new StateMapperBase() {
       @Override
       protected ModelResourceLocation getModelResourceLocation(IBlockState iBlockState) {
-        return new ModelResourceLocation("minecraftbyexample:mbe05_block_3d_web");
+        return new ModelResourceLocation("minecraftbyexample:mbe05_block_3d_web_statemapper_name");
       }
     };
     ModelLoader.setCustomStateMapper(StartupCommon.block3DWeb, ignoreState);
@@ -49,10 +47,9 @@ public class StartupClientOnly
     //   of any extra items you have created.  Hence you have to do it manually.
     // It must be done on client only, and must be done after the block has been created in Common.preinit().
 
-    Item itemBlockCamouflage = GameRegistry.findItem("minecraftbyexample", "mbe05_block_3d_web");
     ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation("minecraftbyexample:mbe05_block_3d_web", "inventory");
     final int DEFAULT_ITEM_SUBTYPE = 0;
-    ModelLoader.setCustomModelResourceLocation(itemBlockCamouflage, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
+    ModelLoader.setCustomModelResourceLocation(StartupCommon.itemBlock3DWeb, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
   }
 
   public static void initClientOnly()

@@ -1,10 +1,10 @@
-MBE05_BLOCK_SMARTBLOCKMODEL2
+MBE05_BLOCK_DYNAMIC_BLOCK_MODEL2
 Based on code by Herbix
-This example shows how to use ISmartBlockModel in conjunction with ModelLoader.  It is very similar to MBE04, it just
-uses a different method of injecting your ISmartBlockModel into the registry.
+This example shows how to use IBakedModel#getQuads in conjunction with ModelLoader.  It is very similar to MBE04, it just
+uses a different method of injecting your IBakedModel into the registry, and assembles the quads differently.
 Guidelines on choosing which injection method to use
 ModelLoader:
-The ModelLoader can be useful if your ISmartBlockModel is composed of a number of subcomponents and you want to
+The ModelLoader can be useful if your IBakedModel is composed of a number of subcomponents and you want to
   use a model.json for each subcomponent.
 It is also well-suited if you are parsing your own custom model definitions (similar to the B3DModelLoader)
 ModelBakeEvent:
@@ -27,7 +27,7 @@ How it works:
     models (including or excluding each one depending on which directions have strands) and then
     returns it to the caller for rendering.
 
-BEWARE! Rendering is multithreaded so your ISmartBlockModel must be thread-safe, preferably immutable.
+BEWARE! Rendering is multithreaded so your IBakedModel must be thread-safe, preferably Immutable
 
 The 3d web block appears in the Blocks tab in the creative inventory.
 

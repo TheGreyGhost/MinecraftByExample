@@ -1,4 +1,4 @@
-package minecraftbyexample.mbe05_block_smartblockmodel2;
+package minecraftbyexample.mbe05_block_dynamic_block_model2;
 
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;

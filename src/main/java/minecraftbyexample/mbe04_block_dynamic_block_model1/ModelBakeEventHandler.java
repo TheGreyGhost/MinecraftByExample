@@ -12,6 +12,9 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
  *  ModelResourceLocation("minecraft:granite#normal") to an IBakedModel created from models/block/granite.json.
  * For the camouflage block, it will map from
  *  CamouflageBakedModel.modelResourceLocation to our CamouflageBakedModel instance
+ *
+ *  If there are multiple variants / models for your block, you need to find and replace them all
+ *
  */
 public class ModelBakeEventHandler {
   public static final ModelBakeEventHandler instance = new ModelBakeEventHandler();
