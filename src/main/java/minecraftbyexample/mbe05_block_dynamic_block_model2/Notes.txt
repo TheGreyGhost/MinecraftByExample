@@ -12,18 +12,18 @@ The BakeEvent is more useful if you want to copy an existing model, or to genera
 
 How it works:
 (1) ModelLoader.setCustomStateMapper is used to set up a custom StateMapper for Block3DWeb.  This StateMapper
-    tells vanilla to use ModelResourceLocation mbe05_block_3d_web for rendering, regardless of the block's state.
+    tells vanilla to use ModelResourceLocation mbe05_block_3d_web_statemapper_name for rendering, regardless of the block's state.
 (2) In mbe05_block_3d_web.json, the model ResourceLocation is set to "minecraftbyexample:smartmodel/webmodel"
 (3) The custom ModelLoader ModelLoader3DWeb, which was previously registered using ModelLoaderRegistry.registerLoader(),
     recognises the smartmodel tag and creates an WebModel (implements IModel).
-(4) The IModel (WebModel) is then "baked" to form an ISmartBlockModel.  During baking, the WebModel loads and bakes the
+(4) The IModel (WebModel) is then "baked" to form an IBakedModel.  During baking, the WebModel loads and bakes the
     models for each of the seven subcomponents (a central "core" plus one model for each of the six strands that can
     extend up, down, east, west, north, or south).  Each of these models is defined using vanilla .json model and a
     blockstates file as usual.  (The blockstates file is necessary to get vanilla to load the model)
 (5) During the render, Block3DWeb.getExtendedBlockState is called, which looks at the block's neighbours to see which
     strands should be drawn (a strand is drawn to each solid neighbour).  The yes/no for each strand is then stored in
     the IExtendedBlockState.
-(5) The IExtendedBlockState is passed to the ISmartBlockModel, which generates an IBakedModel from the sub-component
+(5) The IExtendedBlockState is passed to the IBakedModel, which generates a list of quads from the sub-component
     models (including or excluding each one depending on which directions have strands) and then
     returns it to the caller for rendering.
 
@@ -38,7 +38,7 @@ CompositeModel
 ModelLoader3DWeb
 WebModel
 resources\assets\minecraftbyexample\lang\en_US.lang - for the displayed name of the block
-resources\assets\minecraftbyexample\blockstates\mbe05_block_3D_web - for the blockstate definition
+resources\assets\minecraftbyexample\blockstates\mbe05_block_3d_web_statemapper_name - for the blockstate definition
 
 resources\assets\minecraftbyexample\models\block\mbe05_block_web_****_model - where **** is eg core, up, down, etc (sub-component models)
 resources\assets\minecraftbyexample\blockstates\mbe05_web_subblocks\mbe05_block_web_****_model - for the blockstates definition for the sub-components
