@@ -31,7 +31,7 @@ Blocks
   MBE03 - a block (coloured signpost) with multiple variants- four colours, can be placed facing in four directions
   MBE04 - a camouflage ("secret door") block which copies the appearance of adjacent blocks - uses
           IBlockModel.getQuads() and onModelBakeEvent()
-  MBE05 - a 3D web which joins to neighbours in all six directions - uses ISmartBlockModel and ICustomModelLoader
+  MBE05 - a 3D web which joins to neighbours in all six directions - uses IBlockModel.getQuads() and ICustomModelLoader
   MBE06 - several different types of block which use redstone
   MBE08 - how to add a creative tab for organising your custom blocks / items
 
@@ -41,7 +41,7 @@ Items
   MBE12 - an item that stores extra information in NBT, also illustrates the "in use" animation similar to drawing a bow
   MBE13 - customise Mining behaviour of Blocks and Items - several test classes that show how mining works
   MBE14 - an interactive helper tool to adjust the ItemCameraTransforms for your custom item
-  MBE15 - a chessboard item with 1 - 64 pieces; uses ISmartItemModel
+  MBE15 - a chessboard item with 1 - 64 pieces; uses ItemOverrideList.handleItemState(), IBlockModel.getQuads() and onModelBakeEvent()
 
 TileEntities
   MBE20 - using a tile entity to store information about a block - also shows examples of using NBT storage

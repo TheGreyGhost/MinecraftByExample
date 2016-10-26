@@ -1,10 +1,8 @@
-package minecraftbyexample.mbe15_item_smartitemmodel;
+package minecraftbyexample.mbe15_item_dynamic_item_model;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.item.Item;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
  * User: The Grey Ghost

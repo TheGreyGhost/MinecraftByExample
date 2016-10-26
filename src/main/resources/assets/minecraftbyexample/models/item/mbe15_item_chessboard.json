@@ -1,18 +1,48 @@
 {
-    "parent": "builtin/generated",
+    "parent": "item/generated",
     "textures": {
         "layer0": "minecraftbyexample:items/mbe15_chessboard"
     },
-    "display": {
-        "thirdperson": {
-            "rotation": [ 90, 0, 0 ],
-            "translation": [ 0, 1, -3 ],
-            "scale": [ 0.55, 0.55, 0.55 ]
-        },
-        "firstperson": {
-            "rotation": [ 0, 45, 115 ],
-            "translation": [ 0, 4, 2 ],
-            "scale": [ 1.7, 1.7, 1.7 ]
-        }
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [ 0, 0, 180 ],
+      "translation": [ 0.00, 3.00, 1.00 ],
+      "scale": [ 0.55, 0.55, 0.55 ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [ 0, 0, 180 ],
+      "translation": [ 0.00, 3.00, 1.00 ],
+      "scale": [ 0.55, 0.55, 0.55 ]
+    },
+    "firstperson_righthand": {
+      "rotation": [ 145, 90, 0 ],
+      "translation": [ 1.13, 3.20, 1.13 ],
+      "scale": [ 0.68, 0.68, 0.68 ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [ 145, 270, 0 ],
+      "translation": [ 1.13, 3.20, 1.13 ],
+      "scale": [ 0.68, 0.68, 0.68 ]
+    },
+    "gui": {
+      "rotation": [ 0, 0, 0 ],
+      "translation": [ 0.00, 0.00, 0.00 ],
+      "scale": [ 1.00, 1.00, 1.00 ]
+    },
+    "head": {
+      "rotation": [ -180, -0, -180 ],
+      "translation": [ -0.00, 13.00, 7.00 ],
+      "scale": [ 1.00, 1.00, 1.00 ]
+    },
+    "fixed": {
+      "rotation": [ 0, 0, 0 ],
+      "translation": [ 0.00, 0.00, 0.00 ],
+      "scale": [ 1.00, 1.00, 1.00 ]
+    },
+    "ground": {
+      "rotation": [ 180, 0, 0 ],
+      "translation": [ 0.00, 5.00, 0.00 ],
+      "scale": [ 0.50, 0.50, 0.50 ]
     }
+  }
 }

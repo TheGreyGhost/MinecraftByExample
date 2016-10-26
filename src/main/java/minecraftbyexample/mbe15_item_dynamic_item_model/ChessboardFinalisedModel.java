@@ -1,17 +1,14 @@
-package minecraftbyexample.mbe15_item_smartitemmodel;
+package minecraftbyexample.mbe15_item_dynamic_item_model;
 
 import com.google.common.primitives.Ints;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemOverride;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.awt.*;
@@ -21,15 +18,73 @@ import java.util.List;
 /**
  * Created by TGG on 20/10/2016.
  */
-public class ChessboardItemOverrideList extends ItemOverrideList {
-  public ChessboardItemOverrideList(List<ItemOverride> overridesIn)
+public class ChessboardFinalisedModel implements IBakedModel {
+
+  public ChessboardFinalisedModel(IBakedModel i_parentModel, int i_numberOfChessPieces)
   {
-    super(overridesIn);
+    parentModel = i_parentModel;
+    numberOfChessPieces = i_numberOfChessPieces;
   }
 
-  public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity)
-  {
+  //
+//  @Override
+//  public List getFaceQuads(EnumFacing enumFacing) {
+//    return baseChessboardModel.getFaceQuads(enumFacing);
+//  }
 
+  /**
+   * We return a list of quads here which is used to draw the chessboard.
+   * We do this by getting the list of quads for the base model (the chessboard itself), then adding an extra quad for
+   *   every piece on the chessboard.  The number of pieces was provided to the constructor of the finalise model.
+   *
+   * @param state
+   * @param side  which side: north, east, south, west, up, down, or null.  NULL is a different kind to the others
+   *   see here for more information: http://minecraft.gamepedia.com/Block_models#Item_models
+   * @param rand
+   * @return the list of quads to be rendered
+   */
+
+  @Override
+  public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand) {
+    // our chess pieces are only drawn when side is NULL.
+    if (side != null) {
+      return parentModel.getQuads(state, side, rand);
+    }
+
+    List<BakedQuad> combinedQuadsList = new ArrayList(parentModel.getQuads(state, side, rand));
+    combinedQuadsList.addAll(getChessPiecesQuads(numberOfChessPieces));
+    return combinedQuadsList;
+//    FaceBakery.makeBakedQuad() can also be useful for generating quads
+  }
+
+  @Override
+  public boolean isAmbientOcclusion() {
+    return parentModel.isAmbientOcclusion();
+  }
+
+  @Override
+  public boolean isGui3d() {
+    return parentModel.isGui3d();
+  }
+
+  @Override
+  public boolean isBuiltInRenderer() {
+    return parentModel.isBuiltInRenderer();
+  }
+
+  @Override
+  public TextureAtlasSprite getParticleTexture() {
+    return parentModel.getParticleTexture();
+  }
+
+  @Override
+  public ItemCameraTransforms getItemCameraTransforms() {
+    return parentModel.getItemCameraTransforms();
+  }
+
+  @Override
+  public ItemOverrideList getOverrides() {
+    throw new UnsupportedOperationException("The finalised model does not have an override list.");
   }
 
   // return a list of BakedQuads for drawing the chess pieces
@@ -58,7 +113,7 @@ public class ChessboardItemOverrideList extends ItemOverrideList {
     }
 
     // "builtin/generated" items, which are generated from the 2D texture by adding a thickness in the z direction
-    //    (i.e. north<-->south thickness) are centred around the z=0.5 plane.
+    //    (i.e. north<-->south thickness), are centred around the z=0.5 plane.
     final float BUILTIN_GEN_ITEM_THICKNESS = 1/16.0F;
     final float BUILTIN_GEN_ITEM_Z_CENTRE = 0.5F;
     final float BUILTIN_GEN_ITEM_Z_MAX = BUILTIN_GEN_ITEM_Z_CENTRE + BUILTIN_GEN_ITEM_THICKNESS / 2.0F;
@@ -201,7 +256,7 @@ public class ChessboardItemOverrideList extends ItemOverrideList {
             vertexToInts(x2, y2, z2, Color.WHITE.getRGB(), texture, 16, 0),
             vertexToInts(x3, y3, z3, Color.WHITE.getRGB(), texture, 0, 0),
             vertexToInts(x4, y4, z4, Color.WHITE.getRGB(), texture, 0, 16)),
-            itemRenderLayer, face);
+            itemRenderLayer, face, texture, true, net.minecraft.client.renderer.vertex.DefaultVertexFormats.ITEM);
   }
 
   /**
@@ -228,4 +283,6 @@ public class ChessboardItemOverrideList extends ItemOverrideList {
     };
   }
 
+  private int numberOfChessPieces;
+  private IBakedModel parentModel;
 }

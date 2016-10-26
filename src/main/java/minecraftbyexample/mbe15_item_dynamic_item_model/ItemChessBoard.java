@@ -1,4 +1,4 @@
-package minecraftbyexample.mbe15_item_smartitemmodel;
+package minecraftbyexample.mbe15_item_dynamic_item_model;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
