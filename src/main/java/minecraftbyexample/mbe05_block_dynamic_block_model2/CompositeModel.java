@@ -2,16 +2,17 @@ package minecraftbyexample.mbe05_block_dynamic_block_model2;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.block.model.ItemOverrideList;
+import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.client.model.IPerspectiveAwareModel;
+import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
+import javax.vecmath.Matrix4f;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,7 +29,7 @@ import java.util.List;
  *   BEWARE! Rendering is multithreaded so your CompositeModel must be thread-safe
 
  */
-public class CompositeModel implements IBakedModel {
+public class CompositeModel implements IPerspectiveAwareModel {
 
   public CompositeModel(IBakedModel i_modelCore, IBakedModel i_modelUp, IBakedModel i_modelDown,
                         IBakedModel i_modelWest, IBakedModel i_modelEast,
@@ -108,6 +109,35 @@ public class CompositeModel implements IBakedModel {
   @Override
   public ItemCameraTransforms getItemCameraTransforms() {
     return modelCore.getItemCameraTransforms();
+  }
+
+  /** this method is necessary because Forge has deprecated getItemCameraTransforms(), and modelCore.getItemCameraTransforms()
+   *    may not return anything meaningful.  But if the base model doesn't implement IPerspectiveAwareModel then you
+   *    need to generate it.
+   * @param cameraTransformType
+   * @return
+   */
+  @Override
+  public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
+    if (modelCore instanceof IPerspectiveAwareModel) {
+      Matrix4f matrix4f = ((IPerspectiveAwareModel)modelCore).handlePerspective(cameraTransformType).getRight();
+      return Pair.of(this, matrix4f);
+    } else {
+      // If the parent model isn't an IPerspectiveAware, we'll need to generate the correct matrix ourselves using the
+      //  ItemCameraTransforms.
+
+      ItemCameraTransforms itemCameraTransforms = modelCore.getItemCameraTransforms();
+      ItemTransformVec3f itemTransformVec3f = itemCameraTransforms.getTransform(cameraTransformType);
+      TRSRTransformation tr = new TRSRTransformation(itemTransformVec3f);
+      Matrix4f mat = null;
+      if (tr != null) { // && tr != TRSRTransformation.identity()) {
+        mat = tr.getMatrix();
+      }
+      // The TRSRTransformation for vanilla items have blockCenterToCorner() applied, however handlePerspective
+      //  reverses it back again with blockCornerToCenter().  So we don't need to apply it here.
+
+      return Pair.of(this, mat);
+    }
   }
 
   @Override

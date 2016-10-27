@@ -11,7 +11,7 @@ ItemOverrideList.handleItemState() and IBakedModel.getQuads() lets you change th
 How it works:
 (1) An Item is defined and loaded from a BlockModel json file as normal (see StartupClientOnly).
 (2) ModelBakeEvent is then used to find the item's IBakedModel in the modelRegistry and replace it with
-      ChessboardSmartItemModel
+      ChessboardModel
 (3) Immediately before the render:
   a) ChessboardModel#getOverrides() is called and returns ChessboardItemOverrideList
   b) ChessboardItemOverrideList#handleItemState(itemstack) is called, it inspects the itemstack and returns a
@@ -24,15 +24,17 @@ The Chessboard appears in the miscellaneous tab in the creative inventory.
 
 The pieces you need to understand are located in:
 StartupClientOnly and StartupCommon
+ChessboardModel
+ChessboardFinalisedModel
+ChessboardItemOverrideList
 ItemChessBoard
-ChessboardSmartItemModel
 ModelBakeEventHandlerMBE15
 resources\assets\minecraftbyexample\lang\en_US.lang - for the displayed name of the item
 resources\assets\minecraftbyexample\models\item\mbe15_item_chessboard - the model for rendering the chessboard
 resources\assets\minecraftbyexample\textures\items\mbe15_chessboard - the texture used for the chessboard
 
 More background information:
-See also MBE04 and MBE05 for different ways of inserting your ISmartItemModel into the model registry and of combining
+See also MBE04 and MBE05 for different ways of inserting your IBlockModel into the model registry and of combining
   existing models into your smart model.
 --------
 Common errors:

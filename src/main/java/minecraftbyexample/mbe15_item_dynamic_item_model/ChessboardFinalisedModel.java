@@ -3,14 +3,15 @@ package minecraftbyexample.mbe15_item_dynamic_item_model;
 import com.google.common.primitives.Ints;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.block.model.ItemOverrideList;
+import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.client.model.IPerspectiveAwareModel;
+import net.minecraftforge.common.model.TRSRTransformation;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
+import javax.vecmath.Matrix4f;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.List;
 /**
  * Created by TGG on 20/10/2016.
  */
-public class ChessboardFinalisedModel implements IBakedModel {
+public class ChessboardFinalisedModel implements IPerspectiveAwareModel {
 
   public ChessboardFinalisedModel(IBakedModel i_parentModel, int i_numberOfChessPieces)
   {
@@ -80,6 +81,29 @@ public class ChessboardFinalisedModel implements IBakedModel {
   @Override
   public ItemCameraTransforms getItemCameraTransforms() {
     return parentModel.getItemCameraTransforms();
+  }
+
+  @Override
+  public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
+    if (parentModel instanceof IPerspectiveAwareModel) {
+      Matrix4f matrix4f = ((IPerspectiveAwareModel)parentModel).handlePerspective(cameraTransformType).getRight();
+      return Pair.of(this, matrix4f);
+    } else {
+      // If the parent model isn't an IPerspectiveAware, we'll need to generate the correct matrix ourselves using the
+      //  ItemCameraTransforms.
+
+      ItemCameraTransforms itemCameraTransforms = parentModel.getItemCameraTransforms();
+      ItemTransformVec3f itemTransformVec3f = itemCameraTransforms.getTransform(cameraTransformType);
+      TRSRTransformation tr = new TRSRTransformation(itemTransformVec3f);
+      Matrix4f mat = null;
+      if (tr != null) { // && tr != TRSRTransformation.identity()) {
+        mat = tr.getMatrix();
+      }
+      // The TRSRTransformation for vanilla items have blockCenterToCorner() applied, however handlePerspective
+      //  reverses it back again with blockCornerToCenter().  So we don't need to apply it here.
+
+      return Pair.of(this, mat);
+    }
   }
 
   @Override
