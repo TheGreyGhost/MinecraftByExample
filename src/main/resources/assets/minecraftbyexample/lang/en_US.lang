@@ -50,4 +50,4 @@ gui.mbe70_configuration.myIntList=My Int List
 gui.mbe70_configuration.myIntList.tooltip=My Int List Tooltip
 gui.mbe70_configuration.myColour=My Colour
 gui.mbe70_configuration.myColour.tooltip=My Colour Tooltip
-item.mbe75_test_runner.name=MBE75 Item Testrunner
+item.mbe75_test_runner_unlocalised_name.name=MBE75 Item Testrunner

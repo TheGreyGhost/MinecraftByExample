@@ -1,8 +1,6 @@
 MinecraftByExample [1.10.2]
 ==================
 
-**Work in Progress : update to 1.10.2 : Sections in italics are still in progress**
-
 The purpose of MinecraftByExample is to give simple working examples of the important concepts in Minecraft and Forge. If you're anything like me, a good code example is worth several screens worth of waffling explanation, and can very quickly explain the key concepts.  I also find it much easier to adapt and debug something that already works, than to have to synthesize something from scratch and spend hours trying to discover the missing bit of information I didn't know about.
 
 I've tried to keep the code simple and obvious and to resist the urge to be clever. The examples might not be the most efficient or succinct implementation, I've deliberately left the optimization to you.
@@ -65,7 +63,7 @@ If you want more information and explanatory text about the concepts, the follow
   - [MBE70][70] - configuration file linked to the "mod options" button GUI on the mods list screen
 
 ### Testing tools
-  - [MBE75][75] - *a tool to help you automate testing of your classes in-game.*
+  - [MBE75][75] - a tool to help you automate testing of your classes in-game.
 
 ## Usage
   - You can browse directly in GitHub, or alternatively, download it as a zip and browse it locally.

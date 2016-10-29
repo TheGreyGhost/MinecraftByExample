@@ -1,7 +1,5 @@
 package minecraftbyexample.mbe10_item_simple;
 
-import minecraftbyexample.mbe11_item_variants.LiquidColour;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 

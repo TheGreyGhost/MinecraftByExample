@@ -1,6 +1,5 @@
 package minecraftbyexample.mbe05_block_dynamic_block_model2;
 
-import minecraftbyexample.mbe04_block_dynamic_block_model1.BlockCamouflage;
 import net.minecraft.item.ItemBlock;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 

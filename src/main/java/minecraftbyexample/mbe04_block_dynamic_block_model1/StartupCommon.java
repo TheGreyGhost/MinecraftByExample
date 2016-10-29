@@ -1,6 +1,5 @@
 package minecraftbyexample.mbe04_block_dynamic_block_model1;
 
-import minecraftbyexample.mbe01_block_simple.BlockSimple;
 import net.minecraft.item.ItemBlock;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 

@@ -1,7 +1,6 @@
 package minecraftbyexample.mbe13_item_tools;
 
 import minecraftbyexample.MinecraftByExample;
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;

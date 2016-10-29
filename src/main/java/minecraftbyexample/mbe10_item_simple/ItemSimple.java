@@ -2,9 +2,6 @@ package minecraftbyexample.mbe10_item_simple;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-
-import java.awt.*;
 
 /**
  * User: The Grey Ghost

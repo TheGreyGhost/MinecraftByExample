@@ -1,9 +1,7 @@
 package minecraftbyexample.mbe08_creative_tab;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.item.Item;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
  * @author Nephroid

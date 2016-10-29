@@ -11,7 +11,6 @@ import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.model.IModelState;
 
-import java.io.IOException;
 import java.util.Collection;
 
 /**

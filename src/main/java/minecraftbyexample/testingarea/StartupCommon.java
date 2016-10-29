@@ -1,13 +1,6 @@
 package minecraftbyexample.testingarea;
 
 import minecraftbyexample.mbe01_block_simple.BlockSimple;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockStone;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 
 /**
  * User: The Grey Ghost

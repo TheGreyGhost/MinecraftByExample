@@ -1,6 +1,5 @@
 package minecraftbyexample.mbe03_block_variants;
 
-import net.minecraft.item.ItemBlock;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
