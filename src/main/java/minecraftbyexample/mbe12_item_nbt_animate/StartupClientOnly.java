@@ -1,6 +1,5 @@
 package minecraftbyexample.mbe12_item_nbt_animate;
 
-import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 

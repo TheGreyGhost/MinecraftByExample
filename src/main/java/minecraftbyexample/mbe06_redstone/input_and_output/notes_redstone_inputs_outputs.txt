@@ -29,5 +29,5 @@ The key thing to understand is that the block must store its power level somehow
   In this example, we use a TileEntity to store the power level information (similar to a BlockRedstoneComparator).
 
 We use scheduled block updates for the flashing; a similar strategy is used by BlockRedstoneRepeater.
-Alternatively, we could also have made our TileEntity implement IUpdatePlayerListBox (so that the update() method is
+Alternatively, we could also have made our TileEntity implement ITickable (so that the update() method is
   called every tick) and counted the number of ticks.

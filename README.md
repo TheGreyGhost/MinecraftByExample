@@ -1,8 +1,6 @@
 MinecraftByExample [1.10.2]
 ==================
 
-**Work in Progress : update to 1.10.2 : Sections in italics are still in progress**
-
 The purpose of MinecraftByExample is to give simple working examples of the important concepts in Minecraft and Forge. If you're anything like me, a good code example is worth several screens worth of waffling explanation, and can very quickly explain the key concepts.  I also find it much easier to adapt and debug something that already works, than to have to synthesize something from scratch and spend hours trying to discover the missing bit of information I didn't know about.
 
 I've tried to keep the code simple and obvious and to resist the urge to be clever. The examples might not be the most efficient or succinct implementation, I've deliberately left the optimization to you.
@@ -16,6 +14,7 @@ If you want more information and explanatory text about the concepts, the follow
   - [Forge Modding articles][wuppy]
   - [The Official Forge documentation][forgedocs]
   - [Forge Tutorials listing][tutorials_forum]
+  - [List of Good Tutorials][list_of_tutorials]
 
 ####For earlier versions, see the relevant GitHub branch:
  - MBE for Forge 1.8: [1-8final][version1-8]
@@ -26,35 +25,36 @@ If you want more information and explanatory text about the concepts, the follow
   - [MBE01][01] - a simple cube
   - [MBE02][02] - a block with a more complicated shape
   - [MBE03][03] - a block (coloured signpost) with multiple variants- four colours, can be placed facing in four directions
-  - [MBE04][04] - *a camouflage ("secret door") block which copies the appearance of adjacent blocks - uses ISmartBlockModel*
-  - [MBE05][05] - *a 3D web which joins to neighbours in all six directions - uses ISmartBlockModel and ICustomModelLoader*
-  - [MBE06][06] - *several different types of block which use redstone*
+  - [MBE04][04] - a camouflage ("secret door") block which dynamically changes its appearance to match adjacent blocks - uses IBlockModel.getQuads() and onModelBakeEvent() 
+  - [MBE05][05] - a 3D web which joins to neighbours in all six directions - uses IBlockModel.getQuads() and ICustomModelLoader
+  - [MBE06][06] - several different types of block which use redstone
   - [MBE08][08] - how to add a creative tab for organising your custom blocks / items
 
 ### Items
   - [MBE10][10] - a simple item
   - [MBE11][11] - an item with multiple variants - rendered using multiple models and multiple layers
   - [MBE12][12] - an item that stores extra information in NBT, also illustrates the "in use" animation similar to drawing a bow
-  - [MBE13][13] - *customise Mining behaviour of Blocks and Items - several test classes that show how mining works*
-  - [MBE14][14] - *an interactive helper tool to adjust the ItemCameraTransforms for your custom item*
-  - [MBE15][15] - *a chessboard item with 1 - 64 pieces; uses ISmartItemModel*
+  - [MBE13][13] - customise Mining behaviour of Blocks and Items - several test classes that show how mining works
+  - [MBE14][14] - an interactive helper tool to adjust the ItemCameraTransforms for your custom item
+  - [MBE15][15] - a chessboard item with 1 - 64 pieces; uses ItemOverrideList.handleItemState(), IBlockModel.getQuads() and onModelBakeEvent()
+
 
 ### TileEntities
-  - [MBE20][20] - *using a tile entity to store information about a block - also shows examples of using NBT storage*
-  - [MBE21][21] - *using the TileEntitySpecialRenderer to render unusual shapes or animations*
+  - [MBE20][20] - using a tile entity to store information about a block - also shows examples of using NBT storage
+  - [MBE21][21] - using the TileEntitySpecialRenderer to render unusual shapes or animations
 
 ### Containers (Inventories)
-  - [MBE30][30] - *a simple container for storing items in the world - similar to a Chest*
-  - [MBE31][31] - *a functional container such as a Furnace or Crafting Table*
+  - [MBE30][30] - a simple container for storing items in the world - similar to a Chest
+  - [MBE31][31] - a functional container such as a Furnace or Crafting Table
 
 ### Recipes (Crafting/Furnace)
   - [MBE35][35] - some typical example crafting recipes and furnace (smelting) recipes
 
 ### Heads Up Display/Overlays
-  - [MBE40][40] - *simple customisations of the heads up display (hotbar, health meter)*
+  - [MBE40][40] - simple customisations of the heads up display (hotbar, health meter)
 
-### EntityFX - particle effects
-  - [MBE50][50] - *shows how to use vanilla EntityFX; also how to generate your own custom EntityFX*
+### Particles - particle effects
+  - [MBE50][50] - shows how to use vanilla Particles; also how to generate your own custom Particles
 
 ### Network
   - [MBE60][60] - send network messages between client and server
@@ -63,7 +63,7 @@ If you want more information and explanatory text about the concepts, the follow
   - [MBE70][70] - configuration file linked to the "mod options" button GUI on the mods list screen
 
 ### Testing tools
-  - [MBE75][75] - *a tool to help you automate testing of your classes in-game.*
+  - [MBE75][75] - a tool to help you automate testing of your classes in-game.
 
 ## Usage
   - You can browse directly in GitHub, or alternatively, download it as a zip and browse it locally.
@@ -96,12 +96,13 @@ Check out [this video][forge_installation] for more help installing Forge.
 [forgedocs]:http://mcforge.readthedocs.org/en/latest/
 [wuppy]: http://www.wuppy29.com/minecraft/modding-tutorials/forge-modding-1-8
 [tutorials_forum]: http://www.minecraftforge.net/forum/index.php/board,120.0.html
+[list_of_tutorials]: http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/modification-development/2716947-can-we-start-a-thorough-list-of-really-good
 
 [01]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe01_block_simple
 [02]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe02_block_partial
 [03]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe03_block_variants
-[04]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe04_block_smartblockmodel1
-[05]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe05_block_smartblockmodel2
+[04]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe04_block_dynamic_block_model1
+[05]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe05_block_dynamic_block_model2
 [06]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe06_redstone
 [08]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe08_creative_tab
 
@@ -110,7 +111,7 @@ Check out [this video][forge_installation] for more help installing Forge.
 [12]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe12_item_nbt_animate
 [13]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe14_item_camera_transforms
 [14]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe14_item_camera_transforms
-[15]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe15_item_smartitemmodel
+[15]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe15_item_dynamic_item_model
 
 [20]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe20_tileentity_data
 [21]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe21_tileentityspecialrenderer
@@ -121,7 +122,7 @@ Check out [this video][forge_installation] for more help installing Forge.
 
 [40]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe40_hud_overlay
 
-[50]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe50_entityfx
+[50]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe50_particle
 
 [60]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe60_network_messages
 
@@ -140,6 +141,8 @@ Check out [this video][forge_installation] for more help installing Forge.
 [version1-8-9]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-8-9final
 
 With thanks to these helpful folks:
+alvaropp, 
+yooksi,
 Brandon3035,
 twrightsman (greekphysique),
 Nephroid,

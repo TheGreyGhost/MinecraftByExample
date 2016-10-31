@@ -42,6 +42,7 @@ public class StartupCommon
 
   public static void initCommon()
   {
+
   }
 
   public static void postInitCommon()

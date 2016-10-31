@@ -1,8 +1,6 @@
 MinecraftByExample [1.10.2]
 ==========================
 
--Work in progress for update to 1.10.2-
-
 The purpose of MinecraftByExample is to give simple working examples of the important concepts in Minecraft and Forge.
 If you're anything like me, a good code example is worth several screens' worth of waffling explanation, and can very
 quickly explain the key concepts.  I also find it much easier to adapt and debug something that already works, than to have to
@@ -29,8 +27,9 @@ Blocks
   MBE01 - a simple cube
   MBE02 - a block with a more complicated shape
   MBE03 - a block (coloured signpost) with multiple variants- four colours, can be placed facing in four directions
-  MBE04 - a camouflage ("secret door") block which copies the appearance of adjacent blocks - uses ISmartBlockModel
-  MBE05 - a 3D web which joins to neighbours in all six directions - uses ISmartBlockModel and ICustomModelLoader
+  MBE04 - a camouflage ("secret door") block which copies the appearance of adjacent blocks - uses
+          IBlockModel.getQuads() and onModelBakeEvent()
+  MBE05 - a 3D web which joins to neighbours in all six directions - uses IBlockModel.getQuads() and ICustomModelLoader
   MBE06 - several different types of block which use redstone
   MBE08 - how to add a creative tab for organising your custom blocks / items
 
@@ -40,7 +39,7 @@ Items
   MBE12 - an item that stores extra information in NBT, also illustrates the "in use" animation similar to drawing a bow
   MBE13 - customise Mining behaviour of Blocks and Items - several test classes that show how mining works
   MBE14 - an interactive helper tool to adjust the ItemCameraTransforms for your custom item
-  MBE15 - a chessboard item with 1 - 64 pieces; uses ISmartItemModel
+  MBE15 - a chessboard item with 1 - 64 pieces; uses ItemOverrideList.handleItemState(), IBlockModel.getQuads() and onModelBakeEvent()
 
 TileEntities
   MBE20 - using a tile entity to store information about a block - also shows examples of using NBT storage
@@ -56,8 +55,8 @@ Recipes (Crafting and Furnaces)
 HeadsUpDisplay - overlays
   MBE40 - simple customisations of the heads up display (hotbar, health meter)
 
-EntityFX - particle effects
-  MBE50 - shows how to use vanilla EntityFX; also how to generate your own custom EntityFX
+Particle - particle effects
+  MBE50 - shows how to use vanilla Particles; also how to generate your own custom Particles
 
 Network
   MBE60 - send network messages between client and server
@@ -98,6 +97,8 @@ Some extra help for installation of forge:
 https://www.youtube.com/watch?v=8VEdtQLuLO0&feature=youtu.be
 
 With thank to these helpful folks:
+Alvaropp,
+yooksi,
 Brandon3035,
 twrightsman (greekphysique)
 Nephroid,

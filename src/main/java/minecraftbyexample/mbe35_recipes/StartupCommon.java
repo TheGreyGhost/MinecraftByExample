@@ -74,7 +74,7 @@ public class StartupCommon
                   'I', Items.IRON_INGOT
     });
 
-    // for comparison - this recipe only words with an undamaged wooden sword
+    // for comparison - this recipe only works with an undamaged wooden sword
     //   wooden sword (undamaged) in a cobblestone shell plus gold ingot makes gold sword
     GameRegistry.addRecipe(new ItemStack(Items.GOLDEN_SWORD), new Object[]{
             "CIC",

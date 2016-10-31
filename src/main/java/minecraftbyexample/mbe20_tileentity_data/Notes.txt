@@ -8,9 +8,11 @@ This example will show you
 1) how to create a Block class with an associated TileEntity
 2) how to create a TileEntity class and register it
 3) how to save and load the state of the TileEntity using NBT: writeToNBT() and readFromNBT()
-4) an overview of how to use NBT for a variety of different data types
-5) how to send the server TileEntity information to the client using packets: getDescriptionPacket() and onDataPacket()
-6) how to get your TileEntity updated every tick: implementing IUpdatePlayerListBox
+4) an overview of how to use NBT for a variety of different data types - see writeToNBT() and readFromNBT()
+5) how to send the server TileEntity information to the client using packets:
+   a) getUpdatePacket() and onDataPacket() - for single TileEntity updates
+   b) getUpdateTag() and handleUpdateTag() - for sending as part of a chunk update packet
+6) how to get your TileEntity updated every tick: implementing ITickable
 
 The pieces you need to understand are located in:
 Startup
@@ -34,7 +36,8 @@ NBTexplorer is a very useful tool to examine the structure of your NBT saved dat
 Common errors:
 TileEntity doesn't properly restore after loading a saved game - your NBT read/write code is wrong / mismatched. Did you
   forget the super.writeToNBT() and/or super.readFromNBT()?
-The TileEntity on the client doesn't synchronise properly  - getDescriptionPacket() and onDataPacket() may be wrong
+The TileEntity on the client doesn't synchronise properly  - getUpdatePacket(), getUpdateTag(), onDataPacket(), and/or
+                                                                handleUpdateTag() are probably wrong
 "{your tileentity class} is missing a mapping! This is a bug!" - you forgot to GameRegistry.registerTileEntity()
 
 
