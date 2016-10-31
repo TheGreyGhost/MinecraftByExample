@@ -54,7 +54,7 @@ These are caused when you have specified a filename or path which is not correct
 4) the folder structure of your assets folders is incorrect
 5) If using IntelliJ 14 - the assets isn't be copied to the right place, you need to apply a fix to your build.gradle,
   see here http://www.minecraftforge.net/forum/index.php/topic,21354.0.html
-6) You haven't correctly registered the variant names with ModelBakery and with the ItemModelMesher.  Useful places for breakpoints are
+6) You haven't correctly registered the variant names with ModelBakery and with the ModelLoader.setCustomModelResourceLocation.  Useful places for breakpoints are
   item models not found or missing textures -
     ModelBakery.loadItemModels();
     RenderItem.renderItemIntoGUI(ItemStack stack, int x, int y);
