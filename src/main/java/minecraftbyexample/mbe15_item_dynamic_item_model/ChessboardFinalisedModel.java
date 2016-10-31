@@ -46,7 +46,7 @@ public class ChessboardFinalisedModel implements IPerspectiveAwareModel
 		if (side != null) 
 			return parentModel.getQuads(state, side, rand);
 
-		List<BakedQuad> combinedQuadsList = new ArrayList(parentModel.getQuads(state, side, rand));
+		List<BakedQuad> combinedQuadsList = new ArrayList<BakedQuad>(parentModel.getQuads(state, side, rand));
 		combinedQuadsList.addAll(getChessPiecesQuads(numberOfChessPieces));
 		return combinedQuadsList;
 	}
@@ -173,10 +173,6 @@ public class ChessboardFinalisedModel implements IPerspectiveAwareModel
 			float columnCentrePosition = ((float)col + 0.5F)/PIECES_PER_ROW;
 			float rowCentrePosition = ((float)row + 0.5F)/NUMBER_OF_ROWS;
 
-			final int ITEM_RENDER_LAYER_NONE_SPECIFIED = -1;
-			final int ITEM_RENDER_LAYER0 = 0;
-			final int ITEM_RENDER_LAYER1 = 1;
-
 			/*
 			 *  Make a baked quad for each side of the chessboard i.e. front and back (south and north)
 			 *  add a small overlap to stop the quad from lying exactly on top of the existing face, 
@@ -185,10 +181,10 @@ public class ChessboardFinalisedModel implements IPerspectiveAwareModel
 			final float DELTA_FOR_OVERLAP = 0.001F;  
 
 			BakedQuad nextPieceFront = createBakedQuadForFace(columnCentrePosition, PIECE_WIDTH, rowCentrePosition, PIECE_HEIGHT,
-					-DISTANCE_BEHIND_SOUTH_FACE + DELTA_FOR_OVERLAP, ITEM_RENDER_LAYER0, chessPieceTexture, EnumFacing.SOUTH);
+					-DISTANCE_BEHIND_SOUTH_FACE + DELTA_FOR_OVERLAP, 0, chessPieceTexture, EnumFacing.SOUTH);
 			
 			BakedQuad nextPieceBack = createBakedQuadForFace(columnCentrePosition, PIECE_WIDTH, rowCentrePosition, PIECE_HEIGHT,
-					-DISTANCE_BEHIND_NORTH_FACE + DELTA_FOR_OVERLAP, ITEM_RENDER_LAYER0, chessPieceTexture, EnumFacing.NORTH);
+					-DISTANCE_BEHIND_NORTH_FACE + DELTA_FOR_OVERLAP, 0, chessPieceTexture, EnumFacing.NORTH);
 			
 			returnList.add(nextPieceFront);
 			returnList.add(nextPieceBack);

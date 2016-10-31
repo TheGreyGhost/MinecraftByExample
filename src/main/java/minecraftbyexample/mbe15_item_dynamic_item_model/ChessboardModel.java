@@ -32,7 +32,7 @@ public class ChessboardModel implements IPerspectiveAwareModel {
 	public ChessboardModel(IBakedModel i_baseChessboardModel)
 	{
 		baseChessboardModel = i_baseChessboardModel;
-		chessboardItemOverrideList = new ChessboardItemOverrideList(Collections.EMPTY_LIST);
+		chessboardItemOverrideList = new ChessboardItemOverrideList(Collections.emptyList());
 	}
 
 	/* 
