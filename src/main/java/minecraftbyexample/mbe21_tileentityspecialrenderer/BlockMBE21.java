@@ -1,5 +1,6 @@
 package minecraftbyexample.mbe21_tileentityspecialrenderer;
 
+import minecraftbyexample.mbe06_redstone.input.TileEntityRedstoneColouredLamp;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -24,8 +25,8 @@ import java.util.Random;
  *
  * BlockTileEntityData is a simple block with an associated TileEntity.  The base block is shaped like a hopper, the gem is
  *   rendered in the TESR.
- */
-public class BlockMBE21 extends Block implements ITileEntityProvider
+*/
+public class BlockMBE21 extends Block
 {
   public BlockMBE21()
   {
@@ -33,12 +34,16 @@ public class BlockMBE21 extends Block implements ITileEntityProvider
     this.setCreativeTab(CreativeTabs.BUILDING_BLOCKS);   // the block will appear on the Blocks tab in creative
   }
 
+  @Override
+  public boolean hasTileEntity(IBlockState state)
+  {
+    return true;
+  }
+
   // Called when the block is placed or loaded client side to get the tile entity for the block
   // Should return a new instance of the tile entity for the block
   @Override
-  public TileEntity createNewTileEntity(World worldIn, int meta) {
-    return new TileEntityMBE21();
-  }
+  public TileEntity createTileEntity(World world, IBlockState state) {return new TileEntityMBE21();}
 
   // Called just after the player places a block.  Sets the TileEntity's colour
   @Override

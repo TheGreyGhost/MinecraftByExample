@@ -32,7 +32,7 @@ import java.util.Random;
  * 2) our block needs to store the input power level, for later use when others call the getWeakPower().
  *    for the reason why, see http://greyminecraftcoder.blogspot.com.au/2015/11/redstone.html
  */
-public class BlockRedstoneMeter extends Block implements ITileEntityProvider
+public class BlockRedstoneMeter extends Block
 {
   public BlockRedstoneMeter()
   {
@@ -40,12 +40,16 @@ public class BlockRedstoneMeter extends Block implements ITileEntityProvider
     this.setCreativeTab(CreativeTabs.BUILDING_BLOCKS);   // the block will appear on the Blocks tab in creative
   }
 
+  @Override
+  public boolean hasTileEntity(IBlockState state)
+  {
+    return true;
+  }
+
   // Called when the block is placed or loaded client side to get the tile entity for the block
   // Should return a new instance of the tile entity for the block
   @Override
-  public TileEntity createNewTileEntity(World worldIn, int meta) {
-    return new TileEntityRedstoneMeter();
-  }
+  public TileEntity createTileEntity(World world, IBlockState state) {return new TileEntityRedstoneMeter();}
 
   // ------ methods relevant to redstone
   //  The methods below are used to provide power to neighbours.
@@ -174,7 +178,7 @@ public class BlockRedstoneMeter extends Block implements ITileEntityProvider
   public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state)
   {
     super.onBlockAdded(worldIn, pos, state);
-    worldIn.setTileEntity(pos, this.createNewTileEntity(worldIn, 0));
+    worldIn.setTileEntity(pos, this.createTileEntity(worldIn, state));
   }
 
   public void breakBlock(World worldIn, BlockPos pos, IBlockState state)

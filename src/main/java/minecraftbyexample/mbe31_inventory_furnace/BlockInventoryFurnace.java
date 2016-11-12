@@ -38,6 +38,11 @@ import javax.annotation.Nullable;
  *
  * The block model will change appearance depending on how many fuel slots are burning.
  * The amount of "block light" produced by the furnace will also depending on how many fuel slots are burning.
+ *
+ * //Note that in 1.10.*, extending BlockContainer can cause rendering problems if you don't extend getRenderType()
+ // If you don't want to extend BlockContainer, make sure to add the tile entity manually,
+ //   using hasTileEntity() and createTileEntity().  See BlockContainer for a couple of other important methods you may
+ //  need to implement.
  */
 public class BlockInventoryFurnace extends BlockContainer
 {
