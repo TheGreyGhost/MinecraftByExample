@@ -78,7 +78,7 @@ If you want more information and explanatory text about the concepts, the follow
         2. It will ask you whether you want to import the "unlinked gradle project".  This is optional.  If you choose no,
            later on (when you publish your mod) you will need to package it up using the command line gradlew build, if you
            choose yes you can run the gradle build task from inside IntelliJ.  For most users, there's no other difference.
-        3. If you imported the gradle project, you should run the gradle task 'getIntellijRuns' afterwards to get the Run and Debug
+        3. If you imported the gradle project, you should run the gradle task 'genIntellijRuns' afterwards to get the Run and Debug
            configurations.
     6. If using Eclipse:
         1. Open the Project.
