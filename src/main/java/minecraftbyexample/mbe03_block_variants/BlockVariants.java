@@ -11,10 +11,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -79,7 +76,7 @@ public class BlockVariants extends Block
 
   // by returning a null collision bounding box we stop the player from colliding with it
   @Override
-  public AxisAlignedBB getCollisionBoundingBox(IBlockState state, World worldIn, BlockPos pos)
+  public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess worldIn, BlockPos pos)
   {
     return NULL_AABB;
   }
@@ -106,7 +103,7 @@ public class BlockVariants extends Block
   // - the "metadata" value of the block is set to the colours metadata
   @Override
   @SideOnly(Side.CLIENT)
-  public void getSubBlocks(Item itemIn, CreativeTabs tab, List list)
+  public void getSubBlocks(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> list)
   {
     EnumColour[] allColours = EnumColour.values();
     for (EnumColour colour : allColours) {

@@ -1,3 +1,10 @@
+Changes from 1.10.2 to 1.11
+Block.getCollisionBoundingBox has changed signature to use IBlockAccess instead of World.  IBlockAccess is used for
+   methods which are called by multithreaded access, typically chunk rendering (compiling rendering lists)
+   or AI (entity decision logic)
+Block.getSubBlocks signature change to use NonNullList
+CreativeTabs.displayAllRelevantItems signature change to use NonNullList
+
 Changes from 1.8.9 to 1.10.2
 
 EntityPlayerMP.theItemInWorldManager -> EntityPlayerMP.interactionManager

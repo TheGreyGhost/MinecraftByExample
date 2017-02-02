@@ -4,6 +4,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -18,15 +19,15 @@ public class AllMbeItemsTab extends CreativeTabs {
     super(label);
   }
 
-  @Override
   @SideOnly(Side.CLIENT)
-  public Item getTabIconItem() {
-    return Items.BOOK;
+  @Override
+  public ItemStack getTabIconItem() {
+    return new ItemStack(Items.BOOK);
   }
 
-  @Override
   @SideOnly(Side.CLIENT)
-  public void displayAllRelevantItems(List<ItemStack> itemsToShowOnTab)
+  @Override
+  public void displayAllRelevantItems(NonNullList<ItemStack> itemsToShowOnTab)
   {
     for (Item item : Item.REGISTRY) {
       if (item != null) {

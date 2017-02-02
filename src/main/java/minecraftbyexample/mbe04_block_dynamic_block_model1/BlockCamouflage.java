@@ -71,7 +71,7 @@ public class BlockCamouflage extends Block {
 
   // by returning a null collision bounding box we stop the player from colliding with it
   @Override
-  public AxisAlignedBB getCollisionBoundingBox(IBlockState state, World worldIn, BlockPos pos)
+  public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess worldIn, BlockPos pos)
   {
     return NULL_AABB;
   }

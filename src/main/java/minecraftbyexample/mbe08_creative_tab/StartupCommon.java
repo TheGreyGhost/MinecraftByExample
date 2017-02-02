@@ -6,6 +6,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -51,8 +52,8 @@ public class StartupCommon
     customTab = new CreativeTabs("mbe08_creative_tab") {
       @Override
       @SideOnly(Side.CLIENT)
-      public Item getTabIconItem() {
-        return Items.GOLD_NUGGET;
+      public ItemStack getTabIconItem() {
+        return new ItemStack(Items.GOLD_NUGGET);
       }
     };
 
