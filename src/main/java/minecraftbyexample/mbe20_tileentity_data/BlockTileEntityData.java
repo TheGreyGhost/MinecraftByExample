@@ -1,5 +1,6 @@
 package minecraftbyexample.mbe20_tileentity_data;
 
+import minecraftbyexample.mbe06_redstone.input_and_output.TileEntityRedstoneMeter;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -21,10 +22,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  *
  * BlockTileEntityData is a ordinary solid cube with an associated TileEntity
  * For background information on blocks see here http://greyminecraftcoder.blogspot.com.au/2014/12/blocks-18.html
- * You can either make your block implement ITileEntityProvider, or alternatively
- * @Override hasTileEntity(IBlockState state)
  */
-public class BlockTileEntityData extends Block implements ITileEntityProvider
+public class BlockTileEntityData extends Block
 {
   public BlockTileEntityData()
   {
@@ -34,14 +33,16 @@ public class BlockTileEntityData extends Block implements ITileEntityProvider
 
   private final int TIMER_COUNTDOWN_TICKS = 20 * 10; // duration of the countdown, in ticks = 10 seconds
 
+  @Override
+  public boolean hasTileEntity(IBlockState state)
+  {
+    return true;
+  }
+
   // Called when the block is placed or loaded client side to get the tile entity for the block
   // Should return a new instance of the tile entity for the block
-  // Alternatively - you can @Override hasTileEntity(IBlockState state) and
-  //    createTileEntity(World world, IBlockState state) instead.
   @Override
-  public TileEntity createNewTileEntity(World worldIn, int meta) {
-    return new TileEntityData();
-  }
+  public TileEntity createTileEntity(World world, IBlockState state) {return new  TileEntityData();}
 
   // Called just after the player places a block.  Start the tileEntity's timer
   @Override

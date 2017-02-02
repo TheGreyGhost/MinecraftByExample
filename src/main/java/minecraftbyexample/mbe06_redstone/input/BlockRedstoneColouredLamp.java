@@ -1,5 +1,6 @@
 package minecraftbyexample.mbe06_redstone.input;
 
+import minecraftbyexample.mbe06_redstone.input_and_output.TileEntityRedstoneMeter;
 import minecraftbyexample.usefultools.UsefulFunctions;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
@@ -29,7 +30,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  *  changes its colour depending on their strengths.
  *
  */
-public class BlockRedstoneColouredLamp extends Block implements ITileEntityProvider
+public class BlockRedstoneColouredLamp extends Block
 {
   public BlockRedstoneColouredLamp()
   {
@@ -37,12 +38,16 @@ public class BlockRedstoneColouredLamp extends Block implements ITileEntityProvi
     this.setCreativeTab(CreativeTabs.BUILDING_BLOCKS);   // the block will appear on the Blocks tab in creative
   }
 
+  @Override
+  public boolean hasTileEntity(IBlockState state)
+  {
+    return true;
+  }
+
   // Called when the block is placed or loaded client side to get the tile entity for the block
   // Should return a new instance of the tile entity for the block
   @Override
-  public TileEntity createNewTileEntity(World worldIn, int meta) {
-    return new TileEntityRedstoneColouredLamp();
-  }
+  public TileEntity createTileEntity(World world, IBlockState state) {return new TileEntityRedstoneColouredLamp();}
 
   // Create the appropriate state for the block being placed - in this case, figure out which way the target is facing
   // Don't worry about the rgb colour yet, that's handled in  onBlockPlacedBy()

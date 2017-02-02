@@ -1,6 +1,10 @@
 package minecraftbyexample.testingarea;
 
 import minecraftbyexample.mbe01_block_simple.BlockSimple;
+import minecraftbyexample.mbe10_item_simple.ItemSimple;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemArmor;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
  * User: The Grey Ghost
@@ -22,9 +26,14 @@ public class StartupCommon
 
   public static BlockSimple block1;
   public static BlockSimple block2;
+  public static ItemArmorTickTest itemArmorTickTest;
 
   public static void preInitCommon()
   {
+//    itemArmorTickTest = (ItemArmorTickTest)(new ItemArmorTickTest(ItemArmor.ArmorMaterial.LEATHER, 0, EntityEquipmentSlot.HEAD));
+//    itemArmorTickTest.setRegistryName("test_item_simple_registry_name");
+//    GameRegistry.register(itemArmorTickTest);
+
 //    block1 = (BlockSimple)(new BlockSimple().setUnlocalizedName("test_block1"));
 //    block2 = (BlockSimple)(new BlockSimple().setUnlocalizedName("test_block2"));
 //    GameRegistry.registerBlock(block2, "test_block2");
