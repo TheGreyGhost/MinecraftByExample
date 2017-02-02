@@ -3,7 +3,7 @@
   "modid": "minecraftbyexample",
   "name": "Minecraft By Example",
   "description": "Minecraft By Example",
-  "version": "1.10.2h",
+  "version": "1.11a",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
