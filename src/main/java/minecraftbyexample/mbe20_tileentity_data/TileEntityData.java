@@ -162,7 +162,7 @@ public class TileEntityData extends TileEntity implements ITickable {
 		}
 
 		NBTTagCompound itemStackNBT = parentNBTTagCompound.getCompoundTag("testItemStack");
-		ItemStack readItemStack = ItemStack.loadItemStackFromNBT(itemStackNBT);
+		ItemStack readItemStack = new ItemStack(itemStackNBT);
 		if (!ItemStack.areItemStacksEqual(testItemStack, readItemStack)) {
 			System.err.println("testItemStack mismatch:" + readItemStack);
 		}

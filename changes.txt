@@ -4,6 +4,15 @@ Block.getCollisionBoundingBox has changed signature to use IBlockAccess instead 
    or AI (entity decision logic)
 Block.getSubBlocks signature change to use NonNullList
 CreativeTabs.displayAllRelevantItems signature change to use NonNullList
+Item.onItemRightClick: signature change.  get ItemStackIn from playerIn.getHeldItem(hand);
+ItemStack stacksize is now private.  Access through:
+   getter: func_190916_E() - this will change soon for sure!
+   setter: func_190920_e() - this will change soon for sure!
+An empty ItemStack is ItemStack.field_190927_a - use this instead of Null for ItemStacks
+ItemStack.loadItemStackFromNBT() has been changed to a constructor instead
+
+
+
 
 Changes from 1.8.9 to 1.10.2
 
@@ -12,6 +21,7 @@ BlockRenderLayer -> BlockRenderLayer
 GameRegistry.findItem -> Item.REGISTRY.getObject(new ResourceLocation(...))
 Material.rock etc have new names
 CreativeTabs.blocks etc have new names
+
 
 For better or for worse, they have changed the registration methods for blocks and items; ItemBlocks also require
   explicit registration of the Item (previously, Forge did it automatically).

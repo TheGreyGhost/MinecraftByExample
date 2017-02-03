@@ -76,7 +76,9 @@ public class ItemToolsTest extends ItemTool
     StartupCommon.methodCallLogger.enterMethod("ItemToolsTest.onBlockStartBreak", itemstack.getDisplayName() + ", " + pos + ", " + player.getName());
     Boolean result =  super.onBlockStartBreak(itemstack, pos, player);
     if (MinecraftByExample.proxy.playerIsInCreativeMode(player)) {
-      player.addChatComponentMessage(new TextComponentString("Currently in creative mode; switch to survival mode using /gamemode."));
+      final boolean PRINT_IN_CHAT_WINDOW = true;
+      player.addChatComponentMessage(new TextComponentString("Currently in creative mode; switch to survival mode using /gamemode."),
+              PRINT_IN_CHAT_WINDOW);
     }
     StartupCommon.methodCallLogger.exitMethod("ItemToolsTest.onBlockStartBreak", String.valueOf(result));
     return result;

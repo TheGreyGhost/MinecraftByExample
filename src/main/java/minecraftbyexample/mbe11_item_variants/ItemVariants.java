@@ -87,15 +87,16 @@ public class ItemVariants extends Item
   // called when the player starts holding right click;
   // --> start drinking the liquid (if the bottle isn't already empty)
   @Override
-  public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand hand)
+  public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand)
   {
-    int metadata = itemStackIn.getMetadata();
+    ItemStack itemStackHeld = playerIn.getHeldItem(hand);
+    int metadata = itemStackHeld.getMetadata();
     int fullnessBits = (metadata >> 2) & 0x07;
     EnumBottleFullness fullness = EnumBottleFullness.byMetadata(fullnessBits);
-    if (fullness == EnumBottleFullness.EMPTY) return new ActionResult(EnumActionResult.FAIL, itemStackIn);
+    if (fullness == EnumBottleFullness.EMPTY) return new ActionResult(EnumActionResult.FAIL, itemStackHeld);
 
     playerIn.setActiveHand(hand);
-    return new ActionResult(EnumActionResult.PASS, itemStackIn);
+    return new ActionResult(EnumActionResult.PASS, itemStackHeld);
   }
 
   // called when the player has held down right button for the full item use duration

@@ -43,8 +43,9 @@ public class ItemAirStrike extends Item
 
   // called when the item is right clicked in the air (or when clicked on a block but onItemUse returned false)
   @Override
-  public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand hand)
+  public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand)
   {
+    ItemStack itemStackIn = playerIn.getHeldItem(hand);
     if (!worldIn.isRemote) {  // don't execute on the server side!
       return new ActionResult(EnumActionResult.PASS, itemStackIn);
     }

@@ -76,8 +76,9 @@ public class ItemNBTAnimate extends Item
   // --> if the gem is unbound, store the current location
   //  if the gem is bound, start the charge up sequence
   @Override
-  public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand hand)
+  public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand)
   {
+    ItemStack itemStackIn = playerIn.getHeldItem(hand);
     NBTTagCompound nbtTagCompound = itemStackIn.getTagCompound();
 
     if (playerIn.isSneaking()) { // shift pressed; save (or overwrite) current location
@@ -101,7 +102,9 @@ public class ItemNBTAnimate extends Item
       return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemStackIn);
     } else {
       if (worldIn.isRemote) {  // only on the client side, else you will get two messages..
-        playerIn.addChatComponentMessage(new TextComponentString("Gem doesn't have a stored location! Shift right click to store your current location"));
+        final boolean PRINT_IN_CHAT_WINDOW = true;
+        playerIn.addChatComponentMessage(new TextComponentString("Gem doesn't have a stored location! Shift right click to store your current location"),
+                PRINT_IN_CHAT_WINDOW);
       }
       return new ActionResult<ItemStack>(EnumActionResult.FAIL, itemStackIn);
     }
