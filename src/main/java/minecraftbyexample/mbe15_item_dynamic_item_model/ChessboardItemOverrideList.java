@@ -12,32 +12,24 @@ import java.util.List;
 /**
  * Created by TGG on 20/10/2016.
  */
-public class ChessboardItemOverrideList extends ItemOverrideList {
-  public ChessboardItemOverrideList(List<ItemOverride> overridesIn)
-  {
-    super(overridesIn);
-  }
+public class ChessboardItemOverrideList extends ItemOverrideList 
+{
+	public ChessboardItemOverrideList(List<ItemOverride> overridesIn)
+	{
+		super(overridesIn);
+	}
 
-  /**
-   *  handleItemState() is used to create/select a suitable IBakedModel based on the itemstack information.
-   *  Typically, this will extract NBT information from the itemstack and customise the model based on that.
-   *  It's probably safest to return a new model or at least an immutable one, rather than modifying the
-   *    originalModel passed in, in case the rendering is multithreaded (block rendering has this problem, for example).
-   * @param originalModel
-   * @param stack
-   * @param world
-   * @param entity
-   * @return
-   */
-  @Override
-  public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity)
-  {
-    int numberOfChessPieces = 0;
-    if (stack != null) {
-      numberOfChessPieces = stack.stackSize;
-    }
-    return new ChessboardFinalisedModel(originalModel, numberOfChessPieces);
-  }
-
-
+	/**
+	 *  handleItemState() is used to create/select a suitable IBakedModel based on the itemstack information. <br>
+	 *  Typically, this will extract NBT information from the itemstack and customise the model based on that. <p>
+	 *  
+	 *  It's probably safest to return a new model or at least an immutable one, rather than modifying the <br>
+	 *  originalModel passed in, in case the rendering is multithreaded (block rendering has this problem, for example).
+	 */
+	@Override
+	public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity)
+	{
+		int numberOfChessPieces = stack != null ? stack.stackSize : 0;
+		return new ChessboardFinalisedModel(originalModel, numberOfChessPieces);
+	}
 }
