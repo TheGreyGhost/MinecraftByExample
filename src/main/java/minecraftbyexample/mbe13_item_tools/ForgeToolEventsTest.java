@@ -26,7 +26,6 @@ public class ForgeToolEventsTest
     // only show event if either the test block or the test item is involved
     if (   (event.getState() == null || event.getState().getBlock() != StartupCommon.blockToolTest)
         && (event.getEntityPlayer() == null
-            || event.getEntityPlayer().getItemStackFromSlot(EntityEquipmentSlot.MAINHAND) == null
             || event.getEntityPlayer().getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem() != StartupCommon.itemToolsTest)) {
       return;
     }
@@ -43,7 +42,6 @@ public class ForgeToolEventsTest
     // only show event if either the test block or the test item is involved
     if (   (event.getTargetBlock() != StartupCommon.blockToolTest)
             && (event.getEntityPlayer() == null
-            || event.getEntityPlayer().getItemStackFromSlot(EntityEquipmentSlot.MAINHAND) == null
             || event.getEntityPlayer().getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem() != StartupCommon.itemToolsTest)) {
     return;
   }
@@ -61,10 +59,8 @@ public class ForgeToolEventsTest
     if (event.getPos() != null && event.getWorld().getBlockState(event.getPos()) == StartupCommon.blockToolTest) {
     } else {
       ItemStack heldItemStack = (event.getEntityPlayer() == null) ?
-                                null : event.getEntityPlayer().getItemStackFromSlot(EntityEquipmentSlot.MAINHAND);
-      if (heldItemStack == null) {
-        return;
-      }
+                                ItemStack.field_190927_a :  //EMPTY_ITEM
+                                event.getEntityPlayer().getItemStackFromSlot(EntityEquipmentSlot.MAINHAND);
       Item heldItem = heldItemStack.getItem();
       if (heldItem != StartupCommon.itemToolsTest) {
         return;
@@ -87,7 +83,6 @@ public class ForgeToolEventsTest
     // only show event if either the test block or the test item is involved
     if (   (event.getWorld().getBlockState(event.getPos()) != StartupCommon.blockToolTest)
             && (event.getPlayer() == null
-            || event.getPlayer().getItemStackFromSlot(EntityEquipmentSlot.MAINHAND) == null
             || event.getPlayer().getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem() != StartupCommon.itemToolsTest)) {
       return;
     }
@@ -103,7 +98,6 @@ public class ForgeToolEventsTest
     // only show event if either the test block or the test item is involved
     if (   (event.getWorld().getBlockState(event.getPos()) != StartupCommon.blockToolTest)
             && (event.getHarvester() == null
-            || event.getHarvester().getItemStackFromSlot(EntityEquipmentSlot.MAINHAND) == null
             || event.getHarvester().getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem() != StartupCommon.itemToolsTest)) {
       return;
     }

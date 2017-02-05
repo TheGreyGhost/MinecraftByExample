@@ -125,7 +125,7 @@ public class ContainerInventoryFurnace extends Container {
 	public ItemStack transferStackInSlot(EntityPlayer player, int sourceSlotIndex)
 	{
 		Slot sourceSlot = (Slot)inventorySlots.get(sourceSlotIndex);
-		if (sourceSlot == null || !sourceSlot.getHasStack()) return null;
+		if (sourceSlot == null || !sourceSlot.getHasStack()) return ItemStack.field_190927_a;  //EMPTY_ITEM
 		ItemStack sourceStack = sourceSlot.getStack();
 		ItemStack copyOfSourceStack = sourceStack.copy();
 
@@ -133,37 +133,37 @@ public class ContainerInventoryFurnace extends Container {
 		if (sourceSlotIndex >= VANILLA_FIRST_SLOT_INDEX && sourceSlotIndex < VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT) {
 			// This is a vanilla container slot so merge the stack into one of the furnace slots
 			// If the stack is smeltable try to merge merge the stack into the input slots
-			if (TileInventoryFurnace.getSmeltingResultForItem(sourceStack) != null){
+			if (!TileInventoryFurnace.getSmeltingResultForItem(sourceStack).func_190926_b()){  //isEmptyItem
 				if (!mergeItemStack(sourceStack, FIRST_INPUT_SLOT_INDEX, FIRST_INPUT_SLOT_INDEX + INPUT_SLOTS_COUNT, false)){
-					return null;
+					return ItemStack.field_190927_a;  //EMPTY_ITEM;
 				}
 			}	else if (TileInventoryFurnace.getItemBurnTime(sourceStack) > 0) {
 				if (!mergeItemStack(sourceStack, FIRST_FUEL_SLOT_INDEX, FIRST_FUEL_SLOT_INDEX + FUEL_SLOTS_COUNT, true)) {
 					// Setting the boolean to true places the stack in the bottom slot first
-					return null;
+					return ItemStack.field_190927_a;  //EMPTY_ITEM;
 				}
 			}	else {
-				return null;
+				return ItemStack.field_190927_a;  //EMPTY_ITEM;
 			}
 		} else if (sourceSlotIndex >= FIRST_FUEL_SLOT_INDEX && sourceSlotIndex < FIRST_FUEL_SLOT_INDEX + FURNACE_SLOTS_COUNT) {
 			// This is a furnace slot so merge the stack into the players inventory: try the hotbar first and then the main inventory
 			//   because the main inventory slots are immediately after the hotbar slots, we can just merge with a single call
 			if (!mergeItemStack(sourceStack, VANILLA_FIRST_SLOT_INDEX, VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT, false)) {
-				return null;
+				return ItemStack.field_190927_a;  //EMPTY_ITEM;
 			}
 		} else {
 			System.err.print("Invalid slotIndex:" + sourceSlotIndex);
-			return null;
+			return ItemStack.field_190927_a;  //EMPTY_ITEM;
 		}
 
 		// If stack size == 0 (the entire stack was moved) set slot contents to null
-		if (sourceStack.stackSize == 0) {
-			sourceSlot.putStack(null);
+		if (sourceStack.func_190916_E() == 0) {  //getStackSize()
+			sourceSlot.putStack(ItemStack.field_190927_a);  // Empty Item
 		} else {
 			sourceSlot.onSlotChanged();
 		}
 
-		sourceSlot.onPickupFromSlot(player, sourceStack);
+		sourceSlot.func_190901_a(player, sourceStack);  // onPickupFromSlot()
 		return copyOfSourceStack;
 	}
 

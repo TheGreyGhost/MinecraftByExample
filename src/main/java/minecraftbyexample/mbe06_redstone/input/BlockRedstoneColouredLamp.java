@@ -140,7 +140,7 @@ public class BlockRedstoneColouredLamp extends Block
   //   information to the client side
   // I have no idea why this method is deprecated in 10.1.2.
   @Override
-  public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block neighborBlock)
+  public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block neighborBlock, BlockPos neighborPos)
   {
     TileEntity tileentity = worldIn.getTileEntity(pos);
     if (tileentity instanceof TileEntityRedstoneColouredLamp) { // prevent a crash if not the right type, or is null

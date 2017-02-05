@@ -49,7 +49,7 @@ public class EventHandlerOverlay
     final int LAST_HOTBAR_SLOT_PLUS_ONE = FIRST_HOTBAR_SLOT + entityPlayerSP.inventory.getHotbarSize();
     for (int i = FIRST_HOTBAR_SLOT; i < LAST_HOTBAR_SLOT_PLUS_ONE; ++i) {
       ItemStack slotItemStack = entityPlayerSP.inventory.getStackInSlot(i);
-      if (slotItemStack != null && slotItemStack.getItem() == StartupCommon.itemHUDactivator) {
+      if (slotItemStack.getItem() == StartupCommon.itemHUDactivator) {
         foundInHotbar = true;
         break;
       }

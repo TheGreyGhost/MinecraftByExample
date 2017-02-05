@@ -125,8 +125,9 @@ public class BlockRedstoneVariableSource extends Block
   // Need to trigger an update and notify all neighbours to make sure the new power setting takes effect.
   @Override
   public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand,
-                                  @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ)
+                                  EnumFacing side, float hitX, float hitY, float hitZ)
   {
+    ItemStack heldItem = playerIn.getHeldItem(hand);
     if (!playerIn.capabilities.allowEdit) {
       return false;
     } else {
@@ -143,7 +144,9 @@ public class BlockRedstoneVariableSource extends Block
   @Override
   public void breakBlock(World worldIn, BlockPos pos, IBlockState state)
   {
-    worldIn.notifyNeighborsOfStateChange(pos, this);
+    final boolean CASCADE_UPDATE = false;  // I'm not sure what this flag does, but vanilla always sets it to false
+    // except for calls by World.setBlockState()
+    worldIn.notifyNeighborsOfStateChange(pos, this, CASCADE_UPDATE);
     super.breakBlock(worldIn, pos, state);
   }
 

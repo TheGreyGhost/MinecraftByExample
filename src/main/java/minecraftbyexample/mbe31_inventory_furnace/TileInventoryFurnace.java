@@ -162,17 +162,17 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 				++burningCount;
 			}
 			if (burnTimeRemaining[i] == 0) {
-				if (itemStacks[fuelSlotNumber] != null && getItemBurnTime(itemStacks[fuelSlotNumber]) > 0) {
+				if (!itemStacks[fuelSlotNumber].func_190926_b() && getItemBurnTime(itemStacks[fuelSlotNumber]) > 0) {  // isEmpty()
 					// If the stack in this slot is not null and is fuel, set burnTimeRemaining & burnTimeInitialValue to the
 					// item's burn time and decrease the stack size
 					burnTimeRemaining[i] = burnTimeInitialValue[i] = getItemBurnTime(itemStacks[fuelSlotNumber]);
-					--itemStacks[fuelSlotNumber].stackSize;
+					itemStacks[fuelSlotNumber].func_190918_g(1);  // decreaseStackSize()
 					++burningCount;
 					inventoryChanged = true;
 				// If the stack size now equals 0 set the slot contents to the items container item. This is for fuel
 				// items such as lava buckets so that the bucket is not consumed. If the item dose not have
 				// a container item getContainerItem returns null which sets the slot contents to null
-					if (itemStacks[fuelSlotNumber].stackSize == 0) {
+					if (itemStacks[fuelSlotNumber].func_190916_E() == 0) {  //getStackSize()
 						itemStacks[fuelSlotNumber] = itemStacks[fuelSlotNumber].getItem().getContainerItem(itemStacks[fuelSlotNumber]);
 					}
 				}
@@ -203,17 +203,17 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 	{
 		Integer firstSuitableInputSlot = null;
 		Integer firstSuitableOutputSlot = null;
-		ItemStack result = null;
+		ItemStack result = ItemStack.field_190927_a;  //EMPTY_ITEM
 
 		// finds the first input slot which is smeltable and whose result fits into an output slot (stacking if possible)
 		for (int inputSlot = FIRST_INPUT_SLOT; inputSlot < FIRST_INPUT_SLOT + INPUT_SLOTS_COUNT; inputSlot++)	{
-			if (itemStacks[inputSlot] != null) {
+			if (!itemStacks[inputSlot].func_190926_b()) {  //isEmpty()
 				result = getSmeltingResultForItem(itemStacks[inputSlot]);
-  			if (result != null) {
+  			if (!result.func_190926_b()) {  //isEmpty()
 					// find the first suitable output slot- either empty, or with identical item that has enough space
 					for (int outputSlot = FIRST_OUTPUT_SLOT; outputSlot < FIRST_OUTPUT_SLOT + OUTPUT_SLOTS_COUNT; outputSlot++) {
 						ItemStack outputStack = itemStacks[outputSlot];
-						if (outputStack == null) {
+						if (outputStack.func_190926_b()) {  //isEmpty()
 							firstSuitableInputSlot = inputSlot;
 							firstSuitableOutputSlot = outputSlot;
 							break;
@@ -221,7 +221,7 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 
 						if (outputStack.getItem() == result.getItem() && (!outputStack.getHasSubtypes() || outputStack.getMetadata() == outputStack.getMetadata())
 										&& ItemStack.areItemStackTagsEqual(outputStack, result)) {
-							int combinedSize = itemStacks[outputSlot].stackSize + result.stackSize;
+							int combinedSize = itemStacks[outputSlot].func_190916_E() + result.func_190916_E();  //getStackSize()
 							if (combinedSize <= getInventoryStackLimit() && combinedSize <= itemStacks[outputSlot].getMaxStackSize()) {
 								firstSuitableInputSlot = inputSlot;
 								firstSuitableOutputSlot = outputSlot;
@@ -238,12 +238,15 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 		if (!performSmelt) return true;
 
 		// alter input and output
-		itemStacks[firstSuitableInputSlot].stackSize--;
-		if (itemStacks[firstSuitableInputSlot].stackSize <=0) itemStacks[firstSuitableInputSlot] = null;
-		if (itemStacks[firstSuitableOutputSlot] == null) {
+		itemStacks[firstSuitableInputSlot].func_190918_g(1);  // decreaseStackSize()
+		if (itemStacks[firstSuitableInputSlot].func_190916_E() <= 0) {
+      itemStacks[firstSuitableInputSlot] = ItemStack.field_190927_a;  //getStackSize(), EmptyItem
+    }
+		if (itemStacks[firstSuitableOutputSlot].func_190926_b()) {  // isEmpty()
 			itemStacks[firstSuitableOutputSlot] = result.copy(); // Use deep .copy() to avoid altering the recipe
 		} else {
-			itemStacks[firstSuitableOutputSlot].stackSize += result.stackSize;
+      int newStackSize = itemStacks[firstSuitableOutputSlot].func_190916_E() + result.func_190916_E();
+			itemStacks[firstSuitableOutputSlot].func_190920_e(newStackSize) ;  //setStackSize(), getStackSize()
 		}
 		markDirty();
 		return true;
@@ -265,6 +268,19 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 		return itemStacks.length;
 	}
 
+	// returns true if all of the slots in the inventory are empty
+	@Override
+	public boolean func_191420_l()
+	{
+		for (ItemStack itemstack : itemStacks) {
+			if (!itemstack.func_190926_b()) {  // isEmpty()
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	// Gets the stack in the given slot
 	@Override
 	public ItemStack getStackInSlot(int i) {
@@ -280,16 +296,16 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 	@Override
 	public ItemStack decrStackSize(int slotIndex, int count) {
 		ItemStack itemStackInSlot = getStackInSlot(slotIndex);
-		if (itemStackInSlot == null) return null;
+		if (itemStackInSlot.func_190926_b()) return ItemStack.field_190927_a;  //isEmpty(), EMPTY_ITEM
 
 		ItemStack itemStackRemoved;
-		if (itemStackInSlot.stackSize <= count) {
+		if (itemStackInSlot.func_190916_E() <= count) { //getStackSize
 			itemStackRemoved = itemStackInSlot;
-			setInventorySlotContents(slotIndex, null);
+			setInventorySlotContents(slotIndex, ItemStack.field_190927_a); // EMPTY_ITEM
 		} else {
 			itemStackRemoved = itemStackInSlot.splitStack(count);
-			if (itemStackInSlot.stackSize == 0) {
-				setInventorySlotContents(slotIndex, null);
+			if (itemStackInSlot.func_190916_E() == 0) { //getStackSize
+				setInventorySlotContents(slotIndex, ItemStack.field_190927_a); //EMPTY_ITEM
 			}
 		}
 		markDirty();
@@ -300,8 +316,8 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 	@Override
 	public void setInventorySlotContents(int slotIndex, ItemStack itemstack) {
 		itemStacks[slotIndex] = itemstack;
-		if (itemstack != null && itemstack.stackSize > getInventoryStackLimit()) {
-			itemstack.stackSize = getInventoryStackLimit();
+		if (!itemstack.func_190926_b() && itemstack.func_190916_E() > getInventoryStackLimit()) {  // isEmpty();  getStackSize()
+			itemstack.func_190920_e(getInventoryStackLimit());  //setStackSize()
 		}
 		markDirty();
 	}
@@ -365,7 +381,7 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 		// Each of these NBTTagCompound are then inserted into NBTTagList, which is similar to an array.
 		NBTTagList dataForAllSlots = new NBTTagList();
 		for (int i = 0; i < this.itemStacks.length; ++i) {
-			if (this.itemStacks[i] != null) {
+			if (!this.itemStacks[i].func_190926_b()) {  //isEmpty()
 				NBTTagCompound dataForThisSlot = new NBTTagCompound();
 				dataForThisSlot.setByte("Slot", (byte) i);
 				this.itemStacks[i].writeToNBT(dataForThisSlot);
@@ -390,12 +406,12 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 		final byte NBT_TYPE_COMPOUND = 10;       // See NBTBase.createNewByType() for a listing
 		NBTTagList dataForAllSlots = nbtTagCompound.getTagList("Items", NBT_TYPE_COMPOUND);
 
-		Arrays.fill(itemStacks, null);           // set all slots to empty
+		Arrays.fill(itemStacks, ItemStack.field_190927_a);           // set all slots to empty EMPTY_ITEM
 		for (int i = 0; i < dataForAllSlots.tagCount(); ++i) {
 			NBTTagCompound dataForOneSlot = dataForAllSlots.getCompoundTagAt(i);
 			byte slotNumber = dataForOneSlot.getByte("Slot");
 			if (slotNumber >= 0 && slotNumber < this.itemStacks.length) {
-				this.itemStacks[slotNumber] = ItemStack.loadItemStackFromNBT(dataForOneSlot);
+				this.itemStacks[slotNumber] = new ItemStack(dataForOneSlot);
 			}
 		}
 
@@ -447,7 +463,7 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 	// set all slots to empty
 	@Override
 	public void clear() {
-		Arrays.fill(itemStacks, null);
+		Arrays.fill(itemStacks, ItemStack.field_190927_a);  //EMPTY_ITEM
 	}
 
 	// will add a key for this container to the lang file so we can name it in the GUI
@@ -530,7 +546,7 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 	@Override
 	public ItemStack removeStackFromSlot(int slotIndex) {
 		ItemStack itemStack = getStackInSlot(slotIndex);
-		if (itemStack != null) setInventorySlotContents(slotIndex, null);
+		if (!itemStack.func_190926_b()) setInventorySlotContents(slotIndex, ItemStack.field_190927_a);  //isEmpty();  EMPTY_ITEM
 		return itemStack;
 	}
 

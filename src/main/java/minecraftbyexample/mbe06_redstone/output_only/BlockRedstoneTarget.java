@@ -128,9 +128,11 @@ public class BlockRedstoneTarget extends Block
 
         // notify my immediate neighbours, and also the immediate neighbours of the block I'm mounted on, because I
         //  am giving strong power to it.
-        worldIn.notifyNeighborsOfStateChange(pos, this);
+        final boolean CASCADE_UPDATE = false;  // I'm not sure what this flag does, but vanilla always sets it to false
+        // except for calls by World.setBlockState()
+        worldIn.notifyNeighborsOfStateChange(pos, this, CASCADE_UPDATE);
         EnumFacing directionOfNeighbouringWall = targetFacing.getOpposite();
-        worldIn.notifyNeighborsOfStateChange(pos.offset(directionOfNeighbouringWall), this);
+        worldIn.notifyNeighborsOfStateChange(pos.offset(directionOfNeighbouringWall), this, CASCADE_UPDATE);
       }
     }
   }
@@ -236,7 +238,7 @@ public class BlockRedstoneTarget extends Block
 
   // When a neighbour changes - check if the supporting wall has been demolished
   @Override
-  public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block neighborBlock)
+  public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block neighborBlock, BlockPos neighbourPos)
   {
     if (!worldIn.isRemote) { // server side only
       EnumFacing enumfacing = (EnumFacing) state.getValue(PROPERTYFACING);

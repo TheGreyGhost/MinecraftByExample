@@ -139,7 +139,7 @@ public class StartupCommon
       public int getBurnTime(ItemStack fuel) {
         final int BURN_TIME_SECONDS = 5;
         final int TICKS_PER_SECOND = 20;
-        if (fuel != null && fuel.getItem() == Items.WHEAT) {
+        if (fuel.getItem() == Items.WHEAT) {
           return BURN_TIME_SECONDS * TICKS_PER_SECOND;
         } else {
           return 0;

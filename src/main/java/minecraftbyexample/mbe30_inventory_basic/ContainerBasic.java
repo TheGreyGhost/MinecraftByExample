@@ -92,7 +92,7 @@ public class ContainerBasic extends Container {
 	public ItemStack transferStackInSlot(EntityPlayer player, int sourceSlotIndex)
 	{
 		Slot sourceSlot = (Slot)inventorySlots.get(sourceSlotIndex);
-		if (sourceSlot == null || !sourceSlot.getHasStack()) return null;
+		if (sourceSlot == null || !sourceSlot.getHasStack()) return ItemStack.field_190927_a;  //EMPTY_ITEM
 		ItemStack sourceStack = sourceSlot.getStack();
 		ItemStack copyOfSourceStack = sourceStack.copy();
 
@@ -100,26 +100,26 @@ public class ContainerBasic extends Container {
 		if (sourceSlotIndex >= VANILLA_FIRST_SLOT_INDEX && sourceSlotIndex < VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT) {
 			// This is a vanilla container slot so merge the stack into the tile inventory
 			if (!mergeItemStack(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX, TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_SLOT_COUNT, false)){
-				return null;
+				return ItemStack.field_190927_a;  // EMPTY_ITEM
 			}
 		} else if (sourceSlotIndex >= TE_INVENTORY_FIRST_SLOT_INDEX && sourceSlotIndex < TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_SLOT_COUNT) {
 			// This is a TE slot so merge the stack into the players inventory
 			if (!mergeItemStack(sourceStack, VANILLA_FIRST_SLOT_INDEX, VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT, false)) {
-				return null;
+				return ItemStack.field_190927_a;   // EMPTY_ITEM
 			}
 		} else {
 			System.err.print("Invalid slotIndex:" + sourceSlotIndex);
-			return null;
+			return ItemStack.field_190927_a;   // EMPTY_ITEM
 		}
 
 		// If stack size == 0 (the entire stack was moved) set slot contents to null
-		if (sourceStack.stackSize == 0) {
-			sourceSlot.putStack(null);
+		if (sourceStack.func_190916_E() == 0) {  // getStackSize
+			sourceSlot.putStack(ItemStack.field_190927_a);  // EMPTY_ITEM
 		} else {
 			sourceSlot.onSlotChanged();
 		}
 
-		sourceSlot.onPickupFromSlot(player, sourceStack);
+		sourceSlot.func_190901_a(player, sourceStack);  //onPickupFromSlot()
 		return copyOfSourceStack;
 	}
 

@@ -67,7 +67,8 @@ public class BlockInventoryBasic extends BlockContainer
 	// Called when the block is right clicked
 	// In this block it is used to open the blocks gui when right clicked by a player
 	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand,
+																	EnumFacing side, float hitX, float hitY, float hitZ) {
 		// Uses the gui handler registered to your mod to open the gui for the given gui id
 		// open on the server side only  (not sure why you shouldn't open client side too... vanilla doesn't, so we better not either)
 		if (worldIn.isRemote) return true;
@@ -86,7 +87,7 @@ public class BlockInventoryBasic extends BlockContainer
 			// For each slot in the inventory
 			for (int i = 0; i < inventory.getSizeInventory(); i++){
 				// If the slot is not empty
-				if (inventory.getStackInSlot(i) != null)
+				if (!inventory.getStackInSlot(i).func_190926_b())  // isEmpty
 				{
 					// Create a new entity item with the item stack in the slot
 					EntityItem item = new EntityItem(worldIn, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, inventory.getStackInSlot(i));

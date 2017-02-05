@@ -62,11 +62,12 @@ public class ItemTestRunner extends Item
   // called on the client and again on the server
   // execute your test code on the appropriate side....
   @Override
-    public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand
-    hand) {
-
-    if (itemStackIn == null) return new ActionResult<ItemStack>(EnumActionResult.FAIL, itemStackIn);  // just in case.
-    int testNumber = itemStackIn.stackSize;
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand) {
+    ItemStack itemStackIn = playerIn.getHeldItem(hand);
+    if (itemStackIn.func_190926_b()) {  // returns true if the item is empty (player is holding nothing)
+      return new ActionResult<ItemStack>(EnumActionResult.FAIL, itemStackIn);  // just in case.
+    }
+    int testNumber = itemStackIn.func_190916_E(); // getStackSize()
     TestRunner testRunner = new TestRunner();
 
     if (worldIn.isRemote) {

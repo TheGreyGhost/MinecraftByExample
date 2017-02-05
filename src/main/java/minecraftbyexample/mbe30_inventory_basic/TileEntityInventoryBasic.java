@@ -31,6 +31,19 @@ public class TileEntityInventoryBasic extends TileEntity implements IInventory {
 		return itemStacks.length;
 	}
 
+  // returns true if all of the slots in the inventory are empty
+	@Override
+	public boolean func_191420_l()
+  {
+    for (ItemStack itemstack : itemStacks) {
+      if (!itemstack.func_190926_b()) {  // isEmpty()
+        return false;
+      }
+    }
+
+    return true;
+  }
+
 	// Gets the stack in the given slot
 	@Override
 	public ItemStack getStackInSlot(int slotIndex) {
@@ -46,16 +59,16 @@ public class TileEntityInventoryBasic extends TileEntity implements IInventory {
 	@Override
 	public ItemStack decrStackSize(int slotIndex, int count) {
 		ItemStack itemStackInSlot = getStackInSlot(slotIndex);
-		if (itemStackInSlot == null) return null;
+		if (itemStackInSlot.func_190926_b()) return ItemStack.field_190927_a;  // isEmpt();   EMPTY_ITEM
 
 		ItemStack itemStackRemoved;
-		if (itemStackInSlot.stackSize <= count) {
+		if (itemStackInSlot.func_190916_E() <= count) {  // getStackSize()
 			itemStackRemoved = itemStackInSlot;
-			setInventorySlotContents(slotIndex, null);
+			setInventorySlotContents(slotIndex, ItemStack.field_190927_a);   // EMPTY_ITEM
 		} else {
 			itemStackRemoved = itemStackInSlot.splitStack(count);
-			if (itemStackInSlot.stackSize == 0) {
-				setInventorySlotContents(slotIndex, null);
+			if (itemStackInSlot.func_190916_E() == 0) { // getStackSize
+				setInventorySlotContents(slotIndex, ItemStack.field_190927_a);   // EMPTY_ITEM
 			}
 		}
 	  markDirty();
@@ -66,8 +79,8 @@ public class TileEntityInventoryBasic extends TileEntity implements IInventory {
 	@Override
 	public void setInventorySlotContents(int slotIndex, ItemStack itemstack) {
 		itemStacks[slotIndex] = itemstack;
-		if (itemstack != null && itemstack.stackSize > getInventoryStackLimit()) {
-			itemstack.stackSize = getInventoryStackLimit();
+		if (itemstack.func_190926_b() && itemstack.func_190916_E() > getInventoryStackLimit()) { //  isEmpty(); getStackSize()
+			itemstack.func_190920_e(getInventoryStackLimit());  //setStackSize
 		}
 		markDirty();
 	}
@@ -114,7 +127,7 @@ public class TileEntityInventoryBasic extends TileEntity implements IInventory {
 		// Each of these NBTTagCompound are then inserted into NBTTagList, which is similar to an array.
 		NBTTagList dataForAllSlots = new NBTTagList();
 		for (int i = 0; i < this.itemStacks.length; ++i) {
-			if (this.itemStacks[i] != null)	{
+			if (!this.itemStacks[i].func_190926_b())	{ //isEmpty()
 				NBTTagCompound dataForThisSlot = new NBTTagCompound();
 				dataForThisSlot.setByte("Slot", (byte) i);
 				this.itemStacks[i].writeToNBT(dataForThisSlot);
@@ -135,13 +148,13 @@ public class TileEntityInventoryBasic extends TileEntity implements IInventory {
 		final byte NBT_TYPE_COMPOUND = 10;       // See NBTBase.createNewByType() for a listing
 		NBTTagList dataForAllSlots = parentNBTTagCompound.getTagList("Items", NBT_TYPE_COMPOUND);
 
-		Arrays.fill(itemStacks, null);           // set all slots to empty
+		Arrays.fill(itemStacks, ItemStack.field_190927_a);           // set all slots to empty EMPTY_ITEM
 		for (int i = 0; i < dataForAllSlots.tagCount(); ++i) {
 			NBTTagCompound dataForOneSlot = dataForAllSlots.getCompoundTagAt(i);
 			int slotIndex = dataForOneSlot.getByte("Slot") & 255;
 
 			if (slotIndex >= 0 && slotIndex < this.itemStacks.length) {
-				this.itemStacks[slotIndex] = ItemStack.loadItemStackFromNBT(dataForOneSlot);
+				this.itemStacks[slotIndex] = new ItemStack(dataForOneSlot);
 			}
 		}
 	}
@@ -149,7 +162,7 @@ public class TileEntityInventoryBasic extends TileEntity implements IInventory {
 	// set all slots to empty
 	@Override
 	public void clear() {
-		Arrays.fill(itemStacks, null);
+		Arrays.fill(itemStacks, ItemStack.field_190927_a);  //empty item
 	}
 
 	// will add a key for this container to the lang file so we can name it in the GUI
@@ -181,7 +194,7 @@ public class TileEntityInventoryBasic extends TileEntity implements IInventory {
 	@Override
 	public ItemStack removeStackFromSlot(int slotIndex) {
 		ItemStack itemStack = getStackInSlot(slotIndex);
-		if (itemStack != null) setInventorySlotContents(slotIndex, null);
+		if (!itemStack.func_190926_b()) setInventorySlotContents(slotIndex, ItemStack.field_190927_a);  //isEmpty(), EMPTY_ITEM
 		return itemStack;
 	}
 

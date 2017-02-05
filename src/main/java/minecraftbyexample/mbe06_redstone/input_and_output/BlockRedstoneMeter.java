@@ -134,7 +134,7 @@ public class BlockRedstoneMeter extends Block
   // Called when a neighbouring block changes.
   // Only called on the server side- so it doesn't help us alter rendering on the client side.
   @Override
-  public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block neighborBlock)
+  public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos neighborPos)
   {
     // calculate the power level from neighbours and store in our TileEntity for later use in isProvidingWeakPower()
     int powerLevel = getPowerLevelInput(worldIn, pos);
@@ -147,7 +147,9 @@ public class BlockRedstoneMeter extends Block
           // this method will also schedule the next tick using call world.scheduleUpdate(pos, block, lastTickDelay);
 
       if (currentOutputState != tileEntityRedstoneMeter.getOutputState()) {
-        worldIn.notifyNeighborsOfStateChange(pos, this);
+        final boolean CASCADE_UPDATE = false;  // I'm not sure what this flag does, but vanilla always sets it to false
+          // except for calls by World.setBlockState()
+        worldIn.notifyNeighborsOfStateChange(pos, this, CASCADE_UPDATE);
       }
     }
   }
@@ -167,7 +169,9 @@ public class BlockRedstoneMeter extends Block
         // this method will also schedule the next tick using call world.scheduleUpdate(pos, block, lastTickDelay);
 
       if (currentOutputState != tileEntityRedstoneMeter.getOutputState()) {
-        worldIn.notifyNeighborsOfStateChange(pos, this);
+        final boolean CASCADE_UPDATE = false;  // I'm not sure what this flag does, but vanilla always sets it to false
+        // except for calls by World.setBlockState()
+        worldIn.notifyNeighborsOfStateChange(pos, this, CASCADE_UPDATE);
       }
     }
   }
@@ -185,7 +189,9 @@ public class BlockRedstoneMeter extends Block
   {
     super.breakBlock(worldIn, pos, state);
     worldIn.removeTileEntity(pos);
-    worldIn.notifyNeighborsOfStateChange(pos, this);
+    final boolean CASCADE_UPDATE = false;  // I'm not sure what this flag does, but vanilla always sets it to false
+    // except for calls by World.setBlockState()
+    worldIn.notifyNeighborsOfStateChange(pos, this, CASCADE_UPDATE);
   }
 
   // -----------------
