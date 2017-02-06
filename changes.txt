@@ -8,10 +8,11 @@ An empty ItemStack is ItemStack.field_190927_a - use this instead of Null for It
 Block.getCollisionBoundingBox has changed signature to use IBlockAccess instead of World.  IBlockAccess is used for
    methods which are called by multithreaded access, typically chunk rendering (compiling rendering lists)
    or AI (entity decision logic)
-Block.getSubBlocks signature change to use NonNullList
+Block.getSubBlocks() signature change to use NonNullList
 CreativeTabs.displayAllRelevantItems signature change to use NonNullList
 Item.onItemRightClick: signature change.  get ItemStackIn from playerIn.getHeldItem(hand);
 Block.onBlockActivated : signature change.  get held ItemStack from playerIn.getHeldItem(hand);
+Item.onItemRightClick() and .onItemUse(): signature change.  get ItemStackIn from playerIn.getHeldItem(hand);
 ItemStack stacksize is now private.  Access through:
    getter: func_190916_E() - this will change soon for sure!
    setter: func_190920_e() - this will change soon for sure!

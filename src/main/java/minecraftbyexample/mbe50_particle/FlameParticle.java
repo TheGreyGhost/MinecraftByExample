@@ -102,7 +102,11 @@ public class FlameParticle extends Particle
       // motionY += GRAVITY_ACCELERATION_PER_TICK;
 
     // collision with a block makes the ball disappear.  But does not collide with entities
-    if (isCollided) {
+    if (isCollided) {  // isCollided is only true if the particle collides while it is moving downwards...
+      this.setExpired();
+    }
+
+    if (prevPosY == posY && motionY > 0) {  // detect a collision while moving upwards (can't move up at all)
       this.setExpired();
     }
 

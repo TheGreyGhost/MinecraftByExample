@@ -18,6 +18,32 @@ Converting from 1.8.9 to 1.10.2
 6) Start IntelliJ.
 
 
+--------------
+Coverage Testing complete:
+01
+02
+03
+04
+05
+06
+08
+10
+11
+12
+13
+14
+15
+20
+21
+35
+40
+50
+60
+70
+
+TODO: test 30, 31, 75
+
+
 Ideas for future topics
 
 Blocks -

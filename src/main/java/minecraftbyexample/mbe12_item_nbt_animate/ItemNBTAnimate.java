@@ -140,7 +140,7 @@ public class ItemNBTAnimate extends Item
         worldIn.playSound(dontPlayForThisPlayer, x, y, z, SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
       }
     }
-    return null;
+    return ItemStack.field_190927_a;  // EMPTY_ITEM
 //    for items with multiple count, decrease stack size and return the itemstack, eg
 //    stack.stackSize--;
 //    return stack;

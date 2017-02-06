@@ -6,10 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.*;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -46,7 +43,8 @@ public class ItemVariants extends Item
   // add a subitem for each item we want to appear in the creative tab
   //  in this case - a full bottle of each colour
   @SideOnly(Side.CLIENT)
-  public void getSubItems(Item itemIn, CreativeTabs tab, List subItems)
+  @Override
+  public void getSubItems(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> subItems)
   {
     for (EnumBottleContents contents : EnumBottleContents.values()) {
       int contentBits = contents.getMetadata();
