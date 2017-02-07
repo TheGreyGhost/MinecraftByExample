@@ -43,8 +43,6 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 	public static final int FIRST_INPUT_SLOT = FIRST_FUEL_SLOT + FUEL_SLOTS_COUNT;
 	public static final int FIRST_OUTPUT_SLOT = FIRST_INPUT_SLOT + INPUT_SLOTS_COUNT;
 
-	private ItemStack[] itemStacks = new ItemStack[TOTAL_SLOTS_COUNT];
-
 	/** The number of burn ticks remaining on the current piece of fuel */
 	private int [] burnTimeRemaining = new int[FUEL_SLOTS_COUNT];
 	/** The initial fuel value of the currently burning fuel (in ticks of burn duration) */
@@ -56,6 +54,14 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 	private static final short COOK_TIME_FOR_COMPLETION = 200;  // vanilla value is 200 = 10 seconds
 
 	private int cachedNumberOfBurningSlots = -1;
+
+	private ItemStack[] itemStacks;
+
+	public TileInventoryFurnace()
+	{
+		itemStacks = new ItemStack[TOTAL_SLOTS_COUNT];
+		clear();
+	}
 
 	/**
 	 * Returns the amount of fuel remaining on the currently burning item in the given fuel slot.

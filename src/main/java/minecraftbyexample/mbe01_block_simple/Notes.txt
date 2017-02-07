@@ -23,6 +23,11 @@ For background information on
 - blocks: see here http://greyminecraftcoder.blogspot.com.au/2014/12/blocks-18.html
 - rendering blocks: see here http://greyminecraftcoder.blogspot.com.au/p/list-of-topics.html (the topics under the Block Rendering heading)
 
+Note - Forge has now introduced a new way to schedule when blocks are registered, using an event (RegistryEvent.Register<Block>).
+I haven't updated the examples to use this method because I'm not sure it's better than the old way using proxies
+But if you are interested, there is a helpful example here:
+https://github.com/LexManos/VoidUtils/blob/master/src/main/java/net/minecraftforge/lex/voidutils/VoidUtils.java
+
 --------
 Common errors:
 "Missing Model", "Missing texture", etc:

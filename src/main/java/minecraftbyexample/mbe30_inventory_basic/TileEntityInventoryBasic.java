@@ -20,8 +20,14 @@ import java.util.Arrays;
  */
 public class TileEntityInventoryBasic extends TileEntity implements IInventory {
 	// Create and initialize the items variable that will store store the items
-	final int NUMBER_OF_SLOTS = 9;
-	private ItemStack[] itemStacks = new ItemStack[NUMBER_OF_SLOTS];
+	private final int NUMBER_OF_SLOTS = 9;
+	private ItemStack[] itemStacks;
+
+	public TileEntityInventoryBasic()
+	{
+		itemStacks = new ItemStack[NUMBER_OF_SLOTS];
+		clear();
+	}
 
 	/* The following are some IInventory methods you are required to override */
 

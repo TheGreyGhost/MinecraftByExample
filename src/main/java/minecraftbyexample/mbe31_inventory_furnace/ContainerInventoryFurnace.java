@@ -118,8 +118,8 @@ public class ContainerInventoryFurnace extends Container {
 	//  (when you shift click a slot in the TileEntity Inventory, it moves it to the first available position in the hotbar and/or
 	//    player inventory.  When you you shift-click a hotbar or player inventory item, it moves it to the first available
 	//    position in the TileEntity inventory - either input or fuel as appropriate for the item you clicked)
-	// At the very least you must override this and return null or the game will crash when the player shift clicks a slot
-	// returns null if the source slot is empty, or if none of the source slot items could be moved.
+	// At the very least you must override this and return EMPTY_ITEM or the game will crash when the player shift clicks a slot
+	// returns EMPTY_ITEM if the source slot is empty, or if none of the source slot items could be moved.
 	//   otherwise, returns a copy of the source stack
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int sourceSlotIndex)
