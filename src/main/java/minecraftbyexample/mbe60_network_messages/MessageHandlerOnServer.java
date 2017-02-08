@@ -11,6 +11,7 @@ import net.minecraft.entity.projectile.EntitySnowball;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -133,7 +134,17 @@ public class MessageHandlerOnServer implements IMessageHandler<AirstrikeMessageT
         }
         case FIREBALL: {
           final double Y_ACCELERATION = -0.5;
-          entity = new EntityLargeFireball(world, releasePoint.xCoord, releasePoint.yCoord, releasePoint.zCoord, 0.0, Y_ACCELERATION, 0.0);
+          // this method is now client-side only, so use another constructor and manually set the missing values as copied from the
+          //   constructor
+//          entity = new EntityLargeFireball(world, releasePoint.xCoord, releasePoint.yCoord, releasePoint.zCoord, 0.0, Y_ACCELERATION, 0.0);
+
+          EntityLargeFireball entityLargeFireball =  new EntityLargeFireball(world);
+          entity = entityLargeFireball;
+          entity.setLocationAndAngles(releasePoint.xCoord, releasePoint.yCoord, releasePoint.zCoord, entity.rotationYaw, entity.rotationPitch);
+          entity.setPosition(releasePoint.xCoord, releasePoint.yCoord, releasePoint.zCoord);
+          entityLargeFireball.accelerationX = 0.0;
+          entityLargeFireball.accelerationY = Y_ACCELERATION;
+          entityLargeFireball.accelerationZ = 0.0;
           break;
         }
         default: {
