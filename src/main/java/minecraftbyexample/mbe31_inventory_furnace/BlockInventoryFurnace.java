@@ -129,7 +129,7 @@ public class BlockInventoryFurnace extends BlockContainer
 		if (tileEntity instanceof TileInventoryFurnace) {
 			TileInventoryFurnace tileInventoryFurnace = (TileInventoryFurnace)tileEntity;
 			int burningSlots = tileInventoryFurnace.numberOfBurningFuelSlots();
-			burningSlots = MathHelper.clamp_int(burningSlots, 0, 4);
+			burningSlots = MathHelper.clamp(burningSlots, 0, 4);
 			return getDefaultState().withProperty(BURNING_SIDES_COUNT, burningSlots);
 		}
 		return state;
@@ -175,7 +175,7 @@ public class BlockInventoryFurnace extends BlockContainer
 			// linearly interpolate the light value depending on how many slots are burning
 			lightValue = ONE_SIDE_LIGHT_VALUE + (int)((FOUR_SIDE_LIGHT_VALUE - ONE_SIDE_LIGHT_VALUE) / (4.0 - 1.0) * burningSides);
 		}
-		lightValue = MathHelper.clamp_int(lightValue, 0, FOUR_SIDE_LIGHT_VALUE);
+		lightValue = MathHelper.clamp(lightValue, 0, FOUR_SIDE_LIGHT_VALUE);
 		return lightValue;
 	}
 

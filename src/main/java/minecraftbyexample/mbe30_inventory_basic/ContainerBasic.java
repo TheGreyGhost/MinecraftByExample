@@ -78,7 +78,7 @@ public class ContainerBasic extends Container {
 	@Override
 	public boolean canInteractWith(EntityPlayer player)
 	{
-		return tileEntityInventoryBasic.isUseableByPlayer(player);
+		return tileEntityInventoryBasic.isUsableByPlayer(player);
 	}
 
 	// This is where you specify what happens when a player shift clicks a slot in the gui
@@ -92,7 +92,7 @@ public class ContainerBasic extends Container {
 	public ItemStack transferStackInSlot(EntityPlayer player, int sourceSlotIndex)
 	{
 		Slot sourceSlot = (Slot)inventorySlots.get(sourceSlotIndex);
-		if (sourceSlot == null || !sourceSlot.getHasStack()) return ItemStack.field_190927_a;  //EMPTY_ITEM
+		if (sourceSlot == null || !sourceSlot.getHasStack()) return ItemStack.EMPTY;  //EMPTY_ITEM
 		ItemStack sourceStack = sourceSlot.getStack();
 		ItemStack copyOfSourceStack = sourceStack.copy();
 
@@ -100,26 +100,26 @@ public class ContainerBasic extends Container {
 		if (sourceSlotIndex >= VANILLA_FIRST_SLOT_INDEX && sourceSlotIndex < VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT) {
 			// This is a vanilla container slot so merge the stack into the tile inventory
 			if (!mergeItemStack(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX, TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_SLOT_COUNT, false)){
-				return ItemStack.field_190927_a;  // EMPTY_ITEM
+				return ItemStack.EMPTY;  // EMPTY_ITEM
 			}
 		} else if (sourceSlotIndex >= TE_INVENTORY_FIRST_SLOT_INDEX && sourceSlotIndex < TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_SLOT_COUNT) {
 			// This is a TE slot so merge the stack into the players inventory
 			if (!mergeItemStack(sourceStack, VANILLA_FIRST_SLOT_INDEX, VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT, false)) {
-				return ItemStack.field_190927_a;   // EMPTY_ITEM
+				return ItemStack.EMPTY;   // EMPTY_ITEM
 			}
 		} else {
 			System.err.print("Invalid slotIndex:" + sourceSlotIndex);
-			return ItemStack.field_190927_a;   // EMPTY_ITEM
+			return ItemStack.EMPTY;   // EMPTY_ITEM
 		}
 
 		// If stack size == 0 (the entire stack was moved) set slot contents to null
-		if (sourceStack.func_190916_E() == 0) {  // getStackSize
-			sourceSlot.putStack(ItemStack.field_190927_a);  // EMPTY_ITEM
+		if (sourceStack.getCount() == 0) {  // getStackSize
+			sourceSlot.putStack(ItemStack.EMPTY);  // EMPTY_ITEM
 		} else {
 			sourceSlot.onSlotChanged();
 		}
 
-		sourceSlot.func_190901_a(player, sourceStack);  //onPickupFromSlot()
+		sourceSlot.onTake(player, sourceStack);  //onPickupFromSlot()
 		return copyOfSourceStack;
 	}
 

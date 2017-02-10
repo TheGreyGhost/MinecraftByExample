@@ -39,10 +39,10 @@ public class TileEntityInventoryBasic extends TileEntity implements IInventory {
 
   // returns true if all of the slots in the inventory are empty
 	@Override
-	public boolean func_191420_l()
+	public boolean isEmpty()
   {
     for (ItemStack itemstack : itemStacks) {
-      if (!itemstack.func_190926_b()) {  // isEmpty()
+      if (!itemstack.isEmpty()) {  // isEmpty()
         return false;
       }
     }
@@ -65,16 +65,16 @@ public class TileEntityInventoryBasic extends TileEntity implements IInventory {
 	@Override
 	public ItemStack decrStackSize(int slotIndex, int count) {
 		ItemStack itemStackInSlot = getStackInSlot(slotIndex);
-		if (itemStackInSlot.func_190926_b()) return ItemStack.field_190927_a;  // isEmpt();   EMPTY_ITEM
+		if (itemStackInSlot.isEmpty()) return ItemStack.EMPTY;  // isEmpt();   EMPTY_ITEM
 
 		ItemStack itemStackRemoved;
-		if (itemStackInSlot.func_190916_E() <= count) {  // getStackSize()
+		if (itemStackInSlot.getCount() <= count) {  // getStackSize()
 			itemStackRemoved = itemStackInSlot;
-			setInventorySlotContents(slotIndex, ItemStack.field_190927_a);   // EMPTY_ITEM
+			setInventorySlotContents(slotIndex, ItemStack.EMPTY);   // EMPTY_ITEM
 		} else {
 			itemStackRemoved = itemStackInSlot.splitStack(count);
-			if (itemStackInSlot.func_190916_E() == 0) { // getStackSize
-				setInventorySlotContents(slotIndex, ItemStack.field_190927_a);   // EMPTY_ITEM
+			if (itemStackInSlot.getCount() == 0) { // getStackSize
+				setInventorySlotContents(slotIndex, ItemStack.EMPTY);   // EMPTY_ITEM
 			}
 		}
 	  markDirty();
@@ -85,8 +85,8 @@ public class TileEntityInventoryBasic extends TileEntity implements IInventory {
 	@Override
 	public void setInventorySlotContents(int slotIndex, ItemStack itemstack) {
 		itemStacks[slotIndex] = itemstack;
-		if (itemstack.func_190926_b() && itemstack.func_190916_E() > getInventoryStackLimit()) { //  isEmpty(); getStackSize()
-			itemstack.func_190920_e(getInventoryStackLimit());  //setStackSize
+		if (itemstack.isEmpty() && itemstack.getCount() > getInventoryStackLimit()) { //  isEmpty(); getStackSize()
+			itemstack.setCount(getInventoryStackLimit());  //setStackSize
 		}
 		markDirty();
 	}
@@ -103,8 +103,8 @@ public class TileEntityInventoryBasic extends TileEntity implements IInventory {
 	// 1) the world tileentity hasn't been replaced in the meantime, and
 	// 2) the player isn't too far away from the centre of the block
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer player) {
-		if (this.worldObj.getTileEntity(this.pos) != this) return false;
+	public boolean isUsableByPlayer(EntityPlayer player) {
+		if (this.world.getTileEntity(this.pos) != this) return false;
 		final double X_CENTRE_OFFSET = 0.5;
 		final double Y_CENTRE_OFFSET = 0.5;
 		final double Z_CENTRE_OFFSET = 0.5;
@@ -133,7 +133,7 @@ public class TileEntityInventoryBasic extends TileEntity implements IInventory {
 		// Each of these NBTTagCompound are then inserted into NBTTagList, which is similar to an array.
 		NBTTagList dataForAllSlots = new NBTTagList();
 		for (int i = 0; i < this.itemStacks.length; ++i) {
-			if (!this.itemStacks[i].func_190926_b())	{ //isEmpty()
+			if (!this.itemStacks[i].isEmpty())	{ //isEmpty()
 				NBTTagCompound dataForThisSlot = new NBTTagCompound();
 				dataForThisSlot.setByte("Slot", (byte) i);
 				this.itemStacks[i].writeToNBT(dataForThisSlot);
@@ -154,7 +154,7 @@ public class TileEntityInventoryBasic extends TileEntity implements IInventory {
 		final byte NBT_TYPE_COMPOUND = 10;       // See NBTBase.createNewByType() for a listing
 		NBTTagList dataForAllSlots = parentNBTTagCompound.getTagList("Items", NBT_TYPE_COMPOUND);
 
-		Arrays.fill(itemStacks, ItemStack.field_190927_a);           // set all slots to empty EMPTY_ITEM
+		Arrays.fill(itemStacks, ItemStack.EMPTY);           // set all slots to empty EMPTY_ITEM
 		for (int i = 0; i < dataForAllSlots.tagCount(); ++i) {
 			NBTTagCompound dataForOneSlot = dataForAllSlots.getCompoundTagAt(i);
 			int slotIndex = dataForOneSlot.getByte("Slot") & 255;
@@ -168,7 +168,7 @@ public class TileEntityInventoryBasic extends TileEntity implements IInventory {
 	// set all slots to empty
 	@Override
 	public void clear() {
-		Arrays.fill(itemStacks, ItemStack.field_190927_a);  //empty item
+		Arrays.fill(itemStacks, ItemStack.EMPTY);  //empty item
 	}
 
 	// will add a key for this container to the lang file so we can name it in the GUI
@@ -200,7 +200,7 @@ public class TileEntityInventoryBasic extends TileEntity implements IInventory {
 	@Override
 	public ItemStack removeStackFromSlot(int slotIndex) {
 		ItemStack itemStack = getStackInSlot(slotIndex);
-		if (!itemStack.func_190926_b()) setInventorySlotContents(slotIndex, ItemStack.field_190927_a);  //isEmpty(), EMPTY_ITEM
+		if (!itemStack.isEmpty()) setInventorySlotContents(slotIndex, ItemStack.EMPTY);  //isEmpty(), EMPTY_ITEM
 		return itemStack;
 	}
 

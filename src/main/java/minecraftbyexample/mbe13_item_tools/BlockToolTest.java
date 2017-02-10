@@ -111,9 +111,9 @@ public class BlockToolTest extends Block
 
   // Used in some special cases set the type of drop for silk enchantment harvesting.
   @Override
-  protected ItemStack createStackedBlock(IBlockState state) {
+  protected ItemStack getSilkTouchDrop(IBlockState state) {
     StartupCommon.methodCallLogger.enterMethod("BlockToolTest.createStackedBlock", String.valueOf(state));
-    ItemStack result = super.createStackedBlock(state);
+    ItemStack result = super.getSilkTouchDrop(state);
     StartupCommon.methodCallLogger.exitMethod("BlockToolTest.createStackedBlock", String.valueOf(result));
     return result;
   }

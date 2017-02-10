@@ -64,10 +64,10 @@ public class ItemTestRunner extends Item
   @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand) {
     ItemStack itemStackIn = playerIn.getHeldItem(hand);
-    if (itemStackIn.func_190926_b()) {  // returns true if the item is empty (player is holding nothing)
+    if (itemStackIn.isEmpty()) {  // returns true if the item is empty (player is holding nothing)
       return new ActionResult<ItemStack>(EnumActionResult.FAIL, itemStackIn);  // just in case.
     }
-    int testNumber = itemStackIn.func_190916_E(); // getStackSize()
+    int testNumber = itemStackIn.getCount(); // getStackSize()
     TestRunner testRunner = new TestRunner();
 
     if (worldIn.isRemote) {

@@ -59,7 +59,7 @@ public class ForgeToolEventsTest
     if (event.getPos() != null && event.getWorld().getBlockState(event.getPos()) == StartupCommon.blockToolTest) {
     } else {
       ItemStack heldItemStack = (event.getEntityPlayer() == null) ?
-                                ItemStack.field_190927_a :  //EMPTY_ITEM
+                                ItemStack.EMPTY :  //EMPTY_ITEM
                                 event.getEntityPlayer().getItemStackFromSlot(EntityEquipmentSlot.MAINHAND);
       Item heldItem = heldItemStack.getItem();
       if (heldItem != StartupCommon.itemToolsTest) {

@@ -69,7 +69,7 @@ public class ItemNBTanimationTimer implements IItemPropertyGetter {
       final float FULLY_CHARGED_INDEX = 1.0F;
 
       if (worldIn == null && entityIn != null)  {
-        worldIn = entityIn.worldObj;
+        worldIn = entityIn.world;
       }
 
       if (entityIn == null || worldIn == null) return IDLE_FRAME_INDEX;

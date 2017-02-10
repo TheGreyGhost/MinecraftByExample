@@ -40,12 +40,12 @@ public class TileEntityRedstoneColouredLamp extends TileEntity implements ITicka
     int currentRGBcolour = getRGBcolour();
     if (previousRGBcolor != currentRGBcolour) {
       previousRGBcolor = currentRGBcolour;
-      if (worldObj.isRemote) {
-        IBlockState iblockstate = this.worldObj.getBlockState(pos);
+      if (world.isRemote) {
+        IBlockState iblockstate = this.world.getBlockState(pos);
         final int FLAGS = 3;  // I'm not sure what these flags do, exactly.
-        this.worldObj.notifyBlockUpdate(pos, iblockstate, iblockstate, FLAGS);
+        this.world.notifyBlockUpdate(pos, iblockstate, iblockstate, FLAGS);
       }
-      worldObj.checkLightFor(EnumSkyBlock.BLOCK, pos);
+      world.checkLightFor(EnumSkyBlock.BLOCK, pos);
     }
 
   }

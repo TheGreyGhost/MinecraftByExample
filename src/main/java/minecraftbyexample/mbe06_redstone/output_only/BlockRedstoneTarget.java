@@ -204,7 +204,7 @@ public class BlockRedstoneTarget extends Block
 
     if (closestDistance == Float.MAX_VALUE) return MISS_VALUE;
     final int OUTERMOST_RING = 6;
-    int ringHit = MathHelper.floor_double(closestDistance);
+    int ringHit = MathHelper.floor(closestDistance);
     return (ringHit <= OUTERMOST_RING) ? ringHit : MISS_VALUE;
   }
 
@@ -271,7 +271,7 @@ public class BlockRedstoneTarget extends Block
 
   // Create the appropriate state for the block being placed - in this case, figure out which way the target is facing
   @Override
-  public IBlockState onBlockPlaced(World worldIn, BlockPos thisBlockPos, EnumFacing faceOfNeighbour,
+  public IBlockState getStateForPlacement(World worldIn, BlockPos thisBlockPos, EnumFacing faceOfNeighbour,
                                    float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
   {
     EnumFacing directionTargetIsPointing = faceOfNeighbour;

@@ -55,11 +55,11 @@ public class StatusBarRenderer extends Gui {
   /* This helper method will render the bar */
   public void renderStatusBar(int screenWidth, int screenHeight) {
     /* These are the variables that contain world and player information */
-    World world = mc.theWorld;
-    EntityPlayer player = mc.thePlayer;
+    World world = mc.world;
+    EntityPlayer player = mc.player;
 
     /* This object draws text using the Minecraft font */
-    FontRenderer fr = mc.fontRendererObj;
+    FontRenderer fr = mc.fontRenderer;
 
     /* This object inserts commas into number strings */
     DecimalFormat d = new DecimalFormat("#,###");

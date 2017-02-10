@@ -17,6 +17,10 @@ The Official Forge documentation- http://mcforge.readthedocs.org/en/latest/
 Forge Modding articles- http://www.wuppy29.com/minecraft/modding-tutorials/forge-modding-1-8
 Forge Tutorials listing- http://www.minecraftforge.net/forum/index.php/board,120.0.html
 
+Note - this branch has been updated to use the latest mappings (as of 09 Feb 2017).  The recommended build of Forge doesn't use these mappings.
+If you want to use the Forge recommended mappings, use this branch instead:
+   https://github.com/TheGreyGhost/MinecraftByExample/tree/master
+
 For earlier versions, see the relevant GitHub branch
   1.8: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-8final
   1.8.9: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-8-9final

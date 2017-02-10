@@ -52,7 +52,7 @@ public class BlockRedstoneColouredLamp extends Block
   // Create the appropriate state for the block being placed - in this case, figure out which way the target is facing
   // Don't worry about the rgb colour yet, that's handled in  onBlockPlacedBy()
   @Override
-  public IBlockState onBlockPlaced(World worldIn, BlockPos thisBlockPos, EnumFacing faceOfNeighbour,
+  public IBlockState getStateForPlacement(World worldIn, BlockPos thisBlockPos, EnumFacing faceOfNeighbour,
                                    float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
   {
     EnumFacing directionTargetIsPointing = (placer == null) ? EnumFacing.NORTH : EnumFacing.fromAngle(placer.rotationYaw);
