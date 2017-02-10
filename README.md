@@ -6,7 +6,6 @@ I've tried to keep the code simple and obvious and to resist the urge to be clev
 
 Each example is split up to be totally independent of all the others.  The only parts of the code which are common to more than one example are the MinecraftByExample, CommonProxy, ClientOnlyProxy, and DedicatedServer classes, which can be found [here][main_classes].
 
-
 If you want more information and explanatory text about the concepts, the following links might be useful:
 
   - [Guide to how Minecraft works][greyminecraftcoder]
@@ -14,6 +13,11 @@ If you want more information and explanatory text about the concepts, the follow
   - [The Official Forge documentation][forgedocs]
   - [Forge Tutorials listing][tutorials_forum]
   - [List of Good Tutorials][list_of_tutorials]
+
+Note - the recommended build of the Forge MDK uses a fairly old version of the MCP mappings (the mappings file is what Forge uses to convert all the obfuscated minecraft names into something meaningful, for example itemStack.isEmpty() instead of itemStack.func_190926_b()).
+This is really annoying for some of the classes in particular ItemStack.
+I've created a separate branch that uses more recent mappings (09 Feb 2017) [1-11-recentmappings][version1-11-recentmappings].  If you use this, remember to update your own build.gradle to use the same mappings.
+(If you don't understand what I'm talking about, don't worry, you can safely ignore it).
 
 ####For earlier versions, see the relevant GitHub branch:
  - MBE for Forge 1.8: [1-8final][version1-8]
@@ -140,6 +144,7 @@ Check out [this video][forge_installation] for more help installing Forge.
 [version1-8]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-8final
 [version1-8-9]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-8-9final
 [version1-10-2]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-10-2final
+[version1-11-recentmappings]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-11-latestMappings
 
 With thanks to these helpful folks:
 alvaropp, 
