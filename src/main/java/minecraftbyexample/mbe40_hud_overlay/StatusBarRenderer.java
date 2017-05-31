@@ -59,7 +59,7 @@ public class StatusBarRenderer extends Gui {
     EntityPlayer player = mc.player;
 
     /* This object draws text using the Minecraft font */
-    FontRenderer fr = mc.fontRenderer;
+    FontRenderer fr = mc.fontRendererObj;
 
     /* This object inserts commas into number strings */
     DecimalFormat d = new DecimalFormat("#,###");

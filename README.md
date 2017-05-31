@@ -1,4 +1,4 @@
-MinecraftByExample [1.11] - latest mappings
+MinecraftByExample [1.11.2][version1-11-2] - latest mappings
 ==================
 The purpose of MinecraftByExample is to give simple working examples of the important concepts in Minecraft and Forge. If you're anything like me, a good code example is worth several screens worth of waffling explanation, and can very quickly explain the key concepts.  I also find it much easier to adapt and debug something that already works, than to have to synthesize something from scratch and spend hours trying to discover the missing bit of information I didn't know about.
 
@@ -14,14 +14,12 @@ If you want more information and explanatory text about the concepts, the follow
   - [Forge Tutorials listing][tutorials_forum]
   - [List of Good Tutorials][list_of_tutorials]
 
-Note - this branch has been updated to use the latest mappings (as of 09 Feb 2017), the recommended build of Forge doesn't use these mappings.
-If you want to use the Forge recommended mappings, use this branch instead: [1-11-master][version1-11-master]
-
 ####For earlier versions, see the relevant GitHub branch:
  - MBE for Forge 1.8: [1-8final][version1-8]
  - MBE for Forge 1.8.9: [1-8-9final][version1-8-9]
  - MBE for Forge 1.10.2: [1-10-2final][version1-10-2]
- 
+ - MBE for Forge 1.11: [1-11final][version1-11]
+  
 ##List of examples
 ### Blocks
   - [MBE01][01] - a simple cube
@@ -142,7 +140,8 @@ Check out [this video][forge_installation] for more help installing Forge.
 [version1-8]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-8final
 [version1-8-9]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-8-9final
 [version1-10-2]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-10-2final
-[version1-11-master]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master
+[version1-11]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-11-final
+[version1-11-2]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master
 
 With thanks to these helpful folks:
 alvaropp, 

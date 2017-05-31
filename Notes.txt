@@ -17,6 +17,8 @@ Converting from 1.8.9 to 1.10.2
 5) In MinecraftByExample1-10-2 run gradlew idea genIntelliJruns
 6) Start IntelliJ.
 
+BUGS:
+Test ORB transform is bad
 
 --------------
 Coverage Testing complete:

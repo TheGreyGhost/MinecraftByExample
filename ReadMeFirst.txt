@@ -1,4 +1,4 @@
-MinecraftByExample [1.11]
+MinecraftByExample [1.11.2]
 ==========================
 The purpose of MinecraftByExample is to give simple working examples of the important concepts in Minecraft and Forge.
 If you're anything like me, a good code example is worth several screens' worth of waffling explanation, and can very
@@ -25,6 +25,7 @@ For earlier versions, see the relevant GitHub branch
   1.8: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-8final
   1.8.9: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-8-9final
   1.10.2: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-10-2final
+  1.11: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-11-final
 
 List of examples
 Blocks

@@ -52,7 +52,7 @@ public class MessageHandlerOnServer implements IMessageHandler<AirstrikeMessageT
     //  that the ctx handler is a serverhandler, and that WorldServer exists.
     // Packets received on the client side must be handled differently!  See MessageHandlerOnClient
 
-    final EntityPlayerMP sendingPlayer = ctx.getServerHandler().player;
+    final EntityPlayerMP sendingPlayer = ctx.getServerHandler().playerEntity;
     if (sendingPlayer == null) {
       System.err.println("EntityPlayerMP was null when AirstrikeMessageToServer was received");
       return null;
