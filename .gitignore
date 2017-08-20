@@ -13,3 +13,6 @@ build/
 MinecraftByExample_*.launch
 
 ###
+
+bin/
+run/
