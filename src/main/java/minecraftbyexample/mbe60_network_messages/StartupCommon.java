@@ -32,7 +32,7 @@ public class StartupCommon
     // 1) a registry name that is used to uniquely identify this item.  Should be unique within your mod.  use lower case.
     // 2) an 'unlocalised name' that is used to retrieve the text name of your item in the player's language.  For example-
     //    the unlocalised name might be "water", which is printed on the user's screen as "Wasser" in German or
-    //    "aqua" in Italian.
+    //    "acqua" in Italian.
     itemAirStrike = (ItemAirStrike)(new ItemAirStrike().setUnlocalizedName("mbe60_item_airstrike_unlocalised_name"));
     itemAirStrike.setRegistryName("mbe60_item_airstrike_registry_name");
     GameRegistry.register(itemAirStrike);
