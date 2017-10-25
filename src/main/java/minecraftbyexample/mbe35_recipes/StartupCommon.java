@@ -43,7 +43,7 @@ public class StartupCommon
     //  see http://greyminecraftcoder.blogspot.com/2015/02/recipes.html for illustrations of these recipes
 
     // a) Shaped recipe without metadata - emerald surrounded by diamond makes ender eye
-    GameRegistry.addRecipe(new ItemStack(Items.ENDER_EYE), new Object[]{
+    GameRegistry.addShapedRecipe(new ItemStack(Items.ENDER_EYE), new Object[]{
             ".D.",
             "DED",
             ".D.",
@@ -65,13 +65,13 @@ public class StartupCommon
 
     // c) shaped recipe for items which are damaged, or which have a metadata you want to ignore
     //      wooden sword (any damage value) in a cobblestone shell plus iron ingot makes iron sword
-    GameRegistry.addRecipe(new ItemStack(Items.IRON_SWORD), new Object[]{
+    GameRegistry.addShapedRecipe(new ItemStack(Items.IRON_SWORD), new Object[]{
             "CIC",
             "CWC",
             "CCC",
-                  'C', Blocks.COBBLESTONE,
-                  'W', new ItemStack(Items.WOODEN_SWORD, 1, OreDictionary.WILDCARD_VALUE),
-                  'I', Items.IRON_INGOT
+            'C', Blocks.COBBLESTONE,
+            'W', new ItemStack(Items.WOODEN_SWORD, 1, OreDictionary.WILDCARD_VALUE),
+            'I', Items.IRON_INGOT
     });
 
     // for comparison - this recipe only works with an undamaged wooden sword

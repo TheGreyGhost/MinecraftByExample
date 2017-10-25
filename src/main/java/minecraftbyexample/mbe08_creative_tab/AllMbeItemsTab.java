@@ -32,7 +32,8 @@ public class AllMbeItemsTab extends CreativeTabs {
     for (Item item : Item.REGISTRY) {
       if (item != null) {
         if (item.getUnlocalizedName().contains(".mbe")) {
-          item.getSubItems(item, this, itemsToShowOnTab);  // add all sub items to the list
+          item.getSubItems(CreativeTabs.SEARCH, itemsToShowOnTab);  // CreativeTabs.SEARCH will find all items even if they belong to another tab
+                                                                    //   except if the item has no tab (item.getCreativeTab() == NULL)
         }
       }
     }

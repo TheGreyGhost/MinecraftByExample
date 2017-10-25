@@ -1,5 +1,6 @@
 package minecraftbyexample.mbe03_block_variants;
 
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
@@ -36,12 +37,12 @@ public class StartupCommon
     //
     blockVariants = (BlockVariants)(new BlockVariants().setUnlocalizedName("mbe03_block_variants_unlocalised_name"));
     blockVariants.setRegistryName("mbe03_block_variants_registry_name");
-    GameRegistry.register(blockVariants);
+    ForgeRegistries.BLOCKS.register(blockVariants);
 
     // We also need to create and register an ItemBlock for this block otherwise it won't appear in the inventory
     itemBlockVariants = new ItemBlockVariants(blockVariants);
     itemBlockVariants.setRegistryName(blockVariants.getRegistryName());
-    GameRegistry.register(itemBlockVariants);
+    ForgeRegistries.ITEMS.register(itemBlockVariants);
   }
 
   public static void initCommon()

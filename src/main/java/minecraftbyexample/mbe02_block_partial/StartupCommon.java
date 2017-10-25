@@ -1,6 +1,7 @@
 package minecraftbyexample.mbe02_block_partial;
 
 import net.minecraft.item.ItemBlock;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
@@ -37,12 +38,12 @@ public class StartupCommon
     //
     blockPartial = (BlockPartial)(new BlockPartial().setUnlocalizedName("mbe02_block_partial_unlocalised_name"));
     blockPartial.setRegistryName("mbe02_block_partial_registry_name");
-    GameRegistry.register(blockPartial);
+    ForgeRegistries.BLOCKS.register(blockPartial);
 
     // We also need to create and register an ItemBlock for this block otherwise it won't appear in the inventory
     itemBlockPartial = new ItemBlock(blockPartial);
     itemBlockPartial.setRegistryName(blockPartial.getRegistryName());
-    GameRegistry.register(itemBlockPartial);
+    ForgeRegistries.ITEMS.register(itemBlockPartial);
 
   }
 

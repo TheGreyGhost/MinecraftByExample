@@ -34,7 +34,7 @@ public class UsefulFunctions
 
   public static Vec3d scalarMultiply(Vec3d source, double multiplier)
   {
-    return new Vec3d(source.xCoord * multiplier, source.yCoord * multiplier, source.zCoord * multiplier);
+    return new Vec3d(source.x * multiplier, source.y * multiplier, source.z * multiplier);
   }
 
 

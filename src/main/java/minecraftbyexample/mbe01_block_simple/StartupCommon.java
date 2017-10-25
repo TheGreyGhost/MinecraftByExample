@@ -1,6 +1,7 @@
 package minecraftbyexample.mbe01_block_simple;
 
 import net.minecraft.item.ItemBlock;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
@@ -37,12 +38,12 @@ public class StartupCommon
     //
     blockSimple = (BlockSimple)(new BlockSimple().setUnlocalizedName("mbe01_block_simple_unlocalised_name"));
     blockSimple.setRegistryName("mbe01_block_simple_registry_name");
-    GameRegistry.register(blockSimple);
+    ForgeRegistries.BLOCKS.register(blockSimple);
 
     // We also need to create and register an ItemBlock for this block otherwise it won't appear in the inventory
     itemBlockSimple = new ItemBlock(blockSimple);
     itemBlockSimple.setRegistryName(blockSimple.getRegistryName());
-    GameRegistry.register(itemBlockSimple);
+    ForgeRegistries.ITEMS.register(itemBlockSimple);
   }
 
   public static void initCommon()

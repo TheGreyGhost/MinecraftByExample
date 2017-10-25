@@ -8,6 +8,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -62,16 +63,16 @@ public class StartupCommon
 //  A block can only be listed on one tab, unless you give it a custom ItemBlock which overrides .getCreativeTabs()
     testBlock = new BlockHardenedClay().setUnlocalizedName("mbe08_creative_tab_block_unlocalised_name").setCreativeTab(customTab);
     testBlock.setRegistryName("mbe08_creative_tab_block_registry_name");
-    GameRegistry.register(testBlock);
+    ForgeRegistries.BLOCKS.register(testBlock);
     // register the itemblock corresponding to the block
     testItemBlock = new ItemBlock(testBlock);
     testItemBlock.setRegistryName(testBlock.getRegistryName());
-    GameRegistry.register(testItemBlock);
+    ForgeRegistries.ITEMS.register(testItemBlock);
 
     // add an item (an item without a corresponding block)
     testItem = new ItemSword(Item.ToolMaterial.GOLD).setUnlocalizedName("mbe08_creative_tab_item_unlocalised_name").setCreativeTab(customTab);
     testItem.setRegistryName("mbe08_creative_tab_item_registry_name");
-    GameRegistry.register(testItem);
+    ForgeRegistries.ITEMS.register(testItem);
 
     allMbeItemsTab = new AllMbeItemsTab("mbe08_creative_tab_all_MBE");
   }

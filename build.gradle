@@ -10,7 +10,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the nessasary things for Forge to be setup.
 
-version = "1.12a"
+version = "1.12.2a"
 group= "thegreyghost" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "minecraftbyexample"
 
@@ -20,7 +20,7 @@ compileJava {
 }
 
 minecraft {
-    version = "1.12-14.21.1.2387"
+    version = "1.12.2-14.23.0.2491"
     runDir = "run"
     
     // the mappings can be changed at any time, and must be in the following format.

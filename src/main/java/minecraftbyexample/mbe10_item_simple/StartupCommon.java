@@ -1,5 +1,6 @@
 package minecraftbyexample.mbe10_item_simple;
 
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
@@ -35,7 +36,7 @@ public class StartupCommon
     //
     itemSimple = (ItemSimple)(new ItemSimple().setUnlocalizedName("mbe10_item_simple_unlocalised_name"));
     itemSimple.setRegistryName("mbe10_item_simple_registry_name");
-    GameRegistry.register(itemSimple);
+    ForgeRegistries.ITEMS.register(itemSimple);
   }
 
   public static void initCommon()
