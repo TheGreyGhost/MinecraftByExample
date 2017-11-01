@@ -14,15 +14,14 @@ If you want more information and explanatory text about the concepts, the follow
   - [Forge Tutorials listing][tutorials_forum]
   - [List of Good Tutorials][list_of_tutorials]
 
-This update is a work in progress.  It will compile and run many of the examples so long as you exclude the examples which don't work (which give compilation errors).  In IntelliJ, 
-  this means you (for example) right click on mbe50_particle, then Mark Directory As -> Excluded
+This update is a work in progress.  It will compile and run many of the examples so long as you exclude the examples which don't work (i.e. which give compilation errors).  In IntelliJ, 
+  this means you (for example) right click on the mbe50_particle directory, then Mark Directory As -> Excluded
 
 ####For earlier versions, see the relevant GitHub branch:
  - MBE for Forge 1.8: [1-8final][version1-8]
  - MBE for Forge 1.8.9: [1-8-9final][version1-8-9]
  - MBE for Forge 1.10.2: [1-10-2final][version1-10-2]
  - MBE for Forge 1.11: [1-11final][version1-11]
-  
  - MBE for Forge 1.11.2: [1-11-2final][version1-11-2]
 
 ##List of examples
@@ -145,9 +144,8 @@ Check out [this video][forge_installation] for more help installing Forge.
 [version1-8]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-8final
 [version1-8-9]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-8-9final
 [version1-10-2]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-10-2final
-[version1-11-2]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-11-2
 [version1-11]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-11-final
-[version1-11-2]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master
+[version1-11-2]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-11-2-final
 
 With thanks to these helpful folks:
 alvaropp, 

@@ -1,5 +1,6 @@
 Changes from 1.11 to 1.12
-ForgeRegistries.ITEMS, ForgeRegistries.BLCCKS etc instead of GameRegistry.register
+ForgeRegistries.ITEMS.register, ForgeRegistries.BLOCKS.register etc instead of GameRegistry.register
+Item.getSubItems() signature change, and vanilla Items no longer add subitems unless the tab parameter equals CreativeTabs.SEARCH
 
 Changes from 1.10.2 to 1.11
 

@@ -1,5 +1,6 @@
 package minecraftbyexample.mbe11_item_variants;
 
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
@@ -35,7 +36,7 @@ public class StartupCommon
     //
     itemVariants = (ItemVariants)(new ItemVariants().setUnlocalizedName("mbe11_item_variants_unlocalised_name"));
     itemVariants.setRegistryName("mbe11_item_variants_registry_name");
-    GameRegistry.register(itemVariants);
+    ForgeRegistries.ITEMS.register(itemVariants);
  }
 
   public static void initCommon()

@@ -44,13 +44,13 @@ public class ItemVariants extends Item
   //  in this case - a full bottle of each colour
   @SideOnly(Side.CLIENT)
   @Override
-  public void getSubItems(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> subItems)
+  public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems)
   {
     for (EnumBottleContents contents : EnumBottleContents.values()) {
       int contentBits = contents.getMetadata();
       int fullnessBits = EnumBottleFullness.FULL.getMetadata();
       int metadata = contentBits | (fullnessBits << 2);
-      ItemStack subItemStack = new ItemStack(itemIn, 1, metadata);
+      ItemStack subItemStack = new ItemStack(this, 1, metadata);
       subItems.add(subItemStack);
     }
   }
