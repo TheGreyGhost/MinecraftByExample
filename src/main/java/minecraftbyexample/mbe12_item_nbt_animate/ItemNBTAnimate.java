@@ -1,6 +1,7 @@
 package minecraftbyexample.mbe12_item_nbt_animate;
 
 import minecraftbyexample.MinecraftByExample;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,6 +17,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -150,7 +152,9 @@ public class ItemNBTAnimate extends Item
   @SideOnly(Side.CLIENT)
   @SuppressWarnings("unchecked")
   @Override
-  public void addInformation(ItemStack stack, EntityPlayer playerIn, List tooltip, boolean advanced) {
+  //public void addInformation(ItemStack stack, EntityPlayer playerIn, List tooltip, boolean advanced) {
+  public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn)
+  {
     NBTTagCompound nbtTagCompound = stack.getTagCompound();
     if (nbtTagCompound != null && nbtTagCompound.hasKey("Bound") && nbtTagCompound.getBoolean("Bound") == true ) {
       tooltip.add("Stored destination=");

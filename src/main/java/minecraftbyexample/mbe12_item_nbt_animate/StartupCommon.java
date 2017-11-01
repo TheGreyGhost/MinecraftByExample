@@ -1,5 +1,6 @@
 package minecraftbyexample.mbe12_item_nbt_animate;
 
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
@@ -23,7 +24,7 @@ public class StartupCommon
     // each instance of your item should have a name that is unique within your mod.  use lower case.
     itemNBTAnimate = (ItemNBTAnimate) (new ItemNBTAnimate().setUnlocalizedName("mbe12_item_nbt_animate_unlocalised_name"));
     itemNBTAnimate.setRegistryName("mbe12_item_nbt_animate_registry_name");
-    GameRegistry.register(itemNBTAnimate);
+    ForgeRegistries.ITEMS.register(itemNBTAnimate);
   }
 
   public static void initCommon() {
