@@ -96,13 +96,13 @@ public class FlameParticle extends Particle
     prevPosY = posY;
     prevPosZ = posZ;
 
-    moveEntity(motionX, motionY, motionZ);  // simple linear motion.  You can change speed by changing motionX, motionY,
+    move(motionX, motionY, motionZ);  // simple linear motion.  You can change speed by changing motionX, motionY,
       // motionZ every tick.  For example - you can make the particle accelerate downwards due to gravity by
       // final double GRAVITY_ACCELERATION_PER_TICK = -0.02;
       // motionY += GRAVITY_ACCELERATION_PER_TICK;
 
     // collision with a block makes the ball disappear.  But does not collide with entities
-    if (isCollided) {  // isCollided is only true if the particle collides while it is moving downwards...
+    if (onGround) {  // onGround is only true if the particle collides while it is moving downwards...
       this.setExpired();
     }
 

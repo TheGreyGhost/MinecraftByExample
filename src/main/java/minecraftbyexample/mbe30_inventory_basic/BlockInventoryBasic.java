@@ -87,7 +87,7 @@ public class BlockInventoryBasic extends BlockContainer
 			// For each slot in the inventory
 			for (int i = 0; i < inventory.getSizeInventory(); i++){
 				// If the slot is not empty
-				if (!inventory.getStackInSlot(i).func_190926_b())  // isEmpty
+				if (!inventory.getStackInSlot(i).isEmpty())  // isEmpty
 				{
 					// Create a new entity item with the item stack in the slot
 					EntityItem item = new EntityItem(worldIn, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, inventory.getStackInSlot(i));
@@ -103,7 +103,7 @@ public class BlockInventoryBasic extends BlockContainer
 					item.motionZ = motionZ * multiplier;
 
 					// Spawn the item in the world
-					worldIn.spawnEntityInWorld(item);
+					worldIn.spawnEntity(item);
 				}
 			}
 

@@ -34,7 +34,7 @@ public class TileEntityRedstoneMeter extends TileEntity {
     int maxPowerFound = 0;
     for (EnumFacing whichFace : EnumFacing.HORIZONTALS) {
       BlockPos neighborPos = pos.offset(whichFace);
-      int powerLevel = this.worldObj.getRedstonePower(neighborPos, whichFace);
+      int powerLevel = this.world.getRedstonePower(neighborPos, whichFace);
       maxPowerFound = Math.max(powerLevel, maxPowerFound);
     }
     return maxPowerFound;

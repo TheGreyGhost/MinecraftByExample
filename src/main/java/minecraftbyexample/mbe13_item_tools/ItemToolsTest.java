@@ -77,7 +77,7 @@ public class ItemToolsTest extends ItemTool
     Boolean result =  super.onBlockStartBreak(itemstack, pos, player);
     if (MinecraftByExample.proxy.playerIsInCreativeMode(player)) {
       final boolean PRINT_IN_CHAT_WINDOW = true;
-      player.addChatComponentMessage(new TextComponentString("Currently in creative mode; switch to survival mode using /gamemode."),
+      player.sendStatusMessage(new TextComponentString("Currently in creative mode; switch to survival mode using /gamemode."),
               PRINT_IN_CHAT_WINDOW);
     }
     StartupCommon.methodCallLogger.exitMethod("ItemToolsTest.onBlockStartBreak", String.valueOf(result));

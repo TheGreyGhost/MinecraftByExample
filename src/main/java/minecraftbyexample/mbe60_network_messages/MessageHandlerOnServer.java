@@ -83,7 +83,7 @@ public class MessageHandlerOnServer implements IMessageHandler<AirstrikeMessageT
     int dimension = sendingPlayer.dimension;
     MinecraftServer minecraftServer = sendingPlayer.mcServer;
 
-    for (EntityPlayerMP player : minecraftServer.getPlayerList().getPlayerList()) {
+    for (EntityPlayerMP player : minecraftServer.getPlayerList().getPlayers()) {
       TargetEffectMessageToClient msg = new TargetEffectMessageToClient(message.getTargetCoordinates());   // must generate a fresh message for every player!
       if (dimension == player.dimension) {
         StartupCommon.simpleNetworkWrapper.sendTo(msg, player);
@@ -96,7 +96,7 @@ public class MessageHandlerOnServer implements IMessageHandler<AirstrikeMessageT
     final int MIN_NUMBER_OF_PROJECTILES = 2;
     int numberOfProjectiles = MIN_NUMBER_OF_PROJECTILES + random.nextInt(MAX_NUMBER_OF_PROJECTILES - MIN_NUMBER_OF_PROJECTILES + 1);
     for (int i = 0; i < numberOfProjectiles; ++i) {
-      World world = sendingPlayer.worldObj;
+      World world = sendingPlayer.world;
 
       final double MAX_HORIZONTAL_SPREAD = 4.0;
       final double MAX_VERTICAL_SPREAD = 20.0;
@@ -153,7 +153,7 @@ public class MessageHandlerOnServer implements IMessageHandler<AirstrikeMessageT
         }
       }
 
-      world.spawnEntityInWorld(entity);
+      world.spawnEntity(entity);
       final float VOLUME = 10000.0F;
       final float PITCH = 0.8F + random.nextFloat() * 0.2F;
       final boolean DISTANCE_DELAY_FALSE = false;

@@ -3,10 +3,9 @@ ForgeRegistries.ITEMS, ForgeRegistries.BLCCKS etc instead of GameRegistry.regist
 
 Changes from 1.10.2 to 1.11
 
-A major change is that itemStacks can't be null anymore, the EMPTY (obfuscated name ItemStack.field_190927_a) is used instead.  i.e.
-When the player's hand is empty, the ItemStack is no longer null.  instead, the itemStack.func_190926_b() returns true.
-  func_190926_b() has changed to isEmpty() in the latest version of the mappings
-An empty ItemStack is ItemStack.field_190927_a - use this instead of Null for ItemStacks.
+A major change is that itemStacks can't be null anymore, the EMPTY item is used instead.  i.e.
+When the player's hand is empty, the ItemStack is no longer null.  instead, the itemStack.isEmpty() returns true.
+An empty ItemStack is ItemStack.EMPTY - use this instead of Null for ItemStacks.
 
 Block.getCollisionBoundingBox has changed signature to use IBlockAccess instead of World.  IBlockAccess is used for
    methods which are called by multithreaded access, typically chunk rendering (compiling rendering lists)
@@ -17,14 +16,14 @@ Item.onItemRightClick: signature change.  get ItemStackIn from playerIn.getHeldI
 Block.onBlockActivated : signature change.  get held ItemStack from playerIn.getHeldItem(hand);
 Item.onItemRightClick() and .onItemUse(): signature change.  get ItemStackIn from playerIn.getHeldItem(hand);
 ItemStack stacksize is now private.  Access through:
-   getter: func_190916_E() - getCount() in the latest version of the mappings
-   setter: func_190920_e() - setCount() in the latest version of the mappings
-   func_190917_f(int i) : increase stacksize by i  --> grow() in the latest version of the mappings
-   func_190918_g(int i) : decrease stacksize by i  --> shrink() in the latest version of the mappings
-An empty ItemStack is ItemStack.field_190927_a - use this instead of Null for ItemStacks
+   getter: getCount()
+   setter: setCount()
+   grow(int i) : increase stacksize by i
+   shrink(int i) : decrease stacksize by i
+An empty ItemStack is ItemStack.EMPTY - use this instead of Null for ItemStacks
 ItemStack.loadItemStackFromNBT() has been changed to a constructor instead
 
-Slot.onPickupFromSlot has changed to func_190901_a()  ; onTake in the latest version of the mappings
+Slot.onPickupFromSlot has changed to onTake()
 
 Blocks, Items, and Model Registry
 https://github.com/LexManos/VoidUtils/blob/master/src/main/java/net/minecraftforge/lex/voidutils/VoidUtils.java

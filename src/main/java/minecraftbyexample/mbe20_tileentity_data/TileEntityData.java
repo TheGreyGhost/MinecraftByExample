@@ -203,7 +203,7 @@ public class TileEntityData extends TileEntity implements ITickable {
 	// When the timer elapses, replace our block with a random one.
 	@Override
 	public void update() {
-		if (!this.hasWorldObj()) return;  // prevent crash
+		if (!this.hasWorld()) return;  // prevent crash
 		World world = this.getWorld();
 		if (world.isRemote) return;   // don't bother doing anything on the client side.
 		if (ticksLeftTillDisappear == INVALID_VALUE) return;  // do nothing until the time is valid

@@ -34,7 +34,7 @@ public class ChessboardItemOverrideList extends ItemOverrideList {
   {
     int numberOfChessPieces = 0;
     if (stack != null) {
-      numberOfChessPieces = stack.func_190916_E();  // func_190916_E() will probably be called getStackSize() soon
+      numberOfChessPieces = stack.getCount();  // func_190916_E() will probably be called getStackSize() soon
     }
     return new ChessboardFinalisedModel(originalModel, numberOfChessPieces);
   }

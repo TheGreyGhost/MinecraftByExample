@@ -21,6 +21,8 @@ This update is a work in progress.  It will compile and run many of the examples
  - MBE for Forge 1.8: [1-8final][version1-8]
  - MBE for Forge 1.8.9: [1-8-9final][version1-8-9]
  - MBE for Forge 1.10.2: [1-10-2final][version1-10-2]
+ - MBE for Forge 1.11: [1-11final][version1-11]
+  
  - MBE for Forge 1.11.2: [1-11-2final][version1-11-2]
 
 ##List of examples
@@ -144,6 +146,8 @@ Check out [this video][forge_installation] for more help installing Forge.
 [version1-8-9]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-8-9final
 [version1-10-2]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-10-2final
 [version1-11-2]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-11-2
+[version1-11]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-11-final
+[version1-11-2]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master
 
 With thanks to these helpful folks:
 alvaropp, 

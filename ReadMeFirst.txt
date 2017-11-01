@@ -1,4 +1,4 @@
-MinecraftByExample [1.11]
+MinecraftByExample [1.11.2]
 ==========================
 The purpose of MinecraftByExample is to give simple working examples of the important concepts in Minecraft and Forge.
 If you're anything like me, a good code example is worth several screens' worth of waffling explanation, and can very
@@ -17,17 +17,11 @@ The Official Forge documentation- http://mcforge.readthedocs.org/en/latest/
 Forge Modding articles- http://www.wuppy29.com/minecraft/modding-tutorials/forge-modding-1-8
 Forge Tutorials listing- http://www.minecraftforge.net/forum/index.php/board,120.0.html
 
-Note - the recommended build of the Forge MDK uses a fairly old version of the MCP mappings (the mappings file is what Forge uses to convert all the obfuscated minecraft names into something meaningful, for example itemStack.isEmpty() instead of itemStack.func_190926_b()).
-This is really annoying for some of the classes in particular ItemStack.
-I've created a separate branch that uses more recent mappings (09 Feb 2017):
-  https://github.com/TheGreyGhost/MinecraftByExample/tree/1-11-latestMappings
-If you use this, remember to update your own build.gradle to use the same mappings.
-(If you don't understand what I'm talking about, don't worry, you can safely ignore it).
-
 For earlier versions, see the relevant GitHub branch
   1.8: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-8final
   1.8.9: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-8-9final
   1.10.2: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-10-2final
+  1.11: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-11-final
 
 List of examples
 Blocks

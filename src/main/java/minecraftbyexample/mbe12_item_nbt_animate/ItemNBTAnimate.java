@@ -103,7 +103,7 @@ public class ItemNBTAnimate extends Item
     } else {
       if (worldIn.isRemote) {  // only on the client side, else you will get two messages..
         final boolean PRINT_IN_CHAT_WINDOW = true;
-        playerIn.addChatComponentMessage(new TextComponentString("Gem doesn't have a stored location! Shift right click to store your current location"),
+        playerIn.sendStatusMessage(new TextComponentString("Gem doesn't have a stored location! Shift right click to store your current location"),
                 PRINT_IN_CHAT_WINDOW);
       }
       return new ActionResult<ItemStack>(EnumActionResult.FAIL, itemStackIn);
@@ -140,7 +140,7 @@ public class ItemNBTAnimate extends Item
         worldIn.playSound(dontPlayForThisPlayer, x, y, z, SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
       }
     }
-    return ItemStack.field_190927_a;  // EMPTY_ITEM
+    return ItemStack.EMPTY;  // EMPTY_ITEM
 //    for items with multiple count, decrease stack size and return the itemstack, eg
 //    stack.stackSize--;
 //    return stack;

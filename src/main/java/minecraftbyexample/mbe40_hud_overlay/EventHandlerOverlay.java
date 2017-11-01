@@ -40,7 +40,7 @@ public class EventHandlerOverlay
 
   @SubscribeEvent(receiveCanceled=true)
   public void onEvent(RenderGameOverlayEvent.Pre event) {
-    EntityPlayerSP entityPlayerSP = Minecraft.getMinecraft().thePlayer;
+    EntityPlayerSP entityPlayerSP = Minecraft.getMinecraft().player;
     if (entityPlayerSP == null) return;  // just in case
 
     // look for the ItemHUDactivator in the hotbar.  If not present, return without changing the HUD.
