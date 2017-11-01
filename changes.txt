@@ -1,3 +1,6 @@
+Changes from 1.11 to 1.12
+ForgeRegistries.ITEMS, ForgeRegistries.BLCCKS etc instead of GameRegistry.register
+
 Changes from 1.10.2 to 1.11
 
 A major change is that itemStacks can't be null anymore, the EMPTY (obfuscated name ItemStack.field_190927_a) is used instead.  i.e.
