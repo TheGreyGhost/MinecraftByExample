@@ -78,15 +78,15 @@ public class TargetEffectMessageToClient implements IMessage
   public void toBytes(ByteBuf buf)
   {
     if (!messageIsValid) return;
-    buf.writeDouble(targetCoordinates.xCoord);
-    buf.writeDouble(targetCoordinates.yCoord);
-    buf.writeDouble(targetCoordinates.zCoord);
+    buf.writeDouble(targetCoordinates.x);
+    buf.writeDouble(targetCoordinates.y);
+    buf.writeDouble(targetCoordinates.z);
 
     // these methods may also be of use for your code:
     // for Itemstacks - ByteBufUtils.writeItemStack()
     // for NBT tags ByteBufUtils.writeTag();
     // for Strings: ByteBufUtils.writeUTF8String();
-    System.out.println("TargetEffectMessageToClient:toBytes length=" + buf.readableBytes());  // debugging only
+//    System.out.println("TargetEffectMessageToClient:toBytes length=" + buf.readableBytes());  // debugging only
   }
 
   @Override

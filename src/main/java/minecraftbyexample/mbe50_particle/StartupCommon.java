@@ -1,6 +1,7 @@
 package minecraftbyexample.mbe50_particle;
 
 import net.minecraft.item.ItemBlock;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
@@ -26,12 +27,12 @@ public class StartupCommon
     // each instance of your block should have a name that is unique within your mod.  use lower case.
     blockFlameEmitter = (BlockFlameEmitter)(new BlockFlameEmitter().setUnlocalizedName("mbe50_block_flame_emitter_unlocalised_name"));
     blockFlameEmitter.setRegistryName("mbe50_block_flame_emitter_registry_name");
-    GameRegistry.register(blockFlameEmitter);
+    ForgeRegistries.BLOCKS.register(blockFlameEmitter);
 
     // We also need to create and register an ItemBlock for this block otherwise it won't appear in the inventory
     itemBlockFlameEmitter = new ItemBlock(blockFlameEmitter);
     itemBlockFlameEmitter.setRegistryName(blockFlameEmitter.getRegistryName());
-    GameRegistry.register(itemBlockFlameEmitter);
+    ForgeRegistries.ITEMS.register(itemBlockFlameEmitter);
   }
 
   public static void initCommon()

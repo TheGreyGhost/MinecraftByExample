@@ -127,9 +127,9 @@ public class BlockFlameEmitter extends Block
       final double TICKS_PER_SECOND = 20;
       final double SPEED_IN_BLOCKS_PER_TICK = SPEED_IN_BLOCKS_PER_SECOND / TICKS_PER_SECOND;
 
-      velocityX = SPEED_IN_BLOCKS_PER_TICK * fireballDirection.xCoord; // how much to increase the x position every tick
-      velocityY = SPEED_IN_BLOCKS_PER_TICK * fireballDirection.yCoord; // how much to increase the y position every tick
-      velocityZ = SPEED_IN_BLOCKS_PER_TICK * fireballDirection.zCoord; // how much to increase the z position every tick
+      velocityX = SPEED_IN_BLOCKS_PER_TICK * fireballDirection.x; // how much to increase the x position every tick
+      velocityY = SPEED_IN_BLOCKS_PER_TICK * fireballDirection.y; // how much to increase the y position every tick
+      velocityZ = SPEED_IN_BLOCKS_PER_TICK * fireballDirection.z; // how much to increase the z position every tick
 
       FlameParticle newEffect = new FlameParticle(worldIn, xpos, ypos, zpos, velocityX, velocityY, velocityZ);
       Minecraft.getMinecraft().effectRenderer.addEffect(newEffect);

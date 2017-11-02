@@ -1,6 +1,5 @@
 package minecraftbyexample.mbe21_tileentityspecialrenderer;
 
-import minecraftbyexample.mbe06_redstone.input.TileEntityRedstoneColouredLamp;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;

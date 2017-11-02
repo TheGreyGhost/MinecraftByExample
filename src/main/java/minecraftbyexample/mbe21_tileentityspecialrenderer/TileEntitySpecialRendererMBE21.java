@@ -1,10 +1,10 @@
 package minecraftbyexample.mbe21_tileentityspecialrenderer;
 
 import minecraftbyexample.usefultools.UsefulFunctions;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
@@ -34,7 +34,9 @@ public class TileEntitySpecialRendererMBE21 extends TileEntitySpecialRenderer<Ti
    * @param blockDamageProgress the progress of the block being damaged (0 - 10), if relevant.  -1 if not relevant.
    */
   @Override
-  public void renderTileEntityAt(TileEntityMBE21 tileEntity, double relativeX, double relativeY, double relativeZ, float partialTicks, int blockDamageProgress) {
+  public void render(TileEntityMBE21 tileEntity, double relativeX, double relativeY, double relativeZ,
+                     float partialTicks, int blockDamageProgress, float alpha) {
+
     if (!(tileEntity instanceof TileEntityMBE21)) return; // should never happen
     TileEntityMBE21 tileEntityMBE21 = tileEntity;
 
@@ -107,7 +109,7 @@ public class TileEntitySpecialRendererMBE21 extends TileEntitySpecialRenderer<Ti
       GlStateManager.scale(SCALE_FACTOR, SCALE_FACTOR, SCALE_FACTOR);
 
       Tessellator tessellator = Tessellator.getInstance();
-      VertexBuffer vertexBuffer = tessellator.getBuffer();
+      BufferBuilder bufferBuilder = tessellator.getBuffer();
       this.bindTexture(gemTexture);         // texture for the gem appearance
 
       // set the key rendering flags appropriately...
@@ -131,8 +133,8 @@ public class TileEntitySpecialRendererMBE21 extends TileEntitySpecialRenderer<Ti
       final int BLOCK_LIGHT_VALUE = 0;
       OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, SKY_LIGHT_VALUE * 16.0F, BLOCK_LIGHT_VALUE * 16.0F);
 
-      vertexBuffer.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
-      addGemVertices(vertexBuffer);
+      bufferBuilder.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
+      addGemVertices(bufferBuilder);
       tessellator.draw();
 
     } finally {
@@ -150,7 +152,7 @@ public class TileEntitySpecialRendererMBE21 extends TileEntitySpecialRenderer<Ti
 
   // add the vertices for drawing the gem.  Generated using a model builder and pasted manually because the object model
   //   loader wasn't implemented at the time I wrote this example...
-  private void addGemVertices(VertexBuffer worldrenderer) {
+  private void addGemVertices(BufferBuilder bufferBuilder) {
     final double[][] vertexTable = {
             {0.000,1.000,0.000,0.000,0.118},          //1
             {-0.354,0.500,-0.354,0.000,0.354},
@@ -179,7 +181,7 @@ public class TileEntitySpecialRendererMBE21 extends TileEntitySpecialRenderer<Ti
               };
 
     for (double [] vertex : vertexTable) {
-      worldrenderer.pos(vertex[0], vertex[1], vertex[2])
+      bufferBuilder.pos(vertex[0], vertex[1], vertex[2])
                    .tex(vertex[3], vertex[4])
                    .endVertex();
     }

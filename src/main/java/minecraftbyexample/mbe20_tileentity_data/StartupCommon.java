@@ -1,6 +1,7 @@
 package minecraftbyexample.mbe20_tileentity_data;
 
 import net.minecraft.item.ItemBlock;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
@@ -37,12 +38,12 @@ public class StartupCommon
     //
     blockTileEntityData = (BlockTileEntityData)(new BlockTileEntityData().setUnlocalizedName("mbe20_tileentity_data_block_unlocalised_name"));
     blockTileEntityData.setRegistryName("mbe20_tileentity_data_block_registry_name");
-    GameRegistry.register(blockTileEntityData);
+    ForgeRegistries.BLOCKS.register(blockTileEntityData);
 
     // We also need to create and register an ItemBlock for this block otherwise it won't appear in the inventory
     itemBlockTileEntityData = new ItemBlock(blockTileEntityData);
     itemBlockTileEntityData.setRegistryName(blockTileEntityData.getRegistryName());
-    GameRegistry.register(itemBlockTileEntityData);
+    ForgeRegistries.ITEMS.register(itemBlockTileEntityData);
 
     // Each of your tile entities needs to be registered with a name that is unique to your mod.
     GameRegistry.registerTileEntity(TileEntityData.class, "mbe20_tileentity_data_tile_entity");

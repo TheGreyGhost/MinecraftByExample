@@ -1,5 +1,6 @@
 package minecraftbyexample.mbe60_network_messages;
 
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
@@ -13,6 +14,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
@@ -57,8 +59,8 @@ public class ItemAirStrike extends Item
     Vec3d playerFeetPosition = playerIn.getPositionEyes(PARTIAL_TICKS).subtract(0, playerIn.getEyeHeight(), 0);
     final double TARGET_DISTANCE = 6.0;
     final double HEIGHT_ABOVE_FEET = 0.1;
-    Vec3d targetPosition = playerFeetPosition.addVector(playerLook.xCoord * TARGET_DISTANCE, HEIGHT_ABOVE_FEET,
-                                                       playerLook.zCoord * TARGET_DISTANCE);
+    Vec3d targetPosition = playerFeetPosition.addVector(playerLook.x * TARGET_DISTANCE, HEIGHT_ABOVE_FEET,
+                                                       playerLook.z * TARGET_DISTANCE);
     callAirstrikeOnTarget(targetPosition);
     return new ActionResult(EnumActionResult.SUCCESS, itemStackIn);
   }
@@ -83,7 +85,7 @@ public class ItemAirStrike extends Item
 
   // add a tooltip
   @Override
-  public void addInformation(ItemStack stack, EntityPlayer playerIn, List tooltip, boolean advanced) {
+  public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
     tooltip.add("Right click on target to call an air strike");
   }
 }

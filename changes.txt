@@ -1,7 +1,7 @@
 Non-obvious changes from 1.11 to 1.12
 ForgeRegistries.ITEMS.register, ForgeRegistries.BLOCKS.register etc instead of GameRegistry.register
 Item.getSubItems() signature change, and vanilla Items no longer add subitems unless the tab parameter equals CreativeTabs.SEARCH
-
+Particle.shouldDisableDepth() instead of .isTransparent()
 
 Changes from 1.10.2 to 1.11
 A major change is that itemStacks can't be null anymore, the EMPTY item is used instead.  i.e.

@@ -52,7 +52,7 @@ public class MessageHandlerOnServer implements IMessageHandler<AirstrikeMessageT
     //  that the ctx handler is a serverhandler, and that WorldServer exists.
     // Packets received on the client side must be handled differently!  See MessageHandlerOnClient
 
-    final EntityPlayerMP sendingPlayer = ctx.getServerHandler().playerEntity;
+    final EntityPlayerMP sendingPlayer = ctx.getServerHandler().player;
     if (sendingPlayer == null) {
       System.err.println("EntityPlayerMP was null when AirstrikeMessageToServer was received");
       return null;
@@ -112,24 +112,24 @@ public class MessageHandlerOnServer implements IMessageHandler<AirstrikeMessageT
       switch (message.getProjectile()) {
         case PIG: {
           entity = new EntityPig(world);
-          entity.setLocationAndAngles(releasePoint.xCoord, releasePoint.yCoord, releasePoint.zCoord, yaw, pitch);
+          entity.setLocationAndAngles(releasePoint.x, releasePoint.y, releasePoint.z, yaw, pitch);
           break;
         }
         case SNOWBALL: {
-          entity = new EntitySnowball(world, releasePoint.xCoord, releasePoint.yCoord, releasePoint.zCoord);
+          entity = new EntitySnowball(world, releasePoint.x, releasePoint.y, releasePoint.z);
           break;
         }
         case TNT: {
-          entity = new EntityTNTPrimed(world, releasePoint.xCoord, releasePoint.yCoord, releasePoint.zCoord, sendingPlayer);
+          entity = new EntityTNTPrimed(world, releasePoint.x, releasePoint.y, releasePoint.z, sendingPlayer);
           break;
         }
         case SNOWMAN: {
           entity = new EntitySnowman(world);
-          entity.setLocationAndAngles(releasePoint.xCoord, releasePoint.yCoord, releasePoint.zCoord, yaw, pitch);
+          entity.setLocationAndAngles(releasePoint.x, releasePoint.y, releasePoint.z, yaw, pitch);
           break;
         }
         case EGG: {
-          entity = new EntityEgg(world, releasePoint.xCoord, releasePoint.yCoord, releasePoint.zCoord);
+          entity = new EntityEgg(world, releasePoint.x, releasePoint.y, releasePoint.z);
           break;
         }
         case FIREBALL: {
@@ -140,8 +140,8 @@ public class MessageHandlerOnServer implements IMessageHandler<AirstrikeMessageT
 
           EntityLargeFireball entityLargeFireball =  new EntityLargeFireball(world);
           entity = entityLargeFireball;
-          entity.setLocationAndAngles(releasePoint.xCoord, releasePoint.yCoord, releasePoint.zCoord, entity.rotationYaw, entity.rotationPitch);
-          entity.setPosition(releasePoint.xCoord, releasePoint.yCoord, releasePoint.zCoord);
+          entity.setLocationAndAngles(releasePoint.x, releasePoint.y, releasePoint.z, entity.rotationYaw, entity.rotationPitch);
+          entity.setPosition(releasePoint.x, releasePoint.y, releasePoint.z);
           entityLargeFireball.accelerationX = 0.0;
           entityLargeFireball.accelerationY = Y_ACCELERATION;
           entityLargeFireball.accelerationZ = 0.0;
@@ -157,7 +157,7 @@ public class MessageHandlerOnServer implements IMessageHandler<AirstrikeMessageT
       final float VOLUME = 10000.0F;
       final float PITCH = 0.8F + random.nextFloat() * 0.2F;
       final boolean DISTANCE_DELAY_FALSE = false;
-      world.playSound(releasePoint.xCoord, releasePoint.yCoord, releasePoint.zCoord,
+      world.playSound(releasePoint.x, releasePoint.y, releasePoint.z,
                       SoundEvents.ENTITY_LIGHTNING_THUNDER, SoundCategory.WEATHER, VOLUME, PITCH, DISTANCE_DELAY_FALSE);
     }
 

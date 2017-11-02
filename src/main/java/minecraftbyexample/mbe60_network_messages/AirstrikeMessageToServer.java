@@ -85,9 +85,9 @@ public class AirstrikeMessageToServer implements IMessage
   {
     if (!messageIsValid) return;
     projectile.toBytes(buf);
-    buf.writeDouble(targetCoordinates.xCoord);
-    buf.writeDouble(targetCoordinates.yCoord);
-    buf.writeDouble(targetCoordinates.zCoord);
+    buf.writeDouble(targetCoordinates.x);
+    buf.writeDouble(targetCoordinates.y);
+    buf.writeDouble(targetCoordinates.z);
 
     // these methods may also be of use for your code:
     // for Itemstacks - ByteBufUtils.writeItemStack()

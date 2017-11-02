@@ -1,6 +1,5 @@
 package minecraftbyexample.mbe20_tileentity_data;
 
-import minecraftbyexample.mbe06_redstone.input_and_output.TileEntityRedstoneMeter;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;

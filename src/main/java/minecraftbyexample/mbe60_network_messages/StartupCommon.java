@@ -2,6 +2,7 @@ package minecraftbyexample.mbe60_network_messages;
 
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -35,7 +36,7 @@ public class StartupCommon
     //    "aqua" in Italian.
     itemAirStrike = (ItemAirStrike)(new ItemAirStrike().setUnlocalizedName("mbe60_item_airstrike_unlocalised_name"));
     itemAirStrike.setRegistryName("mbe60_item_airstrike_registry_name");
-    GameRegistry.register(itemAirStrike);
+    ForgeRegistries.ITEMS.register(itemAirStrike);
 
     // Registering your message handlers and ID has some traps for the unwary.  The call to registerMessage has two functions:
     // 1) To register a message handler class for each side which receives a message

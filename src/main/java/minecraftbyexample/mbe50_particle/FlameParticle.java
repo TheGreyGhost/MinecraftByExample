@@ -2,7 +2,7 @@ package minecraftbyexample.mbe50_particle;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
@@ -78,10 +78,10 @@ public class FlameParticle extends Particle
 
   // this function is used by ParticleManager.addEffect() to determine whether depthmask writing should be on or not.
   // FlameBreathFX uses alphablending (i.e. the FX is partially transparent) but we want depthmask writing on,
-  //   otherwise translucent objects (such as water) render over the top of our breath, even if the breath is in front
+  //   otherwise translucent objects (such as water) render over the top of our breath, even if the particle is in front
   //  of the water and not behind
   @Override
-  public boolean isTransparent()
+  public boolean shouldDisableDepth()
   {
     return false;
   }
@@ -136,7 +136,7 @@ public class FlameParticle extends Particle
    * NB edgeLRdirectionY is not provided because it's always 0, i.e. the top of the viewer's screen is always directly
    * up, so moving left-right on the viewer's screen doesn't affect the y coordinate position in the world
    *
-   * @param vertexBuffer
+   * @param bufferBuilder
    * @param entity
    * @param partialTick
    * @param edgeLRdirectionX edgeLRdirection[XYZ] is the vector direction pointing left-right on the player's screen
@@ -146,7 +146,7 @@ public class FlameParticle extends Particle
    * @param edgeUDdirectionZ edgeUDdirection[XYZ] is the vector direction pointing up-down on the player's screen
    */
   @Override
-  public void renderParticle(VertexBuffer vertexBuffer, Entity entity, float partialTick,
+  public void renderParticle(BufferBuilder bufferBuilder, Entity entity, float partialTick,
                             float edgeLRdirectionX, float edgeUDdirectionY, float edgeLRdirectionZ,
                             float edgeUDdirectionX, float edgeUDdirectionZ)
   {
@@ -172,28 +172,28 @@ public class FlameParticle extends Particle
     // the caller has already initiated rendering, using:
 //    worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
 
-    vertexBuffer.pos(x - edgeLRdirectionX * scaleLR - edgeUDdirectionX * scaleUD,
+    bufferBuilder.pos(x - edgeLRdirectionX * scaleLR - edgeUDdirectionX * scaleUD,
             y - edgeUDdirectionY * scaleUD,
             z - edgeLRdirectionZ * scaleLR - edgeUDdirectionZ * scaleUD)
                  .tex(maxU, maxV)
                  .color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha)
                  .lightmap(skyLightTimes16, blockLightTimes16)
                  .endVertex();
-    vertexBuffer.pos(x - edgeLRdirectionX * scaleLR + edgeUDdirectionX * scaleUD,
+    bufferBuilder.pos(x - edgeLRdirectionX * scaleLR + edgeUDdirectionX * scaleUD,
             y + edgeUDdirectionY * scaleUD,
             z - edgeLRdirectionZ * scaleLR + edgeUDdirectionZ * scaleUD)
             .tex(maxU, minV)
             .color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha)
             .lightmap(skyLightTimes16, blockLightTimes16)
             .endVertex();
-    vertexBuffer.pos(x + edgeLRdirectionX * scaleLR + edgeUDdirectionX * scaleUD,
+    bufferBuilder.pos(x + edgeLRdirectionX * scaleLR + edgeUDdirectionX * scaleUD,
             y + edgeUDdirectionY * scaleUD,
             z + edgeLRdirectionZ * scaleLR + edgeUDdirectionZ * scaleUD)
             .tex(minU, minV)
             .color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha)
             .lightmap(skyLightTimes16, blockLightTimes16)
             .endVertex();
-    vertexBuffer.pos(x + edgeLRdirectionX * scaleLR - edgeUDdirectionX * scaleUD,
+    bufferBuilder.pos(x + edgeLRdirectionX * scaleLR - edgeUDdirectionX * scaleUD,
             y - edgeUDdirectionY * scaleUD,
             z + edgeLRdirectionZ * scaleLR - edgeUDdirectionZ * scaleUD)
             .tex(minU, maxV)
