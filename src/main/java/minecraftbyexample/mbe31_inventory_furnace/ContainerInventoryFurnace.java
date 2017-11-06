@@ -172,7 +172,7 @@ public class ContainerInventoryFurnace extends Container {
 	// This is where you check if any values have changed and if so send an update to any clients accessing this container
 	// The container itemstacks are tested in Container.detectAndSendChanges, so we don't need to do that
 	// We iterate through all of the TileEntity Fields to find any which have changed, and send them.
-	// You don't have to use fields if you don't wish to; just manually match the ID in sendProgressBarUpdate with the value in
+	// You don't have to use fields if you don't wish to; just manually match the ID in sendWindowProperty with the value in
 	//   updateProgressBar()
 	// The progress bar values are restricted to shorts.  If you have a larger value (eg int), it's not a good idea to try and split it
 	//   up into two shorts because the progress bar values are sent independently, and unless you add synchronisation logic at the
@@ -198,15 +198,15 @@ public class ContainerInventoryFurnace extends Container {
     for (IContainerListener listener : this.listeners) {
 			for (int fieldID = 0; fieldID < tileInventoryFurnace.getFieldCount(); ++fieldID) {
 				if (fieldHasChanged[fieldID]) {
-					// Note that although sendProgressBarUpdate takes 2 ints on a server these are truncated to shorts
-          listener.sendProgressBarUpdate(this, fieldID, cachedFields[fieldID]);
-				}
+					// Note that although sendWindowProperty takes 2 ints on a server these are truncated to shorts
+          listener.sendWindowProperty(this, fieldID, cachedFields[fieldID]);
+        }
 			}
 		}
 	}
 
 	// Called when a progress bar update is received from the server. The two values (id and data) are the same two
-	// values given to sendProgressBarUpdate.  In this case we are using fields so we just pass them to the tileEntity.
+	// values given to sendWindowProperty.  In this case we are using fields so we just pass them to the tileEntity.
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void updateProgressBar(int id, int data) {

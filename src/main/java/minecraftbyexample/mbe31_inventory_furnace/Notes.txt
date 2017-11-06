@@ -46,8 +46,8 @@ one on the client, and one on the server.  They are kept synchronised as follows
 
 3) When the furnace GUI is opened, two Containers are created linked to the TE.  Manipulation of items in slots is handled
    automatically between the two containers, however other data such as fuel burn time must be manually synchronised.
-   This is done using the tileentity "fields" (getField, setField)and the container methods icrafting.sendProgressBarUpdate() and
-   icrafting.updateProgressBar().  If more than one player has the furnace open at the same time, the information is sent
+   This is done using the tileentity "fields" (getField, setField)and the container methods icrafting.sendWindowProperty() and
+   container.updateProgressBar().  If more than one player has the furnace open at the same time, the information is sent
    to each of them.
 
 4) When the items in the slots change on the server, the tileentity is marked as "dirty" so that the updated information will be sent

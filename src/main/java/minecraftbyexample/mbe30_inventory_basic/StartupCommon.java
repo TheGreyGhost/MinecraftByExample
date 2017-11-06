@@ -5,6 +5,7 @@ import minecraftbyexample.MinecraftByExample;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
@@ -36,12 +37,12 @@ public class StartupCommon
 		 */
 		blockInventoryBasic = (BlockInventoryBasic)(new BlockInventoryBasic().setRegistryName("mbe30_inventory_basic"));
 		blockInventoryBasic.setUnlocalizedName("mbe30_inventory_basic");
-		GameRegistry.register(blockInventoryBasic);
+		ForgeRegistries.BLOCKS.register(blockInventoryBasic);
 
 		// same but for the associated item
 		itemBlockInventoryBasic = new ItemBlock(blockInventoryBasic);
 		itemBlockInventoryBasic.setRegistryName(blockInventoryBasic.getRegistryName());
-		GameRegistry.register(itemBlockInventoryBasic);
+    ForgeRegistries.ITEMS.register(itemBlockInventoryBasic);
 
 		// register the tile entity associated with the inventory block
 		GameRegistry.registerTileEntity(TileEntityInventoryBasic.class, "mbe30_tile_inventory_basic");

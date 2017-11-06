@@ -5,6 +5,7 @@ import minecraftbyexample.MinecraftByExample;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
@@ -41,12 +42,12 @@ public class StartupCommon
     //
 		blockInventoryAdvanced = new BlockInventoryFurnace().setUnlocalizedName("mbe31_block_inventory_furnace_unlocalised_name");
     blockInventoryAdvanced.setRegistryName("mbe31_block_inventory_furnace_registry_name");
-		GameRegistry.register(blockInventoryAdvanced);
+		ForgeRegistries.BLOCKS.register(blockInventoryAdvanced);
 
     // We also need to create and register an ItemBlock for this block otherwise it won't appear in the inventory
     itemBlockInventoryAdvanced = new ItemBlock(blockInventoryAdvanced);
     itemBlockInventoryAdvanced.setRegistryName(blockInventoryAdvanced.getRegistryName());
-    GameRegistry.register(itemBlockInventoryAdvanced);
+    ForgeRegistries.ITEMS.register(itemBlockInventoryAdvanced);
 
     // Each of your tile entities needs to be registered with a name that is unique to your mod.
 		GameRegistry.registerTileEntity(TileInventoryFurnace.class, "mbe31_block_inventory_furnace_tile_entity");
