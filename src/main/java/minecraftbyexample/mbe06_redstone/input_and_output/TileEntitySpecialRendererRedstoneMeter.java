@@ -1,10 +1,10 @@
 package minecraftbyexample.mbe06_redstone.input_and_output;
 
 import minecraftbyexample.usefultools.UsefulFunctions;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.tileentity.TileEntity;
@@ -31,10 +31,10 @@ public class TileEntitySpecialRendererRedstoneMeter extends TileEntitySpecialRen
    *                     ticks, to make animations smoother.  For example - if the frame rate is steady at 80 frames per second,
    *                     this method will be called four times per tick, with partialTicks spaced 0.25 apart, (eg) 0, 0.25, 0.5, 0.75
    * @param blockDamageProgress the progress of the block being damaged (0 - 10), if relevant.  -1 if not relevant.
+   * @param alpha I'm not sure what this is used for; the name suggests alpha blending but Vanilla doesn't appear to use it
    */
   @Override
-  public void renderTileEntityAt(TileEntity tileEntity, double relativeX, double relativeY, double relativeZ, float partialTicks, int blockDamageProgress)
-
+  public void render(TileEntity tileEntity, double relativeX, double relativeY, double relativeZ, float partialTicks, int blockDamageProgress, float alpha)
   {
     if (!(tileEntity instanceof TileEntityRedstoneMeter)) return; // should never happen
     TileEntityRedstoneMeter tileEntityRedstoneMeter = (TileEntityRedstoneMeter) tileEntity;
@@ -123,7 +123,7 @@ public class TileEntitySpecialRendererRedstoneMeter extends TileEntitySpecialRen
                                                       //  we need to rotate clockwise but rotate expects anticlockwise
 
       Tessellator tessellator = Tessellator.getInstance();
-      VertexBuffer vertexBuffer = tessellator.getBuffer();
+      BufferBuilder bufferBuilder = tessellator.getBuffer();
 //      this.bindTexture(needleTexture);         // we don't need a texture for the needle appearance - we're just using
                                                  //  solid colour
 
@@ -145,8 +145,8 @@ public class TileEntitySpecialRendererRedstoneMeter extends TileEntitySpecialRen
       final int BLOCK_LIGHT_VALUE = 0;
       OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, SKY_LIGHT_VALUE * 16.0F, BLOCK_LIGHT_VALUE * 16.0F);
 
-      vertexBuffer.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION);
-      addNeedleVertices(vertexBuffer);
+      bufferBuilder.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION);
+      addNeedleVertices(bufferBuilder);
       tessellator.draw();
 
     } finally {
@@ -156,7 +156,7 @@ public class TileEntitySpecialRendererRedstoneMeter extends TileEntitySpecialRen
   }
 
   // add the vertices for drawing the needle.  Normally you would use a model loader for a more complicated shape
-  private void addNeedleVertices(VertexBuffer vertexBuffer) {
+  private void addNeedleVertices(BufferBuilder vertexBuffer) {
     // needle is a triangle pointing down, the rotation spindle is at [0,0,0] and the spindle points north-south,
     //  i.e. the needle renders in the z=0 plane; rotating the needle around the spindle will make the needle point
     //  down, east, up, west.

@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * TestLogging is used to produce a log of method calls, useful for debugging where a breakpoint would
+ * MethodCallLogger is used to produce a log of method calls, useful for debugging where a breakpoint would
  *  alter the behaviour (eg behaviour depends on user input)
  *  How to use:
  *  1) Create the MethodCallLogger, optionally with a given PrintStream (will use System.out by default)

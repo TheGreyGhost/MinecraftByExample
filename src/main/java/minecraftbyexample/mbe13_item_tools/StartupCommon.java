@@ -8,6 +8,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -47,12 +48,12 @@ public class StartupCommon
     blockToolTest.setHardness(STONE_HARDNESS); // can also set in the constructor if desired
     blockToolTest.setHarvestLevel("axe", STONE_HARVEST_LEVEL); // can also set in the constructor if desired
     blockToolTest.setRegistryName("mbe13_item_tools_block");
-    GameRegistry.register(blockToolTest);
+    ForgeRegistries.BLOCKS.register(blockToolTest);
 
     // We also need to create and register an ItemBlock for this block otherwise it won't appear in the inventory
     itemBlockToolTest = new ItemBlock(blockToolTest);
     itemBlockToolTest.setRegistryName(blockToolTest.getRegistryName());
-    GameRegistry.register(itemBlockToolTest);
+    ForgeRegistries.ITEMS.register(itemBlockToolTest);
 
     // each instance of your item should have a name that is unique within your mod.  use lower case.
 
@@ -63,7 +64,7 @@ public class StartupCommon
                                                                                                   //   in addition to the ToolClass criteria
     itemToolsTest = (ItemToolsTest)(new ItemToolsTest(ATTACK_DAMAGE, ATTACK_SPEED, TOOL_MATERIAL, EFFECTIVE_ON).setUnlocalizedName("mbe13_item_tools_item"));
     itemToolsTest.setRegistryName("mbe13_item_tools_item");
-    GameRegistry.register(itemToolsTest);
+    ForgeRegistries.ITEMS.register(itemToolsTest);
 
     itemToolsTest.setHarvestLevel("axe", IRON_HARVEST_LEVEL);
     itemToolsTest.setHarvestLevel("shovel", STONE_HARVEST_LEVEL);

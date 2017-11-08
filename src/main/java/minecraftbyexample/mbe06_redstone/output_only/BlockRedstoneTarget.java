@@ -184,13 +184,13 @@ public class BlockRedstoneTarget extends Block
           // Which ring did it hit?  Calculate it as the biggest deviation of y and (x and z) from the centre.
 
           double xDeviationPixels = 0;
-          double yDeviationPixels = Math.abs(hitRelativeToCentre.yCoord * 16.0);
+          double yDeviationPixels = Math.abs(hitRelativeToCentre.x * 16.0);
           double zDeviationPixels = 0;
 
           if (targetFacing == EnumFacing.EAST || targetFacing == EnumFacing.WEST) {
-            zDeviationPixels = Math.abs(hitRelativeToCentre.zCoord * 16.0);
+            zDeviationPixels = Math.abs(hitRelativeToCentre.z * 16.0);
           } else {
-            xDeviationPixels = Math.abs(hitRelativeToCentre.xCoord * 16.0);
+            xDeviationPixels = Math.abs(hitRelativeToCentre.x * 16.0);
           }
 
           double maxDeviationPixels = Math.max(yDeviationPixels, Math.max(xDeviationPixels, zDeviationPixels));

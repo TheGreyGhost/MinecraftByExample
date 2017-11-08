@@ -32,6 +32,7 @@ public class TileEntitySpecialRendererMBE21 extends TileEntitySpecialRenderer<Ti
    *                     ticks, to make animations smoother.  For example - if the frame rate is steady at 80 frames per second,
    *                     this method will be called four times per tick, with partialTicks spaced 0.25 apart, (eg) 0, 0.25, 0.5, 0.75
    * @param blockDamageProgress the progress of the block being damaged (0 - 10), if relevant.  -1 if not relevant.
+   * @param alpha I'm not sure what this is used for; the name suggests alpha blending but Vanilla doesn't appear to use it
    */
   @Override
   public void render(TileEntityMBE21 tileEntity, double relativeX, double relativeY, double relativeZ,

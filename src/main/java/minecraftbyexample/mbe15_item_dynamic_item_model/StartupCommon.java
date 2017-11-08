@@ -1,5 +1,6 @@
 package minecraftbyexample.mbe15_item_dynamic_item_model;
 
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
@@ -34,7 +35,7 @@ public class StartupCommon
     //  +-----------------------+-----------------------+
     itemChessBoard = (ItemChessBoard)(new ItemChessBoard().setUnlocalizedName("mbe15_item_chessboard_unlocalised_name"));
     itemChessBoard.setRegistryName("mbe15_item_chessboard_registry_name");
-    GameRegistry.register(itemChessBoard);
+    ForgeRegistries.ITEMS.register(itemChessBoard);
   }
 
   public static void initCommon()
