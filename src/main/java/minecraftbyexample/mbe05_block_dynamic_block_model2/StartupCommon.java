@@ -1,6 +1,7 @@
 package minecraftbyexample.mbe05_block_dynamic_block_model2;
 
 import net.minecraft.item.ItemBlock;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
@@ -37,12 +38,12 @@ public class StartupCommon
     //
     block3DWeb = (Block3DWeb)(new Block3DWeb().setUnlocalizedName("mbe05_block_3d_web_unlocalised_name"));
     block3DWeb.setRegistryName("mbe05_block_3d_web_registry_name");
-    GameRegistry.register(block3DWeb);
+    ForgeRegistries.BLOCKS.register(block3DWeb);
 
     // We also need to create and register an ItemBlock for this block otherwise it won't appear in the inventory
     itemBlock3DWeb = new ItemBlock(block3DWeb);
     itemBlock3DWeb.setRegistryName(block3DWeb.getRegistryName());
-    GameRegistry.register(itemBlock3DWeb);
+    ForgeRegistries.ITEMS.register(itemBlock3DWeb);
   }
 
   public static void initCommon()

@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.client.model.IPerspectiveAwareModel;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import org.apache.commons.lang3.tuple.Pair;
@@ -21,7 +20,7 @@ import java.util.List;
  * Created by TheGreyGhost on 19/04/2015.
  * This class is used to customise the rendering of the camouflage block, based on the block it is copying.
  */
-public class CamouflageBakedModel implements IPerspectiveAwareModel {
+public class CamouflageBakedModel implements IBakedModel {
 
   public CamouflageBakedModel(IBakedModel unCamouflagedModel)
   {
@@ -118,25 +117,25 @@ public class CamouflageBakedModel implements IPerspectiveAwareModel {
    */
   @Override
   public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
-    if (modelWhenNotCamouflaged instanceof IPerspectiveAwareModel) {
-      Matrix4f matrix4f = ((IPerspectiveAwareModel)modelWhenNotCamouflaged).handlePerspective(cameraTransformType).getRight();
+//    if (modelWhenNotCamouflaged instanceof IPerspectiveAwareModel) {
+      Matrix4f matrix4f = modelWhenNotCamouflaged.handlePerspective(cameraTransformType).getRight();
       return Pair.of(this, matrix4f);
-    } else {
-      // If the parent model isn't an IPerspectiveAware, we'll need to generate the correct matrix ourselves using the
-      //  ItemCameraTransforms.
-
-      ItemCameraTransforms itemCameraTransforms = modelWhenNotCamouflaged.getItemCameraTransforms();
-      ItemTransformVec3f itemTransformVec3f = itemCameraTransforms.getTransform(cameraTransformType);
-      TRSRTransformation tr = new TRSRTransformation(itemTransformVec3f);
-      Matrix4f mat = null;
-      if (tr != null) { // && tr != TRSRTransformation.identity()) {
-        mat = tr.getMatrix();
-      }
-      // The TRSRTransformation for vanilla items have blockCenterToCorner() applied, however handlePerspective
-      //  reverses it back again with blockCornerToCenter().  So we don't need to apply it here.
-
-      return Pair.of(this, mat);
-    }
+//    } else {
+//      // If the parent model isn't an IPerspectiveAware, we'll need to generate the correct matrix ourselves using the
+//      //  ItemCameraTransforms.
+//
+//      ItemCameraTransforms itemCameraTransforms = modelWhenNotCamouflaged.getItemCameraTransforms();
+//      ItemTransformVec3f itemTransformVec3f = itemCameraTransforms.getTransform(cameraTransformType);
+//      TRSRTransformation tr = new TRSRTransformation(itemTransformVec3f);
+//      Matrix4f mat = null;
+//      if (tr != null) { // && tr != TRSRTransformation.identity()) {
+//        mat = tr.getMatrix();
+//      }
+//      // The TRSRTransformation for vanilla items have blockCenterToCorner() applied, however handlePerspective
+//      //  reverses it back again with blockCornerToCenter().  So we don't need to apply it here.
+//
+//      return Pair.of(this, mat);
+//    }
   }
 
 }

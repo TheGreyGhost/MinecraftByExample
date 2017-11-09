@@ -63,14 +63,13 @@ Most bugs will need you to set breakpoint in vanilla and inspect the registries 
 Good places for a breakpoint:
 BlockModelShapes.reloadModels()
 BlockStateMapper.putAllStateModelLocations()
-BlockRendererDispatcher.getModelFromBlockState()
+BlockRendererDispatcher.getModelForState()
 YourCustomBlock.getActualState() - called just before render - can add a dummy method specially for use by breakpoint
 
 A conditional breakpoint will often be very useful to break when your block is being processed, for example
 BlockRendererDispatcher::
-  public IBakedModel getModelFromBlockState(IBlockState iBlockState, IBlockAccess world, BlockPos pos)
+  public IBakedModel getModelForState(IBlockState state)
     {
-      Block block = iBlockState.getBlock();
-      // conditional breakpoint here on block.getUnlocalisedName().contains("partofmyblockname")
+      // conditional breakpoint here on state.getblock().getUnlocalisedName().contains("partofmyblockname")
 
 

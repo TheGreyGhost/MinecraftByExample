@@ -6,6 +6,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
@@ -24,12 +26,6 @@ public class ChessboardFinalisedModel implements IBakedModel {
     parentModel = i_parentModel;
     numberOfChessPieces = i_numberOfChessPieces;
   }
-
-  //
-//  @Override
-//  public List getFaceQuads(EnumFacing enumFacing) {
-//    return baseChessboardModel.getFaceQuads(enumFacing);
-//  }
 
   /**
    * We return a list of quads here which is used to draw the chessboard.
@@ -216,6 +212,7 @@ public class ChessboardFinalisedModel implements IBakedModel {
     float x1, x2, x3, x4;
     float y1, y2, y3, y4;
     float z1, z2, z3, z4;
+    int packednormal;
     final float CUBE_MIN = 0.0F;
     final float CUBE_MAX = 1.0F;
 
@@ -274,15 +271,17 @@ public class ChessboardFinalisedModel implements IBakedModel {
       }
     }
 
-    return new BakedQuad(Ints.concat(vertexToInts(x1, y1, z1, Color.WHITE.getRGB(), texture, 16, 16),
-            vertexToInts(x2, y2, z2, Color.WHITE.getRGB(), texture, 16, 0),
-            vertexToInts(x3, y3, z3, Color.WHITE.getRGB(), texture, 0, 0),
-            vertexToInts(x4, y4, z4, Color.WHITE.getRGB(), texture, 0, 16)),
+    packednormal = calculatePackedNormal(x1, y1, z1,  x2, y2, z2,  x3, y3, z3,  x4, y4, z4);
+    return new BakedQuad(Ints.concat(vertexToInts(x1, y1, z1, Color.WHITE.getRGB(), texture, 16, 16, packednormal),
+            vertexToInts(x2, y2, z2, Color.WHITE.getRGB(), texture, 16, 0, packednormal),
+            vertexToInts(x3, y3, z3, Color.WHITE.getRGB(), texture, 0, 0, packednormal),
+            vertexToInts(x4, y4, z4, Color.WHITE.getRGB(), texture, 0, 16, packednormal)),
             itemRenderLayer, face, texture, true, net.minecraft.client.renderer.vertex.DefaultVertexFormats.ITEM);
   }
 
   /**
-   * Converts the vertex information to the int array format expected by BakedQuads.
+   * Converts the vertex information to the int array format expected by BakedQuads.  Useful if you don't know
+   *   in advance what it should be.
    * @param x x coordinate
    * @param y y coordinate
    * @param z z coordinate
@@ -290,9 +289,10 @@ public class ChessboardFinalisedModel implements IBakedModel {
    * @param texture the texture to use for the face
    * @param u u-coordinate of the texture (0 - 16) corresponding to [x,y,z]
    * @param v v-coordinate of the texture (0 - 16) corresponding to [x,y,z]
+   * @param normal the packed representation of the normal vector, see calculatePackedNormal().  Used for lighting items.
    * @return
    */
-  private int[] vertexToInts(float x, float y, float z, int color, TextureAtlasSprite texture, float u, float v)
+  private int[] vertexToInts(float x, float y, float z, int color, TextureAtlasSprite texture, float u, float v, int normal)
   {
     return new int[] {
             Float.floatToRawIntBits(x),
@@ -301,8 +301,48 @@ public class ChessboardFinalisedModel implements IBakedModel {
             color,
             Float.floatToRawIntBits(texture.getInterpolatedU(u)),
             Float.floatToRawIntBits(texture.getInterpolatedV(v)),
-            0
+            normal
     };
+  }
+
+  /**
+   * Calculate the normal vector based on four input coordinates
+   * assumes that the quad is coplanar but should produce a 'reasonable' answer even if not.
+   * @return the packed normal, ZZYYXX
+   */
+  private int calculatePackedNormal(
+          float x1, float y1, float z1,
+          float x2, float y2, float z2,
+          float x3, float y3, float z3,
+          float x4, float y4, float z4) {
+
+    float xp = x4-x2;
+    float yp = y4-y2;
+    float zp = z4-z2;
+
+    float xq = x3-x1;
+    float yq = y3-y1;
+    float zq = z3-z1;
+
+    //Cross Product
+    float xn = yq*zp - zq*yp;
+    float yn = zq*xp - xq*zp;
+    float zn = xq*yp - yq*xp;
+
+    //Normalize
+    float norm = (float)Math.sqrt(xn*xn + yn*yn + zn*zn);
+    final float SMALL_LENGTH =  1.0E-4F;  //Vec3d.normalise() uses this
+    if (norm < SMALL_LENGTH) norm = 1.0F;  // protect against degenerate quad
+
+    norm = 1.0F / norm;
+    xn *= norm;
+    yn *= norm;
+    zn *= norm;
+
+    int x = ((byte)(xn * 127)) & 0xFF;
+    int y = ((byte)(yn * 127)) & 0xFF;
+    int z = ((byte)(zn * 127)) & 0xFF;
+    return x | (y << 0x08) | (z << 0x10);
   }
 
   private int numberOfChessPieces;

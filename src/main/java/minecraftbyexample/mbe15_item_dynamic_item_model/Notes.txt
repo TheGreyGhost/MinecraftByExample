@@ -1,5 +1,5 @@
 MBE15_ITEM_DYNAMIC_ITEM_MODEL
-Based on code by Herbix and RainWarrior
+Based on code by Herbix, RainWarrior, and rikka0w0
 This example shows how to create a dynamic item model in conjunction with ModelBakeEvent
 
 Normally, it can be difficult to customise your item's appearance without creating a new BakedModel for every different

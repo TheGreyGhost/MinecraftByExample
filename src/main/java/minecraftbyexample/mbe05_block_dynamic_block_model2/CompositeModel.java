@@ -5,8 +5,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.client.model.IPerspectiveAwareModel;
-import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import org.apache.commons.lang3.tuple.Pair;
@@ -29,7 +27,7 @@ import java.util.List;
  *   BEWARE! Rendering is multithreaded so your CompositeModel must be thread-safe
 
  */
-public class CompositeModel implements IPerspectiveAwareModel {
+public class CompositeModel implements IBakedModel {
 
   public CompositeModel(IBakedModel i_modelCore, IBakedModel i_modelUp, IBakedModel i_modelDown,
                         IBakedModel i_modelWest, IBakedModel i_modelEast,
@@ -119,25 +117,25 @@ public class CompositeModel implements IPerspectiveAwareModel {
    */
   @Override
   public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
-    if (modelCore instanceof IPerspectiveAwareModel) {
-      Matrix4f matrix4f = ((IPerspectiveAwareModel)modelCore).handlePerspective(cameraTransformType).getRight();
+//    if (modelCore instanceof IPerspectiveAwareModel) {
+      Matrix4f matrix4f = modelCore.handlePerspective(cameraTransformType).getRight();
       return Pair.of(this, matrix4f);
-    } else {
-      // If the parent model isn't an IPerspectiveAware, we'll need to generate the correct matrix ourselves using the
-      //  ItemCameraTransforms.
-
-      ItemCameraTransforms itemCameraTransforms = modelCore.getItemCameraTransforms();
-      ItemTransformVec3f itemTransformVec3f = itemCameraTransforms.getTransform(cameraTransformType);
-      TRSRTransformation tr = new TRSRTransformation(itemTransformVec3f);
-      Matrix4f mat = null;
-      if (tr != null) { // && tr != TRSRTransformation.identity()) {
-        mat = tr.getMatrix();
-      }
-      // The TRSRTransformation for vanilla items have blockCenterToCorner() applied, however handlePerspective
-      //  reverses it back again with blockCornerToCenter().  So we don't need to apply it here.
-
-      return Pair.of(this, mat);
-    }
+//    } else {
+//      // If the parent model isn't an IPerspectiveAware, we'll need to generate the correct matrix ourselves using the
+//      //  ItemCameraTransforms.
+//
+//      ItemCameraTransforms itemCameraTransforms = modelCore.getItemCameraTransforms();
+//      ItemTransformVec3f itemTransformVec3f = itemCameraTransforms.getTransform(cameraTransformType);
+//      TRSRTransformation tr = new TRSRTransformation(itemTransformVec3f);
+//      Matrix4f mat = null;
+//      if (tr != null) { // && tr != TRSRTransformation.identity()) {
+//        mat = tr.getMatrix();
+//      }
+//      // The TRSRTransformation for vanilla items have blockCenterToCorner() applied, however handlePerspective
+//      //  reverses it back again with blockCornerToCenter().  So we don't need to apply it here.
+//
+//      return Pair.of(this, mat);
+//    }
   }
 
   @Override

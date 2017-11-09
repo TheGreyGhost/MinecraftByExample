@@ -1,6 +1,5 @@
 package minecraftbyexample.mbe05_block_dynamic_block_model2;
 
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -12,6 +11,7 @@ import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.model.IModelState;
 
 import java.util.Collection;
+import java.util.function.Function;
 
 /**
  * Created by TheGreyGhost on 22/04/2015.

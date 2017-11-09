@@ -1,6 +1,7 @@
 package minecraftbyexample.mbe04_block_dynamic_block_model1;
 
 import net.minecraft.item.ItemBlock;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
@@ -37,12 +38,12 @@ public class StartupCommon
     //
     blockCamouflage = (BlockCamouflage)(new BlockCamouflage().setUnlocalizedName("mbe04_block_camouflage_unlocalised_name"));
     blockCamouflage.setRegistryName("mbe04_block_camouflage_registry_name");
-    GameRegistry.register(blockCamouflage);
+    ForgeRegistries.BLOCKS.register(blockCamouflage);
 
     // We also need to create and register an ItemBlock for this block otherwise it won't appear in the inventory
     itemBlockCamouflage = new ItemBlock(blockCamouflage);
     itemBlockCamouflage.setRegistryName(blockCamouflage.getRegistryName());
-    GameRegistry.register(itemBlockCamouflage);
+    ForgeRegistries.ITEMS.register(itemBlockCamouflage);
   }
 
   public static void initCommon()
