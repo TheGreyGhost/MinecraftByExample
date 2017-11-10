@@ -5,6 +5,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.IFuelHandler;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
@@ -42,25 +43,31 @@ public class StartupCommon
 
     //  see http://greyminecraftcoder.blogspot.com/2015/02/recipes.html for illustrations of these recipes
 
+    // group is optional.  The value of this string can be anything. Any recipes that have the same group name specified will be shown together in the crafting helper.
+    // The intention is to keep similar items within the same category, such as all boats for example.
+    // If you want to match an existing vanilla recipe group, look in the relevant recipe json in assets.minecraft.recipes
+
+    ResourceLocation optionalGroup = new ResourceLocation("");
+
     // a) Shaped recipe without metadata - emerald surrounded by diamond makes ender eye
-    GameRegistry.addShapedRecipe(new ItemStack(Items.ENDER_EYE), new Object[]{
-            ".D.",
+    GameRegistry.addShapedRecipe(new ResourceLocation("minecraftbyexample:ender_eye"), optionalGroup, new ItemStack(Items.ENDER_EYE), new Object[]{
+            " D ",
             "DED",
-            ".D.",
-                  'D', Items.DIAMOND,
-                  'E', Items.EMERALD     // note carefully - 'E' not "E" !
+            " D ",
+            'D', Items.DIAMOND,
+            'E', Items.EMERALD     // note carefully - 'E' not "E" !
     });
 
     // note - smaller grids are also possible, you don't need to fill up the entire 3x3 space.
 
     // b) shaped recipe with metadata - cobblestone surrounded by red dye makes redstone
     final int RED_DYE_DAMAGE_VALUE = EnumDyeColor.RED.getDyeDamage();
-    GameRegistry.addRecipe(new ItemStack(Items.REDSTONE), new Object[]{
+    GameRegistry.addShapedRecipe(new ResourceLocation("minecraftbyexample:redstone"), optionalGroup, new ItemStack(Items.REDSTONE), new Object[]{
             "RRR",
             "RCR",
             "RRR",
-                  'C', Blocks.COBBLESTONE,
-                  'R', new ItemStack(Items.DYE, 1, RED_DYE_DAMAGE_VALUE)
+            'C', Blocks.COBBLESTONE,
+            'R', new ItemStack(Items.DYE, 1, RED_DYE_DAMAGE_VALUE)
     });
 
     // c) shaped recipe for items which are damaged, or which have a metadata you want to ignore
@@ -74,53 +81,53 @@ public class StartupCommon
             'I', Items.IRON_INGOT
     });
 
-    // for comparison - this recipe only works with an undamaged wooden sword
-    //   wooden sword (undamaged) in a cobblestone shell plus gold ingot makes gold sword
-    GameRegistry.addRecipe(new ItemStack(Items.GOLDEN_SWORD), new Object[]{
-            "CIC",
-            "CWC",
-            "CCC",
-            'C', Blocks.COBBLESTONE,
-            'W', Items.WOODEN_SWORD,
-            'I', Items.GOLD_INGOT
-    });
-
-    // d) Shapeless recipe - blue dye plus yellow dye makes two green dye
-    final int BLUE_DYE_DAMAGE_VALUE = EnumDyeColor.BLUE.getDyeDamage();
-    final int YELLOW_DYE_DAMAGE_VALUE = EnumDyeColor.YELLOW.getDyeDamage();
-    final int GREEN_DYE_DAMAGE_VALUE = EnumDyeColor.GREEN.getDyeDamage();
-    final int NUMBER_OF_GREEN_DYE_PRODUCED = 2;
-    GameRegistry.addShapelessRecipe(new ItemStack(Items.DYE, NUMBER_OF_GREEN_DYE_PRODUCED, GREEN_DYE_DAMAGE_VALUE),
-            new Object[] {
-                    new ItemStack(Items.DYE, 1, YELLOW_DYE_DAMAGE_VALUE),
-                    new ItemStack(Items.DYE, 1, BLUE_DYE_DAMAGE_VALUE)
-    });
-
-    // g) Shaped Ore recipe - any type of tree leaves arranged around sticks makes a sapling
-    //    Ores are a way for mods to add blocks & items which are equivalent to vanilla blocks for crafting
-    //    For example - an ore recipe which uses "logWood" will accept a log of spruce, oak, birch, pine, etc.
-    //    If your mod registers its balsawood log using  OreDictionary.registerOre("logWood", BalsaWood), then your
-    //    BalsaWood log will also be accepted in the recipe.
-    IRecipe saplingRecipe = new ShapedOreRecipe(new ItemStack(Blocks.SAPLING), new Object[] {
-            "LLL",
-            "LSL",
-            ".S.",
-            'S', Items.STICK,   // can use ordinary items, blocks, itemstacks in ShapedOreRecipe
-            'L', "treeLeaves",  // look in OreDictionary for vanilla definitions
-    });
-    GameRegistry.addRecipe(saplingRecipe);
-
-    // h) by default, recipes are automatically mirror-imaged, i.e. you can flip the recipe left<--> right and it will
-    //    produce the same output.  This one isn't.  Only works for OreRecipes, but you can make ShapedOreRecipe from vanilla
-    //    Items or Blocks too (see (g) above)
-    IRecipe unmirroredRecipe = new ShapedOreRecipe(new ItemStack(Items.CAULDRON), new Object[] {
-            false,
-            "III",
-            "I..",
-            "III",
-            'I', Items.IRON_INGOT
-    });
-    GameRegistry.addRecipe(unmirroredRecipe);
+//    // for comparison - this recipe only works with an undamaged wooden sword
+//    //   wooden sword (undamaged) in a cobblestone shell plus gold ingot makes gold sword
+//    GameRegistry.addRecipe(new ItemStack(Items.GOLDEN_SWORD), new Object[]{
+//            "CIC",
+//            "CWC",
+//            "CCC",
+//            'C', Blocks.COBBLESTONE,
+//            'W', Items.WOODEN_SWORD,
+//            'I', Items.GOLD_INGOT
+//    });
+//
+//    // d) Shapeless recipe - blue dye plus yellow dye makes two green dye
+//    final int BLUE_DYE_DAMAGE_VALUE = EnumDyeColor.BLUE.getDyeDamage();
+//    final int YELLOW_DYE_DAMAGE_VALUE = EnumDyeColor.YELLOW.getDyeDamage();
+//    final int GREEN_DYE_DAMAGE_VALUE = EnumDyeColor.GREEN.getDyeDamage();
+//    final int NUMBER_OF_GREEN_DYE_PRODUCED = 2;
+//    GameRegistry.addShapelessRecipe(new ItemStack(Items.DYE, NUMBER_OF_GREEN_DYE_PRODUCED, GREEN_DYE_DAMAGE_VALUE),
+//            new Object[] {
+//                    new ItemStack(Items.DYE, 1, YELLOW_DYE_DAMAGE_VALUE),
+//                    new ItemStack(Items.DYE, 1, BLUE_DYE_DAMAGE_VALUE)
+//    });
+//
+//    // g) Shaped Ore recipe - any type of tree leaves arranged around sticks makes a sapling
+//    //    Ores are a way for mods to add blocks & items which are equivalent to vanilla blocks for crafting
+//    //    For example - an ore recipe which uses "logWood" will accept a log of spruce, oak, birch, pine, etc.
+//    //    If your mod registers its balsawood log using  OreDictionary.registerOre("logWood", BalsaWood), then your
+//    //    BalsaWood log will also be accepted in the recipe.
+//    IRecipe saplingRecipe = new ShapedOreRecipe(new ItemStack(Blocks.SAPLING), new Object[] {
+//            "LLL",
+//            "LSL",
+//            " S ",
+//            'S', Items.STICK,   // can use ordinary items, blocks, itemstacks in ShapedOreRecipe
+//            'L', "treeLeaves",  // look in OreDictionary for vanilla definitions
+//    });
+//    GameRegistry.addRecipe(saplingRecipe);
+//
+//    // h) by default, recipes are automatically mirror-imaged, i.e. you can flip the recipe left<--> right and it will
+//    //    produce the same output.  This one isn't.  Only works for OreRecipes, but you can make ShapedOreRecipe from vanilla
+//    //    Items or Blocks too (see (g) above)
+//    IRecipe unmirroredRecipe = new ShapedOreRecipe(new ItemStack(Items.CAULDRON), new Object[] {
+//            false,
+//            "III",
+//            "I  ",
+//            "III",
+//            'I', Items.IRON_INGOT
+//    });
+//    GameRegistry.addRecipe(unmirroredRecipe);
 
     //---------------- FURNACE RECIPES (smelting)
 
