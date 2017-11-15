@@ -17,9 +17,6 @@ The Official Forge documentation- http://mcforge.readthedocs.org/en/latest/
 Forge Modding articles- http://www.wuppy29.com/minecraft/modding-tutorials/forge-modding-1-8
 Forge Tutorials listing- http://www.minecraftforge.net/forum/index.php/board,120.0.html
 
-This update is a work in progress.  It will compile and run many of the examples so long as you exclude the examples which don't work (i.e. which give compilation errors).  In IntelliJ,
-  this means you (for example) right click on the mbe50_particle directory, then Mark Directory As -> Excluded
-
 For earlier versions, see the relevant GitHub branch
   1.8: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-8final
   1.8.9: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-8-9final

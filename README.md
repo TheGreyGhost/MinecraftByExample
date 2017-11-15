@@ -14,9 +14,6 @@ If you want more information and explanatory text about the concepts, the follow
   - [Forge Tutorials listing][tutorials_forum]
   - [List of Good Tutorials][list_of_tutorials]
 
-This update is a work in progress.  It will compile and run many of the examples so long as you exclude the examples which don't work (i.e. which give compilation errors).  In IntelliJ, 
-  this means you (for example) right click on the mbe50_particle directory, then Mark Directory As -> Excluded
-
 ####For earlier versions, see the relevant GitHub branch:
  - MBE for Forge 1.8: [1-8final][version1-8]
  - MBE for Forge 1.8.9: [1-8-9final][version1-8-9]
