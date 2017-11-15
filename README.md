@@ -55,7 +55,7 @@ This update is a work in progress.  It will compile and run many of the examples
   - [MBE35][35] - some typical example crafting recipes and furnace (smelting) recipes
 
 ### Heads Up Display/Overlays
-  - [MBE40][40] - simple customisations of the heads up display (hotbar, health meter)
+  - [MBE40][40] - NOT WORKING YET - simple customisations of the heads up display (hotbar, health meter)
 
 ### Particles - particle effects
   - [MBE50][50] - shows how to use vanilla Particles; also how to generate your own custom Particles
@@ -64,7 +64,7 @@ This update is a work in progress.  It will compile and run many of the examples
   - [MBE60][60] - send network messages between client and server
 
 ### Configuration GUI
-  - [MBE70][70] - configuration file linked to the "mod options" button GUI on the mods list screen
+  - [MBE70][70] - NOT WORKING YET - configuration file linked to the "mod options" button GUI on the mods list screen
 
 ### Testing tools
   - [MBE75][75] - a tool to help you automate testing of your classes in-game.

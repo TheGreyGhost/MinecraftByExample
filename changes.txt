@@ -3,6 +3,7 @@ ForgeRegistries.ITEMS.register, ForgeRegistries.BLOCKS.register etc instead of G
 Item.getSubItems() signature change, and vanilla Items no longer add subitems unless the tab parameter equals CreativeTabs.SEARCH
 Particle.shouldDisableDepth() instead of .isTransparent()
 IPerspectiveAwareModel has been integrated into IBakedModel
+Items in recipes now default to using WILDCARD, i.e. damaged items will still match the recipe.
 
 Changes from 1.10.2 to 1.11
 A major change is that itemStacks can't be null anymore, the EMPTY item is used instead.  i.e.

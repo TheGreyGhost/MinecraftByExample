@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "_comment": "other types are minecraft:crafting_shapeless, forge:ore_shaped, forge:ore_shapeless",
+  "_comment1": "see the registerR methods in CraftingHelper.init() and the corresponding factories, eg ShapedOreRecipe::factory",
+  "_comment2": "see mbe_35 StartupCommon for examples of how + why you might use each of these different types",
+  "pattern": [
+    "PPP",
+    "DDD",
+    " F "
+  ],
+  "key": {
+    "D": {
+      "item": "minecraft:dye",
+      "_comment": "The suitable fields are item, empty, item_nbt, and forge:ore_dict",
+      "_comment1": "see the registerI methods in CraftingHelper.init() and the corresponding lambda functions",
+      "data": 1,
+      "_comment2": "data value 1 is rose red.",
+      "_comment3": "If the item.getHasSubtypes() is true, you need to specify the metadata value.",
+      "_comment4": "For vanilla items, see the relevant Item class or https://minecraft.gamepedia.com/Java_Edition_data_values"
+    },
+    "P": {
+      "item": "minecraft:paper",
+      "_comment": "If the item.getHasSubtypes() is false, data value is optional.  If you dont specify it will be 0"
+    },
+    "F": {
+      "item": "minecraft:feather"
+    }
+  },
+  "result": {
+    "item": "minecraft:painting"
+  }
+}
