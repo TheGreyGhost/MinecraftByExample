@@ -1,4 +1,4 @@
-MinecraftByExample [1.12]
+MinecraftByExample [1.12.2]
 ==========================
 The purpose of MinecraftByExample is to give simple working examples of the important concepts in Minecraft and Forge.
 If you're anything like me, a good code example is worth several screens' worth of waffling explanation, and can very
@@ -58,7 +58,7 @@ Recipes (Crafting and Furnaces)
   MBE35 - some typical example crafting recipes and furnace (smelting) recipes
 
 HeadsUpDisplay - overlays
-  MBE40 - simple customisations of the heads up display (hotbar, health meter)
+  MBE40 - DOESN'T CURRENTLY WORK - simple customisations of the heads up display (hotbar, health meter)
 
 Particle - particle effects
   MBE50 - shows how to use vanilla Particles; also how to generate your own custom Particles
@@ -67,7 +67,7 @@ Network
   MBE60 - send network messages between client and server
 
 Configuration GUI
-  MBE70 - configuration file linked to the "mod options" button GUI on the mods list screen
+  MBE70 - DOESN'T CURRENTLY WORK - configuration file linked to the "mod options" button GUI on the mods list screen
 
 Testing tools
   MBE75 - a tool to help you automate testing of your classes in-game.
