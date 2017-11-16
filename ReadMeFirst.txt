@@ -64,7 +64,7 @@ Network
   MBE60 - send network messages between client and server
 
 Configuration GUI
-  MBE70 - DOESN'T CURRENTLY WORK - configuration file linked to the "mod options" button GUI on the mods list screen
+  MBE70 - configuration file linked to the "mod options" button GUI on the mods list screen
 
 Testing tools
   MBE75 - a tool to help you automate testing of your classes in-game.

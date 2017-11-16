@@ -61,7 +61,7 @@ If you want more information and explanatory text about the concepts, the follow
   - [MBE60][60] - send network messages between client and server
 
 ### Configuration GUI
-  - [MBE70][70] - NOT WORKING YET - configuration file linked to the "mod options" button GUI on the mods list screen
+  - [MBE70][70] - configuration file linked to the "mod options" button GUI on the mods list screen
 
 ### Testing tools
   - [MBE75][75] - a tool to help you automate testing of your classes in-game.
