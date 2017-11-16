@@ -52,7 +52,7 @@ If you want more information and explanatory text about the concepts, the follow
   - [MBE35][35] - some typical example crafting recipes and furnace (smelting) recipes
 
 ### Heads Up Display/Overlays
-  - [MBE40][40] - NOT WORKING YET - simple customisations of the heads up display (hotbar, health meter)
+  - [MBE40][40] - simple customisations of the heads up display (hotbar, health meter)
 
 ### Particles - particle effects
   - [MBE50][50] - shows how to use vanilla Particles; also how to generate your own custom Particles

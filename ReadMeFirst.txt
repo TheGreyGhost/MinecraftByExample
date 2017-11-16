@@ -55,7 +55,7 @@ Recipes (Crafting and Furnaces)
   MBE35 - some typical example crafting recipes and furnace (smelting) recipes
 
 HeadsUpDisplay - overlays
-  MBE40 - DOESN'T CURRENTLY WORK - simple customisations of the heads up display (hotbar, health meter)
+  MBE40 - simple customisations of the heads up display (hotbar, health meter)
 
 Particle - particle effects
   MBE50 - shows how to use vanilla Particles; also how to generate your own custom Particles
