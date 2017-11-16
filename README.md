@@ -1,4 +1,4 @@
-MinecraftByExample [1.12]
+MinecraftByExample [1.12.2]
 ==================
 The purpose of MinecraftByExample is to give simple working examples of the important concepts in Minecraft and Forge. If you're anything like me, a good code example is worth several screens worth of waffling explanation, and can very quickly explain the key concepts.  I also find it much easier to adapt and debug something that already works, than to have to synthesize something from scratch and spend hours trying to discover the missing bit of information I didn't know about.
 
@@ -13,9 +13,6 @@ If you want more information and explanatory text about the concepts, the follow
   - [The Official Forge documentation][forgedocs]
   - [Forge Tutorials listing][tutorials_forum]
   - [List of Good Tutorials][list_of_tutorials]
-
-This update is a work in progress.  It will compile and run many of the examples so long as you exclude the examples which don't work (i.e. which give compilation errors).  In IntelliJ, 
-  this means you (for example) right click on the mbe50_particle directory, then Mark Directory As -> Excluded
 
 ####For earlier versions, see the relevant GitHub branch:
  - MBE for Forge 1.8: [1-8final][version1-8]

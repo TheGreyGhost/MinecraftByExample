@@ -1,4 +1,4 @@
-MinecraftByExample [1.12]
+MinecraftByExample [1.12.2]
 ==========================
 The purpose of MinecraftByExample is to give simple working examples of the important concepts in Minecraft and Forge.
 If you're anything like me, a good code example is worth several screens' worth of waffling explanation, and can very
@@ -16,9 +16,6 @@ Guide to how Minecraft works-  http://greyminecraftcoder.blogspot.com.au/p/list-
 The Official Forge documentation- http://mcforge.readthedocs.org/en/latest/
 Forge Modding articles- http://www.wuppy29.com/minecraft/modding-tutorials/forge-modding-1-8
 Forge Tutorials listing- http://www.minecraftforge.net/forum/index.php/board,120.0.html
-
-This update is a work in progress.  It will compile and run many of the examples so long as you exclude the examples which don't work (i.e. which give compilation errors).  In IntelliJ,
-  this means you (for example) right click on the mbe50_particle directory, then Mark Directory As -> Excluded
 
 For earlier versions, see the relevant GitHub branch
   1.8: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-8final
@@ -58,7 +55,7 @@ Recipes (Crafting and Furnaces)
   MBE35 - some typical example crafting recipes and furnace (smelting) recipes
 
 HeadsUpDisplay - overlays
-  MBE40 - simple customisations of the heads up display (hotbar, health meter)
+  MBE40 - DOESN'T CURRENTLY WORK - simple customisations of the heads up display (hotbar, health meter)
 
 Particle - particle effects
   MBE50 - shows how to use vanilla Particles; also how to generate your own custom Particles
@@ -67,7 +64,7 @@ Network
   MBE60 - send network messages between client and server
 
 Configuration GUI
-  MBE70 - configuration file linked to the "mod options" button GUI on the mods list screen
+  MBE70 - DOESN'T CURRENTLY WORK - configuration file linked to the "mod options" button GUI on the mods list screen
 
 Testing tools
   MBE75 - a tool to help you automate testing of your classes in-game.
