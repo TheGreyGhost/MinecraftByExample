@@ -86,7 +86,7 @@ If you want more information and explanatory text about the concepts, the follow
         2. Right click on the project, select "Run As" > "Run Configurations..."
         3. Set the main class to "GradleStart"
     8. You should be able to start Minecraft now (using the Run or Debug configuration) and the mod will be loaded.	
-    9. Without an IDE and running from the command line, you can build the project with `gradlew build` and then run it with `gradlew runClient`. In order to load the mod into a production or stand-alone Minecraft, run `gradlew reobf` and copy `build/libs/minecraftbyexample-1.12.2a.jar` into the Minecraft mods directory before starting Minecraft.
+    9. Without an IDE and running from the command line, you can build the project with `gradlew build` and then run it with `gradlew runClient`. In order to load the mod into a production or stand-alone Minecraft, run `gradlew reobf` and copy `build/libs/minecraftbyexample-1.12.2a.jar` into the Minecraft mods directory before starting Minecraft.  Personally, I recommend to use an IDE, it makes coding and debugging a lot easier.  But it's not essential.  
 
     
 #### If You're Still Confused
@@ -155,7 +155,7 @@ Nephroid,
 Herbix, and
 Shadowfacts
 
-Licence Info:
+## Licence Info:
 This is free and unencumbered software released into the public domain.
 
 Anyone is free to copy, modify, publish, use, compile, sell, or
