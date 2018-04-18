@@ -73,7 +73,7 @@ If you want more information and explanatory text about the concepts, the follow
     1. Download the project as a zip.
     2. Unzip it to an appropriate folder on your computer, such as My Documents.  (Or, if you know how to fork a project on GitHub and import it into a local git repository, you can do that instead)
     3. From the command line, run `gradlew setupDecompWorkspace` to install Forge and configure the project, this will take quite some time, maybe 20 minutes or more.
-    4. From the command line, run `gradlew idea` if you are using IntelliJ IDEA, or `gradlew eclipse` if you are using Eclipse.
+    4. If using an IDE, such as Eclipse or IntelliJ IDEA, you can configure the IDE from the command line: run `gradlew idea` if you are using IntelliJ IDEA, or `gradlew eclipse` if you are using Eclipse.
     5. If using IntelliJ:
         1. Open the project (open the MinecraftByExample.ipr file).
         2. It will ask you whether you want to import the "unlinked gradle project".  This is optional.  If you choose no,
@@ -85,7 +85,9 @@ If you want more information and explanatory text about the concepts, the follow
         1. Open the Project.
         2. Right click on the project, select "Run As" > "Run Configurations..."
         3. Set the main class to "GradleStart"
-    7. You should be able to start Minecraft now (using the Run or Debug configuration) and the mod will be loaded.
+    8. You should be able to start Minecraft now (using the Run or Debug configuration) and the mod will be loaded.	
+    9. Without an IDE and running from the command line, you can build the project with `gradlew build` and then run it with `gradlew runClient`. In order to load the mod into a production or stand-alone Minecraft, run `gradlew reobf` and copy `build/libs/minecraftbyexample-1.12.2a.jar` into the Minecraft mods directory before starting Minecraft.
+
     
 #### If You're Still Confused
 Head over [here][more_help] if this didn't make sense to you, alternatively [this tutorial][diesieben_idea] by diesieben07.
