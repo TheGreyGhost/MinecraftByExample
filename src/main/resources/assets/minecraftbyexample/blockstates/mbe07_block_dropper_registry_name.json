@@ -1,0 +1,5 @@
+{
+    "variants": {
+        "normal": { "model": "minecraftbyexample:mbe07_block_dropper_model" }
+    }
+}

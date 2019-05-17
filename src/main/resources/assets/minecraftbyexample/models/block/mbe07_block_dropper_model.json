@@ -1,0 +1,12 @@
+{
+    "parent": "block/cube",
+    "textures": {
+        "down": "minecraftbyexample:blocks/mbe07_block_dropper_face0",
+        "up": "minecraftbyexample:blocks/mbe07_block_dropper_face1",
+        "north": "minecraftbyexample:blocks/mbe07_block_dropper_face2",
+        "east": "minecraftbyexample:blocks/mbe07_block_dropper_face5",
+        "south": "minecraftbyexample:blocks/mbe07_block_dropper_face3",
+        "west": "minecraftbyexample:blocks/mbe07_block_dropper_face4",
+        "particle": "blocks/lapis_block"
+    }
+}
