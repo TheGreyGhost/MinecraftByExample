@@ -45,7 +45,7 @@ public class StartupCommon
     ForgeRegistries.ITEMS.register(itemBlockInventoryBasic);
 
 		// register the tile entity associated with the inventory block
-		GameRegistry.registerTileEntity(TileEntityInventoryBasic.class, "mbe30_tile_inventory_basic");
+		GameRegistry.registerTileEntity(TileEntityInventoryBasic.class, "minecraftbyexample:mbe30_tile_inventory_basic");
 
 		// You need to register a GUIHandler for the container.  However there can be only one handler per mod, so for the purposes
 		//   of this project, we create a single GuiHandlerRegistry for all examples.

@@ -83,10 +83,11 @@ public class WebModel implements IModel {
       }
     }
 
-    // Our custom loaded doesn't need a default state, just return null
-    @Override
+    // Our custom loaded doesn't need a default state, but if we return null Forge gets upset
+    // The interface now provides a sensible default so just use that
+/*    @Override
     public IModelState getDefaultState() {
       return null;
     }
-
+*/
 }

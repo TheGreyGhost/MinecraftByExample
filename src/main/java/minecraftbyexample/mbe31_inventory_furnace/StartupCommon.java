@@ -50,7 +50,7 @@ public class StartupCommon
     ForgeRegistries.ITEMS.register(itemBlockInventoryAdvanced);
 
     // Each of your tile entities needs to be registered with a name that is unique to your mod.
-		GameRegistry.registerTileEntity(TileInventoryFurnace.class, "mbe31_block_inventory_furnace_tile_entity");
+		GameRegistry.registerTileEntity(TileInventoryFurnace.class, "minecraftbyexample:mbe31_block_inventory_furnace_tile_entity");
 
 		// You need to register a GUIHandler for the container.  However there can be only one handler per mod, so for the purposes
 		//   of this project, we create a single GuiHandlerRegistry for all examples.
