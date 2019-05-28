@@ -56,13 +56,17 @@ public class StartupCommon
     ResourceLocation optionalGroup = new ResourceLocation("");
 
     // a) Shaped recipe without metadata - emerald surrounded by diamond makes ender eye
-    GameRegistry.addShapedRecipe(new ResourceLocation("minecraftbyexample:mbe35_recipe_ender_eye"), optionalGroup, new ItemStack(Items.ENDER_EYE), new Object[]{
+    GameRegistry.addShapedRecipe(
+        new ResourceLocation("minecraftbyexample:mbe35_recipe_ender_eye"), 
+        optionalGroup, 
+        new ItemStack(Items.ENDER_EYE), new Object[]{
             " D ",
             "DED",
             " D ",
-            'D', Items.DIAMOND,
-            'E', Items.EMERALD     // note carefully - 'E' not "E" !
-    });
+            'D', Items.DIAMOND, // note: single quotes - 'D' not "D"!
+            'E', Items.EMERALD // note: single quotes!
+        }
+    );
 
     // note - smaller grids are also possible, you don't need to fill up the entire 3x3 space.
 
@@ -81,7 +85,10 @@ public class StartupCommon
 
     // c) shaped recipe for items which are damaged, or which have a metadata you want to ignore
     //      wooden sword (any damage value) in a cobblestone shell plus iron ingot makes iron sword
-    GameRegistry.addShapedRecipe(new ResourceLocation("minecraftbyexample:mbe35_recipe_wood_to_iron_sword"), woodSwordGroup, new ItemStack(Items.IRON_SWORD), new Object[]{
+    GameRegistry.addShapedRecipe(
+        new ResourceLocation("minecraftbyexample:mbe35_recipe_wood_to_iron_sword"), 
+        woodSwordGroup, 
+        new ItemStack(Items.IRON_SWORD), new Object[]{
             "CIC",
             "CWC",
             "CCC",
@@ -89,7 +96,8 @@ public class StartupCommon
             'W', new ItemStack(Items.WOODEN_SWORD, 1, OreDictionary.WILDCARD_VALUE),   // as of 1.12.2, you can also write simply Items.WOODEN_SWORD instead of new ItemStack,
                                                                                        // i.e. same as Items.IRON_INGOT on the next line
             'I', Items.IRON_INGOT
-    });
+        }
+    );
 
     // for comparison - this recipe only works with an undamaged wooden sword
     //   wooden sword (undamaged) in a cobblestone shell plus gold ingot makes gold sword
@@ -109,11 +117,13 @@ public class StartupCommon
     final int GREEN_DYE_DAMAGE_VALUE = EnumDyeColor.GREEN.getDyeDamage();
     final int NUMBER_OF_GREEN_DYE_PRODUCED = 2;
 
-    GameRegistry.addShapelessRecipe(new ResourceLocation("minecraftbyexample:mbe35_recipe_greendye"), optionalGroup,
-                                    new ItemStack(Items.DYE, NUMBER_OF_GREEN_DYE_PRODUCED, GREEN_DYE_DAMAGE_VALUE),
-            new Ingredient[] {Ingredient.fromStacks(new ItemStack(Items.DYE, 1, YELLOW_DYE_DAMAGE_VALUE)),
-                              Ingredient.fromStacks(new ItemStack(Items.DYE, 1, BLUE_DYE_DAMAGE_VALUE))
-                             }
+    GameRegistry.addShapelessRecipe(
+        new ResourceLocation("minecraftbyexample:mbe35_recipe_greendye"), optionalGroup,
+        new ItemStack(Items.DYE, NUMBER_OF_GREEN_DYE_PRODUCED, GREEN_DYE_DAMAGE_VALUE),
+        new Ingredient[] {
+            Ingredient.fromStacks(new ItemStack(Items.DYE, 1, YELLOW_DYE_DAMAGE_VALUE)), 
+            Ingredient.fromStacks(new ItemStack(Items.DYE, 1, BLUE_DYE_DAMAGE_VALUE))
+        }
     );
 
     // g) Shaped Ore recipe - any type of tree leaves arranged around sticks makes a sapling
@@ -151,12 +161,17 @@ public class StartupCommon
     //---------------- FURNACE RECIPES (smelting)
 
     // d) smelting recipe - smelt cake gives you charcoal (coal with metadata value of 1)
-    final float COAL_SMELT_XP = 0.1F;
-    final float DIAMOND_SMELT_XP = 1.0F;
-    final float CAKE_SMELT_XP = 0.0F;   // negative XP would probably cause a problem :)
+    final float CAKE_SMELT_XP = 0.0F; // negative XP would probably cause a problem :)
     final int NUMBER_OF_ITEMS = 1;
     final int CHARCOAL_METADATA_VALUE = 1;
-    GameRegistry.addSmelting(Items.CAKE, new ItemStack(Items.COAL, NUMBER_OF_ITEMS, CHARCOAL_METADATA_VALUE), CAKE_SMELT_XP);
+    GameRegistry.addSmelting(
+        Items.CAKE,
+        new ItemStack(
+            Items.COAL,
+            NUMBER_OF_ITEMS,
+            CHARCOAL_METADATA_VALUE
+        ), CAKE_SMELT_XP
+    );
 
     // e) fuel - use wheat as fuel in a furnace
     //   For your own item, override getItemBurnTime()
