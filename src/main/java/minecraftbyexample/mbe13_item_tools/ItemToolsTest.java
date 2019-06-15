@@ -52,10 +52,10 @@ public class ItemToolsTest extends ItemTool
 
   // can be useful to add further "special cases" that ToolClass and ItemTool constructor don't cover.
   @Override
-  public float getStrVsBlock(ItemStack stack, IBlockState iBlockState) {
+  public float getDestroySpeed(ItemStack stack, IBlockState iBlockState) {
     StartupCommon.methodCallLogger.enterMethod("ItemToolsTest.getStrVsBlock",
                                                stack.getDisplayName() + ", " + iBlockState.toString());
-    Float result = super.getStrVsBlock(stack, iBlockState);
+    Float result = super.getDestroySpeed(stack, iBlockState);
     StartupCommon.methodCallLogger.exitMethod("ItemToolsTest.getStrVsBlock", String.valueOf(result));
     return result;
   }

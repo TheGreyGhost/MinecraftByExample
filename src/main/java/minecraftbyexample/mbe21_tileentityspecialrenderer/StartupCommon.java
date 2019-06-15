@@ -38,7 +38,7 @@ public class StartupCommon
     //
 
     blockMBE21 = (BlockMBE21)(new BlockMBE21().setUnlocalizedName("mbe21_tesr_block_unlocalised_name"));
-    blockMBE21.setRegistryName("mbe21_tesr_block_registry_name");
+    blockMBE21.setRegistryName("minecraftbyexample:mbe21_tesr_block_registry_name");
     ForgeRegistries.BLOCKS.register(blockMBE21);
 
     // We also need to create and register an ItemBlock for this block otherwise it won't appear in the inventory
@@ -47,7 +47,7 @@ public class StartupCommon
     ForgeRegistries.ITEMS.register(itemBlockMBE21);
 
     // Each of your tile entities needs to be registered with a name that is unique to your mod.
-    GameRegistry.registerTileEntity(TileEntityMBE21.class, "mbe21_tesr_tile_entity");
+    GameRegistry.registerTileEntity(TileEntityMBE21.class, "minecraftbyexample:mbe21_tesr_tile_entity");
   }
 
   public static void initCommon()

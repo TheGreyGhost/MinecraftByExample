@@ -25,7 +25,7 @@ public class LiquidColour implements IItemColor {
    * @return an RGB colour (to be multiplied by the texture colours)
    */
   @Override
-  public int getColorFromItemstack(ItemStack stack, int tintIndex) {
+  public int colorMultiplier(ItemStack stack, int tintIndex) {
     // when rendering, choose the colour multiplier based on the contents
     // we want layer 0 (the bottle glass) to be unaffected (return white as the multiplier)
     // layer 1 will change colour depending on the contents.

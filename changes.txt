@@ -1,3 +1,7 @@
+Changes from 1.12 to 1.12.2 final
+ItemTool.getStrVsBlock became getDestroySpeed
+
+
 Non-obvious changes from 1.11 to 1.12
 ForgeRegistries.ITEMS.register, ForgeRegistries.BLOCKS.register etc instead of GameRegistry.register
 Item.getSubItems() signature change, and vanilla Items no longer add subitems unless the tab parameter equals CreativeTabs.SEARCH
