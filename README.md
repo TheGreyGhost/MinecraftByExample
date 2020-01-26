@@ -1,5 +1,8 @@
-MinecraftByExample [1.12.2]
+MinecraftByExample [1.14.4]
 ==================
+*** Work in Progress ***
+(1.15 isn't stable yet so I've decided to convert to 1.14.4 first)
+
 The purpose of MinecraftByExample is to give simple working examples of the important concepts in Minecraft and Forge. If you're anything like me, a good code example is worth several screens worth of waffling explanation, and can very quickly explain the key concepts.  I also find it much easier to adapt and debug something that already works, than to have to synthesize something from scratch and spend hours trying to discover the missing bit of information I didn't know about.
 
 I've tried to keep the code simple and obvious and to resist the urge to be clever. The examples might not be the most efficient or succinct implementation, I've deliberately left the optimization to you.
@@ -14,14 +17,17 @@ If you want more information and explanatory text about the concepts, the follow
   - [Forge Tutorials listing][tutorials_forum]
   - [List of Good Tutorials][list_of_tutorials]
 
-####For earlier versions, see the relevant GitHub branch:
+#### For earlier versions, see the relevant GitHub branch:
  - MBE for Forge 1.8: [1-8final][version1-8]
  - MBE for Forge 1.8.9: [1-8-9final][version1-8-9]
  - MBE for Forge 1.10.2: [1-10-2final][version1-10-2]
  - MBE for Forge 1.11: [1-11final][version1-11]
  - MBE for Forge 1.11.2: [1-11-2final][version1-11-2]
+ - MBE for Forge 1.12.2: [1-12-2final][version1-12-2]
 
-##List of examples
+If you are updating from previous forge versions, you will probably find [this link][versionupdates] very helpful, especially the scripts to rename your classes.  For better or for worse, MCP decided to rename a very large number of classes (eg all Blocks Blockxxx --> xxxxBlock, etc) so this might save you a stack of time.
+
+## List of examples
 ### Blocks
   - [MBE01][01] - a simple cube
   - [MBE02][02] - a block with a more complicated shape
@@ -72,21 +78,7 @@ If you want more information and explanatory text about the concepts, the follow
   - If you want to install it and compile it, the basic steps for beginners are:
     1. Download the project as a zip.
     2. Unzip it to an appropriate folder on your computer, such as My Documents.  (Or, if you know how to fork a project on GitHub and import it into a local git repository, you can do that instead)
-    3. From the command line, run `gradlew setupDecompWorkspace` to install Forge and configure the project, this will take quite some time, maybe 20 minutes or more.
-    4. If using an IDE, such as Eclipse or IntelliJ IDEA, you can configure the IDE from the command line: run `gradlew idea` if you are using IntelliJ IDEA, or `gradlew eclipse` if you are using Eclipse.
-    5. If using IntelliJ:
-        1. Open the project (open the MinecraftByExample.ipr file).
-        2. It will ask you whether you want to import the "unlinked gradle project".  This is optional.  If you choose no,
-           later on (when you publish your mod) you will need to package it up using the command line gradlew build, if you
-           choose yes you can run the gradle build task from inside IntelliJ.  For most users, there's no other difference.
-        3. If you imported the gradle project, you should run the gradle task 'genIntellijRuns' afterwards to get the Run and Debug
-           configurations.
-    6. If using Eclipse:
-        1. Open the Project.
-        2. Right click on the project, select "Run As" > "Run Configurations..."
-        3. Set the main class to "GradleStart"
-    8. You should be able to start Minecraft now (using the Run or Debug configuration) and the mod will be loaded.	
-    9. Without an IDE and running from the command line, you can build the project with `gradlew build` and then run it with `gradlew runClient`. In order to load the mod into a production or stand-alone Minecraft, run `gradlew reobf` and copy `build/libs/minecraftbyexample-1.12.2a.jar` into the Minecraft mods directory before starting Minecraft.  Personally, I recommend to use an IDE, it makes coding and debugging a lot easier.  But it's not essential.  
+    3. Look at Forge's README.txt file in this folder and follow the instructions.
 
     
 #### If You're Still Confused
@@ -145,6 +137,8 @@ Check out [this video][forge_installation] for more help installing Forge.
 [version1-10-2]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-10-2final
 [version1-11]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-11-final
 [version1-11-2]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-11-2-final
+[version1-12-2]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-12-2-final
+[versionupdates]: https://gist.github.com/williewillus/353c872bcf1a6ace9921189f6100d09a
 
 With thanks to these helpful folks:
 alvaropp, 
