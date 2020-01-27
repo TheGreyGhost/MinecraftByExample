@@ -1,9 +1,9 @@
 package minecraftbyexample.mbe11_item_variants;
 
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumAction;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.UseAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
@@ -13,7 +13,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.awt.*;
-import java.util.List;
 
 /**
  * User: The Grey Ghost
@@ -32,7 +31,7 @@ public class ItemVariants extends Item
     this.setMaxDamage(0);
     this.setHasSubtypes(true);
     this.setMaxStackSize(1);
-    this.setCreativeTab(CreativeTabs.MISC);   // items will appear on the Miscellaneous creative tab
+    this.setCreativeTab(ItemGroup.MISC);   // items will appear on the Miscellaneous creative tab
   }
 
   @Override
@@ -42,9 +41,9 @@ public class ItemVariants extends Item
 
   // add a subitem for each item we want to appear in the creative tab
   //  in this case - a full bottle of each colour
-  @SideOnly(Side.CLIENT)
+  @OnlyIn(Dist.CLIENT)
   @Override
-  public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems)
+  public void getSubItems(ItemGroup tab, NonNullList<ItemStack> subItems)
   {
     for (EnumBottleContents contents : EnumBottleContents.values()) {
       int contentBits = contents.getMetadata();
@@ -70,8 +69,8 @@ public class ItemVariants extends Item
 
   // what animation to use when the player holds the "use" button
   @Override
-  public EnumAction getItemUseAction(ItemStack stack) {
-    return EnumAction.DRINK;
+  public UseAction getItemUseAction(ItemStack stack) {
+    return UseAction.DRINK;
   }
 
   // how long the drinking will last for, in ticks (1 tick = 1/20 second)
@@ -85,22 +84,22 @@ public class ItemVariants extends Item
   // called when the player starts holding right click;
   // --> start drinking the liquid (if the bottle isn't already empty)
   @Override
-  public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand)
+  public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand hand)
   {
     ItemStack itemStackHeld = playerIn.getHeldItem(hand);
     int metadata = itemStackHeld.getMetadata();
     int fullnessBits = (metadata >> 2) & 0x07;
     EnumBottleFullness fullness = EnumBottleFullness.byMetadata(fullnessBits);
-    if (fullness == EnumBottleFullness.EMPTY) return new ActionResult(EnumActionResult.FAIL, itemStackHeld);
+    if (fullness == EnumBottleFullness.EMPTY) return new ActionResult(ActionResultType.FAIL, itemStackHeld);
 
     playerIn.setActiveHand(hand);
-    return new ActionResult(EnumActionResult.PASS, itemStackHeld);
+    return new ActionResult(ActionResultType.PASS, itemStackHeld);
   }
 
   // called when the player has held down right button for the full item use duration
   // --> decrease the bottle fullness by one step
   @Override
-  public ItemStack onItemUseFinish(ItemStack stack, World worldIn, EntityLivingBase entityLiving)
+  public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving)
   {
     int metadata = stack.getMetadata();
     int contentsBits = metadata & 0x03;
@@ -127,7 +126,7 @@ public class ItemVariants extends Item
 //  // when rendering, choose the colour multiplier based on the contents
 //  // we want layer 0 (the bottle glass) to be unaffected (return white as the multiplier)
 //  // layer 1 will change colour depending on the contents.
-//  @SideOnly(Side.CLIENT)
+//  @OnlyIn(Dist.CLIENT)
 //  @Override
 //  public int getColorFromItemStack(ItemStack stack, int renderLayer)
 //  {

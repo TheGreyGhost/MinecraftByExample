@@ -4,12 +4,11 @@ import com.google.common.collect.Sets;
 import minecraftbyexample.usefultools.MethodCallLogger;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.Blocks;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.Set;
@@ -31,7 +30,7 @@ public class StartupCommon
 {
   public static ItemToolsTest itemToolsTest;
   public static BlockToolTest blockToolTest;
-  public static ItemBlock itemBlockToolTest;
+  public static BlockItem itemBlockToolTest;
 
   public static MethodCallLogger methodCallLogger = new MethodCallLogger();
 
@@ -51,7 +50,7 @@ public class StartupCommon
     ForgeRegistries.BLOCKS.register(blockToolTest);
 
     // We also need to create and register an ItemBlock for this block otherwise it won't appear in the inventory
-    itemBlockToolTest = new ItemBlock(blockToolTest);
+    itemBlockToolTest = new BlockItem(blockToolTest);
     itemBlockToolTest.setRegistryName(blockToolTest.getRegistryName());
     ForgeRegistries.ITEMS.register(itemBlockToolTest);
 

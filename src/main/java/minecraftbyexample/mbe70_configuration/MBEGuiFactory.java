@@ -2,7 +2,7 @@ package minecraftbyexample.mbe70_configuration;
 
 import minecraftbyexample.MinecraftByExample;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
@@ -29,7 +29,7 @@ public class MBEGuiFactory implements IModGuiFactory
 	}
 
   // called when your GUI needs to be created
-  public GuiScreen createConfigGui(GuiScreen parentScreen)
+  public Screen createConfigGui(Screen parentScreen)
   {
     return new MBEConfigGui(parentScreen);
   }
@@ -49,7 +49,7 @@ public class MBEGuiFactory implements IModGuiFactory
 	// configuration categories
 	public static class MBEConfigGui extends GuiConfig
 	{
-		public MBEConfigGui(GuiScreen parentScreen)
+		public MBEConfigGui(Screen parentScreen)
 		{
 			//I18n function basically "translates" or localizes the given key using the appropriate .lang file
 			super(parentScreen, getConfigElements(), MinecraftByExample.MODID,
@@ -74,7 +74,7 @@ public class MBEGuiFactory implements IModGuiFactory
 			}
 
 			@Override
-			protected GuiScreen buildChildScreen()
+			protected Screen buildChildScreen()
 			{
 				//The following GuiConfig object specifies the configID of the object and thus will force-save
 				// when closed.
@@ -107,7 +107,7 @@ public class MBEGuiFactory implements IModGuiFactory
 			}
 
 			@Override
-			protected GuiScreen buildChildScreen()
+			protected Screen buildChildScreen()
 			{
         Configuration configuration = MBEConfiguration.getConfig();
         ConfigElement cat_general = new ConfigElement(configuration.getCategory(MBEConfiguration.CATEGORY_NAME_OTHER));

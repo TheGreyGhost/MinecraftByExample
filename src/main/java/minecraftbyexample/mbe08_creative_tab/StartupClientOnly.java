@@ -1,6 +1,6 @@
 package minecraftbyexample.mbe08_creative_tab;
 
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 
 /**

@@ -1,13 +1,15 @@
 package minecraftbyexample.mbe15_item_dynamic_item_model;
 
 import com.google.common.primitives.Ints;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.*;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.Direction;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
@@ -40,7 +42,7 @@ public class ChessboardFinalisedModel implements IBakedModel {
    */
 
   @Override
-  public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand) {
+  public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, long rand) {
     // our chess pieces are only drawn when side is NULL.
     if (side != null) {
       return parentModel.getQuads(state, side, rand);
@@ -113,7 +115,7 @@ public class ChessboardFinalisedModel implements IBakedModel {
     final int NUMBER_OF_ROWS = 8;
     final int MAX_NUMBER_OF_PIECES = PIECES_PER_ROW * NUMBER_OF_ROWS;
 
-    TextureAtlasSprite chessPieceTexture = Minecraft.getMinecraft().getTextureMapBlocks()
+    TextureAtlasSprite chessPieceTexture = Minecraft.getInstance().getTextureMapBlocks()
             .getAtlasSprite("minecraft:blocks/diamond_block");
     // if you want to use your own texture, you can add it to the texture map using code similar to this in your ClientProxy:
     //   MinecraftForge.EVENT_BUS.register(new StitcherAddDigitsTexture());
@@ -165,12 +167,12 @@ public class ChessboardFinalisedModel implements IBakedModel {
       BakedQuad nextPieceFront = createBakedQuadForFace(columnCentrePosition, PIECE_WIDTH,
               rowCentrePosition, PIECE_HEIGHT,
               -DISTANCE_BEHIND_SOUTH_FACE + DELTA_FOR_OVERLAP,
-              ITEM_RENDER_LAYER0, chessPieceTexture, EnumFacing.SOUTH
+              ITEM_RENDER_LAYER0, chessPieceTexture, Direction.SOUTH
       );
       BakedQuad nextPieceBack = createBakedQuadForFace(columnCentrePosition, PIECE_WIDTH,
               rowCentrePosition, PIECE_HEIGHT,
               -DISTANCE_BEHIND_NORTH_FACE + DELTA_FOR_OVERLAP,
-              ITEM_RENDER_LAYER0, chessPieceTexture, EnumFacing.NORTH
+              ITEM_RENDER_LAYER0, chessPieceTexture, Direction.NORTH
       );
       returnList.add(nextPieceFront);
       returnList.add(nextPieceBack);
@@ -207,7 +209,7 @@ public class ChessboardFinalisedModel implements IBakedModel {
    */
   private BakedQuad createBakedQuadForFace(float centreLR, float width, float centreUD, float height, float forwardDisplacement,
                                            int itemRenderLayer,
-                                           TextureAtlasSprite texture, EnumFacing face)
+                                           TextureAtlasSprite texture, Direction face)
   {
     float x1, x2, x3, x4;
     float y1, y2, y3, y4;

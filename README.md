@@ -25,7 +25,9 @@ If you want more information and explanatory text about the concepts, the follow
  - MBE for Forge 1.11.2: [1-11-2final][version1-11-2]
  - MBE for Forge 1.12.2: [1-12-2final][version1-12-2]
 
-If you are updating from previous forge versions, you will probably find [this link][versionupdates] very helpful, especially the scripts to rename your classes.  For better or for worse, MCP decided to rename a very large number of classes (eg all Blocks Blockxxx --> xxxxBlock, etc) so this might save you a stack of time.
+If you are updating from previous forge versions, you will probably find [this link][versionupdates] very helpful.  For better or for worse, MCP decided to rename a very large number of classes (eg all Blocks Blockxxx --> xxxxBlock, etc) so this might save you a stack of time.
+If you use IntelliJ, you might find these xml mapping files useful too [mapfiles]
+
 
 ## List of examples
 ### Blocks
@@ -78,7 +80,8 @@ If you are updating from previous forge versions, you will probably find [this l
   - If you want to install it and compile it, the basic steps for beginners are:
     1. Download the project as a zip.
     2. Unzip it to an appropriate folder on your computer, such as My Documents.  (Or, if you know how to fork a project on GitHub and import it into a local git repository, you can do that instead)
-    3. Look at Forge's README.txt file in this folder and follow the instructions.
+    3. Look at Forge's README.txt file in this folder and follow the instructions to import it into Eclipse or IntelliJ IDEA.
+    4. Use the gradle task runClient to run or debug the project.
 
     
 #### If You're Still Confused
@@ -139,6 +142,7 @@ Check out [this video][forge_installation] for more help installing Forge.
 [version1-11-2]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-11-2-final
 [version1-12-2]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-12-2-final
 [versionupdates]: https://gist.github.com/williewillus/353c872bcf1a6ace9921189f6100d09a
+[mapfiles]: 
 
 With thanks to these helpful folks:
 alvaropp, 

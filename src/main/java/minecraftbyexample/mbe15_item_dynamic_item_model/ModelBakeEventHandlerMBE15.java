@@ -1,6 +1,6 @@
 package minecraftbyexample.mbe15_item_dynamic_item_model;
 
-import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 

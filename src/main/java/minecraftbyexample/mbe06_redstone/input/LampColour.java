@@ -1,6 +1,6 @@
 package minecraftbyexample.mbe06_redstone.input;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -32,7 +32,7 @@ public class LampColour implements IBlockColor {
    * @return an RGB colour (to be multiplied by the texture colours)
    */
   @Override
-  public int colorMultiplier(IBlockState state, IBlockAccess worldIn, BlockPos pos, int tintIndex) {
+  public int colorMultiplier(BlockState state, IBlockAccess worldIn, BlockPos pos, int tintIndex) {
       int rgbColour = 0;
       TileEntity tileEntity = worldIn.getTileEntity(pos);
       if (tileEntity instanceof TileEntityRedstoneColouredLamp) {

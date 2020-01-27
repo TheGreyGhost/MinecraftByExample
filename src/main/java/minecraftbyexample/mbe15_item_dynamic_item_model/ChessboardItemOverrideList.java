@@ -1,9 +1,9 @@
 package minecraftbyexample.mbe15_item_dynamic_item_model;
 
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemOverride;
-import net.minecraft.client.renderer.block.model.ItemOverrideList;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemOverride;
+import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -30,7 +30,7 @@ public class ChessboardItemOverrideList extends ItemOverrideList {
    * @return
    */
   @Override
-  public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity)
+  public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, LivingEntity entity)
   {
     int numberOfChessPieces = 0;
     if (stack != null) {

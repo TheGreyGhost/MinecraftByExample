@@ -1,9 +1,9 @@
 package minecraftbyexample.mbe30_inventory_basic;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -17,14 +17,14 @@ import java.awt.*;
  * GuiInventoryBasic is a simple gui that does nothing but draw a background image and a line of text on the screen
  * everything else is handled by the vanilla container code
  */
-@SideOnly(Side.CLIENT)
-public class GuiInventoryBasic extends GuiContainer {
+@OnlyIn(Dist.CLIENT)
+public class GuiInventoryBasic extends ContainerScreen {
 
 	// This is the resource location for the background image for the GUI
 	private static final ResourceLocation texture = new ResourceLocation("minecraftbyexample", "textures/gui/mbe30_inventory_basic_bg.png");
 	private TileEntityInventoryBasic tileEntityInventoryBasic;
 
-	public GuiInventoryBasic(InventoryPlayer invPlayer, TileEntityInventoryBasic tile) {
+	public GuiInventoryBasic(PlayerInventory invPlayer, TileEntityInventoryBasic tile) {
 		super(new ContainerBasic(invPlayer, tile));
 		tileEntityInventoryBasic = tile;
 		// Set the width and height of the gui.  Should match the size of the texture!
@@ -36,7 +36,7 @@ public class GuiInventoryBasic extends GuiContainer {
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int x, int y) {
 		// Bind the image texture of our custom container
-		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
+		Minecraft.getInstance().getTextureManager().bindTexture(texture);
 		// Draw the image
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);

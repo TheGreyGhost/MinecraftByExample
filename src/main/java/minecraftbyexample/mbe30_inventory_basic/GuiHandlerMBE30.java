@@ -1,7 +1,7 @@
 package minecraftbyexample.mbe30_inventory_basic;
 
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -20,7 +20,7 @@ public class GuiHandlerMBE30 implements IGuiHandler {
 
 	// Gets the server side element for the given gui id- this should return a container
 	@Override
-	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+	public Object getServerGuiElement(int ID, PlayerEntity player, World world, int x, int y, int z) {
 		if (ID != getGuiID()) {
 			System.err.println("Invalid ID: expected " + getGuiID() + ", received " + ID);
 		}
@@ -36,7 +36,7 @@ public class GuiHandlerMBE30 implements IGuiHandler {
 
 	// Gets the client side element for the given gui id- this should return a gui
 	@Override
-	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+	public Object getClientGuiElement(int ID, PlayerEntity player, World world, int x, int y, int z) {
 		if (ID != getGuiID()) {
 			System.err.println("Invalid ID: expected " + getGuiID() + ", received " + ID);
 		}

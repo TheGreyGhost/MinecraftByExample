@@ -2,14 +2,10 @@ package minecraftbyexample.mbe08_creative_tab;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHardenedClay;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
+import net.minecraft.item.*;
+import net.minecraft.item.SwordItem;
+import net.minecraft.item.Items;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -28,11 +24,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class StartupCommon
 {
-  public static CreativeTabs customTab;               // will hold our first custom creative tab
+  public static ItemGroup customTab;               // will hold our first custom creative tab
   public static AllMbeItemsTab allMbeItemsTab;        // will hold our second custom creative tab displaying all MBE items
 
   public static Block testBlock;
-  public static ItemBlock testItemBlock;  // the itemBlock corresponding to testBlock
+  public static BlockItem testItemBlock;  // the itemBlock corresponding to testBlock
   public static Item testItem;
 
   public static void preInitCommon()
@@ -50,9 +46,9 @@ public class StartupCommon
    * you make a new CreativeTabs object, it gets added automatically in the constructor of
    * the CreativeTabs class.
    */
-    customTab = new CreativeTabs("mbe08_creative_tab") {
+    customTab = new ItemGroup("mbe08_creative_tab") {
       @Override
-      @SideOnly(Side.CLIENT)
+      @OnlyIn(Dist.CLIENT)
       public ItemStack getTabIconItem() {
         return new ItemStack(Items.GOLD_NUGGET);
       }
@@ -65,12 +61,12 @@ public class StartupCommon
     testBlock.setRegistryName("mbe08_creative_tab_block_registry_name");
     ForgeRegistries.BLOCKS.register(testBlock);
     // register the itemblock corresponding to the block
-    testItemBlock = new ItemBlock(testBlock);
+    testItemBlock = new BlockItem(testBlock);
     testItemBlock.setRegistryName(testBlock.getRegistryName());
     ForgeRegistries.ITEMS.register(testItemBlock);
 
     // add an item (an item without a corresponding block)
-    testItem = new ItemSword(Item.ToolMaterial.GOLD).setUnlocalizedName("mbe08_creative_tab_item_unlocalised_name").setCreativeTab(customTab);
+    testItem = new SwordItem(Item.ToolMaterial.GOLD).setUnlocalizedName("mbe08_creative_tab_item_unlocalised_name").setCreativeTab(customTab);
     testItem.setRegistryName("mbe08_creative_tab_item_registry_name");
     ForgeRegistries.ITEMS.register(testItem);
 

@@ -1,11 +1,11 @@
 package minecraftbyexample.mbe31_inventory_furnace;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IContainerListener;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -57,7 +57,7 @@ public class ContainerInventoryFurnace extends Container {
 	private final int FIRST_INPUT_SLOT_NUMBER = FIRST_FUEL_SLOT_NUMBER + FUEL_SLOTS_COUNT;
 	private final int FIRST_OUTPUT_SLOT_NUMBER = FIRST_INPUT_SLOT_NUMBER + INPUT_SLOTS_COUNT;
 
-	public ContainerInventoryFurnace(InventoryPlayer invPlayer, TileInventoryFurnace tileInventoryFurnace) {
+	public ContainerInventoryFurnace(PlayerInventory invPlayer, TileInventoryFurnace tileInventoryFurnace) {
 		this.tileInventoryFurnace = tileInventoryFurnace;
 
 		final int SLOT_X_SPACING = 18;
@@ -109,7 +109,7 @@ public class ContainerInventoryFurnace extends Container {
 
 	// Checks each tick to make sure the player is still able to access the inventory and if not closes the gui
 	@Override
-	public boolean canInteractWith(EntityPlayer player)
+	public boolean canInteractWith(PlayerEntity player)
 	{
 		return tileInventoryFurnace.isUsableByPlayer(player);
 	}
@@ -122,7 +122,7 @@ public class ContainerInventoryFurnace extends Container {
 	// returns EMPTY_ITEM if the source slot is empty, or if none of the source slot items could be moved.
 	//   otherwise, returns a copy of the source stack
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer player, int sourceSlotIndex)
+	public ItemStack transferStackInSlot(PlayerEntity player, int sourceSlotIndex)
 	{
 		Slot sourceSlot = (Slot)inventorySlots.get(sourceSlotIndex);
 		if (sourceSlot == null || !sourceSlot.getHasStack()) return ItemStack.EMPTY;  //EMPTY_ITEM
@@ -207,7 +207,7 @@ public class ContainerInventoryFurnace extends Container {
 
 	// Called when a progress bar update is received from the server. The two values (id and data) are the same two
 	// values given to sendWindowProperty.  In this case we are using fields so we just pass them to the tileEntity.
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void updateProgressBar(int id, int data) {
 		tileInventoryFurnace.setField(id, data);

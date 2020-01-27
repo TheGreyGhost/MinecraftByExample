@@ -1,10 +1,9 @@
 package minecraftbyexample.mbe40_hud_overlay;
 
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.GameType;
@@ -28,7 +27,7 @@ public class ItemHUDactivator extends Item
   public ItemHUDactivator()
   {
     this.setMaxStackSize(1);
-    this.setCreativeTab(CreativeTabs.MISC);   // the item will appear on the Miscellaneous tab in creative
+    this.setCreativeTab(ItemGroup.MISC);   // the item will appear on the Miscellaneous tab in creative
   }
 
   // if the item is being held in the hotbar, switch to survival mode.
@@ -40,15 +39,15 @@ public class ItemHUDactivator extends Item
 
     if (itemSlot < FIRST_HOTBAR_SLOT_NUMBER || itemSlot > LAST_HOTBAR_SLOT_NUMBER) return;
     if (worldIn.isRemote) return;
-    if (!(entityIn instanceof EntityPlayerMP)) return;
-    EntityPlayerMP entityPlayerMP = (EntityPlayerMP) entityIn;
+    if (!(entityIn instanceof ServerPlayerEntity)) return;
+    ServerPlayerEntity entityPlayerMP = (ServerPlayerEntity) entityIn;
     if (entityPlayerMP.interactionManager.getGameType() != GameType.SURVIVAL) {
       entityPlayerMP.setGameType(GameType.SURVIVAL);
     }
   }
 
   // adds 'tooltip' text
-  @SideOnly(Side.CLIENT)
+  @OnlyIn(Dist.CLIENT)
   @SuppressWarnings("unchecked")
   @Override
   public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {

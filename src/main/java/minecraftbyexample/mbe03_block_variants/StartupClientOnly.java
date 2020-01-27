@@ -1,6 +1,6 @@
 package minecraftbyexample.mbe03_block_variants;
 
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 
 /**

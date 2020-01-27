@@ -1,10 +1,6 @@
 package minecraftbyexample.testingarea;
 
 import minecraftbyexample.mbe01_block_simple.BlockSimple;
-import minecraftbyexample.mbe10_item_simple.ItemSimple;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.ItemArmor;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
  * User: The Grey Ghost

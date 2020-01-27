@@ -1,19 +1,17 @@
 package minecraftbyexample.mbe04_block_dynamic_block_model1;
 
-import net.minecraft.block.Block;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.BlockState;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
@@ -35,11 +33,11 @@ public class BlockCamouflage extends Block {
   public BlockCamouflage()
   {
     super(Material.CIRCUITS);                     // ensures the player can walk through the block
-    this.setCreativeTab(CreativeTabs.BUILDING_BLOCKS);   // the block will appear on the Blocks tab in creative
+    this.setCreativeTab(ItemGroup.BUILDING_BLOCKS);   // the block will appear on the Blocks tab in creative
   }
 
   // the block will render in the SOLID layer.  See http://greyminecraftcoder.blogspot.co.at/2014/12/block-rendering-18.html for more information.
-  @SideOnly(Side.CLIENT)
+  @OnlyIn(Dist.CLIENT)
   public BlockRenderLayer getBlockLayer()
   {
     return BlockRenderLayer.SOLID;
@@ -49,7 +47,7 @@ public class BlockCamouflage extends Block {
   // set to true because this block is opaque and occupies the entire 1x1x1 space
   // not strictly required because the default (super method) is true
   @Override
-  public boolean isOpaqueCube(IBlockState iBlockState) {
+  public boolean isOpaqueCube(BlockState iBlockState) {
     return true;
   }
 
@@ -58,20 +56,20 @@ public class BlockCamouflage extends Block {
   // set to true because this block occupies the entire 1x1x1 space
   // not strictly required because the default (super method) is true
   @Override
-  public boolean isFullCube(IBlockState iBlockState) {
+  public boolean isFullCube(BlockState iBlockState) {
     return true;
   }
 
   // render using an IBakedModel
   // not strictly required because the default (super method) is MODEL.
   @Override
-  public EnumBlockRenderType getRenderType(IBlockState iBlockState) {
-    return EnumBlockRenderType.MODEL;
+  public BlockRenderType getRenderType(BlockState iBlockState) {
+    return BlockRenderType.MODEL;
   }
 
   // by returning a null collision bounding box we stop the player from colliding with it
   @Override
-  public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+  public AxisAlignedBB getCollisionBoundingBox(BlockState state, IBlockAccess worldIn, BlockPos pos)
   {
     return NULL_AABB;
   }
@@ -97,10 +95,10 @@ public class BlockCamouflage extends Block {
   // on non-metadata information.  This is then conveyed to the IBakedModel#getQuads during rendering.
   // In this case, we look around the camouflage block to find a suitable adjacent block it should camouflage itself as
   @Override
-  public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
+  public BlockState getExtendedState(BlockState state, IBlockAccess world, BlockPos pos) {
     if (state instanceof IExtendedBlockState) {  // avoid crash in case of mismatch
       IExtendedBlockState retval = (IExtendedBlockState)state;
-      IBlockState bestAdjacentBlock = selectBestAdjacentBlock(world, pos);
+      BlockState bestAdjacentBlock = selectBestAdjacentBlock(world, pos);
       retval = retval.withProperty(COPIEDBLOCK, bestAdjacentBlock);
       return retval;
     }
@@ -108,7 +106,7 @@ public class BlockCamouflage extends Block {
   }
 
   @Override
-  public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+  public BlockState getActualState(BlockState state, IBlockAccess worldIn, BlockPos pos)
   {
     return state;  //for debugging - useful spot for a breakpoint.  Not necessary.
   }
@@ -125,17 +123,17 @@ public class BlockCamouflage extends Block {
   // 4) If still a tie, look again for spans on both sides, counting adjacent camouflage blocks as a span
   // 5) If still a tie, in decreasing order of preference: NORTH, SOUTH, EAST, WEST, DOWN, UP
   // 6) If no suitable adjacent blocks, return Block.air
-  private IBlockState selectBestAdjacentBlock(IBlockAccess world, BlockPos blockPos)
+  private BlockState selectBestAdjacentBlock(IBlockAccess world, BlockPos blockPos)
   {
-    final IBlockState UNCAMOUFLAGED_BLOCK = Blocks.AIR.getDefaultState();
-    TreeMap<EnumFacing, IBlockState> adjacentSolidBlocks = new TreeMap<EnumFacing, IBlockState>();
+    final BlockState UNCAMOUFLAGED_BLOCK = Blocks.AIR.getDefaultState();
+    TreeMap<Direction, BlockState> adjacentSolidBlocks = new TreeMap<Direction, BlockState>();
 
-    HashMap<IBlockState, Integer> adjacentBlockCount = new HashMap<IBlockState, Integer>();
-    for (EnumFacing facing : EnumFacing.values()) {
+    HashMap<BlockState, Integer> adjacentBlockCount = new HashMap<BlockState, Integer>();
+    for (Direction facing : Direction.values()) {
       BlockPos adjacentPosition = blockPos.add(facing.getFrontOffsetX(),
                                                facing.getFrontOffsetY(),
                                                facing.getFrontOffsetZ());
-      IBlockState adjacentIBS = world.getBlockState(adjacentPosition);
+      BlockState adjacentIBS = world.getBlockState(adjacentPosition);
       Block adjacentBlock = adjacentIBS.getBlock();
       if (adjacentBlock != Blocks.AIR
           && adjacentBlock.getBlockLayer() == BlockRenderLayer.SOLID
@@ -154,7 +152,7 @@ public class BlockCamouflage extends Block {
     }
 
     if (adjacentSolidBlocks.size() == 1) {
-      IBlockState singleAdjacentBlock = adjacentSolidBlocks.firstEntry().getValue();
+      BlockState singleAdjacentBlock = adjacentSolidBlocks.firstEntry().getValue();
       if (singleAdjacentBlock.getBlock() == this) {
         return UNCAMOUFLAGED_BLOCK;
       } else {
@@ -163,8 +161,8 @@ public class BlockCamouflage extends Block {
     }
 
     int maxCount = 0;
-    ArrayList<IBlockState> maxCountIBlockStates = new ArrayList<IBlockState>();
-    for (Map.Entry<IBlockState, Integer> entry : adjacentBlockCount.entrySet()) {
+    ArrayList<BlockState> maxCountIBlockStates = new ArrayList<BlockState>();
+    for (Map.Entry<BlockState, Integer> entry : adjacentBlockCount.entrySet()) {
       if (entry.getValue() > maxCount) {
         maxCountIBlockStates.clear();
         maxCountIBlockStates.add(entry.getKey());
@@ -181,11 +179,11 @@ public class BlockCamouflage extends Block {
 
     // for each block which has a match on the opposite side, add 10 to its count.
     // exact matches are counted twice --> +20, match with BlockCamouflage only counted once -> +10
-    for (Map.Entry<EnumFacing, IBlockState> entry : adjacentSolidBlocks.entrySet()) {
-      IBlockState iBlockState = entry.getValue();
+    for (Map.Entry<Direction, BlockState> entry : adjacentSolidBlocks.entrySet()) {
+      BlockState iBlockState = entry.getValue();
       if (maxCountIBlockStates.contains(iBlockState)) {
-        EnumFacing oppositeSide = entry.getKey().getOpposite();
-        IBlockState oppositeBlock = adjacentSolidBlocks.get(oppositeSide);
+        Direction oppositeSide = entry.getKey().getOpposite();
+        BlockState oppositeBlock = adjacentSolidBlocks.get(oppositeSide);
         if (oppositeBlock != null && (oppositeBlock == iBlockState || oppositeBlock.getBlock() == this) ) {
           adjacentBlockCount.put(iBlockState, 10 + adjacentBlockCount.get(iBlockState));
         }
@@ -194,7 +192,7 @@ public class BlockCamouflage extends Block {
 
     maxCount = 0;
     maxCountIBlockStates.clear();
-    for (Map.Entry<IBlockState, Integer> entry : adjacentBlockCount.entrySet()) {
+    for (Map.Entry<BlockState, Integer> entry : adjacentBlockCount.entrySet()) {
       if (entry.getValue() > maxCount) {
         maxCountIBlockStates.clear();
         maxCountIBlockStates.add(entry.getKey());
@@ -208,10 +206,10 @@ public class BlockCamouflage extends Block {
       return maxCountIBlockStates.get(0);
     }
 
-    EnumFacing [] orderOfPreference = new EnumFacing[] {EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.EAST,
-                                                        EnumFacing.WEST, EnumFacing.DOWN, EnumFacing.UP};
+    Direction[] orderOfPreference = new Direction[] {Direction.NORTH, Direction.SOUTH, Direction.EAST,
+                                                        Direction.WEST, Direction.DOWN, Direction.UP};
 
-    for (EnumFacing testFace : orderOfPreference) {
+    for (Direction testFace : orderOfPreference) {
       if (adjacentSolidBlocks.containsKey(testFace) &&
           maxCountIBlockStates.contains(adjacentSolidBlocks.get(testFace))) {
         return adjacentSolidBlocks.get(testFace);

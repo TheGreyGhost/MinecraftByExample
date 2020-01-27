@@ -2,9 +2,9 @@ package minecraftbyexample.mbe31_inventory_furnace;
 
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -20,14 +20,14 @@ import java.util.List;
  * GuiInventoryAdvanced is a gui similar to that of a furnace. It has a progress bar and a burn time indicator.
  * Both indicators have mouse over text
  */
-@SideOnly(Side.CLIENT)
-public class GuiInventoryFurnace extends GuiContainer {
+@OnlyIn(Dist.CLIENT)
+public class GuiInventoryFurnace extends ContainerScreen {
 
 	// This is the resource location for the background image
 	private static final ResourceLocation texture = new ResourceLocation("minecraftbyexample", "textures/gui/mbe31_inventory_furnace_bg.png");
 	private TileInventoryFurnace tileEntity;
 
-	public GuiInventoryFurnace(InventoryPlayer invPlayer, TileInventoryFurnace tileInventoryFurnace) {
+	public GuiInventoryFurnace(PlayerInventory invPlayer, TileInventoryFurnace tileInventoryFurnace) {
 		super(new ContainerInventoryFurnace(invPlayer, tileInventoryFurnace));
 
 		// Set the width and height of the gui
@@ -56,7 +56,7 @@ public class GuiInventoryFurnace extends GuiContainer {
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int x, int y) {
 		// Bind the image texture
-		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
+		Minecraft.getInstance().getTextureManager().bindTexture(texture);
 		// Draw the image
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
@@ -105,7 +105,7 @@ public class GuiInventoryFurnace extends GuiContainer {
 			drawHoveringText(hoveringText, mouseX - guiLeft, mouseY - guiTop, fontRenderer);
 		}
 //		// You must re bind the texture and reset the colour if you still need to use it after drawing a string
-//		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
+//		Minecraft.getInstance().getTextureManager().bindTexture(texture);
 //		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
 	}

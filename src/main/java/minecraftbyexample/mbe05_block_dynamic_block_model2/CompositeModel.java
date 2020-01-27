@@ -1,10 +1,14 @@
 package minecraftbyexample.mbe05_block_dynamic_block_model2;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.*;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import org.apache.commons.lang3.tuple.Pair;
@@ -52,7 +56,7 @@ public class CompositeModel implements IBakedModel {
    * @return
    */
   @Override
-  public List<BakedQuad> getQuads(@Nullable IBlockState blockState, @Nullable EnumFacing side, long rand) {
+  public List<BakedQuad> getQuads(@Nullable BlockState blockState, @Nullable Direction side, long rand) {
     List<BakedQuad> quadsList = new LinkedList<BakedQuad>();
     quadsList.addAll(modelCore.getQuads(blockState, side, rand));
     if (!(blockState instanceof IExtendedBlockState)) {
@@ -98,7 +102,7 @@ public class CompositeModel implements IBakedModel {
   // used for block breaking shards
   @Override
   public TextureAtlasSprite getParticleTexture() {
-    TextureAtlasSprite textureAtlasSprite = Minecraft.getMinecraft().getTextureMapBlocks()
+    TextureAtlasSprite textureAtlasSprite = Minecraft.getInstance().getTextureMapBlocks()
                                                      .getAtlasSprite("minecraftbyexample:blocks/mbe05_block_3d_web");
 
     return textureAtlasSprite;

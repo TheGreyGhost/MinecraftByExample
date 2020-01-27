@@ -1,16 +1,16 @@
 package minecraftbyexample.mbe20_tileentity_data;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockSapling;
-import net.minecraft.block.BlockTNT;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
+import net.minecraft.block.*;
+import net.minecraft.block.SaplingBlock;
+import net.minecraft.block.TNTBlock;
+import net.minecraft.block.Blocks;
+import net.minecraft.item.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagDouble;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.DoubleNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
@@ -45,25 +45,25 @@ public class TileEntityData extends TileEntity implements ITickable {
 	//  Not really required for this example since we only use the timer on the client, but included anyway for illustration
 	@Override
   @Nullable
-  public SPacketUpdateTileEntity getUpdatePacket()
+  public SUpdateTileEntityPacket getUpdatePacket()
   {
-		NBTTagCompound nbtTagCompound = new NBTTagCompound();
+		CompoundNBT nbtTagCompound = new CompoundNBT();
 		writeToNBT(nbtTagCompound);
 		int metadata = getBlockMetadata();
-		return new SPacketUpdateTileEntity(this.pos, metadata, nbtTagCompound);
+		return new SUpdateTileEntityPacket(this.pos, metadata, nbtTagCompound);
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
 		readFromNBT(pkt.getNbtCompound());
 	}
 
   /* Creates a tag containing the TileEntity information, used by vanilla to transmit from server to client
  */
   @Override
-  public NBTTagCompound getUpdateTag()
+  public CompoundNBT getUpdateTag()
   {
-    NBTTagCompound nbtTagCompound = new NBTTagCompound();
+    CompoundNBT nbtTagCompound = new CompoundNBT();
     writeToNBT(nbtTagCompound);
     return nbtTagCompound;
   }
@@ -71,7 +71,7 @@ public class TileEntityData extends TileEntity implements ITickable {
   /* Populates this TileEntity with information from the tag, used by vanilla to transmit from server to client
  */
   @Override
-  public void handleUpdateTag(NBTTagCompound tag)
+  public void handleUpdateTag(CompoundNBT tag)
   {
     this.readFromNBT(tag);
   }
@@ -82,7 +82,7 @@ public class TileEntityData extends TileEntity implements ITickable {
 	// NBTexplorer is a very useful tool to examine the structure of your NBT saved data and make sure it's correct:
 	//   http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-tools/1262665-nbtexplorer-nbt-editor-for-windows-and-mac
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound parentNBTTagCompound)
+	public CompoundNBT writeToNBT(CompoundNBT parentNBTTagCompound)
 	{
 		super.writeToNBT(parentNBTTagCompound); // The super call is required to save the tiles location
 
@@ -93,29 +93,29 @@ public class TileEntityData extends TileEntity implements ITickable {
 
 		parentNBTTagCompound.setString("testString", testString);
 
-		NBTTagCompound blockPosNBT = new NBTTagCompound();        // NBTTagCompound is similar to a Java HashMap
+		CompoundNBT blockPosNBT = new CompoundNBT();        // NBTTagCompound is similar to a Java HashMap
 		blockPosNBT.setInteger("x", testBlockPos.getX());
 		blockPosNBT.setInteger("y", testBlockPos.getY());
 		blockPosNBT.setInteger("z", testBlockPos.getZ());
 		parentNBTTagCompound.setTag("testBlockPos", blockPosNBT);
 
-		NBTTagCompound itemStackNBT = new NBTTagCompound();
+		CompoundNBT itemStackNBT = new CompoundNBT();
 		testItemStack.writeToNBT(itemStackNBT);                     // make sure testItemStack is not null first!
 		parentNBTTagCompound.setTag("testItemStack", itemStackNBT);
 
 		parentNBTTagCompound.setIntArray("testIntArray", testIntArray);
 
-		NBTTagList doubleArrayNBT = new NBTTagList();                     // an NBTTagList is similar to a Java ArrayList
+		ListNBT doubleArrayNBT = new ListNBT();                     // an NBTTagList is similar to a Java ArrayList
 		for (double value : testDoubleArray) {
-			doubleArrayNBT.appendTag(new NBTTagDouble(value));
+			doubleArrayNBT.appendTag(new DoubleNBT(value));
 		}
 		parentNBTTagCompound.setTag("testDoubleArray", doubleArrayNBT);
 
-		NBTTagList doubleArrayWithNullsNBT = new NBTTagList();
+		ListNBT doubleArrayWithNullsNBT = new ListNBT();
 		for (int i = 0; i < testDoubleArrayWithNulls.length; ++i) {
 			Double value = testDoubleArrayWithNulls[i];
 			if (value != null) {
-				NBTTagCompound dataForThisSlot = new NBTTagCompound();
+				CompoundNBT dataForThisSlot = new CompoundNBT();
 				dataForThisSlot.setInteger("i", i+1);   // avoid using 0, so the default when reading a missing value (0) is obviously invalid
 				dataForThisSlot.setDouble("v", value);
 				doubleArrayWithNullsNBT.appendTag(dataForThisSlot);
@@ -127,7 +127,7 @@ public class TileEntityData extends TileEntity implements ITickable {
 
 	// This is where you load the data that you saved in writeToNBT
 	@Override
-	public void readFromNBT(NBTTagCompound parentNBTTagCompound)
+	public void readFromNBT(CompoundNBT parentNBTTagCompound)
 	{
 		super.readFromNBT(parentNBTTagCompound); // The super call is required to load the tiles location
 
@@ -152,7 +152,7 @@ public class TileEntityData extends TileEntity implements ITickable {
 			System.err.println("testString mismatch:" + readTestString);
 		}
 
-		NBTTagCompound blockPosNBT = parentNBTTagCompound.getCompoundTag("testBlockPos");
+		CompoundNBT blockPosNBT = parentNBTTagCompound.getCompoundTag("testBlockPos");
 		BlockPos readBlockPos = null;
 		if (blockPosNBT.hasKey("x", NBT_INT_ID) && blockPosNBT.hasKey("y", NBT_INT_ID) && blockPosNBT.hasKey("z", NBT_INT_ID) ) {
 			readBlockPos = new BlockPos(blockPosNBT.getInteger("x"), blockPosNBT.getInteger("y"), blockPosNBT.getInteger("z"));
@@ -161,7 +161,7 @@ public class TileEntityData extends TileEntity implements ITickable {
 			System.err.println("testBlockPos mismatch:" + readBlockPos);
 		}
 
-		NBTTagCompound itemStackNBT = parentNBTTagCompound.getCompoundTag("testItemStack");
+		CompoundNBT itemStackNBT = parentNBTTagCompound.getCompoundTag("testItemStack");
 		ItemStack readItemStack = new ItemStack(itemStackNBT);
 		if (!ItemStack.areItemStacksEqual(testItemStack, readItemStack)) {
 			System.err.println("testItemStack mismatch:" + readItemStack);
@@ -173,7 +173,7 @@ public class TileEntityData extends TileEntity implements ITickable {
 		}
 
 		final int NBT_DOUBLE_ID = 6;					// see NBTBase.createNewByType()
-		NBTTagList doubleArrayNBT = parentNBTTagCompound.getTagList("testDoubleArray", NBT_DOUBLE_ID);
+		ListNBT doubleArrayNBT = parentNBTTagCompound.getTagList("testDoubleArray", NBT_DOUBLE_ID);
 		int numberOfEntries = Math.min(doubleArrayNBT.tagCount(), testDoubleArray.length);
 		double [] readDoubleArray = new double[numberOfEntries];
 		for (int i = 0; i < numberOfEntries; ++i) {
@@ -184,11 +184,11 @@ public class TileEntityData extends TileEntity implements ITickable {
 		}
 
 		final int NBT_COMPOUND_ID = 10;					// see NBTBase.createNewByType()
-		NBTTagList doubleNullArrayNBT = parentNBTTagCompound.getTagList("testDoubleArrayWithNulls", NBT_COMPOUND_ID);
+		ListNBT doubleNullArrayNBT = parentNBTTagCompound.getTagList("testDoubleArrayWithNulls", NBT_COMPOUND_ID);
 		numberOfEntries = Math.min(doubleArrayNBT.tagCount(), testDoubleArrayWithNulls.length);
 		Double [] readDoubleNullArray = new Double[numberOfEntries];
 		for (int i = 0; i < doubleNullArrayNBT.tagCount(); ++i)	{
-			NBTTagCompound nbtEntry = doubleNullArrayNBT.getCompoundTagAt(i);
+			CompoundNBT nbtEntry = doubleNullArrayNBT.getCompoundTagAt(i);
 			int idx = nbtEntry.getInteger("i") - 1;
 			if (nbtEntry.hasKey("v", NBT_DOUBLE_ID) && idx >= 0 && idx < numberOfEntries) {
 				readDoubleNullArray[idx] = nbtEntry.getDouble("v");
@@ -217,10 +217,10 @@ public class TileEntityData extends TileEntity implements ITickable {
 		Block chosenBlock = blockChoices[random.nextInt(blockChoices.length)];
 	  world.setBlockState(this.pos, chosenBlock.getDefaultState());
 		if (chosenBlock == Blocks.TNT) {
-			Blocks.TNT.onBlockDestroyedByPlayer(world, pos, Blocks.TNT.getDefaultState().withProperty(BlockTNT.EXPLODE, true));
+			Blocks.TNT.onBlockDestroyedByPlayer(world, pos, Blocks.TNT.getDefaultState().withProperty(TNTBlock.EXPLODE, true));
 			world.setBlockToAir(pos);
 		} else if (chosenBlock == Blocks.SAPLING) {
-			BlockSapling blockSapling = (BlockSapling)Blocks.SAPLING;
+			SaplingBlock blockSapling = (SaplingBlock)Blocks.SAPLING;
 			blockSapling.generateTree(world, this.pos, blockSapling.getDefaultState(),random);
 		}
 	}

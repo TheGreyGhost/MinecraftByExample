@@ -1,8 +1,8 @@
 package minecraftbyexample.mbe21_tileentityspecialrenderer;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.relauncher.Side;
@@ -66,25 +66,25 @@ public class TileEntityMBE21 extends TileEntity {
 	//  inaccurate anyway
 	@Override
 	@Nullable
-	public SPacketUpdateTileEntity getUpdatePacket()
+	public SUpdateTileEntityPacket getUpdatePacket()
 	{
-		NBTTagCompound nbtTagCompound = new NBTTagCompound();
+		CompoundNBT nbtTagCompound = new CompoundNBT();
 		writeToNBT(nbtTagCompound);
 		int metadata = getBlockMetadata();
-		return new SPacketUpdateTileEntity(this.pos, metadata, nbtTagCompound);
+		return new SUpdateTileEntityPacket(this.pos, metadata, nbtTagCompound);
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
 		readFromNBT(pkt.getNbtCompound());
 	}
 
 	/* Creates a tag containing the TileEntity information, used by vanilla to transmit from server to client
  */
 	@Override
-	public NBTTagCompound getUpdateTag()
+	public CompoundNBT getUpdateTag()
 	{
-		NBTTagCompound nbtTagCompound = new NBTTagCompound();
+		CompoundNBT nbtTagCompound = new CompoundNBT();
 		writeToNBT(nbtTagCompound);
 		return nbtTagCompound;
 	}
@@ -92,7 +92,7 @@ public class TileEntityMBE21 extends TileEntity {
 	/* Populates this TileEntity with information from the tag, used by vanilla to transmit from server to client
  */
 	@Override
-	public void handleUpdateTag(NBTTagCompound tag)
+	public void handleUpdateTag(CompoundNBT tag)
 	{
 		this.readFromNBT(tag);
 	}
@@ -100,7 +100,7 @@ public class TileEntityMBE21 extends TileEntity {
 	// This is where you save any data that you don't want to lose when the tile entity unloads
 	// In this case, we only need to store the gem colour.  For examples with other types of data, see MBE20
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound parentNBTTagCompound)
+	public CompoundNBT writeToNBT(CompoundNBT parentNBTTagCompound)
 	{
 		super.writeToNBT(parentNBTTagCompound); // The super call is required to save the tiles location
 		if (gemColour != INVALID_COLOR) {
@@ -111,7 +111,7 @@ public class TileEntityMBE21 extends TileEntity {
 
 	// This is where you load the data that you saved in writeToNBT
 	@Override
-	public void readFromNBT(NBTTagCompound parentNBTTagCompound)
+	public void readFromNBT(CompoundNBT parentNBTTagCompound)
 	{
 		super.readFromNBT(parentNBTTagCompound); // The super call is required to load the tiles location
 
@@ -130,7 +130,7 @@ public class TileEntityMBE21 extends TileEntity {
 	 * Don't render the gem if the player is too far away
 	 * @return the maximum distance squared at which the TESR should render
 	 */
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public double getMaxRenderDistanceSquared()
 	{
@@ -145,7 +145,7 @@ public class TileEntityMBE21 extends TileEntity {
 	 * If you get the boundary too small, the TESR may disappear when you aren't looking directly at it.
 	 * @return an appropriately size AABB for the TileEntity
 	 */
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public AxisAlignedBB getRenderBoundingBox()
 	{

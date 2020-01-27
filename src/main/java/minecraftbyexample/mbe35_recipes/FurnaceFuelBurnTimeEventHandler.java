@@ -1,9 +1,7 @@
 package minecraftbyexample.mbe35_recipes;
 
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.init.Items;
+import net.minecraft.item.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.event.furnace.FurnaceFuelBurnTimeEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 

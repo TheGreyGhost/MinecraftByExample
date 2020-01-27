@@ -1,8 +1,7 @@
 package minecraftbyexample.mbe02_block_partial;
 
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.BlockItem;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
  * User: The Grey Ghost
@@ -20,7 +19,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 public class StartupCommon
 {
   public static BlockPartial blockPartial;  // this holds the unique instance of your block
-  public static ItemBlock itemBlockPartial;  // this holds the instance of the ItemBlock for your Block
+  public static BlockItem itemBlockPartial;  // this holds the instance of the ItemBlock for your Block
 
   public static void preInitCommon()
   {
@@ -41,7 +40,7 @@ public class StartupCommon
     ForgeRegistries.BLOCKS.register(blockPartial);
 
     // We also need to create and register an ItemBlock for this block otherwise it won't appear in the inventory
-    itemBlockPartial = new ItemBlock(blockPartial);
+    itemBlockPartial = new BlockItem(blockPartial);
     itemBlockPartial.setRegistryName(blockPartial.getRegistryName());
     ForgeRegistries.ITEMS.register(itemBlockPartial);
 

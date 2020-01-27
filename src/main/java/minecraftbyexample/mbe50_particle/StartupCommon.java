@@ -1,8 +1,7 @@
 package minecraftbyexample.mbe50_particle;
 
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.BlockItem;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
  * User: The Grey Ghost
@@ -20,7 +19,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 public class StartupCommon
 {
   public static BlockFlameEmitter blockFlameEmitter;  // this holds the unique instance of your block
-  public static ItemBlock itemBlockFlameEmitter;  // the itemBlock corresponding to the block
+  public static BlockItem itemBlockFlameEmitter;  // the itemBlock corresponding to the block
 
   public static void preInitCommon()
   {
@@ -30,7 +29,7 @@ public class StartupCommon
     ForgeRegistries.BLOCKS.register(blockFlameEmitter);
 
     // We also need to create and register an ItemBlock for this block otherwise it won't appear in the inventory
-    itemBlockFlameEmitter = new ItemBlock(blockFlameEmitter);
+    itemBlockFlameEmitter = new BlockItem(blockFlameEmitter);
     itemBlockFlameEmitter.setRegistryName(blockFlameEmitter.getRegistryName());
     ForgeRegistries.ITEMS.register(itemBlockFlameEmitter);
   }

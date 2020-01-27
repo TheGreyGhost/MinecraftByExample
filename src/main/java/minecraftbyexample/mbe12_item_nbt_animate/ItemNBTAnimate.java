@@ -2,17 +2,17 @@ package minecraftbyexample.mbe12_item_nbt_animate;
 
 import minecraftbyexample.MinecraftByExample;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.item.EnumAction;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.UseAction;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -35,7 +35,7 @@ public class ItemNBTAnimate extends Item
     this.setMaxDamage(0);
     this.setHasSubtypes(false);
     this.setMaxStackSize(1);
-    this.setCreativeTab(CreativeTabs.MISC);   // items will appear on the Miscellaneous creative tab
+    this.setCreativeTab(ItemGroup.MISC);   // items will appear on the Miscellaneous creative tab
 
     // We use a PropertyOverride for this item to change the appearance depending on the state of the property.
     //  See ItemNBTanimationTimer for more information.
@@ -57,15 +57,15 @@ public class ItemNBTAnimate extends Item
   // if the gem is bound to a location, give it an "effect" i.e. the enchanted glint
   @Override
   public boolean hasEffect(ItemStack stack) {
-    NBTTagCompound nbtTagCompound = stack.getTagCompound();
+    CompoundNBT nbtTagCompound = stack.getTagCompound();
     if (nbtTagCompound == null) return false;
     return nbtTagCompound.hasKey("Bound");
   }
 
   // what animation to use when the player holds the "use" button
   @Override
-  public EnumAction getItemUseAction(ItemStack stack) {
-    return EnumAction.BLOCK;
+  public UseAction getItemUseAction(ItemStack stack) {
+    return UseAction.BLOCK;
   }
 
   // how long the player needs to hold down the right button in order to activate the gem, in ticks (1 tick = 1/20 second)
@@ -78,21 +78,21 @@ public class ItemNBTAnimate extends Item
   // --> if the gem is unbound, store the current location
   //  if the gem is bound, start the charge up sequence
   @Override
-  public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand)
+  public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand hand)
   {
     ItemStack itemStackIn = playerIn.getHeldItem(hand);
-    NBTTagCompound nbtTagCompound = itemStackIn.getTagCompound();
+    CompoundNBT nbtTagCompound = itemStackIn.getTagCompound();
 
     if (playerIn.isSneaking()) { // shift pressed; save (or overwrite) current location
       if (nbtTagCompound == null) {
-        nbtTagCompound = new NBTTagCompound();
+        nbtTagCompound = new CompoundNBT();
         itemStackIn.setTagCompound(nbtTagCompound);
       }
       nbtTagCompound.setBoolean("Bound", true);
       nbtTagCompound.setDouble("X", (int) playerIn.posX);
       nbtTagCompound.setDouble("Y", (int)playerIn.posY);
       nbtTagCompound.setDouble("Z", (int)playerIn.posZ);
-      return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemStackIn);
+      return new ActionResult<ItemStack>(ActionResultType.SUCCESS, itemStackIn);
     }
 
     boolean bound = false;
@@ -101,23 +101,23 @@ public class ItemNBTAnimate extends Item
     }
     if (bound) {
       playerIn.setActiveHand(hand); // start the charge up sequence
-      return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemStackIn);
+      return new ActionResult<ItemStack>(ActionResultType.SUCCESS, itemStackIn);
     } else {
       if (worldIn.isRemote) {  // only on the client side, else you will get two messages..
         final boolean PRINT_IN_CHAT_WINDOW = true;
-        playerIn.sendStatusMessage(new TextComponentString("Gem doesn't have a stored location! Shift right click to store your current location"),
+        playerIn.sendStatusMessage(new StringTextComponent("Gem doesn't have a stored location! Shift right click to store your current location"),
                 PRINT_IN_CHAT_WINDOW);
       }
-      return new ActionResult<ItemStack>(EnumActionResult.FAIL, itemStackIn);
+      return new ActionResult<ItemStack>(ActionResultType.FAIL, itemStackIn);
     }
   }
 
   // called when the player has held down the right click for the full charge-up duration
   // in this case - destroy the item
   @Override
-  public ItemStack onItemUseFinish(ItemStack stack, World worldIn, EntityLivingBase entityLiving)
+  public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving)
   {
-    NBTTagCompound nbtTagCompound = stack.getTagCompound();
+    CompoundNBT nbtTagCompound = stack.getTagCompound();
     if (nbtTagCompound == null || !nbtTagCompound.hasKey("Bound") || nbtTagCompound.getBoolean("Bound") != true ) {
       return stack;
     }
@@ -135,10 +135,10 @@ public class ItemNBTAnimate extends Item
     if (worldIn.isRemote) {  // client side
       worldIn.playSound(x, y, z, SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F, false);
     } else {  // server side
-      if (entityLiving instanceof EntityPlayerMP) { // should be an EntityPlayerMP; check first just to be sure to avoid crash
-        EntityPlayerMP entityPlayerMP = (EntityPlayerMP)entityLiving;
+      if (entityLiving instanceof ServerPlayerEntity) { // should be an EntityPlayerMP; check first just to be sure to avoid crash
+        ServerPlayerEntity entityPlayerMP = (ServerPlayerEntity)entityLiving;
         entityPlayerMP.connection.setPlayerLocation(x, y, z, entityPlayerMP.rotationYaw, entityPlayerMP.rotationPitch);
-        final EntityPlayerMP dontPlayForThisPlayer = entityPlayerMP;
+        final ServerPlayerEntity dontPlayForThisPlayer = entityPlayerMP;
         worldIn.playSound(dontPlayForThisPlayer, x, y, z, SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
       }
     }
@@ -149,13 +149,13 @@ public class ItemNBTAnimate extends Item
   }
 
   // adds 'tooltip' text
-  @SideOnly(Side.CLIENT)
+  @OnlyIn(Dist.CLIENT)
   @SuppressWarnings("unchecked")
   @Override
   //public void addInformation(ItemStack stack, EntityPlayer playerIn, List tooltip, boolean advanced) {
   public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn)
   {
-    NBTTagCompound nbtTagCompound = stack.getTagCompound();
+    CompoundNBT nbtTagCompound = stack.getTagCompound();
     if (nbtTagCompound != null && nbtTagCompound.hasKey("Bound") && nbtTagCompound.getBoolean("Bound") == true ) {
       tooltip.add("Stored destination=");
       tooltip.add("X: " + nbtTagCompound.getInteger("X"));

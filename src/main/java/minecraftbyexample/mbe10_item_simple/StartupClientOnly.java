@@ -1,6 +1,6 @@
 package minecraftbyexample.mbe10_item_simple;
 
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 
 /**

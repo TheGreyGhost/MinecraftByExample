@@ -1,6 +1,6 @@
 package minecraftbyexample.mbe04_block_dynamic_block_model1;
 
-import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 

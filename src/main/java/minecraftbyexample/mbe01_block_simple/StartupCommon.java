@@ -1,15 +1,7 @@
 package minecraftbyexample.mbe01_block_simple;
 
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ShapedRecipes;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraft.item.BlockItem;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-
-import javax.annotation.Nonnull;
 
 /**
  * User: The Grey Ghost
@@ -27,7 +19,7 @@ import javax.annotation.Nonnull;
 public class StartupCommon
 {
   public static BlockSimple blockSimple;  // this holds the unique instance of your block
-  public static ItemBlock itemBlockSimple;  // this holds the unique instance of the ItemBlock corresponding to your block
+  public static BlockItem itemBlockSimple;  // this holds the unique instance of the ItemBlock corresponding to your block
 
   public static void preInitCommon()
   {
@@ -48,7 +40,7 @@ public class StartupCommon
     ForgeRegistries.BLOCKS.register(blockSimple);
 
     // We also need to create and register an ItemBlock for this block otherwise it won't appear in the inventory
-    itemBlockSimple = new ItemBlock(blockSimple);
+    itemBlockSimple = new BlockItem(blockSimple);
     itemBlockSimple.setRegistryName(blockSimple.getRegistryName());
     ForgeRegistries.ITEMS.register(itemBlockSimple);
   }

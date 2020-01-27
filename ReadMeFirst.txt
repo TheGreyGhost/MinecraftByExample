@@ -1,3 +1,5 @@
+*** NOT UPDATED YET - see README.md ****
+
 MinecraftByExample [1.12.2]
 ==========================
 The purpose of MinecraftByExample is to give simple working examples of the important concepts in Minecraft and Forge.

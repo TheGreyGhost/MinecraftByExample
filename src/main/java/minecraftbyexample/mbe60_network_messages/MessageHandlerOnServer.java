@@ -1,20 +1,19 @@
 package minecraftbyexample.mbe60_network_messages;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityTNTPrimed;
-import net.minecraft.entity.monster.EntitySnowman;
-import net.minecraft.entity.passive.EntityPig;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.projectile.EntityEgg;
-import net.minecraft.entity.projectile.EntityLargeFireball;
-import net.minecraft.entity.projectile.EntitySnowball;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.entity.item.TNTEntity;
+import net.minecraft.entity.passive.SnowGolemEntity;
+import net.minecraft.entity.passive.PigEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.projectile.EggEntity;
+import net.minecraft.entity.projectile.FireballEntity;
+import net.minecraft.entity.projectile.SnowballEntity;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.ServerWorld;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -52,7 +51,7 @@ public class MessageHandlerOnServer implements IMessageHandler<AirstrikeMessageT
     //  that the ctx handler is a serverhandler, and that WorldServer exists.
     // Packets received on the client side must be handled differently!  See MessageHandlerOnClient
 
-    final EntityPlayerMP sendingPlayer = ctx.getServerHandler().player;
+    final ServerPlayerEntity sendingPlayer = ctx.getServerHandler().player;
     if (sendingPlayer == null) {
       System.err.println("EntityPlayerMP was null when AirstrikeMessageToServer was received");
       return null;
@@ -62,7 +61,7 @@ public class MessageHandlerOnServer implements IMessageHandler<AirstrikeMessageT
     //  for example see MinecraftServer.updateTimeLightAndEntities(), just under section
     //      this.theProfiler.startSection("jobs");
     //  In this case, the task is to call messageHandlerOnServer.processMessage(message, sendingPlayer)
-    final WorldServer playerWorldServer = sendingPlayer.getServerWorld();
+    final ServerWorld playerWorldServer = sendingPlayer.getServerWorld();
     playerWorldServer.addScheduledTask(new Runnable() {
       public void run() {
         processMessage(message, sendingPlayer);
@@ -74,7 +73,7 @@ public class MessageHandlerOnServer implements IMessageHandler<AirstrikeMessageT
 
   // This message is called from the Server thread.
   //   It spawns a random number of the given projectile at a position above the target location
-  void processMessage(AirstrikeMessageToServer message, EntityPlayerMP sendingPlayer)
+  void processMessage(AirstrikeMessageToServer message, ServerPlayerEntity sendingPlayer)
   {
     // first send a message to all clients to render a "target" effect on the ground
 //    StartupCommon.simpleNetworkWrapper.sendToDimension(msg, sendingPlayer.dimension);  // DO NOT USE sendToDimension, it is buggy
@@ -83,7 +82,7 @@ public class MessageHandlerOnServer implements IMessageHandler<AirstrikeMessageT
     int dimension = sendingPlayer.dimension;
     MinecraftServer minecraftServer = sendingPlayer.mcServer;
 
-    for (EntityPlayerMP player : minecraftServer.getPlayerList().getPlayers()) {
+    for (ServerPlayerEntity player : minecraftServer.getPlayerList().getPlayers()) {
       TargetEffectMessageToClient msg = new TargetEffectMessageToClient(message.getTargetCoordinates());   // must generate a fresh message for every player!
       if (dimension == player.dimension) {
         StartupCommon.simpleNetworkWrapper.sendTo(msg, player);
@@ -111,25 +110,25 @@ public class MessageHandlerOnServer implements IMessageHandler<AirstrikeMessageT
       Entity entity;
       switch (message.getProjectile()) {
         case PIG: {
-          entity = new EntityPig(world);
+          entity = new PigEntity(world);
           entity.setLocationAndAngles(releasePoint.x, releasePoint.y, releasePoint.z, yaw, pitch);
           break;
         }
         case SNOWBALL: {
-          entity = new EntitySnowball(world, releasePoint.x, releasePoint.y, releasePoint.z);
+          entity = new SnowballEntity(world, releasePoint.x, releasePoint.y, releasePoint.z);
           break;
         }
         case TNT: {
-          entity = new EntityTNTPrimed(world, releasePoint.x, releasePoint.y, releasePoint.z, sendingPlayer);
+          entity = new TNTEntity(world, releasePoint.x, releasePoint.y, releasePoint.z, sendingPlayer);
           break;
         }
         case SNOWMAN: {
-          entity = new EntitySnowman(world);
+          entity = new SnowGolemEntity(world);
           entity.setLocationAndAngles(releasePoint.x, releasePoint.y, releasePoint.z, yaw, pitch);
           break;
         }
         case EGG: {
-          entity = new EntityEgg(world, releasePoint.x, releasePoint.y, releasePoint.z);
+          entity = new EggEntity(world, releasePoint.x, releasePoint.y, releasePoint.z);
           break;
         }
         case FIREBALL: {
@@ -138,7 +137,7 @@ public class MessageHandlerOnServer implements IMessageHandler<AirstrikeMessageT
           //   constructor
 //          entity = new EntityLargeFireball(world, releasePoint.xCoord, releasePoint.yCoord, releasePoint.zCoord, 0.0, Y_ACCELERATION, 0.0);
 
-          EntityLargeFireball entityLargeFireball =  new EntityLargeFireball(world);
+          FireballEntity entityLargeFireball =  new FireballEntity(world);
           entity = entityLargeFireball;
           entity.setLocationAndAngles(releasePoint.x, releasePoint.y, releasePoint.z, entity.rotationYaw, entity.rotationPitch);
           entity.setPosition(releasePoint.x, releasePoint.y, releasePoint.z);

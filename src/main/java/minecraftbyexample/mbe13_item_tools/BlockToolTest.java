@@ -1,14 +1,14 @@
 package minecraftbyexample.mbe13_item_tools;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -52,7 +52,7 @@ public class BlockToolTest extends Block
   public BlockToolTest(Material i_material)
   {
     super(i_material);
-    this.setCreativeTab(CreativeTabs.BUILDING_BLOCKS);   // the block will appear on the Blocks tab in creative
+    this.setCreativeTab(ItemGroup.BUILDING_BLOCKS);   // the block will appear on the Blocks tab in creative
     final float DEFAULT_HARDNESS = 1.0F;
     this.setHardness(DEFAULT_HARDNESS);           // default.  can also set when creating the block instance - which is typically what vanilla does
     final int WOOD_HARVEST_LEVEL = 0;
@@ -61,7 +61,7 @@ public class BlockToolTest extends Block
 
   // called when the block is destroyed, this method mostly does nothing but some Blocks add extra effects- eg TNT generates an explosion.
   @Override
-  public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player) {
+  public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) {
     StartupCommon.methodCallLogger.enterMethod("BlockToolTest.onBlockHarvested",
                                          "{world}, " + pos + ", " + String.valueOf(state) + ", " + player.getDisplayNameString());
     super.onBlockHarvested(worldIn, pos, state, player);
@@ -72,7 +72,7 @@ public class BlockToolTest extends Block
   // get a list of items that might drop when the block is harvested normally.
   // In simple cases, you can just override quantityDropped() and getItemDropped()
   @Override
-  public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
+  public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, BlockState state, int fortune) {
     StartupCommon.methodCallLogger.enterMethod("BlockToolTest.getDrops",
             "{world}, " + pos + ", " + String.valueOf(state) + ", " + fortune);
     List<ItemStack> result = super.getDrops(world, pos, state, fortune);
@@ -88,7 +88,7 @@ public class BlockToolTest extends Block
 
   // Used in some special cases to drop extra items (eg skulls) or destroy other parts of a multiblock (eg bed)
   @Override
-  public void onBlockDestroyedByPlayer(World worldIn, BlockPos pos, IBlockState state) {
+  public void onBlockDestroyedByPlayer(World worldIn, BlockPos pos, BlockState state) {
     StartupCommon.methodCallLogger.enterMethod("BlockToolTest.onBlockDestroyedByPlayer",
             "{world}, " + pos + ", " + String.valueOf(state));
     super.onBlockDestroyedByPlayer(worldIn, pos, state);
@@ -99,7 +99,7 @@ public class BlockToolTest extends Block
   // Used in some special cases to override default harvesting behaviour (for example - shearing a tree to increase the
   //   sapling drop rate and trigger a special achievement)
   @Override
-  public void harvestBlock(World worldIn, EntityPlayer player, BlockPos pos, IBlockState state,
+  public void harvestBlock(World worldIn, PlayerEntity player, BlockPos pos, BlockState state,
                            @Nullable TileEntity te, @Nullable ItemStack stack) {
     StartupCommon.methodCallLogger.enterMethod("BlockToolTest.harvestBlock",
             "{world}, " + pos + ", " + String.valueOf(state) + ", " + String.valueOf(te)
@@ -111,7 +111,7 @@ public class BlockToolTest extends Block
 
   // Used in some special cases set the type of drop for silk enchantment harvesting.
   @Override
-  protected ItemStack getSilkTouchDrop(IBlockState state) {
+  protected ItemStack getSilkTouchDrop(BlockState state) {
     StartupCommon.methodCallLogger.enterMethod("BlockToolTest.createStackedBlock", String.valueOf(state));
     ItemStack result = super.getSilkTouchDrop(state);
     StartupCommon.methodCallLogger.exitMethod("BlockToolTest.createStackedBlock", String.valueOf(result));
@@ -121,7 +121,7 @@ public class BlockToolTest extends Block
   // Used in some special cases to customise the random dropping - for example ignoring the effect of fortune enchantment
   //   when harvesting wheat.
   @Override
-  public void dropBlockAsItemWithChance(World worldIn, BlockPos pos, IBlockState state, float chance, int fortune) {
+  public void dropBlockAsItemWithChance(World worldIn, BlockPos pos, BlockState state, float chance, int fortune) {
     StartupCommon.methodCallLogger.enterMethod("BlockToolTest.dropBlockAsItemWithChance",
             "{world}, " + pos + ", " + String.valueOf(state) + ", " + chance + ", " + fortune);
     super.dropBlockAsItemWithChance(worldIn, pos, state, chance, fortune);
@@ -133,7 +133,7 @@ public class BlockToolTest extends Block
 
   // This method is not generally useful for overriding but it can be useful for logging to show the rate of block damage per tick
   @Override
-  public float getPlayerRelativeBlockHardness(IBlockState state, EntityPlayer playerIn, World worldIn, BlockPos pos) {
+  public float getPlayerRelativeBlockHardness(BlockState state, PlayerEntity playerIn, World worldIn, BlockPos pos) {
     StartupCommon.methodCallLogger.enterMethod("BlockToolTest.getPlayerRelativeBlockHardness", playerIn.getDisplayNameString() + ", {world}, " + pos);
     Float result = super.getPlayerRelativeBlockHardness(state, playerIn, worldIn, pos);
     StartupCommon.methodCallLogger.exitMethod("BlockToolTest.getPlayerRelativeBlockHardness", String.valueOf(result));
@@ -174,7 +174,7 @@ public class BlockToolTest extends Block
 
 
   // the block will render in the SOLID layer.  See http://greyminecraftcoder.blogspot.co.at/2014/12/block-rendering-18.html for more information.
-  @SideOnly(Side.CLIENT)
+  @OnlyIn(Dist.CLIENT)
   public BlockRenderLayer getBlockLayer()
   {
     return BlockRenderLayer.SOLID;
@@ -184,7 +184,7 @@ public class BlockToolTest extends Block
   // set to true because this block is opaque and occupies the entire 1x1x1 space
   // not strictly required because the default (super method) is true
   @Override
-  public boolean isOpaqueCube(IBlockState iBlockState) {
+  public boolean isOpaqueCube(BlockState iBlockState) {
     return true;
   }
 
@@ -193,14 +193,14 @@ public class BlockToolTest extends Block
   // set to true because this block occupies the entire 1x1x1 space
   // not strictly required because the default (super method) is true
   @Override
-  public boolean isFullCube(IBlockState iBlockState) {
+  public boolean isFullCube(BlockState iBlockState) {
     return true;
   }
 
   // render using a BakedModel (mbe13_item_tools.json --> mbe13_item_tools_model.json)
   // not strictly required because the default (super method) is 3.
   @Override
-  public EnumBlockRenderType getRenderType(IBlockState iBlockState) {
-    return EnumBlockRenderType.MODEL;
+  public BlockRenderType getRenderType(BlockState iBlockState) {
+    return BlockRenderType.MODEL;
   }
 }

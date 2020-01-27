@@ -1,18 +1,18 @@
 package minecraftbyexample.mbe06_redstone.output_only;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.projectile.AbstractArrowEntity;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.*;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -36,7 +36,7 @@ public class BlockRedstoneTarget extends Block
   public BlockRedstoneTarget()
   {
     super(Material.WOOD);
-    this.setCreativeTab(CreativeTabs.BUILDING_BLOCKS);   // the block will appear on the Blocks tab in creative
+    this.setCreativeTab(ItemGroup.BUILDING_BLOCKS);   // the block will appear on the Blocks tab in creative
   }
 
   //----- methods related to redstone
@@ -46,7 +46,7 @@ public class BlockRedstoneTarget extends Block
    * @return
    */
   @Override
-  public boolean canProvidePower(IBlockState iBlockState)
+  public boolean canProvidePower(BlockState iBlockState)
   {
     return true;
   }
@@ -60,7 +60,7 @@ public class BlockRedstoneTarget extends Block
    * @return The power provided [0 - 15]
    */
   @Override
-  public int getWeakPower(IBlockState state, IBlockAccess worldIn, BlockPos pos,  EnumFacing side)
+  public int getWeakPower(BlockState state, IBlockAccess worldIn, BlockPos pos,  Direction side)
   {
     return 0;
   }
@@ -75,9 +75,9 @@ public class BlockRedstoneTarget extends Block
    */
 
   @Override
-  public int getStrongPower(IBlockState state, IBlockAccess worldIn, BlockPos pos, EnumFacing side)
+  public int getStrongPower(BlockState state, IBlockAccess worldIn, BlockPos pos, Direction side)
   {
-    EnumFacing targetFacing = (EnumFacing)state.getValue(PROPERTYFACING);
+    Direction targetFacing = (Direction)state.getValue(PROPERTYFACING);
 
     // only provide strong power through the back of the target.  If the target is facing east, that means
     //   it provides power to the block which lies to the west.
@@ -108,19 +108,19 @@ public class BlockRedstoneTarget extends Block
    * @param entityIn
    */
   @Override
-  public void onEntityCollidedWithBlock(World worldIn, BlockPos pos, IBlockState state, Entity entityIn)
+  public void onEntityCollidedWithBlock(World worldIn, BlockPos pos, BlockState state, Entity entityIn)
   {
-    EnumFacing targetFacing = (EnumFacing)state.getValue(PROPERTYFACING);
+    Direction targetFacing = (Direction)state.getValue(PROPERTYFACING);
 
     if (!worldIn.isRemote) {
-      if (entityIn instanceof EntityArrow) {
+      if (entityIn instanceof AbstractArrowEntity) {
         AxisAlignedBB targetAABB = getCollisionBoundingBox(state, worldIn, pos);
         AxisAlignedBB targetAABBinWorld = targetAABB.offset(pos);
-        List<EntityArrow> embeddedArrows = worldIn.getEntitiesWithinAABB(EntityArrow.class, targetAABBinWorld);
+        List<AbstractArrowEntity> embeddedArrows = worldIn.getEntitiesWithinAABB(AbstractArrowEntity.class, targetAABBinWorld);
 
         // when a new arrow hits, remove all others which are already embedded
 
-        for (EntityArrow embeddedEntity : embeddedArrows) {
+        for (AbstractArrowEntity embeddedEntity : embeddedArrows) {
           if (embeddedEntity.getEntityId() != entityIn.getEntityId()) {
             embeddedEntity.setDead();
           }
@@ -131,7 +131,7 @@ public class BlockRedstoneTarget extends Block
         final boolean CASCADE_UPDATE = false;  // I'm not sure what this flag does, but vanilla always sets it to false
         // except for calls by World.setBlockState()
         worldIn.notifyNeighborsOfStateChange(pos, this, CASCADE_UPDATE);
-        EnumFacing directionOfNeighbouringWall = targetFacing.getOpposite();
+        Direction directionOfNeighbouringWall = targetFacing.getOpposite();
         worldIn.notifyNeighborsOfStateChange(pos.offset(directionOfNeighbouringWall), this, CASCADE_UPDATE);
       }
     }
@@ -145,7 +145,7 @@ public class BlockRedstoneTarget extends Block
    * @param rand
    */
   @Override
-  public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand)
+  public void updateTick(World worldIn, BlockPos pos, BlockState state, Random rand)
   {
     // depending on what your block does, you may need to implement updateTick and schedule updateTicks using
     //         worldIn.scheduleUpdate(pos, this, 4);
@@ -160,19 +160,19 @@ public class BlockRedstoneTarget extends Block
    * @param state
    * @return the closest distance to the centre (eg 0->1 = centremost ring , 6 = outermost ring); or <0 for none.
    */
-  private int findBestArrowRing(World worldIn, BlockPos pos, IBlockState state)
+  private int findBestArrowRing(World worldIn, BlockPos pos, BlockState state)
   {
     final int MISS_VALUE = -1;
-    EnumFacing targetFacing = (EnumFacing)state.getValue(PROPERTYFACING);
+    Direction targetFacing = (Direction)state.getValue(PROPERTYFACING);
     AxisAlignedBB targetAABB = getCollisionBoundingBox(state, worldIn, pos);
     AxisAlignedBB targetAABBinWorld = targetAABB.offset(pos);
-    List<EntityArrow> embeddedArrows = worldIn.getEntitiesWithinAABB(EntityArrow.class, targetAABBinWorld);
+    List<AbstractArrowEntity> embeddedArrows = worldIn.getEntitiesWithinAABB(AbstractArrowEntity.class, targetAABBinWorld);
     if (embeddedArrows.isEmpty()) return MISS_VALUE;
 
     double closestDistance = Float.MAX_VALUE;
-    for (EntityArrow entity : embeddedArrows) {
-      if (!entity.isDead && entity instanceof EntityArrow) {
-        EntityArrow entityArrow = (EntityArrow) entity;
+    for (AbstractArrowEntity entity : embeddedArrows) {
+      if (!entity.isDead && entity instanceof AbstractArrowEntity) {
+        AbstractArrowEntity entityArrow = (AbstractArrowEntity) entity;
         Vec3d hitLocation = getArrowIntersectionWithTarget(entityArrow, targetAABBinWorld);
         if (hitLocation != null) {
           Vec3d targetCentre = new Vec3d((targetAABBinWorld.minX + targetAABBinWorld.maxX) / 2.0,
@@ -187,7 +187,7 @@ public class BlockRedstoneTarget extends Block
           double yDeviationPixels = Math.abs(hitRelativeToCentre.y * 16.0);
           double zDeviationPixels = 0;
 
-          if (targetFacing == EnumFacing.EAST || targetFacing == EnumFacing.WEST) {
+          if (targetFacing == Direction.EAST || targetFacing == Direction.WEST) {
             zDeviationPixels = Math.abs(hitRelativeToCentre.z * 16.0);
           } else {
             xDeviationPixels = Math.abs(hitRelativeToCentre.x * 16.0);
@@ -214,7 +214,7 @@ public class BlockRedstoneTarget extends Block
    * @param targetAABB
    * @return
    */
-  private static Vec3d getArrowIntersectionWithTarget(EntityArrow arrow, AxisAlignedBB targetAABB)
+  private static Vec3d getArrowIntersectionWithTarget(AbstractArrowEntity arrow, AxisAlignedBB targetAABB)
   {
     // create a vector that points in the same direction as the arrow.
     // Start with a vector pointing south - this corresponds to 0 degrees yaw and 0 degrees pitch
@@ -238,11 +238,11 @@ public class BlockRedstoneTarget extends Block
 
   // When a neighbour changes - check if the supporting wall has been demolished
   @Override
-  public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block neighborBlock, BlockPos neighbourPos)
+  public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block neighborBlock, BlockPos neighbourPos)
   {
     if (!worldIn.isRemote) { // server side only
-      EnumFacing enumfacing = (EnumFacing) state.getValue(PROPERTYFACING);
-      EnumFacing directionOfNeighbour = enumfacing.getOpposite();
+      Direction enumfacing = (Direction) state.getValue(PROPERTYFACING);
+      Direction directionOfNeighbour = enumfacing.getOpposite();
       if (!adjacentBlockIsASuitableSupport(worldIn, pos, directionOfNeighbour)) {
         this.dropBlockAsItem(worldIn, pos, state, 0);
         worldIn.setBlockToAir(pos);
@@ -260,10 +260,10 @@ public class BlockRedstoneTarget extends Block
    * @return true if the block can be placed here
    */
   @Override
-  public boolean canPlaceBlockOnSide(World worldIn, BlockPos thisBlockPos, EnumFacing faceOfNeighbour)
+  public boolean canPlaceBlockOnSide(World worldIn, BlockPos thisBlockPos, Direction faceOfNeighbour)
   {
-    EnumFacing directionOfNeighbour = faceOfNeighbour.getOpposite();
-    if (directionOfNeighbour == EnumFacing.DOWN || directionOfNeighbour == EnumFacing.UP) {
+    Direction directionOfNeighbour = faceOfNeighbour.getOpposite();
+    if (directionOfNeighbour == Direction.DOWN || directionOfNeighbour == Direction.UP) {
       return false;
     }
     return adjacentBlockIsASuitableSupport(worldIn, thisBlockPos, directionOfNeighbour);
@@ -271,20 +271,20 @@ public class BlockRedstoneTarget extends Block
 
   // Create the appropriate state for the block being placed - in this case, figure out which way the target is facing
   @Override
-  public IBlockState getStateForPlacement(World worldIn, BlockPos thisBlockPos, EnumFacing faceOfNeighbour,
-                                   float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
+  public BlockState getStateForPlacement(World worldIn, BlockPos thisBlockPos, Direction faceOfNeighbour,
+                                   float hitX, float hitY, float hitZ, int meta, LivingEntity placer)
   {
-    EnumFacing directionTargetIsPointing = faceOfNeighbour;
+    Direction directionTargetIsPointing = faceOfNeighbour;
 //    if
 
     return this.getDefaultState().withProperty(PROPERTYFACING, directionTargetIsPointing);
   }
 
   // Is the neighbouring block in the given direction suitable for mounting the target onto?
-  private boolean adjacentBlockIsASuitableSupport(World world, BlockPos thisPos, EnumFacing directionOfNeighbour)
+  private boolean adjacentBlockIsASuitableSupport(World world, BlockPos thisPos, Direction directionOfNeighbour)
   {
     BlockPos neighbourPos = thisPos.offset(directionOfNeighbour);
-    EnumFacing neighbourSide = directionOfNeighbour.getOpposite();
+    Direction neighbourSide = directionOfNeighbour.getOpposite();
     boolean DEFAULT_SOLID_VALUE = false;
     return world.isSideSolid(neighbourPos, neighbourSide, DEFAULT_SOLID_VALUE);
   }
@@ -293,7 +293,7 @@ public class BlockRedstoneTarget extends Block
   //  See MBE03_block_variants for more explanation
 
   // the block will render in the SOLID layer.  See http://greyminecraftcoder.blogspot.co.at/2014/12/block-rendering-18.html for more information.
-  @SideOnly(Side.CLIENT)
+  @OnlyIn(Dist.CLIENT)
   public BlockRenderLayer getBlockLayer()
   {
     return BlockRenderLayer.SOLID;
@@ -302,7 +302,7 @@ public class BlockRedstoneTarget extends Block
   // used by the renderer to control lighting and visibility of other blocks.
   // set to false because this block doesn't fill the entire 1x1x1 space
   @Override
-  public boolean isOpaqueCube(IBlockState iBlockState)
+  public boolean isOpaqueCube(BlockState iBlockState)
   {
     return false;
   }
@@ -311,7 +311,7 @@ public class BlockRedstoneTarget extends Block
   // (eg) wall or fence to control whether the fence joins itself to this block
   // set to false because this block doesn't fill the entire 1x1x1 space
   @Override
-  public boolean isFullCube(IBlockState iBlockState)
+  public boolean isFullCube(BlockState iBlockState)
   {
     return false;
   }
@@ -319,8 +319,8 @@ public class BlockRedstoneTarget extends Block
   // render using a BakedModel
   // not strictly required because the default (super method) is MODEL.
   @Override
-  public EnumBlockRenderType getRenderType(IBlockState iBlockState) {
-    return EnumBlockRenderType.MODEL;
+  public BlockRenderType getRenderType(BlockState iBlockState) {
+    return BlockRenderType.MODEL;
   }
 
   /**
@@ -332,9 +332,9 @@ public class BlockRedstoneTarget extends Block
    * @return the AxisAlignedBoundingBox of the target, origin at [0,0,0].
    */
   @Override
-  public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
+  public AxisAlignedBB getBoundingBox(BlockState state, IBlockAccess source, BlockPos pos)
   {
-    EnumFacing facing = (EnumFacing) state.getValue(PROPERTYFACING);
+    Direction facing = (Direction) state.getValue(PROPERTYFACING);
 
     switch (facing) {
       case NORTH: {
@@ -375,23 +375,23 @@ public class BlockRedstoneTarget extends Block
   //PROPERTYFACING for which way the target points (east, west, north, south).  EnumFacing is a standard used by vanilla for a number of blocks.
   //    eg EAST means that the red and white rings on the target are pointing east
   //
-  public static final PropertyDirection PROPERTYFACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+  public static final PropertyDirection PROPERTYFACING = PropertyDirection.create("facing", Direction.Plane.HORIZONTAL);
 
   // getStateFromMeta, getMetaFromState are used to interconvert between the block's property values and
   //   the stored metadata (which must be an integer in the range 0 - 15 inclusive)
   // The property is encoded as:
   // - lower two bits = facing direction (i.e. 0, 1, 2, 3)
   @Override
-  public IBlockState getStateFromMeta(int meta)
+  public BlockState getStateFromMeta(int meta)
   {
-    EnumFacing facing = EnumFacing.getHorizontal(meta);
+    Direction facing = Direction.getHorizontal(meta);
     return this.getDefaultState().withProperty(PROPERTYFACING, facing);
   }
 
   @Override
-  public int getMetaFromState(IBlockState state)
+  public int getMetaFromState(BlockState state)
   {
-    EnumFacing facing = (EnumFacing)state.getValue(PROPERTYFACING);
+    Direction facing = (Direction)state.getValue(PROPERTYFACING);
 
     int facingbits = facing.getHorizontalIndex();
     return facingbits;
@@ -402,7 +402,7 @@ public class BlockRedstoneTarget extends Block
   // 1) you are making a multiblock which stores information in other blocks eg BlockBed, BlockDoor
   // 2) your block's state depends on other neighbours (eg BlockFence)
   @Override
-  public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+  public BlockState getActualState(BlockState state, IBlockAccess worldIn, BlockPos pos)
   {
     return state;
   }

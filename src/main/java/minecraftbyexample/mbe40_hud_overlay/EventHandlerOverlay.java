@@ -1,7 +1,7 @@
 package minecraftbyexample.mbe40_hud_overlay;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -40,7 +40,7 @@ public class EventHandlerOverlay
 
   @SubscribeEvent(receiveCanceled=true)
   public void onEvent(RenderGameOverlayEvent.Pre event) {
-    EntityPlayerSP entityPlayerSP = Minecraft.getMinecraft().player;
+    ClientPlayerEntity entityPlayerSP = Minecraft.getInstance().player;
     if (entityPlayerSP == null) return;  // just in case
 
     // look for the ItemHUDactivator in the hotbar.  If not present, return without changing the HUD.

@@ -1,14 +1,14 @@
 package minecraftbyexample.mbe13_item_tools;
 
 import minecraftbyexample.MinecraftByExample;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTool;
+import net.minecraft.item.ToolItem;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 import java.util.Set;
@@ -37,12 +37,12 @@ import java.util.Set;
  In Adventure mode, the "CanDestroy" NBT tag in the tool's itemstack is used to determine which blocks it can destroy.
  */
 
-public class ItemToolsTest extends ItemTool
+public class ItemToolsTest extends ToolItem
 {
 
   public ItemToolsTest(float attackDamage, float attackSpeed, ToolMaterial material, Set effectiveBlocks) {
     super(attackDamage, attackSpeed, material, effectiveBlocks);
-    this.setCreativeTab(CreativeTabs.MISC);   // the item will appear on the Miscellaneous tab in creative
+    this.setCreativeTab(ItemGroup.MISC);   // the item will appear on the Miscellaneous tab in creative
 
     final int WOOD_HARDNESS_LEVEL = 0;
     final int STONE_HARDNESS_LEVEL = 1;
@@ -52,7 +52,7 @@ public class ItemToolsTest extends ItemTool
 
   // can be useful to add further "special cases" that ToolClass and ItemTool constructor don't cover.
   @Override
-  public float getDestroySpeed(ItemStack stack, IBlockState iBlockState) {
+  public float getDestroySpeed(ItemStack stack, BlockState iBlockState) {
     StartupCommon.methodCallLogger.enterMethod("ItemToolsTest.getStrVsBlock",
                                                stack.getDisplayName() + ", " + iBlockState.toString());
     Float result = super.getDestroySpeed(stack, iBlockState);
@@ -72,12 +72,12 @@ public class ItemToolsTest extends ItemTool
 
   //   Item.onBlockStartBreak() - called immediately before the block is destroyed - can be used to abort block breaking before it is destroyed
   @Override
-  public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, EntityPlayer player) {
+  public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, PlayerEntity player) {
     StartupCommon.methodCallLogger.enterMethod("ItemToolsTest.onBlockStartBreak", itemstack.getDisplayName() + ", " + pos + ", " + player.getName());
     Boolean result =  super.onBlockStartBreak(itemstack, pos, player);
     if (MinecraftByExample.proxy.playerIsInCreativeMode(player)) {
       final boolean PRINT_IN_CHAT_WINDOW = true;
-      player.sendStatusMessage(new TextComponentString("Currently in creative mode; switch to survival mode using /gamemode."),
+      player.sendStatusMessage(new StringTextComponent("Currently in creative mode; switch to survival mode using /gamemode."),
               PRINT_IN_CHAT_WINDOW);
     }
     StartupCommon.methodCallLogger.exitMethod("ItemToolsTest.onBlockStartBreak", String.valueOf(result));
@@ -86,7 +86,7 @@ public class ItemToolsTest extends ItemTool
 
   @Override
   // damage the item when it destroys a block - defaults to 1 damage for tools
-  public boolean onBlockDestroyed(ItemStack stack, World worldIn, IBlockState iBlockState, BlockPos pos, EntityLivingBase playerIn) {
+  public boolean onBlockDestroyed(ItemStack stack, World worldIn, BlockState iBlockState, BlockPos pos, LivingEntity playerIn) {
     StartupCommon.methodCallLogger.enterMethod("ItemToolsTest.onBlockDestroyed",
             stack.getDisplayName() + ", {world}, " + iBlockState.toString() + ", "
                     + pos + ", " + playerIn.getName()

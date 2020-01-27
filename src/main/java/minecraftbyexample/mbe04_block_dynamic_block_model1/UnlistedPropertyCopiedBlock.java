@@ -1,12 +1,12 @@
 package minecraftbyexample.mbe04_block_dynamic_block_model1;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
 /**
  * Created by TheGreyGhost on 20/04/2015.
  */
-public class UnlistedPropertyCopiedBlock implements IUnlistedProperty<IBlockState>
+public class UnlistedPropertyCopiedBlock implements IUnlistedProperty<BlockState>
 {
   @Override
   public String getName() {
@@ -14,17 +14,17 @@ public class UnlistedPropertyCopiedBlock implements IUnlistedProperty<IBlockStat
   }
 
   @Override
-  public boolean isValid(IBlockState value) {
+  public boolean isValid(BlockState value) {
     return true;
   }
 
   @Override
-  public Class<IBlockState> getType() {
-    return IBlockState.class;
+  public Class<BlockState> getType() {
+    return BlockState.class;
   }
 
   @Override
-  public String valueToString(IBlockState value) {
+  public String valueToString(BlockState value) {
     return value.toString();
   }
 }

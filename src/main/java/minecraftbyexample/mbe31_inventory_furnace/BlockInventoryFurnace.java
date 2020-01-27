@@ -1,30 +1,27 @@
 package minecraftbyexample.mbe31_inventory_furnace;
 
 import minecraftbyexample.MinecraftByExample;
-import net.minecraft.block.BlockContainer;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.ContainerBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.BlockState;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import javax.annotation.Nullable;
 
 
 /**
@@ -44,12 +41,12 @@ import javax.annotation.Nullable;
  //   using hasTileEntity() and createTileEntity().  See BlockContainer for a couple of other important methods you may
  //  need to implement.
  */
-public class BlockInventoryFurnace extends BlockContainer
+public class BlockInventoryFurnace extends ContainerBlock
 {
 	public BlockInventoryFurnace()
 	{
 		super(Material.ROCK);
-		this.setCreativeTab(CreativeTabs.DECORATIONS);
+		this.setCreativeTab(ItemGroup.DECORATIONS);
 	}
 
 	// Called when the block is placed or loaded client side to get the tile entity for the block
@@ -62,8 +59,8 @@ public class BlockInventoryFurnace extends BlockContainer
 	// Called when the block is right clicked
 	// In this block it is used to open the blocks gui when right clicked by a player
 	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand,
-																	EnumFacing side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World worldIn, BlockPos pos, BlockState state, PlayerEntity playerIn, Hand hand,
+																	Direction side, float hitX, float hitY, float hitZ) {
 		// Uses the gui handler registered to your mod to open the gui for the given gui id
 		// open on the server side only  (not sure why you shouldn't open client side too... vanilla doesn't, so we better not either)
 		if (worldIn.isRemote) return true;
@@ -74,7 +71,7 @@ public class BlockInventoryFurnace extends BlockContainer
 
 	// This is where you can do something when the block is broken. In this case drop the inventory's contents
 	@Override
-	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
+	public void breakBlock(World worldIn, BlockPos pos, BlockState state) {
 		TileEntity tileEntity = worldIn.getTileEntity(pos);
 		if (tileEntity instanceof IInventory) {
 			InventoryHelper.dropInventoryItems(worldIn, pos, (IInventory)tileEntity);
@@ -123,7 +120,7 @@ public class BlockInventoryFurnace extends BlockContainer
 
 	// update the block state depending on the number of slots which contain burning fuel
 	@Override
-	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+	public BlockState getActualState(BlockState state, IBlockAccess worldIn, BlockPos pos)
 	{
 		TileEntity tileEntity = worldIn.getTileEntity(pos);
 		if (tileEntity instanceof TileInventoryFurnace) {
@@ -136,14 +133,14 @@ public class BlockInventoryFurnace extends BlockContainer
 	}
 
 	@Override
-	public IBlockState getStateFromMeta(int meta)
+	public BlockState getStateFromMeta(int meta)
 	{
 		return this.getDefaultState();
 //		return this.getDefaultState().withProperty(BURNING_SIDES_COUNT, Integer.valueOf(meta));
 	}
 
 	@Override
-	public int getMetaFromState(IBlockState state)
+	public int getMetaFromState(BlockState state)
 	{
 		return 0;
 //		return ((Integer)state.getValue(BURNING_SIDES_COUNT)).intValue();
@@ -164,9 +161,9 @@ public class BlockInventoryFurnace extends BlockContainer
 	private static final int ONE_SIDE_LIGHT_VALUE = 8;  // light value for a single side burning
 
   @Override
-	public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
+	public int getLightValue(BlockState state, IBlockAccess world, BlockPos pos) {
 		int lightValue = 0;
-		IBlockState blockState = getActualState(getDefaultState(), world, pos);
+		BlockState blockState = getActualState(getDefaultState(), world, pos);
 		int burningSides = (Integer)blockState.getValue(BURNING_SIDES_COUNT);
 
    	if (burningSides == 0) {
@@ -180,7 +177,7 @@ public class BlockInventoryFurnace extends BlockContainer
 	}
 
 	// the block will render in the SOLID layer.  See http://greyminecraftcoder.blogspot.co.at/2014/12/block-rendering-18.html for more information.
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public BlockRenderLayer getBlockLayer()
 	{
 		return BlockRenderLayer.SOLID;
@@ -189,7 +186,7 @@ public class BlockInventoryFurnace extends BlockContainer
 	// used by the renderer to control lighting and visibility of other blocks.
 	// set to false because this block doesn't fill the entire 1x1x1 space
 	@Override
-	public boolean isOpaqueCube(IBlockState iBlockState) {
+	public boolean isOpaqueCube(BlockState iBlockState) {
 		return false;
 	}
 
@@ -197,14 +194,14 @@ public class BlockInventoryFurnace extends BlockContainer
 	// (eg) wall or fence to control whether the fence joins itself to this block
 	// set to false because this block doesn't fill the entire 1x1x1 space
 	@Override
-	public boolean isFullCube(IBlockState iBlockState) {
+	public boolean isFullCube(BlockState iBlockState) {
 		return false;
 	}
 
 	// render using a BakedModel
   // required because the default (super method) is INVISIBLE for BlockContainers.
 	@Override
-	public EnumBlockRenderType getRenderType(IBlockState iBlockState) {
-		return EnumBlockRenderType.MODEL;
+	public BlockRenderType getRenderType(BlockState iBlockState) {
+		return BlockRenderType.MODEL;
 	}
 }

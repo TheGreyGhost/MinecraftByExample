@@ -1,6 +1,6 @@
 package minecraftbyexample;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 
 /**
  * CommonProxy is used to set up the mod and start it running.  It contains all the code that should run on both the
@@ -106,7 +106,7 @@ public abstract class CommonProxy {
 
   // helper to determine whether the given player is in creative mode
   //  not necessary for most examples
-  abstract public boolean playerIsInCreativeMode(EntityPlayer player);
+  abstract public boolean playerIsInCreativeMode(PlayerEntity player);
 
   /**
    * is this a dedicated server?

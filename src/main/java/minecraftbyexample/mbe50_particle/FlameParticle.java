@@ -1,11 +1,11 @@
 package minecraftbyexample.mbe50_particle;
 
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
-import net.minecraft.init.Blocks;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -41,7 +41,7 @@ public class FlameParticle extends Particle
 
     // set the texture to the flame texture, which we have previously added using TextureStitchEvent
     //   (see TextureStitcherBreathFX)
-    TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(flameRL.toString());
+    TextureAtlasSprite sprite = Minecraft.getInstance().getTextureMapBlocks().getAtlasSprite(flameRL.toString());
     setParticleTexture(sprite);  // initialise the icon to our custom texture
   }
 

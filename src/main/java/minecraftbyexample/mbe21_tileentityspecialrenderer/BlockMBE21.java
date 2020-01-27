@@ -1,15 +1,14 @@
 package minecraftbyexample.mbe21_tileentityspecialrenderer;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -30,11 +29,11 @@ public class BlockMBE21 extends Block
   public BlockMBE21()
   {
     super(Material.IRON);
-    this.setCreativeTab(CreativeTabs.BUILDING_BLOCKS);   // the block will appear on the Blocks tab in creative
+    this.setCreativeTab(ItemGroup.BUILDING_BLOCKS);   // the block will appear on the Blocks tab in creative
   }
 
   @Override
-  public boolean hasTileEntity(IBlockState state)
+  public boolean hasTileEntity(BlockState state)
   {
     return true;
   }
@@ -42,11 +41,11 @@ public class BlockMBE21 extends Block
   // Called when the block is placed or loaded client side to get the tile entity for the block
   // Should return a new instance of the tile entity for the block
   @Override
-  public TileEntity createTileEntity(World world, IBlockState state) {return new TileEntityMBE21();}
+  public TileEntity createTileEntity(World world, BlockState state) {return new TileEntityMBE21();}
 
   // Called just after the player places a block.  Sets the TileEntity's colour
   @Override
-  public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+  public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
     super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
     TileEntity tileentity = worldIn.getTileEntity(pos);
     if (tileentity instanceof TileEntityMBE21) { // prevent a crash if not the right type, or is null
@@ -62,7 +61,7 @@ public class BlockMBE21 extends Block
 
   // -----------------
   // The following methods aren't particularly relevant to this example.  See MBE01, MBE02, MBE03 for more information.
-  @SideOnly(Side.CLIENT)
+  @OnlyIn(Dist.CLIENT)
   public BlockRenderLayer getBlockLayer()
   {
     return BlockRenderLayer.CUTOUT_MIPPED;
@@ -71,7 +70,7 @@ public class BlockMBE21 extends Block
   // used by the renderer to control lighting and visibility of other blocks.
   // set to false because this block doesn't fill the entire 1x1x1 space
   @Override
-  public boolean isOpaqueCube(IBlockState state)
+  public boolean isOpaqueCube(BlockState state)
   {
     return false;
   }
@@ -80,7 +79,7 @@ public class BlockMBE21 extends Block
   // (eg) wall or fence to control whether the fence joins itself to this block
   // set to false because this block doesn't fill the entire 1x1x1 space
   @Override
-  public boolean isFullCube(IBlockState state)
+  public boolean isFullCube(BlockState state)
   {
     return false;
   }
@@ -88,8 +87,8 @@ public class BlockMBE21 extends Block
   // render using a BakedModel
   // not required because the default (super method) is MODEL
   @Override
-  public EnumBlockRenderType getRenderType(IBlockState iBlockState) {
-    return EnumBlockRenderType.MODEL;
+  public BlockRenderType getRenderType(BlockState iBlockState) {
+    return BlockRenderType.MODEL;
   }
 
 }

@@ -1,7 +1,7 @@
 package minecraftbyexample.mbe04_block_dynamic_block_model1;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
@@ -30,7 +30,7 @@ public class  StartupClientOnly
     //   which is done using the anonymous class below.
     StateMapperBase ignoreState = new StateMapperBase() {
       @Override
-      protected ModelResourceLocation getModelResourceLocation(IBlockState iBlockState) {
+      protected ModelResourceLocation getModelResourceLocation(BlockState iBlockState) {
         return CamouflageBakedModel.variantTag;
       }
     };

@@ -4,7 +4,7 @@ import minecraftbyexample.mbe06_redstone.input.LampColour;
 import minecraftbyexample.mbe06_redstone.input_and_output.TileEntityRedstoneMeter;
 import minecraftbyexample.mbe06_redstone.input_and_output.TileEntitySpecialRendererRedstoneMeter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
@@ -55,6 +55,6 @@ public class StartupClientOnly
   public static void postInitClientOnly()
   {
     // the LampColour class is used to change the rendering colour of the RedstoneColouredLamp
-    Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler(new LampColour(), StartupCommon.blockRedstoneColouredLamp);
+    Minecraft.getInstance().getBlockColors().registerBlockColorHandler(new LampColour(), StartupCommon.blockRedstoneColouredLamp);
   }
 }

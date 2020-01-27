@@ -1,15 +1,14 @@
 package minecraftbyexample.mbe60_network_messages;
 
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumAction;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.UseAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.*;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -29,28 +28,28 @@ public class ItemAirStrike extends Item
   public ItemAirStrike()
   {
     this.setMaxStackSize(1);
-    this.setCreativeTab(CreativeTabs.MISC);   // the item will appear on the Miscellaneous tab in creative
+    this.setCreativeTab(ItemGroup.MISC);   // the item will appear on the Miscellaneous tab in creative
   }
 
   // called when the item is used to right-click on a block
   @Override
-  public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+  public ActionResultType onItemUse(PlayerEntity playerIn, World worldIn, BlockPos pos, Hand hand, Direction side, float hitX, float hitY, float hitZ) {
     ItemStack stack = playerIn.getHeldItem(hand);
     if (!worldIn.isRemote) {  // don't execute on the server side!
-      return EnumActionResult.PASS;
+      return ActionResultType.PASS;
     }
     Vec3d targetLocation = new Vec3d(pos.getX()+ 0.5, pos.getY() + 1.1, pos.getZ() + 0.5);
     callAirstrikeOnTarget(targetLocation);
-    return EnumActionResult.SUCCESS;  // tell caller we have processed the click
+    return ActionResultType.SUCCESS;  // tell caller we have processed the click
   }
 
   // called when the item is right clicked in the air (or when clicked on a block but onItemUse returned false)
   @Override
-  public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand)
+  public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand hand)
   {
     ItemStack itemStackIn = playerIn.getHeldItem(hand);
     if (!worldIn.isRemote) {  // don't execute on the server side!
-      return new ActionResult(EnumActionResult.PASS, itemStackIn);
+      return new ActionResult(ActionResultType.PASS, itemStackIn);
     }
 
     // target a location in the direction that the player is looking
@@ -62,7 +61,7 @@ public class ItemAirStrike extends Item
     Vec3d targetPosition = playerFeetPosition.addVector(playerLook.x * TARGET_DISTANCE, HEIGHT_ABOVE_FEET,
                                                        playerLook.z * TARGET_DISTANCE);
     callAirstrikeOnTarget(targetPosition);
-    return new ActionResult(EnumActionResult.SUCCESS, itemStackIn);
+    return new ActionResult(ActionResultType.SUCCESS, itemStackIn);
   }
 
   // send a network message to the server to bombard the target location with a random projectile
@@ -79,8 +78,8 @@ public class ItemAirStrike extends Item
 
   // BLOCK is a useful 'do nothing' animation for this item
   @Override
-  public EnumAction getItemUseAction(ItemStack stack) {
-    return EnumAction.BLOCK;
+  public UseAction getItemUseAction(ItemStack stack) {
+    return UseAction.BLOCK;
   }
 
   // add a tooltip

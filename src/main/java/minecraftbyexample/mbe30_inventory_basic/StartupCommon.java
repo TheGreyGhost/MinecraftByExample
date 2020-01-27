@@ -3,7 +3,7 @@ package minecraftbyexample.mbe30_inventory_basic;
 import minecraftbyexample.GuiHandlerRegistry;
 import minecraftbyexample.MinecraftByExample;
 import net.minecraft.block.Block;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.BlockItem;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -24,7 +24,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 public class StartupCommon
 {
 	public static Block blockInventoryBasic;  // this holds the unique instance of your block
-	public static ItemBlock itemBlockInventoryBasic; // and the corresponding item form that block
+	public static BlockItem itemBlockInventoryBasic; // and the corresponding item form that block
 
 	public static void preInitCommon()
 	{
@@ -40,7 +40,7 @@ public class StartupCommon
 		ForgeRegistries.BLOCKS.register(blockInventoryBasic);
 
 		// same but for the associated item
-		itemBlockInventoryBasic = new ItemBlock(blockInventoryBasic);
+		itemBlockInventoryBasic = new BlockItem(blockInventoryBasic);
 		itemBlockInventoryBasic.setRegistryName(blockInventoryBasic.getRegistryName());
     ForgeRegistries.ITEMS.register(itemBlockInventoryBasic);
 

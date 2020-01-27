@@ -5,10 +5,10 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -19,7 +19,7 @@ import java.awt.*;
  * This class renders the meter needle on each face of the block.
  * The base model is drawn by the block model, not this class.
  */
-public class TileEntitySpecialRendererRedstoneMeter extends TileEntitySpecialRenderer
+public class TileEntitySpecialRendererRedstoneMeter extends TileEntityRenderer
 {
   /**
    * render the tile entity - called every frame while the tileentity is in view of the player
@@ -39,10 +39,10 @@ public class TileEntitySpecialRendererRedstoneMeter extends TileEntitySpecialRen
     if (!(tileEntity instanceof TileEntityRedstoneMeter)) return; // should never happen
     TileEntityRedstoneMeter tileEntityRedstoneMeter = (TileEntityRedstoneMeter) tileEntity;
     double powerLevel = tileEntityRedstoneMeter.getSmoothedNeedlePosition();
-    renderNeedleOnFace(powerLevel, relativeX, relativeY, relativeZ, EnumFacing.SOUTH);
-    renderNeedleOnFace(powerLevel, relativeX, relativeY, relativeZ, EnumFacing.NORTH);
-    renderNeedleOnFace(powerLevel, relativeX, relativeY, relativeZ, EnumFacing.EAST);
-    renderNeedleOnFace(powerLevel, relativeX, relativeY, relativeZ, EnumFacing.WEST);
+    renderNeedleOnFace(powerLevel, relativeX, relativeY, relativeZ, Direction.SOUTH);
+    renderNeedleOnFace(powerLevel, relativeX, relativeY, relativeZ, Direction.NORTH);
+    renderNeedleOnFace(powerLevel, relativeX, relativeY, relativeZ, Direction.EAST);
+    renderNeedleOnFace(powerLevel, relativeX, relativeY, relativeZ, Direction.WEST);
   }
 
   /**
@@ -54,7 +54,7 @@ public class TileEntitySpecialRendererRedstoneMeter extends TileEntitySpecialRen
    * @param whichFace which face of the block should the needle render on?
    */
   private void renderNeedleOnFace(double powerLevel, double relativeX, double relativeY, double relativeZ,
-                                  EnumFacing whichFace)
+                                  Direction whichFace)
   {
     double needleSpindleX = 0.5;
     double needleSpindleY = 0.5;

@@ -1,7 +1,7 @@
 package minecraftbyexample.mbe03_block_variants;
 
 import net.minecraft.block.Block;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
  * You could also re-use ItemMultiTexture or ItemCloth or ItemColored.
  * Look at Item.registerItems() for inspiration
  */
-public class ItemBlockVariants extends ItemBlock
+public class ItemBlockVariants extends BlockItem
 {
   // you must use Block in the constructor, not BlockVariants, otherwise you won't be able to register the block properly.
   //   i.e. using GameRegistry.registerBlock(block, ItemBlockVariants.class, name)

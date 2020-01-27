@@ -3,7 +3,7 @@ package minecraftbyexample.mbe31_inventory_furnace;
 import minecraftbyexample.GuiHandlerRegistry;
 import minecraftbyexample.MinecraftByExample;
 import net.minecraft.block.Block;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.BlockItem;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -24,7 +24,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 public class StartupCommon
 {
 	public static Block blockInventoryAdvanced;  // this holds the unique instance of your block
-  public static ItemBlock itemBlockInventoryAdvanced; // this holds the unique instance of the ItemBlock corresponding to your block
+  public static BlockItem itemBlockInventoryAdvanced; // this holds the unique instance of the ItemBlock corresponding to your block
 
 	public static void preInitCommon()
 	{
@@ -45,7 +45,7 @@ public class StartupCommon
 		ForgeRegistries.BLOCKS.register(blockInventoryAdvanced);
 
     // We also need to create and register an ItemBlock for this block otherwise it won't appear in the inventory
-    itemBlockInventoryAdvanced = new ItemBlock(blockInventoryAdvanced);
+    itemBlockInventoryAdvanced = new BlockItem(blockInventoryAdvanced);
     itemBlockInventoryAdvanced.setRegistryName(blockInventoryAdvanced.getRegistryName());
     ForgeRegistries.ITEMS.register(itemBlockInventoryAdvanced);
 

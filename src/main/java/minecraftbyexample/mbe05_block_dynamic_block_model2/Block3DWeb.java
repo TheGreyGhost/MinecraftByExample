@@ -1,16 +1,16 @@
 package minecraftbyexample.mbe05_block_dynamic_block_model2;
 
-import net.minecraft.block.Block;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.block.BlockState;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.entity.Entity;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.Blocks;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -18,7 +18,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
-import net.minecraftforge.common.property.Properties;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -33,11 +32,11 @@ public class Block3DWeb extends Block {
   public Block3DWeb()
   {
     super(Material.WEB);                     // ensures the player can walk through the block
-    this.setCreativeTab(CreativeTabs.BUILDING_BLOCKS);   // the block will appear on the Blocks tab in creative
+    this.setCreativeTab(ItemGroup.BUILDING_BLOCKS);   // the block will appear on the Blocks tab in creative
   }
 
   // the block will render in the SOLID layer.  See http://greyminecraftcoder.blogspot.co.at/2014/12/block-rendering-18.html for more information.
-  @SideOnly(Side.CLIENT)
+  @OnlyIn(Dist.CLIENT)
   public BlockRenderLayer getBlockLayer()
   {
     return BlockRenderLayer.SOLID;
@@ -46,13 +45,13 @@ public class Block3DWeb extends Block {
   // used by the renderer to control lighting and visibility of other blocks.
   // set to false because this block doesn't fully occupy the entire 1x1x1 space
   @Override
-  public boolean isOpaqueCube(IBlockState blockState) {
+  public boolean isOpaqueCube(BlockState blockState) {
     return false;
   }
 
   // make colliding players stick in the web like normal web
   @Override
-  public void onEntityCollidedWithBlock(World worldIn, BlockPos pos, IBlockState state, Entity entityIn)
+  public void onEntityCollidedWithBlock(World worldIn, BlockPos pos, BlockState state, Entity entityIn)
   {
     entityIn.setInWeb();
   }
@@ -61,20 +60,20 @@ public class Block3DWeb extends Block {
   // (eg) wall or fence to control whether the fence joins itself to this block
   // set to false because this block does not occupy the entire 1x1x1 space
   @Override
-  public boolean isFullCube(IBlockState blockState) {
+  public boolean isFullCube(BlockState blockState) {
     return false;
   }
 
   // render using an IBakedModel
   // not strictly required because the default (super method) is MODEL.
   @Override
-  public EnumBlockRenderType getRenderType(IBlockState iBlockState) {
-    return EnumBlockRenderType.MODEL;
+  public BlockRenderType getRenderType(BlockState iBlockState) {
+    return BlockRenderType.MODEL;
   }
 
   // by returning a null collision bounding box we stop the player from colliding with it
   @Override
-  public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+  public AxisAlignedBB getCollisionBoundingBox(BlockState state, IBlockAccess worldIn, BlockPos pos)
   {
     return NULL_AABB;
   }
@@ -101,7 +100,7 @@ public class Block3DWeb extends Block {
   // In this case, we look around the block to see which faces are next to either a solid block or another web block:
   // The web node forms a strand of web to any adjacent solid blocks or web nodes
   @Override
-  public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
+  public BlockState getExtendedState(BlockState state, IBlockAccess world, BlockPos pos) {
     if (state instanceof IExtendedBlockState) {  // avoid crash in case of mismatch
       IExtendedBlockState retval = (IExtendedBlockState)state;
       boolean linkup = canConnectTo(world, pos.up());
@@ -135,7 +134,7 @@ public class Block3DWeb extends Block {
    */
   private boolean canConnectTo(IBlockAccess worldIn, BlockPos pos)
   {
-    IBlockState iblockstate = worldIn.getBlockState(pos);
+    BlockState iblockstate = worldIn.getBlockState(pos);
     Block block = iblockstate.getBlock();
     if (block == Blocks.BARRIER) return false;
     if (block == StartupCommon.block3DWeb) return true;

@@ -1,6 +1,6 @@
 package minecraftbyexample.mbe13_item_tools;
 
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -26,7 +26,7 @@ public class ForgeToolEventsTest
     // only show event if either the test block or the test item is involved
     if (   (event.getState() == null || event.getState().getBlock() != StartupCommon.blockToolTest)
         && (event.getEntityPlayer() == null
-            || event.getEntityPlayer().getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem() != StartupCommon.itemToolsTest)) {
+            || event.getEntityPlayer().getItemStackFromSlot(EquipmentSlotType.MAINHAND).getItem() != StartupCommon.itemToolsTest)) {
       return;
     }
     StartupCommon.methodCallLogger.enterMethod("Event.BreakSpeed", "blockstate=" + event.getState()
@@ -42,7 +42,7 @@ public class ForgeToolEventsTest
     // only show event if either the test block or the test item is involved
     if (   (event.getTargetBlock() != StartupCommon.blockToolTest)
             && (event.getEntityPlayer() == null
-            || event.getEntityPlayer().getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem() != StartupCommon.itemToolsTest)) {
+            || event.getEntityPlayer().getItemStackFromSlot(EquipmentSlotType.MAINHAND).getItem() != StartupCommon.itemToolsTest)) {
     return;
   }
     StartupCommon.methodCallLogger.enterMethod("Event.HarvestCheck", "targetblock=" + event.getTargetBlock());
@@ -60,7 +60,7 @@ public class ForgeToolEventsTest
     } else {
       ItemStack heldItemStack = (event.getEntityPlayer() == null) ?
                                 ItemStack.EMPTY :  //EMPTY_ITEM
-                                event.getEntityPlayer().getItemStackFromSlot(EntityEquipmentSlot.MAINHAND);
+                                event.getEntityPlayer().getItemStackFromSlot(EquipmentSlotType.MAINHAND);
       Item heldItem = heldItemStack.getItem();
       if (heldItem != StartupCommon.itemToolsTest) {
         return;
@@ -83,7 +83,7 @@ public class ForgeToolEventsTest
     // only show event if either the test block or the test item is involved
     if (   (event.getWorld().getBlockState(event.getPos()) != StartupCommon.blockToolTest)
             && (event.getPlayer() == null
-            || event.getPlayer().getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem() != StartupCommon.itemToolsTest)) {
+            || event.getPlayer().getItemStackFromSlot(EquipmentSlotType.MAINHAND).getItem() != StartupCommon.itemToolsTest)) {
       return;
     }
     StartupCommon.methodCallLogger.enterMethod("Event.BreakEvent", "player=" + event.getPlayer().getDisplayNameString() + ", exp=" + event.getExpToDrop());
@@ -98,7 +98,7 @@ public class ForgeToolEventsTest
     // only show event if either the test block or the test item is involved
     if (   (event.getWorld().getBlockState(event.getPos()) != StartupCommon.blockToolTest)
             && (event.getHarvester() == null
-            || event.getHarvester().getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem() != StartupCommon.itemToolsTest)) {
+            || event.getHarvester().getItemStackFromSlot(EquipmentSlotType.MAINHAND).getItem() != StartupCommon.itemToolsTest)) {
       return;
     }
     String params = "";

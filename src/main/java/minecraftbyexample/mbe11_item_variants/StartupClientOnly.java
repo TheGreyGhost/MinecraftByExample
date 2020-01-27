@@ -1,7 +1,7 @@
 package minecraftbyexample.mbe11_item_variants;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 
 /**
@@ -66,6 +66,6 @@ public class StartupClientOnly
   {
     // the LiquidColour class is used to change the rendering colour of the liquid in the bottle
 
-    Minecraft.getMinecraft().getItemColors().registerItemColorHandler(new LiquidColour(), StartupCommon.itemVariants);
+    Minecraft.getInstance().getItemColors().registerItemColorHandler(new LiquidColour(), StartupCommon.itemVariants);
   }
 }

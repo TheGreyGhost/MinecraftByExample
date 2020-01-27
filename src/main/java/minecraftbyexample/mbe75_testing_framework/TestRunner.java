@@ -1,12 +1,12 @@
 package minecraftbyexample.mbe75_testing_framework;
 
-import net.minecraft.block.BlockLadder;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.LadderBlock;
 import net.minecraft.command.CommandClone;
 import net.minecraft.command.server.CommandTeleport;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -21,7 +21,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public class TestRunner
 {
-  public boolean runServerSideTest(World worldIn, EntityPlayer playerIn, int testNumber)
+  public boolean runServerSideTest(World worldIn, PlayerEntity playerIn, int testNumber)
   {
     boolean success = false;
     switch (testNumber) {
@@ -39,7 +39,7 @@ public class TestRunner
     return success;
   }
 
-  public boolean runClientSideTest(World worldIn, EntityPlayer playerIn, int testNumber)
+  public boolean runClientSideTest(World worldIn, PlayerEntity playerIn, int testNumber)
   {
     boolean success = false;
 
@@ -63,7 +63,7 @@ public class TestRunner
   // testA - replace with wood
   // testB - replace with a glass block
   // testC - replace with diamond block
-  private boolean test1(World worldIn, EntityPlayer playerIn)
+  private boolean test1(World worldIn, PlayerEntity playerIn)
   {
     BlockPos sourceRegionOrigin = new BlockPos(0, 204, 0);
     final int SOURCE_REGION_SIZE_X = 4;
@@ -73,7 +73,7 @@ public class TestRunner
     // put a stone block with attached ladder in the middle of our test region
     worldIn.setBlockState(sourceRegionOrigin.add(1, 0, 1), Blocks.STONE.getDefaultState());
     worldIn.setBlockState(sourceRegionOrigin.add(2, 0, 1),
-                            Blocks.LADDER.getDefaultState().withProperty(BlockLadder.FACING, EnumFacing.EAST));
+                            Blocks.LADDER.getDefaultState().withProperty(LadderBlock.FACING, Direction.EAST));
 
     BlockPos testRegionOriginA = new BlockPos(5, 204, 0);
     BlockPos testRegionOriginB = new BlockPos(10, 204, 0);
@@ -111,12 +111,12 @@ public class TestRunner
    * @param location
    * @return
    */
-  private boolean teleportPlayerToTestRegion(EntityPlayer playerIn, BlockPos location)
+  private boolean teleportPlayerToTestRegion(PlayerEntity playerIn, BlockPos location)
   {
-    if (!(playerIn instanceof EntityPlayerMP)) {
+    if (!(playerIn instanceof ServerPlayerEntity)) {
       throw new UnsupportedOperationException("teleport not supported on client side; server side only");
     }
-    EntityPlayerMP entityPlayerMP = (EntityPlayerMP)playerIn;
+    ServerPlayerEntity entityPlayerMP = (ServerPlayerEntity)playerIn;
 
     String tpArguments = "@p " + location.getX() + " " + location.getY() + " " + location.getZ();
     String[] tpArgumentsArray = tpArguments.split(" ");
@@ -141,7 +141,7 @@ public class TestRunner
    * @param zCount >=1
    * @return true for success, false otherwise
    */
-  private boolean copyTestRegion(EntityPlayer entityPlayer,
+  private boolean copyTestRegion(PlayerEntity entityPlayer,
                                  BlockPos sourceOrigin, BlockPos destOrigin,
                                  int xCount, int yCount, int zCount)
   {
@@ -150,10 +150,10 @@ public class TestRunner
     checkArgument(zCount >= 1);
     String [] args = new String[9];
 
-    if (!(entityPlayer instanceof EntityPlayerMP)) {
+    if (!(entityPlayer instanceof ServerPlayerEntity)) {
       throw new UnsupportedOperationException("teleport not supported on client side; server side only");
     }
-    EntityPlayerMP entityPlayerMP = (EntityPlayerMP)entityPlayer;
+    ServerPlayerEntity entityPlayerMP = (ServerPlayerEntity)entityPlayer;
 
 
     args[0] = String.valueOf(sourceOrigin.getX());

@@ -1,13 +1,13 @@
 package minecraftbyexample.mbe50_particle;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.monster.EntityMob;
+import net.minecraft.entity.monster.MonsterEntity;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -32,11 +32,11 @@ public class BlockFlameEmitter extends Block
   public BlockFlameEmitter()
   {
     super(Material.ROCK);
-    this.setCreativeTab(CreativeTabs.DECORATIONS);   // the block will appear on the Decorations tab in creative
+    this.setCreativeTab(ItemGroup.DECORATIONS);   // the block will appear on the Decorations tab in creative
   }
 
   // the block will render in the SOLID layer.  See http://greyminecraftcoder.blogspot.co.at/2014/12/block-rendering-18.html for more information.
-  @SideOnly(Side.CLIENT)
+  @OnlyIn(Dist.CLIENT)
   public BlockRenderLayer getBlockLayer()
   {
     return BlockRenderLayer.SOLID;
@@ -45,7 +45,7 @@ public class BlockFlameEmitter extends Block
   // used by the renderer to control lighting and visibility of other blocks.
   // set to false because this block doesn't fill the entire 1x1x1 space
   @Override
-  public boolean isOpaqueCube(IBlockState state)
+  public boolean isOpaqueCube(BlockState state)
   {
     return false;
   }
@@ -54,7 +54,7 @@ public class BlockFlameEmitter extends Block
   // (eg) wall or fence to control whether the fence joins itself to this block
   // set to false because this block doesn't fill the entire 1x1x1 space
   @Override
-  public boolean isFullCube(IBlockState state)
+  public boolean isFullCube(BlockState state)
   {
     return false;
   }
@@ -62,17 +62,17 @@ public class BlockFlameEmitter extends Block
   // render using a BakedModel (mbe30_inventory_basic.json --> mbe30_inventory_basic_model.json)
   // not required because the default (super method) is MODEL
   @Override
-  public EnumBlockRenderType getRenderType(IBlockState iBlockState) {
-    return EnumBlockRenderType.MODEL;
+  public BlockRenderType getRenderType(BlockState iBlockState) {
+    return BlockRenderType.MODEL;
   }
 
   // This method is called at random intervals - typically used by blocks which produce occasional effects, like
   //  smoke from a torch or stars from a portal.
   //  In this case, we use it to spawn two different types of Particle- vanilla, or custom.
-  // Don't forget     @SideOnly(Side.CLIENT) otherwise this will crash on a dedicated server.
+  // Don't forget     @OnlyIn(Dist.CLIENT) otherwise this will crash on a dedicated server.
   @Override
-  @SideOnly(Side.CLIENT)
-  public void randomDisplayTick(IBlockState stateIn, World worldIn, BlockPos pos, Random rand)
+  @OnlyIn(Dist.CLIENT)
+  public void randomDisplayTick(BlockState stateIn, World worldIn, BlockPos pos, Random rand)
   {
     // Particle must be spawned on the client only.
     // If you want the server to be able to spawn Particle, you need to send a network message to the client and get the
@@ -107,7 +107,7 @@ public class BlockFlameEmitter extends Block
       ypos = pos.getY() + 1.0;
       zpos = pos.getZ() + 0.5;
 
-      EntityMob mobTarget = getNearestTargetableMob(worldIn, xpos, ypos, zpos);
+      MonsterEntity mobTarget = getNearestTargetableMob(worldIn, xpos, ypos, zpos);
       Vec3d fireballDirection;
       if (mobTarget == null) { // no target: fire straight upwards
         fireballDirection = new Vec3d(0.0, 1.0, 0.0);
@@ -132,7 +132,7 @@ public class BlockFlameEmitter extends Block
       velocityZ = SPEED_IN_BLOCKS_PER_TICK * fireballDirection.z; // how much to increase the z position every tick
 
       FlameParticle newEffect = new FlameParticle(worldIn, xpos, ypos, zpos, velocityX, velocityY, velocityZ);
-      Minecraft.getMinecraft().effectRenderer.addEffect(newEffect);
+      Minecraft.getInstance().effectRenderer.addEffect(newEffect);
     }
   }
 
@@ -144,7 +144,7 @@ public class BlockFlameEmitter extends Block
    * @param zpos
    * @return the nearest mob, or null if none within range.
    */
-  private EntityMob getNearestTargetableMob(World world, double xpos, double ypos, double zpos) {
+  private MonsterEntity getNearestTargetableMob(World world, double xpos, double ypos, double zpos) {
     final double TARGETING_DISTANCE = 16;
     AxisAlignedBB targetRange = new AxisAlignedBB(xpos - TARGETING_DISTANCE,
                                                   ypos,
@@ -153,10 +153,10 @@ public class BlockFlameEmitter extends Block
                                                   ypos + TARGETING_DISTANCE,
                                                   zpos + TARGETING_DISTANCE);
 
-    List<EntityMob> allNearbyMobs = world.getEntitiesWithinAABB(EntityMob.class, targetRange);
-    EntityMob nearestMob = null;
+    List<MonsterEntity> allNearbyMobs = world.getEntitiesWithinAABB(MonsterEntity.class, targetRange);
+    MonsterEntity nearestMob = null;
     double closestDistance = Double.MAX_VALUE;
-    for (EntityMob nextMob : allNearbyMobs) {
+    for (MonsterEntity nextMob : allNearbyMobs) {
       double nextClosestDistance = nextMob.getDistanceSq(xpos, ypos, zpos);
       if (nextClosestDistance < closestDistance) {
         closestDistance = nextClosestDistance;

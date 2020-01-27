@@ -1,16 +1,15 @@
 package minecraftbyexample.mbe06_redstone.input_and_output;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -37,11 +36,11 @@ public class BlockRedstoneMeter extends Block
   public BlockRedstoneMeter()
   {
     super(Material.IRON);
-    this.setCreativeTab(CreativeTabs.BUILDING_BLOCKS);   // the block will appear on the Blocks tab in creative
+    this.setCreativeTab(ItemGroup.BUILDING_BLOCKS);   // the block will appear on the Blocks tab in creative
   }
 
   @Override
-  public boolean hasTileEntity(IBlockState state)
+  public boolean hasTileEntity(BlockState state)
   {
     return true;
   }
@@ -49,7 +48,7 @@ public class BlockRedstoneMeter extends Block
   // Called when the block is placed or loaded client side to get the tile entity for the block
   // Should return a new instance of the tile entity for the block
   @Override
-  public TileEntity createTileEntity(World world, IBlockState state) {return new TileEntityRedstoneMeter();}
+  public TileEntity createTileEntity(World world, BlockState state) {return new TileEntityRedstoneMeter();}
 
   // ------ methods relevant to redstone
   //  The methods below are used to provide power to neighbours.
@@ -60,7 +59,7 @@ public class BlockRedstoneMeter extends Block
    * @return
    */
   @Override
-  public boolean canProvidePower(IBlockState iBlockState)
+  public boolean canProvidePower(BlockState iBlockState)
   {
     return true;
   }
@@ -75,9 +74,9 @@ public class BlockRedstoneMeter extends Block
    * @return The power provided [0 - 15]
    */
   @Override
-  public int getWeakPower(IBlockState state, IBlockAccess worldIn, BlockPos pos,  EnumFacing side)
+  public int getWeakPower(BlockState state, IBlockAccess worldIn, BlockPos pos,  Direction side)
   {
-    if (side != EnumFacing.UP && side != EnumFacing.DOWN) {
+    if (side != Direction.UP && side != Direction.DOWN) {
       return 0;
     }
 
@@ -102,7 +101,7 @@ public class BlockRedstoneMeter extends Block
    */
 
   @Override
-  public int getStrongPower(IBlockState state, IBlockAccess worldIn, BlockPos pos, EnumFacing side)
+  public int getStrongPower(BlockState state, IBlockAccess worldIn, BlockPos pos, Direction side)
   {
     return 0;
   }
@@ -114,7 +113,7 @@ public class BlockRedstoneMeter extends Block
 //    int powerLevel = world.isBlockIndirectlyGettingPowered(pos);  // if input can come from any side, use this line
 
     int maxPowerFound = 0;
-    for (EnumFacing whichFace : EnumFacing.HORIZONTALS) {
+    for (Direction whichFace : Direction.HORIZONTALS) {
       BlockPos neighborPos = pos.offset(whichFace);
       int powerLevel = world.getRedstonePower(neighborPos, whichFace);
       maxPowerFound = Math.max(powerLevel, maxPowerFound);
@@ -127,14 +126,14 @@ public class BlockRedstoneMeter extends Block
   // Called just after the player places a block.
   // Only called on the server side so it doesn't help us alter rendering on the client side.
   @Override
-  public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+  public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
     super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
   }
 
   // Called when a neighbouring block changes.
   // Only called on the server side- so it doesn't help us alter rendering on the client side.
   @Override
-  public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos neighborPos)
+  public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos neighborPos)
   {
     // calculate the power level from neighbours and store in our TileEntity for later use in isProvidingWeakPower()
     int powerLevel = getPowerLevelInput(worldIn, pos);
@@ -158,7 +157,7 @@ public class BlockRedstoneMeter extends Block
   //  Scheduling of ticks is by calling  world.scheduleUpdate(pos, block, numberOfTicksToDelay);
   //
   @Override
-  public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand)
+  public void updateTick(World worldIn, BlockPos pos, BlockState state, Random rand)
   {
     TileEntity tileentity = worldIn.getTileEntity(pos);
     if (tileentity instanceof TileEntityRedstoneMeter) { // prevent a crash if not the right type, or is null
@@ -179,13 +178,13 @@ public class BlockRedstoneMeter extends Block
   // ---- the following are copied from BlockRedstoneComparator.  I'm not 100% sure it's necessary to manually
   //   setTileEntity, removeTileEntity, etc, but I figure copying vanilla is a good rule
   @Override
-  public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state)
+  public void onBlockAdded(World worldIn, BlockPos pos, BlockState state)
   {
     super.onBlockAdded(worldIn, pos, state);
     worldIn.setTileEntity(pos, this.createTileEntity(worldIn, state));
   }
 
-  public void breakBlock(World worldIn, BlockPos pos, IBlockState state)
+  public void breakBlock(World worldIn, BlockPos pos, BlockState state)
   {
     super.breakBlock(worldIn, pos, state);
     worldIn.removeTileEntity(pos);
@@ -196,7 +195,7 @@ public class BlockRedstoneMeter extends Block
 
   // -----------------
   // The following methods aren't particularly relevant to this example.  See MBE01, MBE02, MBE03 for more information.
-  @SideOnly(Side.CLIENT)
+  @OnlyIn(Dist.CLIENT)
   public BlockRenderLayer getBlockLayer()
   {
     return BlockRenderLayer.CUTOUT_MIPPED;
@@ -206,7 +205,7 @@ public class BlockRedstoneMeter extends Block
   // set to true because this block is opaque and occupies the entire 1x1x1 space
   // not strictly required because the default (super method) is true
   @Override
-  public boolean isOpaqueCube(IBlockState iBlockState) {
+  public boolean isOpaqueCube(BlockState iBlockState) {
     return true;
   }
 
@@ -215,14 +214,14 @@ public class BlockRedstoneMeter extends Block
   // set to true because this block occupies the entire 1x1x1 space
   // not strictly required because the default (super method) is true
   @Override
-  public boolean isFullCube(IBlockState iBlockState) {
+  public boolean isFullCube(BlockState iBlockState) {
     return true;
   }
 
   // render using a BakedModel (mbe01_block_simple.json --> mbe01_block_simple_model.json)
   // not strictly required because the default (super method) is MODEL.
   @Override
-  public EnumBlockRenderType getRenderType(IBlockState iBlockState) {
-    return EnumBlockRenderType.MODEL;
+  public BlockRenderType getRenderType(BlockState iBlockState) {
+    return BlockRenderType.MODEL;
   }
 }

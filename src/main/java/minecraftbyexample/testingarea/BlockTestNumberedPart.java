@@ -21,7 +21,7 @@
 //  }
 //
 //  // the block will render in the SOLID layer.  See XXXX for more information.
-//  @SideOnly(Side.CLIENT)
+//  @OnlyIn(Dist.CLIENT)
 //  public BlockRenderLayer getBlockLayer()
 //  {
 //    return BlockRenderLayer.SOLID;

@@ -1,8 +1,7 @@
 package minecraftbyexample.mbe04_block_dynamic_block_model1;
 
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.BlockItem;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
  * User: The Grey Ghost
@@ -20,7 +19,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 public class StartupCommon
 {
   public static BlockCamouflage blockCamouflage;  // this holds the unique instance of your block
-  public static ItemBlock itemBlockCamouflage;  // this holds the unique instance of the ItemBlock corresponding to your block
+  public static BlockItem itemBlockCamouflage;  // this holds the unique instance of the ItemBlock corresponding to your block
 
   public static void preInitCommon()
   {
@@ -41,7 +40,7 @@ public class StartupCommon
     ForgeRegistries.BLOCKS.register(blockCamouflage);
 
     // We also need to create and register an ItemBlock for this block otherwise it won't appear in the inventory
-    itemBlockCamouflage = new ItemBlock(blockCamouflage);
+    itemBlockCamouflage = new BlockItem(blockCamouflage);
     itemBlockCamouflage.setRegistryName(blockCamouflage.getRegistryName());
     ForgeRegistries.ITEMS.register(itemBlockCamouflage);
   }

@@ -2,10 +2,10 @@ package minecraftbyexample.mbe40_hud_overlay;
 
 import minecraftbyexample.MinecraftByExample;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.MobEffects;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.potion.Effects;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
@@ -20,7 +20,7 @@ import java.text.DecimalFormat;
  */
 
 /* I extend Gui because it has already implemented a bunch of drawing functions */
-public class StatusBarRenderer extends Gui {
+public class StatusBarRenderer extends AbstractGui {
 
   /* This line tells Minecraft/Forge where your texture is. The first argument is your MODID,
    * and the second argument is the path to your texture starting at "resources/assets/MODID"
@@ -43,7 +43,7 @@ public class StatusBarRenderer extends Gui {
    * used for drawing things.
    *
    * To actually get the instance of Minecraft, you should pass it in through the constructor.
-   * It is possible to import Minecraft and use Minecraft.getMinecraft() here, but this won't
+   * It is possible to import Minecraft and use Minecraft.getInstance() here, but this won't
    * always be possible if you want to include information that's part of another class.
    */
   private Minecraft mc;
@@ -56,7 +56,7 @@ public class StatusBarRenderer extends Gui {
   public void renderStatusBar(int screenWidth, int screenHeight) {
     /* These are the variables that contain world and player information */
     World world = mc.world;
-    EntityPlayer player = mc.player;
+    PlayerEntity player = mc.player;
 
     /* This object draws text using the Minecraft font */
     FontRenderer fr = mc.fontRenderer;
@@ -157,13 +157,13 @@ public class StatusBarRenderer extends Gui {
     final int POISON_TEXTURE_U = BAR_WIDTH + 2;  // black texels
     final int WITHER_TEXTURE_U = BAR_WIDTH + 3;  // brown texels
 
-    if (player.isPotionActive(MobEffects.WITHER)) {
+    if (player.isPotionActive(Effects.WITHER)) {
       drawTexturedModalRect(0, 0, WITHER_TEXTURE_U, 0, 1, BAR_HEIGHT - 2);
     }
-    else if (player.isPotionActive(MobEffects.POISON)) {
+    else if (player.isPotionActive(Effects.POISON)) {
       drawTexturedModalRect(0, 0, POISON_TEXTURE_U, 0, 1, BAR_HEIGHT - 2);
     }
-    else if (player.isPotionActive(MobEffects.REGENERATION)) {
+    else if (player.isPotionActive(Effects.REGENERATION)) {
       drawTexturedModalRect(0, 0, REGEN_TEXTURE_U, 0, 1, BAR_HEIGHT - 2);
     }
     else {

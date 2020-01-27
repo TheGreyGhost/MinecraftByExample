@@ -1,7 +1,7 @@
 package minecraftbyexample;
 
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 
@@ -32,7 +32,7 @@ public class GuiHandlerRegistry implements IGuiHandler {
 
 	// Gets the server side element for the given gui id- this should return a container
 	@Override
-	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+	public Object getServerGuiElement(int ID, PlayerEntity player, World world, int x, int y, int z) {
 		IGuiHandler handler = registeredHandlers.get(ID);
 		if (handler != null) {
 			return handler.getServerGuiElement(ID, player, world, x, y, z);
@@ -43,7 +43,7 @@ public class GuiHandlerRegistry implements IGuiHandler {
 
 	// Gets the client side element for the given gui id- this should return a gui
 	@Override
-	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+	public Object getClientGuiElement(int ID, PlayerEntity player, World world, int x, int y, int z) {
 		IGuiHandler handler = registeredHandlers.get(ID);
 		if (handler != null) {
 			return handler.getClientGuiElement(ID, player, world, x, y, z);

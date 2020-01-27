@@ -1,9 +1,9 @@
 package minecraftbyexample.mbe30_inventory_basic;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -36,7 +36,7 @@ public class ContainerBasic extends Container {
 	private final int TE_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT;
 	private final int TE_INVENTORY_SLOT_COUNT = 9;
 
-	public ContainerBasic(InventoryPlayer invPlayer, TileEntityInventoryBasic tileEntityInventoryBasic) {
+	public ContainerBasic(PlayerInventory invPlayer, TileEntityInventoryBasic tileEntityInventoryBasic) {
 		this.tileEntityInventoryBasic = tileEntityInventoryBasic;
 
 		final int SLOT_X_SPACING = 18;
@@ -76,7 +76,7 @@ public class ContainerBasic extends Container {
 
 	// Vanilla calls this method every tick to make sure the player is still able to access the inventory, and if not closes the gui
 	@Override
-	public boolean canInteractWith(EntityPlayer player)
+	public boolean canInteractWith(PlayerEntity player)
 	{
 		return tileEntityInventoryBasic.isUsableByPlayer(player);
 	}
@@ -89,7 +89,7 @@ public class ContainerBasic extends Container {
 	// returns EMPTY_ITEM if the source slot is empty, or if none of the the source slot items could be moved
 	//   otherwise, returns a copy of the source stack
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer player, int sourceSlotIndex)
+	public ItemStack transferStackInSlot(PlayerEntity player, int sourceSlotIndex)
 	{
 		Slot sourceSlot = (Slot)inventorySlots.get(sourceSlotIndex);
 		if (sourceSlot == null || !sourceSlot.getHasStack()) return ItemStack.EMPTY;  //EMPTY_ITEM
@@ -126,7 +126,7 @@ public class ContainerBasic extends Container {
 	// pass the close container message to the tileEntityInventory (not strictly needed for this example)
 	//  see ContainerChest and TileEntityChest
 	@Override
-	public void onContainerClosed(EntityPlayer playerIn)
+	public void onContainerClosed(PlayerEntity playerIn)
 	{
 		super.onContainerClosed(playerIn);
 		this.tileEntityInventoryBasic.closeInventory(playerIn);

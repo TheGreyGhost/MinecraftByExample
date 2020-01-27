@@ -1,14 +1,14 @@
 package minecraftbyexample.mbe75_testing_framework;
 
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumAction;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.UseAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -33,14 +33,14 @@ public class ItemTestRunner extends Item
   {
     final int MAX_TEST_NUMBER = 64;
     this.setMaxStackSize(MAX_TEST_NUMBER);
-    this.setCreativeTab(CreativeTabs.MISC);   // the item will appear on the Miscellaneous tab in creative
+    this.setCreativeTab(ItemGroup.MISC);   // the item will appear on the Miscellaneous tab in creative
   }
 
   /**
    * allows items to add custom lines of information to the mouseover description
    */
   @Override
-  @SideOnly(Side.CLIENT)
+  @OnlyIn(Dist.CLIENT)
   public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn)
   {
     tooltip.add("Right click: conduct test");
@@ -50,8 +50,8 @@ public class ItemTestRunner extends Item
 
   // what animation to use when the player holds the "use" button
   @Override
-  public EnumAction getItemUseAction(ItemStack stack) {
-    return EnumAction.BLOCK;
+  public UseAction getItemUseAction(ItemStack stack) {
+    return UseAction.BLOCK;
   }
 
   // how long the player needs to hold down the right button before the test runs again
@@ -64,10 +64,10 @@ public class ItemTestRunner extends Item
   // called on the client and again on the server
   // execute your test code on the appropriate side....
   @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand hand) {
     ItemStack itemStackIn = playerIn.getHeldItem(hand);
     if (itemStackIn.isEmpty()) {  // returns true if the item is empty (player is holding nothing)
-      return new ActionResult<ItemStack>(EnumActionResult.FAIL, itemStackIn);  // just in case.
+      return new ActionResult<ItemStack>(ActionResultType.FAIL, itemStackIn);  // just in case.
     }
     int testNumber = itemStackIn.getCount(); // getStackSize()
     TestRunner testRunner = new TestRunner();
@@ -77,7 +77,7 @@ public class ItemTestRunner extends Item
     } else {
       testRunner.runServerSideTest(worldIn, playerIn, testNumber);
     }
-    return new ActionResult<ItemStack>(EnumActionResult.PASS, itemStackIn);
+    return new ActionResult<ItemStack>(ActionResultType.PASS, itemStackIn);
   }
 
 }

@@ -5,7 +5,7 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
@@ -19,7 +19,7 @@ import java.awt.*;
  * This class renders the gem floating above the block.
  * The base model (the hopper shape) is drawn by the block model, not this class.
  */
-public class TileEntitySpecialRendererMBE21 extends TileEntitySpecialRenderer<TileEntityMBE21>
+public class TileEntitySpecialRendererMBE21 extends TileEntityRenderer<TileEntityMBE21>
 {
 
   /**

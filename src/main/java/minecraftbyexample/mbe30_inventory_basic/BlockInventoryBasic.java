@@ -1,19 +1,18 @@
 package minecraftbyexample.mbe30_inventory_basic;
 
 import minecraftbyexample.MinecraftByExample;
-import net.minecraft.block.BlockContainer;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.ContainerBlock;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -35,12 +34,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 //   using hasTileEntity() and createTileEntity().  See BlockContainer for a couple of other important methods you may
 //  need to implement.
 
-public class BlockInventoryBasic extends BlockContainer
+public class BlockInventoryBasic extends ContainerBlock
 {   
 	public BlockInventoryBasic()
 	{
 		super(Material.ROCK);
-		this.setCreativeTab(CreativeTabs.BUILDING_BLOCKS);     // the block will appear on the Blocks tab.
+		this.setCreativeTab(ItemGroup.BUILDING_BLOCKS);     // the block will appear on the Blocks tab.
 	}
 
   /**
@@ -59,7 +58,7 @@ public class BlockInventoryBasic extends BlockContainer
   // not needed if your block implements ITileEntityProvider (in this case implemented by BlockContainer), but it
   //  doesn't hurt to include it anyway...
 	@Override
-	public boolean hasTileEntity(IBlockState state)
+	public boolean hasTileEntity(BlockState state)
 	{
 		return true;
 	}
@@ -67,8 +66,8 @@ public class BlockInventoryBasic extends BlockContainer
 	// Called when the block is right clicked
 	// In this block it is used to open the blocks gui when right clicked by a player
 	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand,
-																	EnumFacing side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World worldIn, BlockPos pos, BlockState state, PlayerEntity playerIn, Hand hand,
+																	Direction side, float hitX, float hitY, float hitZ) {
 		// Uses the gui handler registered to your mod to open the gui for the given gui id
 		// open on the server side only  (not sure why you shouldn't open client side too... vanilla doesn't, so we better not either)
 		if (worldIn.isRemote) return true;
@@ -79,7 +78,7 @@ public class BlockInventoryBasic extends BlockContainer
 
 	// This is where you can do something when the block is broken. In this case drop the inventory's contents
 	@Override
-	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
+	public void breakBlock(World worldIn, BlockPos pos, BlockState state) {
 
 		IInventory inventory = worldIn.getTileEntity(pos) instanceof IInventory ? (IInventory)worldIn.getTileEntity(pos) : null;
 
@@ -90,7 +89,7 @@ public class BlockInventoryBasic extends BlockContainer
 				if (!inventory.getStackInSlot(i).isEmpty())  // isEmpty
 				{
 					// Create a new entity item with the item stack in the slot
-					EntityItem item = new EntityItem(worldIn, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, inventory.getStackInSlot(i));
+					ItemEntity item = new ItemEntity(worldIn, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, inventory.getStackInSlot(i));
 
 					// Apply some random motion to the item
 					float multiplier = 0.1f;
@@ -119,12 +118,12 @@ public class BlockInventoryBasic extends BlockContainer
 
 	// the block is smaller than a full cube, specify dimensions here
 	@Override
-	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+	public AxisAlignedBB getBoundingBox(BlockState state, IBlockAccess source, BlockPos pos) {
 		return new AxisAlignedBB(1/16.0F, 0, 1/16.0F, 15/16.0F, 8/16.0F, 15/16.0F);
 	}
 
 	// the block will render in the SOLID layer.  See http://greyminecraftcoder.blogspot.co.at/2014/12/block-rendering-18.html for more information.
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public BlockRenderLayer getBlockLayer()
 	{
 		return BlockRenderLayer.SOLID;
@@ -133,7 +132,7 @@ public class BlockInventoryBasic extends BlockContainer
 	// used by the renderer to control lighting and visibility of other blocks.
 	// set to false because this block doesn't fill the entire 1x1x1 space
 	@Override
-	public boolean isOpaqueCube(IBlockState state)
+	public boolean isOpaqueCube(BlockState state)
 	{
 		return false;
 	}
@@ -142,7 +141,7 @@ public class BlockInventoryBasic extends BlockContainer
 	// (eg) wall or fence to control whether the fence joins itself to this block
 	// set to false because this block doesn't fill the entire 1x1x1 space
 	@Override
-	public boolean isFullCube(IBlockState state)
+	public boolean isFullCube(BlockState state)
 	{
 		return false;
 	}
@@ -150,8 +149,8 @@ public class BlockInventoryBasic extends BlockContainer
   // render using a BakedModel (mbe30_inventory_basic.json --> mbe30_inventory_basic_model.json)
   // required because the default (super method) is INVISIBLE for BlockContainers.
   @Override
-  public EnumBlockRenderType getRenderType(IBlockState iBlockState) {
-    return EnumBlockRenderType.MODEL;
+  public BlockRenderType getRenderType(BlockState iBlockState) {
+    return BlockRenderType.MODEL;
   }
 
 

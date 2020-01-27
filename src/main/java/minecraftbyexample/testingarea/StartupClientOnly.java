@@ -32,11 +32,11 @@ public class StartupClientOnly
 //    Item itemBlock1 = GameRegistry.findItem("minecraftbyexample", "test_block1");
 //    ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation("minecraftbyexample:test_block1", "inventory");
 //    final int DEFAULT_ITEM_SUBTYPE = 0;
-//    Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(itemBlock1, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
+//    Minecraft.getInstance().getRenderItem().getItemModelMesher().register(itemBlock1, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
 //
 //    Item itemBlock2 = GameRegistry.findItem("minecraftbyexample", "test_block2");
 //    itemModelResourceLocation = new ModelResourceLocation("minecraftbyexample:test_block2", "inventory");
-//    Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(itemBlock2, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
+//    Minecraft.getInstance().getRenderItem().getItemModelMesher().register(itemBlock2, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
   }
 
   public static void postInitClientOnly()

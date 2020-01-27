@@ -1,6 +1,6 @@
 package minecraftbyexample.mbe21_tileentityspecialrenderer;
 
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.BlockItem;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
@@ -20,7 +20,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 public class StartupCommon
 {
   public static BlockMBE21 blockMBE21;  // this holds the unique instance of your block
-  public static ItemBlock itemBlockMBE21; // this holds the unique instance of the itemblock corresponding to the block
+  public static BlockItem itemBlockMBE21; // this holds the unique instance of the itemblock corresponding to the block
 
   public static void preInitCommon()
   {
@@ -42,7 +42,7 @@ public class StartupCommon
     ForgeRegistries.BLOCKS.register(blockMBE21);
 
     // We also need to create and register an ItemBlock for this block otherwise it won't appear in the inventory
-    itemBlockMBE21 = new ItemBlock(blockMBE21);
+    itemBlockMBE21 = new BlockItem(blockMBE21);
     itemBlockMBE21.setRegistryName(blockMBE21.getRegistryName());
     ForgeRegistries.ITEMS.register(itemBlockMBE21);
 

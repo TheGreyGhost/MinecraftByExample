@@ -1,12 +1,12 @@
 package minecraftbyexample.mbe06_redstone.input;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.block.BlockState;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
-import net.minecraft.world.EnumSkyBlock;
+import net.minecraft.world.LightType;
 
 import javax.annotation.Nullable;
 
@@ -41,11 +41,11 @@ public class TileEntityRedstoneColouredLamp extends TileEntity implements ITicka
     if (previousRGBcolor != currentRGBcolour) {
       previousRGBcolor = currentRGBcolour;
       if (world.isRemote) {
-        IBlockState iblockstate = this.world.getBlockState(pos);
+        BlockState iblockstate = this.world.getBlockState(pos);
         final int FLAGS = 3;  // I'm not sure what these flags do, exactly.
         this.world.notifyBlockUpdate(pos, iblockstate, iblockstate, FLAGS);
       }
-      world.checkLightFor(EnumSkyBlock.BLOCK, pos);
+      world.checkLightFor(LightType.BLOCK, pos);
     }
 
   }
@@ -54,16 +54,16 @@ public class TileEntityRedstoneColouredLamp extends TileEntity implements ITicka
 //	//  it uses getUpdatePacket(), getUpdateTag(), onDataPacket(), and handleUpdateTag() to do this
   @Override
   @Nullable
-  public SPacketUpdateTileEntity getUpdatePacket()
+  public SUpdateTileEntityPacket getUpdatePacket()
   {
-    NBTTagCompound updateTagDescribingTileEntityState = getUpdateTag();
+    CompoundNBT updateTagDescribingTileEntityState = getUpdateTag();
     int metadata = getBlockMetadata();
-    return new SPacketUpdateTileEntity(this.pos, metadata, updateTagDescribingTileEntityState);
+    return new SUpdateTileEntityPacket(this.pos, metadata, updateTagDescribingTileEntityState);
   }
 
   @Override
-  public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
-    NBTTagCompound updateTagDescribingTileEntityState = pkt.getNbtCompound();
+  public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+    CompoundNBT updateTagDescribingTileEntityState = pkt.getNbtCompound();
     handleUpdateTag(updateTagDescribingTileEntityState);
   }
 
@@ -71,9 +71,9 @@ public class TileEntityRedstoneColouredLamp extends TileEntity implements ITicka
      Warning - although our getUpdatePacket() uses this method, vanilla also calls it directly, so don't remove it.
    */
   @Override
-  public NBTTagCompound getUpdateTag()
+  public CompoundNBT getUpdateTag()
   {
-    NBTTagCompound nbtTagCompound = new NBTTagCompound();
+    CompoundNBT nbtTagCompound = new CompoundNBT();
     writeToNBT(nbtTagCompound);
     return nbtTagCompound;
   }
@@ -82,7 +82,7 @@ public class TileEntityRedstoneColouredLamp extends TileEntity implements ITicka
    Warning - although our onDataPacket() uses this method, vanilla also calls it directly, so don't remove it.
  */
   @Override
-  public void handleUpdateTag(NBTTagCompound tag)
+  public void handleUpdateTag(CompoundNBT tag)
   {
     this.readFromNBT(tag);
   }
@@ -91,7 +91,7 @@ public class TileEntityRedstoneColouredLamp extends TileEntity implements ITicka
 	//  - you don't want to lose when the tile entity unloads
   //  - you want to transmit to the client
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound parentNBTTagCompound)
+	public CompoundNBT writeToNBT(CompoundNBT parentNBTTagCompound)
 	{
 		super.writeToNBT(parentNBTTagCompound); // The super call is required to save the tiles location
   	parentNBTTagCompound.setInteger("rgb_colour", rgbColour);
@@ -100,7 +100,7 @@ public class TileEntityRedstoneColouredLamp extends TileEntity implements ITicka
 
 	// This is where you load the data that you saved in writeToNBT
 	@Override
-	public void readFromNBT(NBTTagCompound parentNBTTagCompound)
+	public void readFromNBT(CompoundNBT parentNBTTagCompound)
 	{
 		super.readFromNBT(parentNBTTagCompound); // The super call is required to load the tiles location
     int newColour = parentNBTTagCompound.getInteger("rgb_colour");  // default is 0

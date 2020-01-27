@@ -1,6 +1,6 @@
 package minecraftbyexample.mbe10_item_simple;
 
-import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.Item;
 
 /**
@@ -17,7 +17,7 @@ public class ItemSimple extends Item
   {
     final int MAXIMUM_NUMBER_OF_FROGS = 6;
     this.setMaxStackSize(MAXIMUM_NUMBER_OF_FROGS);
-    this.setCreativeTab(CreativeTabs.MISC);   // the item will appear on the Miscellaneous tab in creative
+    this.setCreativeTab(ItemGroup.MISC);   // the item will appear on the Miscellaneous tab in creative
   }
 
 }

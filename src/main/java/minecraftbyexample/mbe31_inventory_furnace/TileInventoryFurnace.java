@@ -1,23 +1,23 @@
 package minecraftbyexample.mbe31_inventory_furnace;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagIntArray;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.IntArrayNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.world.EnumSkyBlock;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.LightType;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -145,11 +145,11 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 		if (cachedNumberOfBurningSlots != numberBurning) {
 			cachedNumberOfBurningSlots = numberBurning;
 			if (world.isRemote) {
-        IBlockState iblockstate = this.world.getBlockState(pos);
+        BlockState iblockstate = this.world.getBlockState(pos);
         final int FLAGS = 3;  // I'm not sure what these flags do, exactly.
         world.notifyBlockUpdate(pos, iblockstate, iblockstate, FLAGS);
 			}
-			world.checkLightFor(EnumSkyBlock.BLOCK, pos);
+			world.checkLightFor(LightType.BLOCK, pos);
 		}
 	}
 
@@ -264,7 +264,7 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 	// returns the number of ticks the given item will burn. Returns 0 if the given item is not a valid fuel
 	public static short getItemBurnTime(ItemStack stack)
 	{
-		int burntime = TileEntityFurnace.getItemBurnTime(stack);  // just use the vanilla values
+		int burntime = FurnaceTileEntity.getItemBurnTime(stack);  // just use the vanilla values
 		return (short)MathHelper.clamp(burntime, 0, Short.MAX_VALUE);
 	}
 
@@ -340,7 +340,7 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 	// 1) the world tileentity hasn't been replaced in the meantime, and
 	// 2) the player isn't too far away from the centre of the block
 	@Override
-	public boolean isUsableByPlayer(EntityPlayer player) {
+	public boolean isUsableByPlayer(PlayerEntity player) {
 		if (this.world.getTileEntity(this.pos) != this) return false;
 		final double X_CENTRE_OFFSET = 0.5;
 		final double Y_CENTRE_OFFSET = 0.5;
@@ -375,7 +375,7 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 	// This is where you save any data that you don't want to lose when the tile entity unloads
 	// In this case, it saves the state of the furnace (burn time etc) and the itemstacks stored in the fuel, input, and output slots
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound parentNBTTagCompound)
+	public CompoundNBT writeToNBT(CompoundNBT parentNBTTagCompound)
 	{
 		super.writeToNBT(parentNBTTagCompound); // The super call is required to save and load the tiles location
 
@@ -385,10 +385,10 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 		// The itemStack in each slot is converted to an NBTTagCompound, which is effectively a hashmap of key->value pairs such
 		//   as slot=1, id=2353, count=1, etc
 		// Each of these NBTTagCompound are then inserted into NBTTagList, which is similar to an array.
-		NBTTagList dataForAllSlots = new NBTTagList();
+		ListNBT dataForAllSlots = new ListNBT();
 		for (int i = 0; i < this.itemStacks.length; ++i) {
 			if (!this.itemStacks[i].isEmpty()) {  //isEmpty()
-				NBTTagCompound dataForThisSlot = new NBTTagCompound();
+				CompoundNBT dataForThisSlot = new CompoundNBT();
 				dataForThisSlot.setByte("Slot", (byte) i);
 				this.itemStacks[i].writeToNBT(dataForThisSlot);
 				dataForAllSlots.appendTag(dataForThisSlot);
@@ -399,22 +399,22 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 
 		// Save everything else
 		parentNBTTagCompound.setShort("CookTime", cookTime);
-	  parentNBTTagCompound.setTag("burnTimeRemaining", new NBTTagIntArray(burnTimeRemaining));
-		parentNBTTagCompound.setTag("burnTimeInitial", new NBTTagIntArray(burnTimeInitialValue));
+	  parentNBTTagCompound.setTag("burnTimeRemaining", new IntArrayNBT(burnTimeRemaining));
+		parentNBTTagCompound.setTag("burnTimeInitial", new IntArrayNBT(burnTimeInitialValue));
     return parentNBTTagCompound;
 	}
 
 	// This is where you load the data that you saved in writeToNBT
 	@Override
-	public void readFromNBT(NBTTagCompound nbtTagCompound)
+	public void readFromNBT(CompoundNBT nbtTagCompound)
 	{
 		super.readFromNBT(nbtTagCompound); // The super call is required to save and load the tiles location
 		final byte NBT_TYPE_COMPOUND = 10;       // See NBTBase.createNewByType() for a listing
-		NBTTagList dataForAllSlots = nbtTagCompound.getTagList("Items", NBT_TYPE_COMPOUND);
+		ListNBT dataForAllSlots = nbtTagCompound.getTagList("Items", NBT_TYPE_COMPOUND);
 
 		Arrays.fill(itemStacks, ItemStack.EMPTY);           // set all slots to empty EMPTY_ITEM
 		for (int i = 0; i < dataForAllSlots.tagCount(); ++i) {
-			NBTTagCompound dataForOneSlot = dataForAllSlots.getCompoundTagAt(i);
+			CompoundNBT dataForOneSlot = dataForAllSlots.getCompoundTagAt(i);
 			byte slotNumber = dataForOneSlot.getByte("Slot");
 			if (slotNumber >= 0 && slotNumber < this.itemStacks.length) {
 				this.itemStacks[slotNumber] = new ItemStack(dataForOneSlot);
@@ -432,16 +432,16 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 //	//  it uses getUpdatePacket(), getUpdateTag(), onDataPacket(), and handleUpdateTag() to do this
   @Override
   @Nullable
-  public SPacketUpdateTileEntity getUpdatePacket()
+  public SUpdateTileEntityPacket getUpdatePacket()
   {
-    NBTTagCompound updateTagDescribingTileEntityState = getUpdateTag();
+    CompoundNBT updateTagDescribingTileEntityState = getUpdateTag();
     final int METADATA = 0;
-    return new SPacketUpdateTileEntity(this.pos, METADATA, updateTagDescribingTileEntityState);
+    return new SUpdateTileEntityPacket(this.pos, METADATA, updateTagDescribingTileEntityState);
   }
 
   @Override
-  public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
-    NBTTagCompound updateTagDescribingTileEntityState = pkt.getNbtCompound();
+  public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+    CompoundNBT updateTagDescribingTileEntityState = pkt.getNbtCompound();
     handleUpdateTag(updateTagDescribingTileEntityState);
   }
 
@@ -449,9 +449,9 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
      Warning - although our getUpdatePacket() uses this method, vanilla also calls it directly, so don't remove it.
    */
   @Override
-  public NBTTagCompound getUpdateTag()
+  public CompoundNBT getUpdateTag()
   {
-		NBTTagCompound nbtTagCompound = new NBTTagCompound();
+		CompoundNBT nbtTagCompound = new CompoundNBT();
 		writeToNBT(nbtTagCompound);
     return nbtTagCompound;
   }
@@ -460,7 +460,7 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
    Warning - although our onDataPacket() uses this method, vanilla also calls it directly, so don't remove it.
  */
   @Override
-  public void handleUpdateTag(NBTTagCompound tag)
+  public void handleUpdateTag(CompoundNBT tag)
   {
     this.readFromNBT(tag);
   }
@@ -487,7 +487,7 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
   @Nullable
   @Override
   public ITextComponent getDisplayName() {
-		return this.hasCustomName() ? new TextComponentString(this.getName()) : new TextComponentTranslation(this.getName());
+		return this.hasCustomName() ? new StringTextComponent(this.getName()) : new TranslationTextComponent(this.getName());
 	}
 
 	// Fields are used to send non-inventory information from the server to interested clients
@@ -557,9 +557,9 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 	}
 
 	@Override
-	public void openInventory(EntityPlayer player) {}
+	public void openInventory(PlayerEntity player) {}
 
 	@Override
-	public void closeInventory(EntityPlayer player) {}
+	public void closeInventory(PlayerEntity player) {}
 
 }

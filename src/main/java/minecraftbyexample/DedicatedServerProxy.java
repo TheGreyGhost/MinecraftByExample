@@ -1,7 +1,7 @@
 package minecraftbyexample;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 
 /**
  * DedicatedServerProxy is used to set up the mod and start it running on dedicated servers.  It contains all the code that should run on the
@@ -34,9 +34,9 @@ public class DedicatedServerProxy extends CommonProxy
   }
 
   @Override
-  public boolean playerIsInCreativeMode(EntityPlayer player) {
-    if (player instanceof EntityPlayerMP) {
-      EntityPlayerMP entityPlayerMP = (EntityPlayerMP) player;
+  public boolean playerIsInCreativeMode(PlayerEntity player) {
+    if (player instanceof ServerPlayerEntity) {
+      ServerPlayerEntity entityPlayerMP = (ServerPlayerEntity) player;
       return entityPlayerMP.interactionManager.isCreative();
     }
     return false;

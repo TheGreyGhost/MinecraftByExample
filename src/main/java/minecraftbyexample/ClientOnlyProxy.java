@@ -1,9 +1,9 @@
 package minecraftbyexample;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 
 /**
  * ClientProxy is used to set up the mod and start it running on normal minecraft.  It contains all the code that should run on the
@@ -111,12 +111,12 @@ public class ClientOnlyProxy extends CommonProxy
   }
 
   @Override
-  public boolean playerIsInCreativeMode(EntityPlayer player) {
-    if (player instanceof EntityPlayerMP) {
-      EntityPlayerMP entityPlayerMP = (EntityPlayerMP)player;
+  public boolean playerIsInCreativeMode(PlayerEntity player) {
+    if (player instanceof ServerPlayerEntity) {
+      ServerPlayerEntity entityPlayerMP = (ServerPlayerEntity)player;
       return entityPlayerMP.interactionManager.isCreative();
-    } else if (player instanceof EntityPlayerSP) {
-      return Minecraft.getMinecraft().playerController.isInCreativeMode();
+    } else if (player instanceof ClientPlayerEntity) {
+      return Minecraft.getInstance().playerController.isInCreativeMode();
     }
     return false;
   }

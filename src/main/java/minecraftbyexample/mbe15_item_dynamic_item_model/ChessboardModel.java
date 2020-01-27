@@ -1,9 +1,10 @@
 package minecraftbyexample.mbe15_item_dynamic_item_model;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.block.model.*;
+import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.vecmath.Matrix4f;
@@ -48,7 +49,7 @@ public class ChessboardModel implements IBakedModel {
    * @return
    */
   @Override
-  public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand) {
+  public List<BakedQuad> getQuads(BlockState state, Direction side, long rand) {
     return baseChessboardModel.getQuads(state, side, rand);
   }
 

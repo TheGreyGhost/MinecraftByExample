@@ -1,7 +1,7 @@
 package minecraftbyexample.mbe40_hud_overlay;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -40,7 +40,7 @@ public class StartupClientOnly
    * the overlay is a GUI element, and the GUI only exists on the client side,
    * we only register this event handler on the client side.
    */
-    statusBarRenderer = new StatusBarRenderer(Minecraft.getMinecraft());
+    statusBarRenderer = new StatusBarRenderer(Minecraft.getInstance());
     MinecraftForge.EVENT_BUS.register(new EventHandlerOverlay(statusBarRenderer));
   }
 }

@@ -1,14 +1,14 @@
 package minecraftbyexample.mbe04_block_dynamic_block_model1;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.block.model.*;
+import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.init.Blocks;
-import net.minecraft.util.EnumFacing;
-import net.minecraftforge.common.model.TRSRTransformation;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -38,7 +38,7 @@ public class CamouflageBakedModel implements IBakedModel {
 
   // return a list of the quads making up the model.
   // We choose the model based on the IBlockstate provided by the caller.
-  public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand)
+  public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, long rand)
   {
     return handleBlockState(state).getQuads(state, side, rand);
   }
@@ -46,20 +46,20 @@ public class CamouflageBakedModel implements IBakedModel {
   // This method is used to create a suitable IBakedModel based on the IBlockState of the block being rendered.
   // If IBlockState is an instance of IExtendedBlockState, you can use it to pass in any information you want.
 
-  private IBakedModel handleBlockState(@Nullable IBlockState iBlockState)
+  private IBakedModel handleBlockState(@Nullable BlockState iBlockState)
   {
     IBakedModel retval = modelWhenNotCamouflaged;  // default
-    IBlockState UNCAMOUFLAGED_BLOCK = Blocks.AIR.getDefaultState();
+    BlockState UNCAMOUFLAGED_BLOCK = Blocks.AIR.getDefaultState();
 
     // Extract the block to be copied from the IExtendedBlockState, previously set by Block.getExtendedState()
     // If the block is null, the block is not camouflaged so use the uncamouflaged model.
     if (iBlockState instanceof IExtendedBlockState) {
       IExtendedBlockState iExtendedBlockState = (IExtendedBlockState) iBlockState;
-      IBlockState copiedBlockIBlockState = iExtendedBlockState.getValue(BlockCamouflage.COPIEDBLOCK);
+      BlockState copiedBlockIBlockState = iExtendedBlockState.getValue(BlockCamouflage.COPIEDBLOCK);
 
       if (copiedBlockIBlockState != UNCAMOUFLAGED_BLOCK) {
         // Retrieve the IBakedModel of the copied block and return it.
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = Minecraft.getInstance();
         BlockRendererDispatcher blockRendererDispatcher = mc.getBlockRendererDispatcher();
         BlockModelShapes blockModelShapes = blockRendererDispatcher.getBlockModelShapes();
         IBakedModel copiedBlockModel = blockModelShapes.getModelForState(copiedBlockIBlockState);

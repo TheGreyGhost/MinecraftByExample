@@ -1,8 +1,8 @@
 package minecraftbyexample.mbe35_recipes;
 
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.block.Blocks;
+import net.minecraft.item.DyeColor;
+import net.minecraft.item.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
@@ -14,8 +14,6 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.registries.GameData;
-
-import javax.annotation.Nonnull;
 
 /**
  * User: The Grey Ghost
@@ -67,7 +65,7 @@ public class StartupCommon
     // note - smaller grids are also possible, you don't need to fill up the entire 3x3 space.
 
     // b) shaped recipe with metadata - cobblestone surrounded by red dye makes redstone
-    final int RED_DYE_DAMAGE_VALUE = EnumDyeColor.RED.getDyeDamage();
+    final int RED_DYE_DAMAGE_VALUE = DyeColor.RED.getDyeDamage();
     GameRegistry.addShapedRecipe(new ResourceLocation("minecraftbyexample:mbe35_recipe_redstone"), optionalGroup, new ItemStack(Items.REDSTONE), new Object[]{
             "RRR",
             "RCR",
@@ -104,9 +102,9 @@ public class StartupCommon
     });
 
     // d) Shapeless recipe - blue dye plus yellow dye makes two green dye
-    final int BLUE_DYE_DAMAGE_VALUE = EnumDyeColor.BLUE.getDyeDamage();
-    final int YELLOW_DYE_DAMAGE_VALUE = EnumDyeColor.YELLOW.getDyeDamage();
-    final int GREEN_DYE_DAMAGE_VALUE = EnumDyeColor.GREEN.getDyeDamage();
+    final int BLUE_DYE_DAMAGE_VALUE = DyeColor.BLUE.getDyeDamage();
+    final int YELLOW_DYE_DAMAGE_VALUE = DyeColor.YELLOW.getDyeDamage();
+    final int GREEN_DYE_DAMAGE_VALUE = DyeColor.GREEN.getDyeDamage();
     final int NUMBER_OF_GREEN_DYE_PRODUCED = 2;
 
     GameRegistry.addShapelessRecipe(new ResourceLocation("minecraftbyexample:mbe35_recipe_greendye"), optionalGroup,

@@ -1,7 +1,7 @@
 package minecraftbyexample.mbe60_network_messages;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -45,8 +45,8 @@ public class MessageHandlerOnClient implements IMessageHandler<TargetEffectMessa
     //  for example see Minecraft.runGameLoop() , just under section
     //    this.mcProfiler.startSection("scheduledExecutables");
     //  In this case, the task is to call messageHandlerOnClient.processMessage(worldclient, message)
-    Minecraft minecraft = Minecraft.getMinecraft();
-    final WorldClient worldClient = minecraft.world;
+    Minecraft minecraft = Minecraft.getInstance();
+    final ClientWorld worldClient = minecraft.world;
     minecraft.addScheduledTask(new Runnable()
     {
       public void run() {
@@ -59,7 +59,7 @@ public class MessageHandlerOnClient implements IMessageHandler<TargetEffectMessa
 
   // This message is called from the Client thread.
   //   It spawns a number of Particle particles at the target location within a short range around the target location
-  void processMessage(WorldClient worldClient, TargetEffectMessageToClient message)
+  void processMessage(ClientWorld worldClient, TargetEffectMessageToClient message)
   {
     Random random = new Random();
     final int NUMBER_OF_PARTICLES = 100;

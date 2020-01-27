@@ -1,6 +1,6 @@
 package minecraftbyexample.mbe20_tileentity_data;
 
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.BlockItem;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
@@ -20,7 +20,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 public class StartupCommon
 {
   public static BlockTileEntityData blockTileEntityData;  // this holds the unique instance of your block
-  public static ItemBlock itemBlockTileEntityData; // this holds the unique instance of the ItemBlock corresponding to your block
+  public static BlockItem itemBlockTileEntityData; // this holds the unique instance of the ItemBlock corresponding to your block
 
   public static void preInitCommon()
   {
@@ -41,7 +41,7 @@ public class StartupCommon
     ForgeRegistries.BLOCKS.register(blockTileEntityData);
 
     // We also need to create and register an ItemBlock for this block otherwise it won't appear in the inventory
-    itemBlockTileEntityData = new ItemBlock(blockTileEntityData);
+    itemBlockTileEntityData = new BlockItem(blockTileEntityData);
     itemBlockTileEntityData.setRegistryName(blockTileEntityData.getRegistryName());
     ForgeRegistries.ITEMS.register(itemBlockTileEntityData);
 

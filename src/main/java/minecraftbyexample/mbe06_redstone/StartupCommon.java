@@ -6,7 +6,7 @@ import minecraftbyexample.mbe06_redstone.input_and_output.BlockRedstoneMeter;
 import minecraftbyexample.mbe06_redstone.input_and_output.TileEntityRedstoneMeter;
 import minecraftbyexample.mbe06_redstone.output_only.BlockRedstoneTarget;
 import minecraftbyexample.mbe06_redstone.output_only.BlockRedstoneVariableSource;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.BlockItem;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
@@ -30,10 +30,10 @@ public class StartupCommon
   public static BlockRedstoneMeter blockRedstoneMeter;
   public static BlockRedstoneVariableSource blockRedstoneVariableSource;
 
-  public static ItemBlock itemBlockRedstoneColouredLamp;
-  public static ItemBlock itemBlockRedstoneTarget;
-  public static ItemBlock itemBlockRedstoneMeter;
-  public static ItemBlock itemBlockRedstoneVariableSource;
+  public static BlockItem itemBlockRedstoneColouredLamp;
+  public static BlockItem itemBlockRedstoneTarget;
+  public static BlockItem itemBlockRedstoneMeter;
+  public static BlockItem itemBlockRedstoneVariableSource;
 
   public static void preInitCommon()
   {
@@ -46,7 +46,7 @@ public class StartupCommon
     ForgeRegistries.BLOCKS.register(blockRedstoneColouredLamp);
 
     // We also need to create and register an ItemBlock for this block otherwise it won't appear in the inventory
-    itemBlockRedstoneColouredLamp = new ItemBlock(blockRedstoneColouredLamp);
+    itemBlockRedstoneColouredLamp = new BlockItem(blockRedstoneColouredLamp);
     itemBlockRedstoneColouredLamp.setRegistryName(blockRedstoneColouredLamp.getRegistryName());
     ForgeRegistries.ITEMS.register(itemBlockRedstoneColouredLamp);
 
@@ -60,7 +60,7 @@ public class StartupCommon
     blockRedstoneMeter.setRegistryName("minecraftbyexample:mbe06c_block_redstone_meter_registry_name");
     ForgeRegistries.BLOCKS.register(blockRedstoneMeter);
 
-    itemBlockRedstoneMeter = new ItemBlock(blockRedstoneMeter);
+    itemBlockRedstoneMeter = new BlockItem(blockRedstoneMeter);
     itemBlockRedstoneMeter.setRegistryName(blockRedstoneMeter.getRegistryName());
     ForgeRegistries.ITEMS.register(itemBlockRedstoneMeter);
 
@@ -73,7 +73,7 @@ public class StartupCommon
     blockRedstoneTarget.setRegistryName("minecraftbyexample:mbe06b_block_redstone_target_registry_name");
     ForgeRegistries.BLOCKS.register(blockRedstoneTarget);
 
-    itemBlockRedstoneTarget = new ItemBlock(blockRedstoneTarget);
+    itemBlockRedstoneTarget = new BlockItem(blockRedstoneTarget);
     itemBlockRedstoneTarget.setRegistryName(blockRedstoneTarget.getRegistryName());
     ForgeRegistries.ITEMS.register(itemBlockRedstoneTarget);
 
@@ -82,7 +82,7 @@ public class StartupCommon
     blockRedstoneVariableSource.setRegistryName("minecraftbyexample:mbe06_block_redstone_variable_source_registry_name");
     ForgeRegistries.BLOCKS.register(blockRedstoneVariableSource);
 
-    itemBlockRedstoneVariableSource = new ItemBlock(blockRedstoneVariableSource);
+    itemBlockRedstoneVariableSource = new BlockItem(blockRedstoneVariableSource);
     itemBlockRedstoneVariableSource.setRegistryName(blockRedstoneVariableSource.getRegistryName());
     ForgeRegistries.ITEMS.register(itemBlockRedstoneVariableSource);
   }
