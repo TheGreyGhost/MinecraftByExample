@@ -67,7 +67,7 @@ public class BlockMBE21 extends Block
     return BlockRenderLayer.CUTOUT_MIPPED;
   }
 
-  // used by the renderer to control lighting and visibility of other blocks.
+  // used by the renderer to control lighting and visibility of other block.
   // set to false because this block doesn't fill the entire 1x1x1 space
   @Override
   public boolean isOpaqueCube(BlockState state)
@@ -75,7 +75,7 @@ public class BlockMBE21 extends Block
     return false;
   }
 
-  // used by the renderer to control lighting and visibility of other blocks, also by
+  // used by the renderer to control lighting and visibility of other block, also by
   // (eg) wall or fence to control whether the fence joins itself to this block
   // set to false because this block doesn't fill the entire 1x1x1 space
   @Override

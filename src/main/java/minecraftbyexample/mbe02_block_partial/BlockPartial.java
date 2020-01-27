@@ -18,7 +18,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  *
  * BlockPartial uses a model which doesn't occupy the entire 1x1x1m space, and is made up of two pieces.
  * We can walk over it without colliding.
- * For background information on blocks see here http://greyminecraftcoder.blogspot.com.au/2014/12/blocks-18.html
+ * For background information on block see here http://greyminecraftcoder.blogspot.com.au/2014/12/blocks-18.html
  * For a couple of the methods below the Forge guys have marked it as deprecated.  But you still need to override those
  *   "deprecated" block methods.  What they mean is "when you want to find out if a block is (eg) isOpaqueCube(),
  *   don't call block.isOpaqueCube(), call iBlockState.isOpaqueCube() instead".
@@ -40,14 +40,14 @@ public class BlockPartial extends Block
     return BlockRenderLayer.SOLID;
   }
 
-  // used by the renderer to control lighting and visibility of other blocks.
+  // used by the renderer to control lighting and visibility of other block.
   // set to false because this block doesn't fill the entire 1x1x1 space
   @Override
   public boolean isOpaqueCube(BlockState iBlockState) {
     return false;
   }
 
-  // used by the renderer to control lighting and visibility of other blocks, also by
+  // used by the renderer to control lighting and visibility of other block, also by
   // (eg) wall or fence to control whether the fence joins itself to this block
   // set to false because this block doesn't fill the entire 1x1x1 space
   @Override

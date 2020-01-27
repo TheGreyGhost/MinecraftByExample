@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
    The major points:
    1) your mod is initialised in 3 phases - first preInit, then init, then postInit.  Each phase is intended for different
-      kinds of tasks your mod should do, such as registering new blocks for example.
+      kinds of tasks your mod should do, such as registering new block for example.
    2) CommonProxy, ClientOnlyProxy, and DedicatedServerProxy are used to make sure your mod works correctly when installed on
       a dedicated server.  Some of the minecraft code is marked @OnlyIn(Dist.CLIENT), and this must not be called when
       installed in a dedicated server.  This is called ClientOnly code.  All the other code is Common code.

@@ -42,7 +42,7 @@ public class Block3DWeb extends Block {
     return BlockRenderLayer.SOLID;
   }
 
-  // used by the renderer to control lighting and visibility of other blocks.
+  // used by the renderer to control lighting and visibility of other block.
   // set to false because this block doesn't fully occupy the entire 1x1x1 space
   @Override
   public boolean isOpaqueCube(BlockState blockState) {
@@ -56,7 +56,7 @@ public class Block3DWeb extends Block {
     entityIn.setInWeb();
   }
 
-  // used by the renderer to control lighting and visibility of other blocks, also by
+  // used by the renderer to control lighting and visibility of other block, also by
   // (eg) wall or fence to control whether the fence joins itself to this block
   // set to false because this block does not occupy the entire 1x1x1 space
   @Override
@@ -78,7 +78,7 @@ public class Block3DWeb extends Block {
     return NULL_AABB;
   }
 
-  // createBlockState is used to define which properties your blocks possess
+  // createBlockState is used to define which properties your block possess
   // Vanilla BlockState is composed of listed properties only.  A variant is created for each combination of listed
   //   properties; for example two properties ON(true/false) and READY(true/false) would give rise to four variants
   //   [on=true, ready=true]
@@ -98,7 +98,7 @@ public class Block3DWeb extends Block {
   // this method uses the block state and BlockPos to update the unlisted LINK properties in IExtendedBlockState based
   // on non-metadata information.  This is then conveyed to the IBakedModel#getQuads during rendering.
   // In this case, we look around the block to see which faces are next to either a solid block or another web block:
-  // The web node forms a strand of web to any adjacent solid blocks or web nodes
+  // The web node forms a strand of web to any adjacent solid block or web nodes
   @Override
   public BlockState getExtendedState(BlockState state, IBlockAccess world, BlockPos pos) {
     if (state instanceof IExtendedBlockState) {  // avoid crash in case of mismatch

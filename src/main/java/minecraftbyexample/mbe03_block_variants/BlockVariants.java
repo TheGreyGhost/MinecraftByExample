@@ -29,7 +29,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * - uses a CUTOUT texture (with seethrough holes)
  * - has variants (can face in four directions, and can be four different colours)
  * We can walk over it without colliding.
- * For background information on blocks see here http://greyminecraftcoder.blogspot.com.au/2014/12/blocks-18.html
+ * For background information on block see here http://greyminecraftcoder.blogspot.com.au/2014/12/blocks-18.html
  * For a couple of the methods below the Forge guys have marked it as deprecated.  But you still need to override those
  *   "deprecated" block methods.  What they mean is "when you want to find out if a block is (eg) isOpaqueCube(),
  *   don't call block.isOpaqueCube(), call iBlockState.isOpaqueCube() instead".
@@ -50,14 +50,14 @@ public class BlockVariants extends Block
     return BlockRenderLayer.CUTOUT;
   }
 
-  // used by the renderer to control lighting and visibility of other blocks.
+  // used by the renderer to control lighting and visibility of other block.
   // set to false because this block doesn't fill the entire 1x1x1 space
   @Override
   public boolean isOpaqueCube(BlockState iBlockState) {
     return false;
   }
 
-  // used by the renderer to control lighting and visibility of other blocks, also by
+  // used by the renderer to control lighting and visibility of other block, also by
   // (eg) wall or fence to control whether the fence joins itself to this block
   // set to false because this block doesn't fill the entire 1x1x1 space
   @Override
@@ -80,7 +80,7 @@ public class BlockVariants extends Block
   }
 
   // Our block has two properties:
-  // 1) PROPERTYFACING for which way the sign points (east, west, north, south).  EnumFacing is as standard used by vanilla for a number of blocks.
+  // 1) PROPERTYFACING for which way the sign points (east, west, north, south).  EnumFacing is as standard used by vanilla for a number of block.
   // 2) PROPERTYCOLOUR for the sign's colour.  ColoursEnum is a custom class (see below)
   public static final PropertyDirection PROPERTYFACING = PropertyDirection.create("facing", Direction.Plane.HORIZONTAL);
   public static final PropertyEnum PROPERTYCOLOUR = PropertyEnum.create("colour", EnumColour.class);
@@ -97,7 +97,7 @@ public class BlockVariants extends Block
 
   // create a list of the subBlocks available for this block, i.e. one for each colour
   // ignores facings, because the facing is calculated when we place the item.
-  //  - used to populate items for the creative inventory
+  //  - used to populate item for the creative inventory
   // - the "metadata" value of the block is set to the colours metadata
   @Override
   @OnlyIn(Dist.CLIENT)
@@ -136,7 +136,7 @@ public class BlockVariants extends Block
 
   // this method isn't required if your properties only depend on the stored metadata.
   // it is required if:
-  // 1) you are making a multiblock which stores information in other blocks eg BlockBed, BlockDoor
+  // 1) you are making a multiblock which stores information in other block eg BlockBed, BlockDoor
   // 2) your block's state depends on other neighbours (eg BlockFence)
   @Override
   public BlockState getActualState(BlockState state, IBlockAccess worldIn, BlockPos pos)
@@ -144,7 +144,7 @@ public class BlockVariants extends Block
     return state;
   }
 
-  // necessary to define which properties your blocks use
+  // necessary to define which properties your block use
   // will also affect the variants listed in the blockstates model file
   @Override
   protected BlockStateContainer createBlockState()

@@ -23,7 +23,7 @@ public class ModelBakeEventHandlerMBE15 {
   public void onModelBakeEvent(ModelBakeEvent event)
   {
     // Find the existing mapping for ChessboardModel - we added it in StartupClientOnly.initClientOnly(), which
-    //   caused it to be loaded from resources (model/items/mbe15_item_chessboard.json) just like an ordinary item
+    //   caused it to be loaded from resources (model/item/mbe15_item_chessboard.json) just like an ordinary item
     // Replace the mapping with our ISmartBlockModel, using the existing mapped model as the base for the smart model.
     Object object =  event.getModelRegistry().getObject(ChessboardModel.modelResourceLocation);
     if (object instanceof IBakedModel) {

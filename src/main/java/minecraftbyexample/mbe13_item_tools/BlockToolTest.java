@@ -22,7 +22,7 @@ import java.util.List;
  * User: The Grey Ghost
  * Date: 24/12/2014
  *
- * BlockToolTest is a simple block used to test the interactions between tools and blocks
+ * BlockToolTest is a simple block used to test the interactions between tools and block
  * For background information see here
  * http://greyminecraftcoder.blogspot.ch/2015/01/mining-blocks-with-tools.html
  *
@@ -32,14 +32,14 @@ import java.util.List;
  * First choice for most cases:
    Block.setHardness() - set the base hardness of the block
    Block.setHarvestLevel(ToolClass, level) - specify the type of tool that is most effective against this block, and what
-      the tool needs to be made of (wood, stone, iron, diamond) in order to drop items when harvested.  There are two versions,
-      one  for normal blocks, and one which depends on the block state (metadata) - for example a tree that is made of different
+      the tool needs to be made of (wood, stone, iron, diamond) in order to drop item when harvested.  There are two versions,
+      one  for normal block, and one which depends on the block state (metadata) - for example a tree that is made of different
       types of wood with different toughness.
    Block.onBlockHarvested() - this method mostly does nothing but some add extra effects- eg TNT generates an explosion.
-   Block.getDrops() - get a list of items that might drop when the block is harvested normally.
+   Block.getDrops() - get a list of item that might drop when the block is harvested normally.
 
  * Of some use for special cases:
-   Block.onBlockDestroyedByPlayer() - used to drop extra items (eg skulls) or destroy other parts of a multiblock (eg bed)
+   Block.onBlockDestroyedByPlayer() - used to drop extra item (eg skulls) or destroy other parts of a multiblock (eg bed)
    Block.harvestBlock() - can be used to override default harvesting behaviour (for example - shearing a tree to increase
      the sapling drop rate and trigger a special achievement)
    Block.createStackedBlock() - set the type of drop for silk enchantment harvesting.
@@ -69,7 +69,7 @@ public class BlockToolTest extends Block
     return;
   }
 
-  // get a list of items that might drop when the block is harvested normally.
+  // get a list of item that might drop when the block is harvested normally.
   // In simple cases, you can just override quantityDropped() and getItemDropped()
   @Override
   public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, BlockState state, int fortune) {
@@ -86,7 +86,7 @@ public class BlockToolTest extends Block
 
   // -----------------------------
 
-  // Used in some special cases to drop extra items (eg skulls) or destroy other parts of a multiblock (eg bed)
+  // Used in some special cases to drop extra item (eg skulls) or destroy other parts of a multiblock (eg bed)
   @Override
   public void onBlockDestroyedByPlayer(World worldIn, BlockPos pos, BlockState state) {
     StartupCommon.methodCallLogger.enterMethod("BlockToolTest.onBlockDestroyedByPlayer",
@@ -180,7 +180,7 @@ public class BlockToolTest extends Block
     return BlockRenderLayer.SOLID;
   }
 
-  // used by the renderer to control lighting and visibility of other blocks.
+  // used by the renderer to control lighting and visibility of other block.
   // set to true because this block is opaque and occupies the entire 1x1x1 space
   // not strictly required because the default (super method) is true
   @Override
@@ -188,7 +188,7 @@ public class BlockToolTest extends Block
     return true;
   }
 
-  // used by the renderer to control lighting and visibility of other blocks, also by
+  // used by the renderer to control lighting and visibility of other block, also by
   // (eg) wall or fence to control whether the fence joins itself to this block
   // set to true because this block occupies the entire 1x1x1 space
   // not strictly required because the default (super method) is true

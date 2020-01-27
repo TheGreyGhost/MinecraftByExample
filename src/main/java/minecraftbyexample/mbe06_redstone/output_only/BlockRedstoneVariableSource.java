@@ -27,7 +27,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * This block is a provider of redstone power, similar to a torch, except that the amount of power can be adjusted.
  * Right-clicking on the block will cycle through the five power settings (0=off, 4, 8, 12, 15=full).
  *
- * The block uses a property to store the currently selected power level; for more information about creating blocks with
+ * The block uses a property to store the currently selected power level; for more information about creating block with
  *   properties, see MBE03_BLOCK_VARIANTS, including an example of how to make a block that can face in different
  *   directions depending on how you place it.
  */
@@ -103,7 +103,7 @@ public class BlockRedstoneVariableSource extends Block
 
   // this method isn't required if your properties only depend on the stored metadata.
   // it is required if:
-  // 1) you are making a multiblock which stores information in other blocks eg BlockBed, BlockDoor
+  // 1) you are making a multiblock which stores information in other block eg BlockBed, BlockDoor
   // 2) your block's state depends on other neighbours (eg BlockFence)
   @Override
   public BlockState getActualState(BlockState state, IBlockAccess worldIn, BlockPos pos)
@@ -111,7 +111,7 @@ public class BlockRedstoneVariableSource extends Block
     return state;
   }
 
-  // necessary to define which properties your blocks use
+  // necessary to define which properties your block use
   // will also affect the variants listed in the blockstates model file
   @Override
   protected BlockStateContainer createBlockState()
@@ -157,14 +157,14 @@ public class BlockRedstoneVariableSource extends Block
     return BlockRenderLayer.SOLID;
   }
 
-  // used by the renderer to control lighting and visibility of other blocks.
+  // used by the renderer to control lighting and visibility of other block.
   // set to false because this block doesn't occupy the entire 1x1x1 space
   @Override
   public boolean isOpaqueCube(BlockState iBlockState) {
     return false;
   }
 
-  // used by the renderer to control lighting and visibility of other blocks, also by
+  // used by the renderer to control lighting and visibility of other block, also by
   // (eg) wall or fence to control whether the fence joins itself to this block
   // set to false because this block doesn't occupy the entire 1x1x1 space
   @Override

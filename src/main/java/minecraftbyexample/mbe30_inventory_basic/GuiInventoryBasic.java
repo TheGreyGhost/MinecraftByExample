@@ -42,7 +42,7 @@ public class GuiInventoryBasic extends ContainerScreen {
 		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 	}
 
-	// draw the foreground for the GUI - rendered after the slots, but before the dragged items and tooltips
+	// draw the foreground for the GUI - rendered after the slots, but before the dragged item and tooltips
 	// renders relative to the top left corner of the background
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {

@@ -32,7 +32,7 @@ public class StartupCommon
 {
 
   /**
-   * Run before anything else. Read your config, create blocks, items, etc, and register them with the GameRegistry
+   * Run before anything else. Read your config, create block, item, etc, and register them with the GameRegistry
    */
   public static void preInitCommon() {
   }
@@ -48,7 +48,7 @@ public class StartupCommon
     //  see http://greyminecraftcoder.blogspot.com/2015/02/recipes.html for illustrations of these recipes
 
     // group is optional.  The value of this string can be anything. Any recipes that have the same group name specified will be shown together in the crafting helper.
-    // The intention is to keep similar items within the same category, such as all boats for example.
+    // The intention is to keep similar item within the same category, such as all boats for example.
     // If you want to match an existing vanilla recipe group, look in the relevant recipe json in assets.minecraft.recipes
 
     ResourceLocation optionalGroup = new ResourceLocation("");
@@ -77,7 +77,7 @@ public class StartupCommon
 
     ResourceLocation woodSwordGroup = new ResourceLocation("mbe35_woodswordgroup");
 
-    // c) shaped recipe for items which are damaged, or which have a metadata you want to ignore
+    // c) shaped recipe for item which are damaged, or which have a metadata you want to ignore
     //      wooden sword (any damage value) in a cobblestone shell plus iron ingot makes iron sword
     GameRegistry.addShapedRecipe(new ResourceLocation("minecraftbyexample:mbe35_recipe_wood_to_iron_sword"), woodSwordGroup, new ItemStack(Items.IRON_SWORD), new Object[]{
             "CIC",
@@ -115,7 +115,7 @@ public class StartupCommon
     );
 
     // g) Shaped Ore recipe - any type of tree leaves arranged around sticks makes a sapling
-    //    Ores are a way for mods to add blocks & items which are equivalent to vanilla blocks for crafting
+    //    Ores are a way for mods to add block & item which are equivalent to vanilla block for crafting
     //    For example - an ore recipe which uses "logWood" will accept a log of spruce, oak, birch, pine, etc.
     //    If your mod registers its balsawood log using  OreDictionary.registerOre("logWood", BalsaWood), then your
     //    BalsaWood log will also be accepted in the recipe.
@@ -124,7 +124,7 @@ public class StartupCommon
             "LLL",
             "LSL",
             " S ",
-            'S', Items.STICK,   // can use ordinary items, blocks, itemstacks in ShapedOreRecipe
+            'S', Items.STICK,   // can use ordinary item, block, itemstacks in ShapedOreRecipe
             'L', "treeLeaves",  // look in OreDictionary for vanilla definitions
     });
     saplingRecipe.setRegistryName(new ResourceLocation("minecraftbyexample:mbe35_recipe_sapling"));

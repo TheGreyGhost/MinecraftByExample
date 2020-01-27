@@ -59,7 +59,7 @@ public class StartupCommon
     final float ATTACK_DAMAGE = 1.0F;
     final float ATTACK_SPEED = 0.0F;
     final Item.ToolMaterial TOOL_MATERIAL = Item.ToolMaterial.STONE;  // affects durability and digging speed
-    final Set EFFECTIVE_ON = Sets.newHashSet(new Block[]{blockToolTest, Blocks.DIAMOND_BLOCK});   // set of blocks that tool is effective on,
+    final Set EFFECTIVE_ON = Sets.newHashSet(new Block[]{blockToolTest, Blocks.DIAMOND_BLOCK});   // set of block that tool is effective on,
                                                                                                   //   in addition to the ToolClass criteria
     itemToolsTest = (ItemToolsTest)(new ItemToolsTest(ATTACK_DAMAGE, ATTACK_SPEED, TOOL_MATERIAL, EFFECTIVE_ON).setUnlocalizedName("mbe13_item_tools_item"));
     itemToolsTest.setRegistryName("mbe13_item_tools_item");

@@ -1,5 +1,5 @@
 {
     "variants": {
-        "normal": { "model": "minecraftbyexample:test_torch_model_fixed" }
+        "normal": { "model": "minecraftbyexample:block/test_torch_model_fixed" }
     }
 }

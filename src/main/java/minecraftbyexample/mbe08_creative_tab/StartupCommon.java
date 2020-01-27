@@ -25,7 +25,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class StartupCommon
 {
   public static ItemGroup customTab;               // will hold our first custom creative tab
-  public static AllMbeItemsTab allMbeItemsTab;        // will hold our second custom creative tab displaying all MBE items
+  public static AllMbeItemsTab allMbeItemsTab;        // will hold our second custom creative tab displaying all MBE item
 
   public static Block testBlock;
   public static BlockItem testItemBlock;  // the itemBlock corresponding to testBlock

@@ -19,7 +19,7 @@ import java.util.Arrays;
  * This is a simple tile entity implementing IInventory that can store 9 item stacks
  */
 public class TileEntityInventoryBasic extends TileEntity implements IInventory {
-	// Create and initialize the items variable that will store store the items
+	// Create and initialize the item variable that will store store the item
 	private final int NUMBER_OF_SLOTS = 9;
 	private ItemStack[] itemStacks;
 
@@ -58,7 +58,7 @@ public class TileEntityInventoryBasic extends TileEntity implements IInventory {
 
 	/**
 	 * Removes some of the units from itemstack in the given slot, and returns as a separate itemstack
- 	 * @param slotIndex the slot number to remove the items from
+ 	 * @param slotIndex the slot number to remove the item from
 	 * @param count the number of units to remove
 	 * @return a new itemstack containing the units removed from the slot
 	 */
@@ -91,9 +91,9 @@ public class TileEntityInventoryBasic extends TileEntity implements IInventory {
 		markDirty();
 	}
 
-	// This is the maximum number if items allowed in each slot
-	// This only affects things such as hoppers trying to insert items you need to use the container to enforce this for players
-	// inserting items via the gui
+	// This is the maximum number if item allowed in each slot
+	// This only affects things such as hoppers trying to insert item you need to use the container to enforce this for players
+	// inserting item via the gui
 	@Override
 	public int getInventoryStackLimit() {
 		return 64;
@@ -113,8 +113,8 @@ public class TileEntityInventoryBasic extends TileEntity implements IInventory {
 	}
 
 	// Return true if the given stack is allowed to go in the given slot.  In this case, we can insert anything.
-	// This only affects things such as hoppers trying to insert items you need to use the container to enforce this for players
-	// inserting items via the gui
+	// This only affects things such as hoppers trying to insert item you need to use the container to enforce this for players
+	// inserting item via the gui
 	@Override
 	public boolean isItemValidForSlot(int slotIndex, ItemStack itemstack) {
 		return true;
@@ -193,7 +193,7 @@ public class TileEntityInventoryBasic extends TileEntity implements IInventory {
 
 	/**
 	 * This method removes the entire contents of the given slot and returns it.
-	 * Used by containers such as crafting tables which return any items in their slots when you close the GUI
+	 * Used by containers such as crafting tables which return any item in their slots when you close the GUI
 	 * @param slotIndex
 	 * @return
 	 */

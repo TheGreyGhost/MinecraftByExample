@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * Date: 06/01/2015
  *
  * ContainerSmelting is used to link the client side gui to the server side inventory and it is where
- * you add the slots holding items. It is also used to send server side data such as progress bars to the client
+ * you add the slots holding item. It is also used to send server side data such as progress bars to the client
  * for use in guis
  */
 public class ContainerInventoryFurnace extends Container {
@@ -119,7 +119,7 @@ public class ContainerInventoryFurnace extends Container {
 	//    player inventory.  When you you shift-click a hotbar or player inventory item, it moves it to the first available
 	//    position in the TileEntity inventory - either input or fuel as appropriate for the item you clicked)
 	// At the very least you must override this and return EMPTY_ITEM or the game will crash when the player shift clicks a slot
-	// returns EMPTY_ITEM if the source slot is empty, or if none of the source slot items could be moved.
+	// returns EMPTY_ITEM if the source slot is empty, or if none of the source slot item could be moved.
 	//   otherwise, returns a copy of the source stack
 	@Override
 	public ItemStack transferStackInSlot(PlayerEntity player, int sourceSlotIndex)
@@ -213,7 +213,7 @@ public class ContainerInventoryFurnace extends Container {
 		tileInventoryFurnace.setField(id, data);
 	}
 
-	// SlotFuel is a slot for fuel items
+	// SlotFuel is a slot for fuel item
 	public class SlotFuel extends Slot {
 		public SlotFuel(IInventory inventoryIn, int index, int xPosition, int yPosition) {
 			super(inventoryIn, index, xPosition, yPosition);
@@ -226,7 +226,7 @@ public class ContainerInventoryFurnace extends Container {
 		}
 	}
 
-	// SlotSmeltableInput is a slot for input items
+	// SlotSmeltableInput is a slot for input item
 	public class SlotSmeltableInput extends Slot {
 		public SlotSmeltableInput(IInventory inventoryIn, int index, int xPosition, int yPosition) {
 			super(inventoryIn, index, xPosition, yPosition);
@@ -239,7 +239,7 @@ public class ContainerInventoryFurnace extends Container {
 		}
 	}
 
-	// SlotOutput is a slot that will not accept any items
+	// SlotOutput is a slot that will not accept any item
 	public class SlotOutput extends Slot {
 		public SlotOutput(IInventory inventoryIn, int index, int xPosition, int yPosition) {
 			super(inventoryIn, index, xPosition, yPosition);

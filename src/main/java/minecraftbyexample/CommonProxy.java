@@ -10,7 +10,7 @@ import net.minecraft.entity.player.PlayerEntity;
 public abstract class CommonProxy {
 
   /**
-   * Run before anything else. Read your config, create blocks, items, etc, and register them with the GameRegistry
+   * Run before anything else. Read your config, create block, item, etc, and register them with the GameRegistry
    */
   public void preInit()
   {

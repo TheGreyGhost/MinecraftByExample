@@ -124,7 +124,7 @@ public class BlockRedstoneColouredLamp extends Block
 
   // this method isn't required if your properties only depend on the stored metadata.
   // it is required if:
-  // 1) you are making a multiblock which stores information in other blocks eg BlockBed, BlockDoor
+  // 1) you are making a multiblock which stores information in other block eg BlockBed, BlockDoor
   // 2) your block's state depends on other neighbours (eg BlockFence)
   @Override
   public BlockState getActualState(BlockState state, IBlockAccess worldIn, BlockPos pos)
@@ -158,7 +158,7 @@ public class BlockRedstoneColouredLamp extends Block
   // ---------methods related to storing information about the block (which way it's facing)
 
   // BlockRedstoneColouredLamp has one property
-  // PROPERTYFACING for which way the lamp points (east, west, north, south).  EnumFacing is a standard used by vanilla for a number of blocks.
+  // PROPERTYFACING for which way the lamp points (east, west, north, south).  EnumFacing is a standard used by vanilla for a number of block.
   public static final PropertyDirection PROPERTYFACING = PropertyDirection.create("facing", Direction.Plane.HORIZONTAL);
 
   // getStateFromMeta, getMetaFromState are used to interconvert between the block's property values and
@@ -182,7 +182,7 @@ public class BlockRedstoneColouredLamp extends Block
     return facingbits;
   }
 
-  // necessary to define which properties your blocks use - will also affect the variants listed in the blockstates model file
+  // necessary to define which properties your block use - will also affect the variants listed in the blockstates model file
   @Override
   protected BlockStateContainer createBlockState()
   {
@@ -197,7 +197,7 @@ public class BlockRedstoneColouredLamp extends Block
     return BlockRenderLayer.CUTOUT_MIPPED;
   }
 
-  // used by the renderer to control lighting and visibility of other blocks.
+  // used by the renderer to control lighting and visibility of other block.
   // set to true because this block is opaque and occupies the entire 1x1x1 space
   // not strictly required because the default (super method) is true
   @Override
@@ -205,7 +205,7 @@ public class BlockRedstoneColouredLamp extends Block
     return true;
   }
 
-  // used by the renderer to control lighting and visibility of other blocks, also by
+  // used by the renderer to control lighting and visibility of other block, also by
   // (eg) wall or fence to control whether the fence joins itself to this block
   // set to true because this block occupies the entire 1x1x1 space
   // not strictly required because the default (super method) is true

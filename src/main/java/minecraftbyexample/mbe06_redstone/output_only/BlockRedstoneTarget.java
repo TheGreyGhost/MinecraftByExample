@@ -29,7 +29,7 @@ import java.util.Random;
  * BlockRedstoneTarget is designed to be hung on a wall.  When an arrow is fired into the target, it emits strong
  *   power into the wall.  The power level depends on which ring of the target the arrow is stuck in:
  *     15 for the bullseye, decreasing for every ring down to 0 for no arrow (or stuck in the wood)
- * For background information on blocks see here http://greyminecraftcoder.blogspot.com.au/2014/12/blocks-18.html
+ * For background information on block see here http://greyminecraftcoder.blogspot.com.au/2014/12/blocks-18.html
  */
 public class BlockRedstoneTarget extends Block
 {
@@ -299,7 +299,7 @@ public class BlockRedstoneTarget extends Block
     return BlockRenderLayer.SOLID;
   }
 
-  // used by the renderer to control lighting and visibility of other blocks.
+  // used by the renderer to control lighting and visibility of other block.
   // set to false because this block doesn't fill the entire 1x1x1 space
   @Override
   public boolean isOpaqueCube(BlockState iBlockState)
@@ -307,7 +307,7 @@ public class BlockRedstoneTarget extends Block
     return false;
   }
 
-  // used by the renderer to control lighting and visibility of other blocks, also by
+  // used by the renderer to control lighting and visibility of other block, also by
   // (eg) wall or fence to control whether the fence joins itself to this block
   // set to false because this block doesn't fill the entire 1x1x1 space
   @Override
@@ -372,7 +372,7 @@ public class BlockRedstoneTarget extends Block
   // ---------methods related to storing information about the block (which way it's facing)
 
   // BlockRedstoneTarget has only one property:
-  //PROPERTYFACING for which way the target points (east, west, north, south).  EnumFacing is a standard used by vanilla for a number of blocks.
+  //PROPERTYFACING for which way the target points (east, west, north, south).  EnumFacing is a standard used by vanilla for a number of block.
   //    eg EAST means that the red and white rings on the target are pointing east
   //
   public static final PropertyDirection PROPERTYFACING = PropertyDirection.create("facing", Direction.Plane.HORIZONTAL);
@@ -399,7 +399,7 @@ public class BlockRedstoneTarget extends Block
 
   // this method isn't required if your properties only depend on the stored metadata.
   // it is required if:
-  // 1) you are making a multiblock which stores information in other blocks eg BlockBed, BlockDoor
+  // 1) you are making a multiblock which stores information in other block eg BlockBed, BlockDoor
   // 2) your block's state depends on other neighbours (eg BlockFence)
   @Override
   public BlockState getActualState(BlockState state, IBlockAccess worldIn, BlockPos pos)
@@ -407,7 +407,7 @@ public class BlockRedstoneTarget extends Block
     return state;
   }
 
-  // necessary to define which properties your blocks use
+  // necessary to define which properties your block use
   // will also affect the variants listed in the blockstates model file
   @Override
   protected BlockStateContainer createBlockState()

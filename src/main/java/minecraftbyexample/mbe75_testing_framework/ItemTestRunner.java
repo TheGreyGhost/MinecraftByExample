@@ -25,7 +25,7 @@ import java.util.List;
  * 1) register as an item
  * 2) when the user right clicks while holding the item, the item will call
  *    TestRunner.runClientSideTest(n) and TestRunner.runServerSideTest(n)
- *    where n is the stacksize - eg a stack of 10 test items will run test 10.
+ *    where n is the stacksize - eg a stack of 10 test item will run test 10.
  */
 public class ItemTestRunner extends Item
 {
@@ -37,7 +37,7 @@ public class ItemTestRunner extends Item
   }
 
   /**
-   * allows items to add custom lines of information to the mouseover description
+   * allows item to add custom lines of information to the mouseover description
    */
   @Override
   @OnlyIn(Dist.CLIENT)

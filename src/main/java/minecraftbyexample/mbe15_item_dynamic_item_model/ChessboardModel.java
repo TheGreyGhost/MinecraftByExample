@@ -15,7 +15,7 @@ import java.util.List;
  * Created by TheGreyGhost on 19/04/2015.
  * This class modifies the displayed item (a chessboard) to show a number of "pieces" (blue squares) on the chessboard,
  *   one square for each item in the itemstack.
- * For models generated from a texture turned into a "texture with thickness" (i.e. like most items), you must implement
+ * For models generated from a texture turned into a "texture with thickness" (i.e. like most item), you must implement
  *   IPerspectiveAwareModel instead of IBakedModel otherwise the item transforms won't work.  This is because Forge
  *   doesn't implement BakedItemModel.getItemCameraTransforms() correctly.
  */
@@ -32,8 +32,8 @@ public class ChessboardModel implements IBakedModel {
   }
 
   // create a tag (ModelResourceLocation) for our model.
-  //  "inventory" is used for items. If you don't specify it, you will end up with "normal" by default,
-  //  which is used for blocks.
+  //  "inventory" is used for item. If you don't specify it, you will end up with "normal" by default,
+  //  which is used for block.
   public static final ModelResourceLocation modelResourceLocation
           = new ModelResourceLocation("minecraftbyexample:mbe15_item_chessboard", "inventory");
 
@@ -53,7 +53,7 @@ public class ChessboardModel implements IBakedModel {
     return baseChessboardModel.getQuads(state, side, rand);
   }
 
-  // not needed for items, but hey
+  // not needed for item, but hey
   @Override
   public boolean isAmbientOcclusion() {
     return baseChessboardModel.isAmbientOcclusion();
@@ -98,7 +98,7 @@ public class ChessboardModel implements IBakedModel {
 //      if (tr != null) { // && tr != TRSRTransformation.identity()) {
 //        mat = tr.getMatrix();
 //      }
-//      // The TRSRTransformation for vanilla items have blockCenterToCorner() applied, however handlePerspective
+//      // The TRSRTransformation for vanilla item have blockCenterToCorner() applied, however handlePerspective
 //      //  reverses it back again with blockCornerToCenter().  So we don't need to apply it here.
 //
 //      return Pair.of(this, mat);

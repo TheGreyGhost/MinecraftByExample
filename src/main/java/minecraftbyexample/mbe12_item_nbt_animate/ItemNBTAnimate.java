@@ -35,7 +35,7 @@ public class ItemNBTAnimate extends Item
     this.setMaxDamage(0);
     this.setHasSubtypes(false);
     this.setMaxStackSize(1);
-    this.setCreativeTab(ItemGroup.MISC);   // items will appear on the Miscellaneous creative tab
+    this.setCreativeTab(ItemGroup.MISC);   // item will appear on the Miscellaneous creative tab
 
     // We use a PropertyOverride for this item to change the appearance depending on the state of the property.
     //  See ItemNBTanimationTimer for more information.
@@ -143,7 +143,7 @@ public class ItemNBTAnimate extends Item
       }
     }
     return ItemStack.EMPTY;  // EMPTY_ITEM
-//    for items with multiple count, decrease stack size and return the itemstack, eg
+//    for item with multiple count, decrease stack size and return the itemstack, eg
 //    stack.stackSize--;
 //    return stack;
   }

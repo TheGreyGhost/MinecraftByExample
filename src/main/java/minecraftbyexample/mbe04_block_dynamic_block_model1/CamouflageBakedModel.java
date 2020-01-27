@@ -78,7 +78,7 @@ public class CamouflageBakedModel implements IBakedModel {
     return modelWhenNotCamouflaged.getParticleTexture();
   }
 
-  // ideally, this should be changed for different blocks being camouflaged, but this is not supported by vanilla
+  // ideally, this should be changed for different block being camouflaged, but this is not supported by vanilla
     @Override
   public boolean isAmbientOcclusion()
   {
@@ -131,7 +131,7 @@ public class CamouflageBakedModel implements IBakedModel {
 //      if (tr != null) { // && tr != TRSRTransformation.identity()) {
 //        mat = tr.getMatrix();
 //      }
-//      // The TRSRTransformation for vanilla items have blockCenterToCorner() applied, however handlePerspective
+//      // The TRSRTransformation for vanilla item have blockCenterToCorner() applied, however handlePerspective
 //      //  reverses it back again with blockCornerToCenter().  So we don't need to apply it here.
 //
 //      return Pair.of(this, mat);

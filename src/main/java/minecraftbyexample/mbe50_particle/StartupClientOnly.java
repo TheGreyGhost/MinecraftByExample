@@ -21,7 +21,7 @@ public class StartupClientOnly
 {
   public static void preInitClientOnly()
   {
-    // register the texture stitcher, which is used to insert the flame picture into the blocks texture sheet
+    // register the texture stitcher, which is used to insert the flame picture into the block texture sheet
     MinecraftForge.EVENT_BUS.register(new TextureStitcherBreathFX());
 
     // This step is necessary in order to make your block render properly when it is an item (i.e. in the inventory

@@ -86,7 +86,7 @@ public class ContainerBasic extends Container {
 	//    player inventory.  When you you shift-click a hotbar or player inventory item, it moves it to the first available
 	//    position in the TileEntity inventory)
 	// At the very least you must override this and return EMPTY_ITEM or the game will crash when the player shift clicks a slot
-	// returns EMPTY_ITEM if the source slot is empty, or if none of the the source slot items could be moved
+	// returns EMPTY_ITEM if the source slot is empty, or if none of the the source slot item could be moved
 	//   otherwise, returns a copy of the source stack
 	@Override
 	public ItemStack transferStackInSlot(PlayerEntity player, int sourceSlotIndex)

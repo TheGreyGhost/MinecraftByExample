@@ -1,5 +1,5 @@
 {
     "variants": {
-        "normal": { "model": "minecraftbyexample:mbe04_block_camouflage_model" }
+        "normal": { "model": "minecraftbyexample:block/mbe04_block_camouflage_model" }
     }
 }

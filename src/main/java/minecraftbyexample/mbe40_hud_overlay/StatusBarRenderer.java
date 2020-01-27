@@ -138,7 +138,7 @@ public class StatusBarRenderer extends AbstractGui {
     GL11.glScalef((BAR_WIDTH - 2)*Math.min(1, effectiveHp/maxHp), 1, 1);
 
 
-          /* This chain of if-else blocks checks if the player has any status effects. I check if a potion effect
+          /* This chain of if-else block checks if the player has any status effects. I check if a potion effect
            * is active, then draw the filling bar based on what potion effect is active. Unfortunately, it is
            * not possible to use a switch statement here since multiple potion effects may be active at once.
            *

@@ -23,7 +23,7 @@ import java.util.function.Function;
  */
 public class WebModel implements IModel {
 
-    public static final ResourceLocation TEXTURE_SHEET = new ResourceLocation("minecraftbyexample:blocks/mbe05_block_3d_web");
+    public static final ResourceLocation TEXTURE_SHEET = new ResourceLocation("minecraftbyexample:block/mbe05_block_3d_web");
 
     public static final ModelResourceLocation MODEL_CORE = new ModelResourceLocation("minecraftbyexample:mbe05_web_subblocks/mbe05_block_web_core_model");
     public static final ModelResourceLocation MODEL_UP = new ModelResourceLocation("minecraftbyexample:mbe05_web_subblocks/mbe05_block_web_up_model");

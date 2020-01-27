@@ -57,8 +57,8 @@ public class TestRunner
     return success;
   }
 
-  // dummy test: check the correct functioning of the ladder - to see which blocks it can stay attached to
-  // The test region contains a ladder attached to a stone block.  We then replace it with different blocks and see
+  // dummy test: check the correct functioning of the ladder - to see which block it can stay attached to
+  // The test region contains a ladder attached to a stone block.  We then replace it with different block and see
   //   whether the ladder remains or breaks appropriately; eg
   // testA - replace with wood
   // testB - replace with a glass block
@@ -81,7 +81,7 @@ public class TestRunner
 
     teleportPlayerToTestRegion(playerIn, testRegionOriginA.south(5));  // teleport the player nearby so you can watch
 
-    // copy the test blocks to the destination region
+    // copy the test block to the destination region
     copyTestRegion(playerIn, sourceRegionOrigin, testRegionOriginA,
                           SOURCE_REGION_SIZE_X, SOURCE_REGION_SIZE_Y, SOURCE_REGION_SIZE_Z);
     copyTestRegion(playerIn, sourceRegionOrigin, testRegionOriginB,
@@ -132,7 +132,7 @@ public class TestRunner
 
   /**
    * Copy a cuboid Test Region from one part of the world to another
-   * The cuboid is x blocks wide, by y blocks high, by z blocks long
+   * The cuboid is x block wide, by y block high, by z block long
    * @param entityPlayer
    * @param sourceOrigin origin of the source region
    * @param destOrigin origin of the destination region

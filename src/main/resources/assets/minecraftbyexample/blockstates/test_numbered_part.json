@@ -1,5 +1,5 @@
 {
     "variants": {
-        "normal": { "model": "minecraftbyexample:test_numbered_part_model" }
+        "normal": { "model": "minecraftbyexample:block/test_numbered_part_model" }
     }
 }

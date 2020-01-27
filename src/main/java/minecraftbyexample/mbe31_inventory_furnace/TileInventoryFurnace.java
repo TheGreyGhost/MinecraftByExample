@@ -111,7 +111,7 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 
 	// This method is called every tick to update the tile entity, i.e.
 	// - see if the fuel has run out, and if so turn the furnace "off" and slowly uncook the current item (if any)
-	// - see if any of the items have finished smelting
+	// - see if any of the item have finished smelting
 	// It runs both on the server and the client.
 	@Override
 	public void update() {
@@ -175,8 +175,8 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 					itemStacks[fuelSlotNumber].shrink(1);  // decreaseStackSize()
 					++burningCount;
 					inventoryChanged = true;
-				// If the stack size now equals 0 set the slot contents to the items container item. This is for fuel
-				// items such as lava buckets so that the bucket is not consumed. If the item dose not have
+				// If the stack size now equals 0 set the slot contents to the item container item. This is for fuel
+				// item such as lava buckets so that the bucket is not consumed. If the item dose not have
 				// a container item getContainerItem returns null which sets the slot contents to null
 					if (itemStacks[fuelSlotNumber].getCount() == 0) {  //getStackSize()
 						itemStacks[fuelSlotNumber] = itemStacks[fuelSlotNumber].getItem().getContainerItem(itemStacks[fuelSlotNumber]);
@@ -189,7 +189,7 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 	}
 
 	/**
-	 * Check if any of the input items are smeltable and there is sufficient space in the output slots
+	 * Check if any of the input item are smeltable and there is sufficient space in the output slots
 	 * @return true if smelting is possible
 	 */
 	private boolean canSmelt() {return smeltItem(false);}
@@ -203,7 +203,7 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 	 * checks that there is an item to be smelted in one of the input slots and that there is room for the result in the output slots
 	 * If desired, performs the smelt
 	 * @param performSmelt if true, perform the smelt.  if false, check whether smelting is possible, but don't change the inventory
-	 * @return false if no items can be smelted, true otherwise
+	 * @return false if no item can be smelted, true otherwise
 	 */
 	private boolean smeltItem(boolean performSmelt)
 	{
@@ -295,7 +295,7 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 
 	/**
 	 * Removes some of the units from itemstack in the given slot, and returns as a separate itemstack
-	 * @param slotIndex the slot number to remove the items from
+	 * @param slotIndex the slot number to remove the item from
 	 * @param count the number of units to remove
 	 * @return a new itemstack containing the units removed from the slot
 	 */
@@ -328,9 +328,9 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 		markDirty();
 	}
 
-	// This is the maximum number if items allowed in each slot
-	// This only affects things such as hoppers trying to insert items you need to use the container to enforce this for players
-	// inserting items via the gui
+	// This is the maximum number if item allowed in each slot
+	// This only affects things such as hoppers trying to insert item you need to use the container to enforce this for players
+	// inserting item via the gui
 	@Override
 	public int getInventoryStackLimit() {
 		return 64;
@@ -545,7 +545,7 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 
 	/**
 	 * This method removes the entire contents of the given slot and returns it.
-	 * Used by containers such as crafting tables which return any items in their slots when you close the GUI
+	 * Used by containers such as crafting tables which return any item in their slots when you close the GUI
 	 * @param slotIndex
 	 * @return
 	 */

@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 /**
  * User: The Grey Ghost
  * Date: 6/01/2015
- * Events can be used if you want to modify the behaviour of vanilla blocks with vanilla items.
+ * Events can be used if you want to modify the behaviour of vanilla block with vanilla item.
  * Otherwise, you should override the appropriate methods in your custom Item or Block instead.
  */
 
@@ -91,7 +91,7 @@ public class ForgeToolEventsTest
     StartupCommon.methodCallLogger.exitMethod("Event.BreakEvent", "cancelled=" + event.isCanceled() + ";exp after = " + event.getExpToDrop());
   }
 
-  // modify the list of items that might be dropped when the block is harvested.
+  // modify the list of item that might be dropped when the block is harvested.
   @SubscribeEvent
   public void harvestDropsEvent(BlockEvent.HarvestDropsEvent event)
   {

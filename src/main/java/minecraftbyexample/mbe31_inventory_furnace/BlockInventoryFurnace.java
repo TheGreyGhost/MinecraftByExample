@@ -57,7 +57,7 @@ public class BlockInventoryFurnace extends ContainerBlock
 	}
 
 	// Called when the block is right clicked
-	// In this block it is used to open the blocks gui when right clicked by a player
+	// In this block it is used to open the block gui when right clicked by a player
 	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos, BlockState state, PlayerEntity playerIn, Hand hand,
 																	Direction side, float hitX, float hitY, float hitZ) {
@@ -101,7 +101,7 @@ public class BlockInventoryFurnace extends ContainerBlock
 //				}
 //			}
 //
-//			// Clear the inventory so nothing else (such as another mod) can do anything with the items
+//			// Clear the inventory so nothing else (such as another mod) can do anything with the item
 //			inventory.clear();
 //		}
 
@@ -146,7 +146,7 @@ public class BlockInventoryFurnace extends ContainerBlock
 //		return ((Integer)state.getValue(BURNING_SIDES_COUNT)).intValue();
 	}
 
-	// necessary to define which properties your blocks use
+	// necessary to define which properties your block use
 	// will also affect the variants listed in the blockstates model file.  See MBE03 for more info.
 	@Override
 	protected BlockStateContainer createBlockState()
@@ -183,14 +183,14 @@ public class BlockInventoryFurnace extends ContainerBlock
 		return BlockRenderLayer.SOLID;
 	}
 
-	// used by the renderer to control lighting and visibility of other blocks.
+	// used by the renderer to control lighting and visibility of other block.
 	// set to false because this block doesn't fill the entire 1x1x1 space
 	@Override
 	public boolean isOpaqueCube(BlockState iBlockState) {
 		return false;
 	}
 
-	// used by the renderer to control lighting and visibility of other blocks, also by
+	// used by the renderer to control lighting and visibility of other block, also by
 	// (eg) wall or fence to control whether the fence joins itself to this block
 	// set to false because this block doesn't fill the entire 1x1x1 space
 	@Override

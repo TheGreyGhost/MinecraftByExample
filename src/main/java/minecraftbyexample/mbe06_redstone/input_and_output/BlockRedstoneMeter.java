@@ -23,7 +23,7 @@ import java.util.Random;
  * Date: 27/11/2015
  *
  * BlockRedstoneMeter is a simple block with an associated TileEntity to render the block's power level.
- * The meter will also provide weak power to the blocks UP and DOWN (eg a light) - it flashes the light
+ * The meter will also provide weak power to the block UP and DOWN (eg a light) - it flashes the light
  *   at a speed related to the input power.
  * We use a TileEntity because
  * 1) that's the easiest way to get the block's power level on the client side, without
@@ -201,7 +201,7 @@ public class BlockRedstoneMeter extends Block
     return BlockRenderLayer.CUTOUT_MIPPED;
   }
 
-  // used by the renderer to control lighting and visibility of other blocks.
+  // used by the renderer to control lighting and visibility of other block.
   // set to true because this block is opaque and occupies the entire 1x1x1 space
   // not strictly required because the default (super method) is true
   @Override
@@ -209,7 +209,7 @@ public class BlockRedstoneMeter extends Block
     return true;
   }
 
-  // used by the renderer to control lighting and visibility of other blocks, also by
+  // used by the renderer to control lighting and visibility of other block, also by
   // (eg) wall or fence to control whether the fence joins itself to this block
   // set to true because this block occupies the entire 1x1x1 space
   // not strictly required because the default (super method) is true

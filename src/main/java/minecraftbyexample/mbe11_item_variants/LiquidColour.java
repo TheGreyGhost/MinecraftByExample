@@ -16,8 +16,8 @@ public class LiquidColour implements IItemColor {
    * 2) the "tintindex" (layer in the item model json)
    * For example:
    * bottle_drinkable.json contains
-   *   "layer0": "items/potion_overlay",
-   *   "layer1": "items/potion_bottle_drinkable"
+   *   "layer0": "item/potion_overlay",
+   *   "layer1": "item/potion_bottle_drinkable"
    * layer0 = tintindex 0 = for the bottle outline, whose colour doesn't change
    * layer1 = tintindex 1 = for the bottle contents, whose colour changes depending on the type of potion
    * @param stack

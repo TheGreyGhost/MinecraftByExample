@@ -19,7 +19,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * Date: 11/01/2015
  *
  * BlockTileEntityData is a ordinary solid cube with an associated TileEntity
- * For background information on blocks see here http://greyminecraftcoder.blogspot.com.au/2014/12/blocks-18.html
+ * For background information on block see here http://greyminecraftcoder.blogspot.com.au/2014/12/blocks-18.html
  */
 public class BlockTileEntityData extends Block
 {
@@ -60,7 +60,7 @@ public class BlockTileEntityData extends Block
     return BlockRenderLayer.SOLID;
   }
 
-  // used by the renderer to control lighting and visibility of other blocks.
+  // used by the renderer to control lighting and visibility of other block.
   // set to false because this block doesn't fill the entire 1x1x1 space
   @Override
   public boolean isOpaqueCube(BlockState state)
@@ -68,7 +68,7 @@ public class BlockTileEntityData extends Block
     return false;
   }
 
-  // used by the renderer to control lighting and visibility of other blocks, also by
+  // used by the renderer to control lighting and visibility of other block, also by
   // (eg) wall or fence to control whether the fence joins itself to this block
   // set to false because this block doesn't fill the entire 1x1x1 space
   @Override

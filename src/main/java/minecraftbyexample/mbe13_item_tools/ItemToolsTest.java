@@ -17,7 +17,7 @@ import java.util.Set;
  * User: The Grey Ghost
  * Date: 30/12/2014
  *
- * ItemToolsTest is a simple tool used to test the interactions between tools and blocks
+ * ItemToolsTest is a simple tool used to test the interactions between tools and block
  * For background information see here
  * http://greyminecraftcoder.blogspot.ch/2015/01/mining-blocks-with-tools.html
  *
@@ -26,7 +26,7 @@ import java.util.Set;
  *
  * Item.setHarvestLevel(ToolClass, level) - first choice - give your tool one or more ToolClasses equivalent to existing tool eg "pickaxe", "axe".
    ItemTool constructor -
-     EFFECTIVE_ON set of blocks - to add extra "special case" blocks that your item is effective on which don't match the Item's ToolClass(es).
+     EFFECTIVE_ON set of block - to add extra "special case" block that your item is effective on which don't match the Item's ToolClass(es).
      ToolMaterial, which affects the maximum dig speed and the tool durability.
    Item.getStrVsBlock() - add further "special cases" that ToolClass and ItemTool constructor don't cover.
    Item.onBlockStartBreak() - can be used to abort block breaking before it is destroyed
@@ -34,7 +34,7 @@ import java.util.Set;
 
    Item.getDigSpeed() has been removed in 10.1.2
 
- In Adventure mode, the "CanDestroy" NBT tag in the tool's itemstack is used to determine which blocks it can destroy.
+ In Adventure mode, the "CanDestroy" NBT tag in the tool's itemstack is used to determine which block it can destroy.
  */
 
 public class ItemToolsTest extends ToolItem

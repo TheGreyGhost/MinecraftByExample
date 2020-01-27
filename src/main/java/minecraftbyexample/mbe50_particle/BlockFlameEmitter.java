@@ -42,7 +42,7 @@ public class BlockFlameEmitter extends Block
     return BlockRenderLayer.SOLID;
   }
 
-  // used by the renderer to control lighting and visibility of other blocks.
+  // used by the renderer to control lighting and visibility of other block.
   // set to false because this block doesn't fill the entire 1x1x1 space
   @Override
   public boolean isOpaqueCube(BlockState state)
@@ -50,7 +50,7 @@ public class BlockFlameEmitter extends Block
     return false;
   }
 
-  // used by the renderer to control lighting and visibility of other blocks, also by
+  // used by the renderer to control lighting and visibility of other block, also by
   // (eg) wall or fence to control whether the fence joins itself to this block
   // set to false because this block doesn't fill the entire 1x1x1 space
   @Override
@@ -66,7 +66,7 @@ public class BlockFlameEmitter extends Block
     return BlockRenderType.MODEL;
   }
 
-  // This method is called at random intervals - typically used by blocks which produce occasional effects, like
+  // This method is called at random intervals - typically used by block which produce occasional effects, like
   //  smoke from a torch or stars from a portal.
   //  In this case, we use it to spawn two different types of Particle- vanilla, or custom.
   // Don't forget     @OnlyIn(Dist.CLIENT) otherwise this will crash on a dedicated server.
@@ -99,7 +99,7 @@ public class BlockFlameEmitter extends Block
       // second example:
       // spawn a custom Particle ("FlameParticle") with a texture we have added ourselves.
       // FlameParticle also has custom movement and collision logic - it moves in a straight line until it hits something.
-      // To make it more interesting, the stream of fireballs will target the nearest non-player entity within 16 blocks at
+      // To make it more interesting, the stream of fireballs will target the nearest non-player entity within 16 block at
       //   the height of the pole or above.
 
       // starting position = top of the pole

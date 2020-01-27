@@ -103,7 +103,7 @@ public class CompositeModel implements IBakedModel {
   @Override
   public TextureAtlasSprite getParticleTexture() {
     TextureAtlasSprite textureAtlasSprite = Minecraft.getInstance().getTextureMapBlocks()
-                                                     .getAtlasSprite("minecraftbyexample:blocks/mbe05_block_3d_web");
+                                                     .getAtlasSprite("minecraftbyexample:block/mbe05_block_3d_web");
 
     return textureAtlasSprite;
   }
@@ -135,7 +135,7 @@ public class CompositeModel implements IBakedModel {
 //      if (tr != null) { // && tr != TRSRTransformation.identity()) {
 //        mat = tr.getMatrix();
 //      }
-//      // The TRSRTransformation for vanilla items have blockCenterToCorner() applied, however handlePerspective
+//      // The TRSRTransformation for vanilla item have blockCenterToCorner() applied, however handlePerspective
 //      //  reverses it back again with blockCornerToCenter().  So we don't need to apply it here.
 //
 //      return Pair.of(this, mat);

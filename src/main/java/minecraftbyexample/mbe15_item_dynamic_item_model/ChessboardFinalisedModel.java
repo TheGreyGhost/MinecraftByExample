@@ -95,7 +95,7 @@ public class ChessboardFinalisedModel implements IBakedModel {
 //      if (tr != null) { // && tr != TRSRTransformation.identity()) {
 //        mat = tr.getMatrix();
 //      }
-//      // The TRSRTransformation for vanilla items have blockCenterToCorner() applied, however handlePerspective
+//      // The TRSRTransformation for vanilla item have blockCenterToCorner() applied, however handlePerspective
 //      //  reverses it back again with blockCornerToCenter().  So we don't need to apply it here.
 //
 //      return Pair.of(this, mat);
@@ -116,13 +116,13 @@ public class ChessboardFinalisedModel implements IBakedModel {
     final int MAX_NUMBER_OF_PIECES = PIECES_PER_ROW * NUMBER_OF_ROWS;
 
     TextureAtlasSprite chessPieceTexture = Minecraft.getInstance().getTextureMapBlocks()
-            .getAtlasSprite("minecraft:blocks/diamond_block");
+            .getAtlasSprite("minecraft:block/diamond_block");
     // if you want to use your own texture, you can add it to the texture map using code similar to this in your ClientProxy:
     //   MinecraftForge.EVENT_BUS.register(new StitcherAddDigitsTexture());
     //    public class StitcherAddDigitsTexture {
     //      @SubscribeEvent
     //      public void stitcherEventPre(TextureStitchEvent.Pre event) {
-    //        ResourceLocation digits = new ResourceLocation("stickmod:items/digits");
+    //        ResourceLocation digits = new ResourceLocation("stickmod:item/digits");
     //        event.map.registerSprite(digits);
     //      }
     //    }
@@ -132,7 +132,7 @@ public class ChessboardFinalisedModel implements IBakedModel {
       return returnList;
     }
 
-    // "builtin/generated" items, which are generated from the 2D texture by adding a thickness in the z direction
+    // "builtin/generated" item, which are generated from the 2D texture by adding a thickness in the z direction
     //    (i.e. north<-->south thickness), are centred around the z=0.5 plane.
     final float BUILTIN_GEN_ITEM_THICKNESS = 1/16.0F;
     final float BUILTIN_GEN_ITEM_Z_CENTRE = 0.5F;
@@ -291,7 +291,7 @@ public class ChessboardFinalisedModel implements IBakedModel {
    * @param texture the texture to use for the face
    * @param u u-coordinate of the texture (0 - 16) corresponding to [x,y,z]
    * @param v v-coordinate of the texture (0 - 16) corresponding to [x,y,z]
-   * @param normal the packed representation of the normal vector, see calculatePackedNormal().  Used for lighting items.
+   * @param normal the packed representation of the normal vector, see calculatePackedNormal().  Used for lighting item.
    * @return
    */
   private int[] vertexToInts(float x, float y, float z, int color, TextureAtlasSprite texture, float u, float v, int normal)

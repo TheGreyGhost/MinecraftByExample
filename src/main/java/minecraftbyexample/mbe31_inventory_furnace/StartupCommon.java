@@ -34,7 +34,7 @@ public class StartupCommon
     //    the unlocalised name might be "water", which is printed on the user's screen as "Wasser" in German or
     //    "aqua" in Italian.
     //
-    //    Multiple blocks can have the same unlocalised name - for example
+    //    Multiple block can have the same unlocalised name - for example
     //  +----RegistryName----+---UnlocalisedName----+
     //  |  flowing_water     +       water          |
     //  |  stationary_water  +       water          |

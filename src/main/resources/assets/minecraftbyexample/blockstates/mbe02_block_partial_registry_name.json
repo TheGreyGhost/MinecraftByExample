@@ -1,5 +1,5 @@
 {
     "variants": {
-        "normal": { "model": "minecraftbyexample:mbe02_block_partial_model" }
+        "normal": { "model": "minecraftbyexample:block/mbe02_block_partial_model" }
     }
 }

@@ -26,7 +26,7 @@ import java.util.TreeMap;
 /**
  * Created by TheGreyGhost on 19/04/2015.
  *
- * This block takes on the appearance of blocks next to it, but can be walked through.
+ * This block takes on the appearance of block next to it, but can be walked through.
  * The default texture for the block is a camouflage pattern.
  */
 public class BlockCamouflage extends Block {
@@ -43,7 +43,7 @@ public class BlockCamouflage extends Block {
     return BlockRenderLayer.SOLID;
   }
 
-  // used by the renderer to control lighting and visibility of other blocks.
+  // used by the renderer to control lighting and visibility of other block.
   // set to true because this block is opaque and occupies the entire 1x1x1 space
   // not strictly required because the default (super method) is true
   @Override
@@ -51,7 +51,7 @@ public class BlockCamouflage extends Block {
     return true;
   }
 
-  // used by the renderer to control lighting and visibility of other blocks, also by
+  // used by the renderer to control lighting and visibility of other block, also by
   // (eg) wall or fence to control whether the fence joins itself to this block
   // set to true because this block occupies the entire 1x1x1 space
   // not strictly required because the default (super method) is true
@@ -74,7 +74,7 @@ public class BlockCamouflage extends Block {
     return NULL_AABB;
   }
 
-  // createBlockState is used to define which properties your blocks possess
+  // createBlockState is used to define which properties your block possess
   // Vanilla BlockState is composed of listed properties only.  A variant is created for each combination of listed
   //   properties; for example two properties ON(true/false) and READY(true/false) would give rise to four variants
   //   [on=true, ready=true]
@@ -116,13 +116,13 @@ public class BlockCamouflage extends Block {
 
   // Select the best adjacent block to camouflage as.
   // Algorithm is:
-  // 1) Ignore any blocks which are not solid (CUTOUTS or TRANSLUCENT).  Ignore adjacent camouflage.
+  // 1) Ignore any block which are not solid (CUTOUTS or TRANSLUCENT).  Ignore adjacent camouflage.
   // 2) If there are more than one type of solid block, choose the type which is present on the greatest number of sides
   // 3) In case of a tie, prefer the type which span opposite sides of the blockpos, for example:
   //       up and down; east and west; north and south.
-  // 4) If still a tie, look again for spans on both sides, counting adjacent camouflage blocks as a span
+  // 4) If still a tie, look again for spans on both sides, counting adjacent camouflage block as a span
   // 5) If still a tie, in decreasing order of preference: NORTH, SOUTH, EAST, WEST, DOWN, UP
-  // 6) If no suitable adjacent blocks, return Block.air
+  // 6) If no suitable adjacent block, return Block.air
   private BlockState selectBestAdjacentBlock(IBlockAccess world, BlockPos blockPos)
   {
     final BlockState UNCAMOUFLAGED_BLOCK = Blocks.AIR.getDefaultState();

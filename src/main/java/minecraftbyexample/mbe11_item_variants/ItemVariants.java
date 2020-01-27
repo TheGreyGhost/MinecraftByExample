@@ -31,7 +31,7 @@ public class ItemVariants extends Item
     this.setMaxDamage(0);
     this.setHasSubtypes(true);
     this.setMaxStackSize(1);
-    this.setCreativeTab(ItemGroup.MISC);   // items will appear on the Miscellaneous creative tab
+    this.setCreativeTab(ItemGroup.MISC);   // item will appear on the Miscellaneous creative tab
   }
 
   @Override

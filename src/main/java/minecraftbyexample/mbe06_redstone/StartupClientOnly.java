@@ -29,7 +29,7 @@ public class StartupClientOnly
     //   or in your hand or thrown on the ground).
     // Minecraft knows to look for the item model based on the GameRegistry.registerBlock.  However the registration of
     //  the model for each item is normally done by RenderItem.registerItems(), and this is not currently aware
-    //   of any extra items you have created.  Hence you have to do it manually.
+    //   of any extra item you have created.  Hence you have to do it manually.
     // It must be done on client only, and must be done after the block has been created in Common.preinit().
     ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation("minecraftbyexample:mbe06_block_redstone_variable_source", "inventory");
     final int DEFAULT_ITEM_SUBTYPE = 0;

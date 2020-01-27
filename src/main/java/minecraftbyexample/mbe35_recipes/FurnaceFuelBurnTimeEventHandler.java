@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
  * Created by TheGreyGhost on 13/11/2017.
  *  Turns vanilla item (wheat) into a fuel.  Can also be used for more-complicated calculations on whether the
  *    item is a fuel or not, for example depending on the time of day, or whether it's raining or not, or similar.
- *  For your own items, override Item.getItemBurnTime(ItemStack)
+ *  For your own item, override Item.getItemBurnTime(ItemStack)
  */
 public class FurnaceFuelBurnTimeEventHandler {
   public static final FurnaceFuelBurnTimeEventHandler instance = new FurnaceFuelBurnTimeEventHandler();

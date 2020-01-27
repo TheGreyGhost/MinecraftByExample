@@ -8,7 +8,7 @@ import net.minecraft.item.Item;
  * Date: 30/12/2014
  *
  * ItemChessBoard is an ordinary two-dimensional item
- * For background information on items see here http://greyminecraftcoder.blogspot.com/2013/12/items.html
+ * For background information on item see here http://greyminecraftcoder.blogspot.com/2013/12/items.html
  *   and here http://greyminecraftcoder.blogspot.com.au/2014/12/item-rendering-18.html
  */
 public class ItemChessBoard extends Item

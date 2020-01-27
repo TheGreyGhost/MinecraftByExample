@@ -47,13 +47,13 @@ public class FlameParticle extends Particle
 
   /**
    * Used to control what texture and lighting is used for the EntityFX.
-   * Returns 1, which means "use a texture from the blocks + items texture sheet"
+   * Returns 1, which means "use a texture from the block + item texture sheet"
    * The vanilla layers are:
    * normal particles: ignores world brightness lighting map
    *   Layer 0 - uses the particles texture sheet (textures\particle\particles.png)
-   *   Layer 1 - uses the blocks + items texture sheet
+   *   Layer 1 - uses the block + item texture sheet
    * lit particles: changes brightness depending on world lighting i.e. block light + sky light
-   *   Layer 3 - uses the blocks + items texture sheet (I think)
+   *   Layer 3 - uses the block + item texture sheet (I think)
    *
    * @return
    */

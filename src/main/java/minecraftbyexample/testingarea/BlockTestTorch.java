@@ -12,7 +12,7 @@
 // * Date: 24/12/2014
 // *
 // * BlockSimple is a ordinary solid cube with the six faces numbered from 0 - 5.
-// * For background information on blocks see here http://greyminecraftcoder.blogspot.com.au/2014/12/blocks-18.html
+// * For background information on block see here http://greyminecraftcoder.blogspot.com.au/2014/12/blocks-18.html
 // */
 //public class BlockTestTorch extends Block
 //{
@@ -29,7 +29,7 @@
 //    return BlockRenderLayer.SOLID;
 //  }
 //
-//  // used by the renderer to control lighting and visibility of other blocks.
+//  // used by the renderer to control lighting and visibility of other block.
 //  // set to true because this block is opaque and occupies the entire 1x1x1 space
 //  // not strictly required because the default (super method) is true
 //  @Override
@@ -37,7 +37,7 @@
 //    return false;
 //  }
 //
-//  // used by the renderer to control lighting and visibility of other blocks, also by
+//  // used by the renderer to control lighting and visibility of other block, also by
 //  // (eg) wall or fence to control whether the fence joins itself to this block
 //  // set to true because this block occupies the entire 1x1x1 space
 //  // not strictly required because the default (super method) is true

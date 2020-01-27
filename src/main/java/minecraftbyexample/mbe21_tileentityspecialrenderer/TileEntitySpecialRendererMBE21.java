@@ -43,9 +43,9 @@ public class TileEntitySpecialRendererMBE21 extends TileEntityRenderer<TileEntit
 
     // the gem changes its appearance and animation as the player approaches.
     // When the player is a long distance away, the gem is dark, resting in the hopper, and does not rotate.
-    // As the player approaches closer than 16 blocks, the gem first starts to glow brighter and to spin anti-clockwise
-    // When the player gets closer than 4 blocks, the gem is at maximum speed and brightness, and starts to levitate above the pedestal
-    // Once the player gets closer than 2 blocks, the gem reaches maximum height.
+    // As the player approaches closer than 16 block, the gem first starts to glow brighter and to spin anti-clockwise
+    // When the player gets closer than 4 block, the gem is at maximum speed and brightness, and starts to levitate above the pedestal
+    // Once the player gets closer than 2 block, the gem reaches maximum height.
 
     // the appearance and animation of the gem is hence made up of several parts:
     // 1) the colour of the gem, which is contained in the tileEntity

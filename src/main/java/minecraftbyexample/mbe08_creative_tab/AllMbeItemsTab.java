@@ -9,7 +9,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 // This creative tab is very similar to the basic CreativeTab, but overrides displayAllReleventItems to
-//  customise the list of displayed items - filters through all the items looking for ones whose name starts
+//  customise the list of displayed item - filters through all the item looking for ones whose name starts
 //  with "mbe"
 
 public class AllMbeItemsTab extends ItemGroup {
@@ -30,7 +30,7 @@ public class AllMbeItemsTab extends ItemGroup {
     for (Item item : Item.REGISTRY) {
       if (item != null) {
         if (item.getUnlocalizedName().contains(".mbe")) {
-          item.getSubItems(ItemGroup.SEARCH, itemsToShowOnTab);  // CreativeTabs.SEARCH will find all items even if they belong to another tab
+          item.getSubItems(ItemGroup.SEARCH, itemsToShowOnTab);  // CreativeTabs.SEARCH will find all item even if they belong to another tab
                                                                     //   except if the item has no tab (item.getCreativeTab() == NULL)
         }
       }

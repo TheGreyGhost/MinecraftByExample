@@ -28,7 +28,7 @@ public class StartupCommon
     //    the unlocalised name might be "water", which is printed on the user's screen as "Wasser" in German or
     //    "aqua" in Italian.
     //
-    //    Multiple items can have the same unlocalised name - for example
+    //    Multiple item can have the same unlocalised name - for example
     //  +----RegistryName-------+----UnlocalisedName----+
     //  |  burning_candle       +       candle          |
     //  |  extinguished_candle  +       candle          |
