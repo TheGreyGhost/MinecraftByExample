@@ -21,7 +21,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = "1.12.2b"
+version = "1.14.4a"
 group= "thegreyghost" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "minecraftbyexample"
 
@@ -125,9 +125,9 @@ jar {
         attributes([
             "Specification-Title": "minecraftbyexample",
             "Specification-Vendor": "thegreyghost",
-            "Specification-Version": "1", // We are version 1 of ourselves
+            "Specification-Version": "1", // The version number of the specification, not the version of the mod
             "Implementation-Title": project.name,
-            "Implementation-Version": "${version}",
+            "Implementation-Version": "${version}",  // the version number of the mod.  copy the version from earlier in this file
             "Implementation-Vendor" :"thegreyghost",
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])

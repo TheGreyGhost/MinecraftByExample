@@ -10,6 +10,14 @@ IntegerProperty, BooleanProperty, DirectionProperty, EnumProperty
 BlockState has a large number of methods to determine capabilities
 
 
+Updating Forge versions:
+mods.toml:  loaderVersion
+
+Updating your mod version number:
+in build.gradle
+(copied automatically to mods.toml)
+
+
 
 --------------
 Coverage Testing complete:
