@@ -7,15 +7,13 @@ The purpose of MinecraftByExample is to give simple working examples of the impo
 
 I've tried to keep the code simple and obvious and to resist the urge to be clever. The examples might not be the most efficient or succinct implementation, I've deliberately left the optimization to you.
 
-Each example is split up to be totally independent of all the others.  The only parts of the code which are common to more than one example are the MinecraftByExample, CommonProxy, ClientOnlyProxy, and DedicatedServer classes, which can be found [here][main_classes].
+Each example is split up to be totally independent of all the others.  The only part of the code which is common to more than one example is the MinecraftByExample class.
 
 If you want more information and explanatory text about the concepts, the following links might be useful:
 
-  - [Guide to how Minecraft works][greyminecraftcoder]
-  - [Forge Modding articles][wuppy]
   - [The Official Forge documentation][forgedocs]
-  - [Forge Tutorials listing][tutorials_forum]
-  - [List of Good Tutorials][list_of_tutorials]
+  - [Guide to how Minecraft works][greyminecraftcoder] (still being updated from 1.8 to 1.14.4+)
+  - [Forge modder support forum][Forge forum]
 
 #### For earlier versions, see the relevant GitHub branch:
  - MBE for Forge 1.8: [1-8final][version1-8]
@@ -26,7 +24,7 @@ If you want more information and explanatory text about the concepts, the follow
  - MBE for Forge 1.12.2: [1-12-2final][version1-12-2]
 
 If you are updating from previous forge versions, you will probably find [this link][versionupdates] very helpful.  For better or for worse, MCP decided to rename a very large number of classes (eg all Blocks Blockxxx --> xxxxBlock, etc) so this might save you a stack of time.
-If you use IntelliJ, you might find these xml mapping files useful too [mapfiles]
+If you use IntelliJ, you might find these [xml mapping files][mapfiles] useful too
 
 
 ## List of examples
@@ -90,11 +88,8 @@ Head over [here][more_help] if this didn't make sense to you, alternatively [thi
 Check out [this video][forge_installation] for more help installing Forge.
 
 [main_classes]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample
-[greyminecraftcoder]: http://greyminecraftcoder.blogspot.com.au/p/list-of-topics.html
+[greyminecraftcoder]: http://greyminecraftcoder.blogspot.com/p/list-of-topics-1144.html
 [forgedocs]:http://mcforge.readthedocs.org/en/latest/
-[wuppy]: http://www.wuppy29.com/minecraft/modding-tutorials/forge-modding-1-8
-[tutorials_forum]: http://www.minecraftforge.net/forum/index.php/board,120.0.html
-[list_of_tutorials]: http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/modification-development/2716947-can-we-start-a-thorough-list-of-really-good
 
 [01]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe01_block_simple
 [02]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe02_block_partial
@@ -129,6 +124,9 @@ Check out [this video][forge_installation] for more help installing Forge.
 [75]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe75_testing_framework
 
 [more_help]: http://www.minecraftforge.net/forum/index.php?topic=21354.msg108332#msg108332
+
+[Forge forum]: https://www.minecraftforge.net/forum/forum/70-modder-support/
+
 [forge_installation]: http://youtu.be/8VEdtQLuLO0
 [alternate_idea]: #alternate-setup-for-intellij-idea
 [gradle_tool_window]: https://www.jetbrains.com/idea/help/gradle-tool-window.html

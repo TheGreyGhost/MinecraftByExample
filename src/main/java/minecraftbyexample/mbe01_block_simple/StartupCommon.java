@@ -1,19 +1,18 @@
 package minecraftbyexample.mbe01_block_simple;
 
+import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 /**
  * User: The Grey Ghost
  * Date: 24/12/2014
  *
  * The Startup classes for this example are called during startup, in the following order:
- *  preInitCommon
- *  preInitClientOnly
- *  initCommon
- *  initClientOnly
- *  postInitCommon
- *  postInitClientOnly
+ * onBlocksRegistration then onItemsRegistration
  *  See MinecraftByExample class for more information
  */
 public class StartupCommon
@@ -21,36 +20,17 @@ public class StartupCommon
   public static BlockSimple blockSimple;  // this holds the unique instance of your block
   public static BlockItem itemBlockSimple;  // this holds the unique instance of the ItemBlock corresponding to your block
 
-  public static void preInitCommon()
-  {
-    // each instance of your block should have two names:
-    // 1) a registry name that is used to uniquely identify this block.  Should be unique within your mod.  use lower case.
-    // 2) an 'unlocalised name' that is used to retrieve the text name of your block in the player's language.  For example-
-    //    the unlocalised name might be "water", which is printed on the user's screen as "Wasser" in German or
-    //    "aqua" in Italian.
-    //
-    //    Multiple block can have the same unlocalised name - for example
-    //  +----RegistryName----+---UnlocalisedName----+
-    //  |  flowing_water     +       water          |
-    //  |  stationary_water  +       water          |
-    //  +--------------------+----------------------+
-    //
-    blockSimple = (BlockSimple)(new BlockSimple().setUnlocalizedName("mbe01_block_simple_unlocalised_name"));
-    blockSimple.setRegistryName("mbe01_block_simple_registry_name");
-    ForgeRegistries.BLOCKS.register(blockSimple);
-
-    // We also need to create and register an ItemBlock for this block otherwise it won't appear in the inventory
-    itemBlockSimple = new BlockItem(blockSimple);
-    itemBlockSimple.setRegistryName(blockSimple.getRegistryName());
-    ForgeRegistries.ITEMS.register(itemBlockSimple);
+  @SubscribeEvent
+  public static void onBlocksRegistration(final RegistryEvent.Register<Block> blockRegisterEvent) {
+    blockSimple = (BlockSimple)(new BlockSimple().setRegistryName("minecraftbyexample", "mbe01_block_simple_registry_name"));
+    blockRegisterEvent.getRegistry().register(blockSimple);
   }
 
-  public static void initCommon()
-  {
+  @SubscribeEvent
+  public static void onItemsRegistration(final RegistryEvent.Register<Item> itemRegisterEvent) {
+    // We need to create a BlockItem so the player can carry this block in their hand and it can appear in the inventory
+    Item.Properties itemSimpleProperties = new Item.Properties().maxStackSize(20).group(ItemGroup.BUILDING_BLOCKS);
+    itemBlockSimple = new BlockItem(blockSimple, itemSimpleProperties);
+    itemRegisterEvent.getRegistry().register(itemBlockSimple);
   }
-
-  public static void postInitCommon()
-  {
-  }
-
 }

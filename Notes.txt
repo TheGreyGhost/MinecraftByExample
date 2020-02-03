@@ -18,6 +18,21 @@ in build.gradle
 (copied automatically to mods.toml)
 
 
+Common Setup, Client Setup, Server Setup, Intermod communications
+
+
+-
+Couple of notes regarding (ticking) mod tile entities:
+
+Be sure that your TE implements ITickableTileEntity and not ITickable. If you don't, you won't see any errors, but your TE won't tick.
+When registering your TE, be sure to pass all the blocks for that TE (most likely just one block, but can be multiple) to the TileEntityType.Builder.create() method. Again, if you don't - no errors, but no ticking (and no rendering, if you're using a TESR). Probably good practice to do this for every TE regardless.
+
+There's a new BlockRayTraceResult class which is used in several place to aggregate some parameters. E.g. ItemUseContext and BlockUseContext constructors, ItemStack.onItemUseFirst() etc.
+
+ExtendedBlockStates changed:
+https://github.com/MinecraftForge/MinecraftForge/pull/5564
+
+sOpaqueCube => remove, mc now checks this with the block's voxelshape
 
 --------------
 Coverage Testing complete:

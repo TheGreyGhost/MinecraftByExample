@@ -23,10 +23,9 @@ The block will appear in the Blocks tab in the creative inventory.
 For background information on:
 
 * blocks: see [http://greyminecraftcoder.blogspot.com.au/2014/12/blocks-18.html](http://greyminecraftcoder.blogspot.com.au/2014/12/blocks-18.html)
+          or [forge blocks](https://documentation-tterrag.readthedocs.io/en/latest/blocks/blocks/)
+* registering blocks: see [https://documentation-tterrag.readthedocs.io/en/latest/concepts/registries/#registering-things](https://documentation-tterrag.readthedocs.io/en/latest/concepts/registries/#registering-things) 
 * rendering blocks: see [http://greyminecraftcoder.blogspot.com.au/p/list-of-topics.html](http://greyminecraftcoder.blogspot.com.au/p/list-of-topics.html) (the topics under the Block Rendering heading)
-
-Note: Forge has now introduced a new way to schedule when blocks are registered, using an event `RegistryEvent.Register<Block>`. I haven't updated the examples to use this method because I'm not sure it's better than the old way using proxies, but if you are interested, there is a helpful example here:
-[https://github.com/LexManos/VoidUtils/blob/master/src/main/java/net/minecraftforge/lex/voidutils/VoidUtils.java](https://github.com/LexManos/VoidUtils/blob/master/src/main/java/net/minecraftforge/lex/voidutils/VoidUtils.java)
 
 ## Common errors
 
@@ -38,4 +37,4 @@ These are caused when you have specified a filename or path which is not correct
 1. The upper/lower case doesn't match
 1. You've forgotten the resource domain, eg `blockmodel` instead of `minecraftbyexample:blockmodel`
 1. The folder structure of your assets folders is incorrect
-1. If using IntelliJ 14--the assets aren't copied to the right place, you need to apply a fix to your `build.gradle`, see [http://www.minecraftforge.net/forum/index.php/topic,21354.0.html](http://www.minecraftforge.net/forum/index.php/topic,21354.0.html)
+
