@@ -1,6 +1,7 @@
 MinecraftByExample [1.14.4]
 ==================
-*** Work in Progress ***
+** Work in Progress **
+
 (1.15 isn't stable yet so I've decided to convert to 1.14.4 first)
 
 The purpose of MinecraftByExample is to give simple working examples of the important concepts in Minecraft and Forge. If you're anything like me, a good code example is worth several screens worth of waffling explanation, and can very quickly explain the key concepts.  I also find it much easier to adapt and debug something that already works, than to have to synthesize something from scratch and spend hours trying to discover the missing bit of information I didn't know about.
@@ -28,49 +29,52 @@ If you use IntelliJ, you might find these [xml mapping files][mapfiles] useful t
 
 
 ## List of examples
+
+** examples marked with "x" haven't been converted yet **
+
 ### Blocks
   - [MBE01][01] - a simple cube
-  - [MBE02][02] - a block with a more complicated shape
-  - [MBE03][03] - a block (coloured signpost) with multiple variants- four colours, can be placed facing in four directions
-  - [MBE04][04] - a camouflage ("secret door") block which dynamically changes its appearance to match adjacent blocks - uses IBlockModel.getQuads() and onModelBakeEvent() 
-  - [MBE05][05] - a 3D web which joins to neighbours in all six directions - uses IBlockModel.getQuads() and ICustomModelLoader
-  - [MBE06][06] - several different types of block which use redstone
-  - [MBE08][08] - how to add a creative tab for organising your custom blocks / items
+  - X [MBE02][02] - a block with a more complicated shape
+  - X [MBE03][03] - a block (coloured signpost) with multiple variants- four colours, can be placed facing in four directions
+  - X [MBE04][04] - a camouflage ("secret door") block which dynamically changes its appearance to match adjacent blocks - uses IBlockModel.getQuads() and onModelBakeEvent() 
+  - X [MBE05][05] - a 3D web which joins to neighbours in all six directions - uses IBlockModel.getQuads() and ICustomModelLoader
+  - X [MBE06][06] - several different types of block which use redstone
+  - X [MBE08][08] - how to add a creative tab for organising your custom blocks / items
 
 ### Items
-  - [MBE10][10] - a simple item
-  - [MBE11][11] - an item with multiple variants - rendered using multiple models and multiple layers
-  - [MBE12][12] - an item that stores extra information in NBT, also illustrates the "in use" animation similar to drawing a bow
-  - [MBE13][13] - customise Mining behaviour of Blocks and Items - several test classes that show how mining works
-  - [MBE14][14] - an interactive helper tool to adjust the ItemCameraTransforms for your custom item
-  - [MBE15][15] - a chessboard item with 1 - 64 pieces; uses ItemOverrideList.handleItemState(), IBlockModel.getQuads() and onModelBakeEvent()
+  - X [MBE10][10] - a simple item
+  - X [MBE11][11] - an item with multiple variants - rendered using multiple models and multiple layers
+  - X [MBE12][12] - an item that stores extra information in NBT, also illustrates the "in use" animation similar to drawing a bow
+  - X [MBE13][13] - customise Mining behaviour of Blocks and Items - several test classes that show how mining works
+  - X [MBE14][14] - an interactive helper tool to adjust the ItemCameraTransforms for your custom item
+  - X [MBE15][15] - a chessboard item with 1 - 64 pieces; uses ItemOverrideList.handleItemState(), IBlockModel.getQuads() and onModelBakeEvent()
 
 
 ### TileEntities
-  - [MBE20][20] - using a tile entity to store information about a block - also shows examples of using NBT storage
-  - [MBE21][21] - using the TileEntitySpecialRenderer to render unusual shapes or animations
+  - X [MBE20][20] - using a tile entity to store information about a block - also shows examples of using NBT storage
+  - X [MBE21][21] - using the TileEntitySpecialRenderer to render unusual shapes or animations
 
 ### Containers (Inventories)
-  - [MBE30][30] - a simple container for storing items in the world - similar to a Chest
-  - [MBE31][31] - a functional container such as a Furnace or Crafting Table
+  - X [MBE30][30] - a simple container for storing items in the world - similar to a Chest
+  - X [MBE31][31] - a functional container such as a Furnace or Crafting Table
 
 ### Recipes (Crafting/Furnace)
-  - [MBE35][35] - some typical example crafting recipes and furnace (smelting) recipes
+  - X [MBE35][35] - some typical example crafting recipes and furnace (smelting) recipes
 
 ### Heads Up Display/Overlays
-  - [MBE40][40] - simple customisations of the heads up display (hotbar, health meter)
+  - X [MBE40][40] - simple customisations of the heads up display (hotbar, health meter)
 
 ### Particles - particle effects
-  - [MBE50][50] - shows how to use vanilla Particles; also how to generate your own custom Particles
+  - X [MBE50][50] - shows how to use vanilla Particles; also how to generate your own custom Particles
 
 ### Network
-  - [MBE60][60] - send network messages between client and server
+  - X [MBE60][60] - send network messages between client and server
 
 ### Configuration GUI
-  - [MBE70][70] - configuration file linked to the "mod options" button GUI on the mods list screen
+  - X [MBE70][70] - configuration file linked to the "mod options" button GUI on the mods list screen
 
 ### Testing tools
-  - [MBE75][75] - a tool to help you automate testing of your classes in-game.
+  - X [MBE75][75] - a tool to help you automate testing of your classes in-game.
 
 ## Usage
   - You can browse directly in GitHub, or alternatively, download it as a zip and browse it locally.
