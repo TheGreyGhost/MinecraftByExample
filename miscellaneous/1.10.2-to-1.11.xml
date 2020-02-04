@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<migrationMap>
+	<name value="1.10.2-to-1.11.csv" />
+	<description value="1.10.2-to-1.11.csv" />
+	<entry oldName="net.minecraft.util.math.Vec4b" newName="net.minecraft.world.storage.MapDecoration" type="class" />
+</migrationMap>

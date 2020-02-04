@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<migrationMap>
+	<name value="1.13-to-1.13.1.csv" />
+	<description value="1.13-to-1.13.1.csv" />
+	<entry oldName="net.minecraft.advancements.criterion.EntityTypePredicate" newName="net.minecraft.advancements.criterion.EntityTypePredicate" type="class" />
+	<entry oldName="net.minecraft.block.Block.Properties" newName="net.minecraft.block.Block.Properties" type="class" />
+	<entry oldName="net.minecraft.block.PaneBlock" newName="net.minecraft.block.PaneBlock" type="class" />
+	<entry oldName="net.minecraft.block.material.MaterialColor" newName="net.minecraft.block.material.MaterialColor" type="class" />
+	<entry oldName="net.minecraft.client.audio.LocatableSound" newName="net.minecraft.client.audio.LocatableSound" type="class" />
+	<entry oldName="net.minecraft.client.audio.SimpleSound" newName="net.minecraft.client.audio.SimpleSound" type="class" />
+	<entry oldName="net.minecraft.client.renderer.GameRenderer" newName="net.minecraft.client.renderer.GameRenderer" type="class" />
+	<entry oldName="net.minecraft.client.renderer.WorldRenderer" newName="net.minecraft.client.renderer.WorldRenderer" type="class" />
+	<entry oldName="net.minecraft.client.renderer.model.BakedQuad" newName="net.minecraft.client.renderer.model.BakedQuad" type="class" />
+	<entry oldName="net.minecraft.client.renderer.model.BakedQuadRetextured" newName="net.minecraft.client.renderer.model.BakedQuadRetextured" type="class" />
+	<entry oldName="net.minecraft.client.renderer.model.BlockFaceUV" newName="net.minecraft.client.renderer.model.BlockFaceUV" type="class" />
+	<entry oldName="net.minecraft.client.renderer.model.BlockPart" newName="net.minecraft.client.renderer.model.BlockPart" type="class" />
+	<entry oldName="net.minecraft.client.renderer.model.BlockPartFace" newName="net.minecraft.client.renderer.model.BlockPartFace" type="class" />
+	<entry oldName="net.minecraft.client.renderer.model.BlockPartRotation" newName="net.minecraft.client.renderer.model.BlockPartRotation" type="class" />
+	<entry oldName="net.minecraft.client.renderer.model.BuiltInModel" newName="net.minecraft.client.renderer.model.BuiltInModel" type="class" />
+	<entry oldName="net.minecraft.client.renderer.model.FaceBakery" newName="net.minecraft.client.renderer.model.FaceBakery" type="class" />
+	<entry oldName="net.minecraft.client.renderer.model.IBakedModel" newName="net.minecraft.client.renderer.model.IBakedModel" type="class" />
+	<entry oldName="net.minecraft.client.renderer.model.IUnbakedModel" newName="net.minecraft.client.renderer.model.IUnbakedModel" type="class" />
+	<entry oldName="net.minecraft.client.renderer.model.ItemCameraTransforms" newName="net.minecraft.client.renderer.model.ItemCameraTransforms" type="class" />
+	<entry oldName="net.minecraft.client.renderer.model.ItemModelGenerator" newName="net.minecraft.client.renderer.model.ItemModelGenerator" type="class" />
+	<entry oldName="net.minecraft.client.renderer.model.ItemOverride" newName="net.minecraft.client.renderer.model.ItemOverride" type="class" />
+	<entry oldName="net.minecraft.client.renderer.model.ItemOverrideList" newName="net.minecraft.client.renderer.model.ItemOverrideList" type="class" />
+	<entry oldName="net.minecraft.client.renderer.model.ItemTransformVec3f" newName="net.minecraft.client.renderer.model.ItemTransformVec3f" type="class" />
+	<entry oldName="net.minecraft.client.renderer.model.ModelBakery" newName="net.minecraft.client.renderer.model.ModelBakery" type="class" />
+	<entry oldName="net.minecraft.client.renderer.model.BlockModel" newName="net.minecraft.client.renderer.model.BlockModel" type="class" />
+	<entry oldName="net.minecraft.client.renderer.model.BlockModelDefinition" newName="net.minecraft.client.renderer.model.BlockModelDefinition" type="class" />
+	<entry oldName="net.minecraft.client.renderer.model.ModelManager" newName="net.minecraft.client.renderer.model.ModelManager" type="class" />
+	<entry oldName="net.minecraft.client.renderer.model.ModelResourceLocation" newName="net.minecraft.client.renderer.model.ModelResourceLocation" type="class" />
+	<entry oldName="net.minecraft.client.renderer.model.ModelRotation" newName="net.minecraft.client.renderer.model.ModelRotation" type="class" />
+	<entry oldName="net.minecraft.client.renderer.model.MultipartBakedModel" newName="net.minecraft.client.renderer.model.MultipartBakedModel" type="class" />
+	<entry oldName="net.minecraft.client.renderer.model.SimpleBakedModel" newName="net.minecraft.client.renderer.model.SimpleBakedModel" type="class" />
+	<entry oldName="net.minecraft.client.renderer.model.Variant" newName="net.minecraft.client.renderer.model.Variant" type="class" />
+	<entry oldName="net.minecraft.client.renderer.model.VariantList" newName="net.minecraft.client.renderer.model.VariantList" type="class" />
+	<entry oldName="net.minecraft.client.renderer.model.WeightedBakedModel" newName="net.minecraft.client.renderer.model.WeightedBakedModel" type="class" />
+	<entry oldName="net.minecraft.client.renderer.model.multipart.AndCondition" newName="net.minecraft.client.renderer.model.multipart.AndCondition" type="class" />
+	<entry oldName="net.minecraft.client.renderer.model.multipart.OrCondition" newName="net.minecraft.client.renderer.model.multipart.OrCondition" type="class" />
+	<entry oldName="net.minecraft.client.renderer.model.multipart.PropertyValueCondition" newName="net.minecraft.client.renderer.model.multipart.PropertyValueCondition" type="class" />
+	<entry oldName="net.minecraft.client.renderer.model.multipart.ICondition" newName="net.minecraft.client.renderer.model.multipart.ICondition" type="class" />
+	<entry oldName="net.minecraft.client.renderer.model.multipart.Multipart" newName="net.minecraft.client.renderer.model.multipart.Multipart" type="class" />
+	<entry oldName="net.minecraft.client.renderer.model.multipart.Selector" newName="net.minecraft.client.renderer.model.multipart.Selector" type="class" />
+	<entry oldName="net.minecraft.item.Item.Properties" newName="net.minecraft.item.Item.Properties" type="class" />
+	<entry oldName="net.minecraft.network.play.server.SUpdateRecipesPacket" newName="net.minecraft.network.play.server.SUpdateRecipesPacket" type="class" />
+	<entry oldName="net.minecraft.scoreboard.ScoreCriteria" newName="net.minecraft.scoreboard.ScoreCriteria" type="class" />
+	<entry oldName="net.minecraft.scoreboard.ScoreCriteria.RenderType" newName="net.minecraft.scoreboard.ScoreCriteria.RenderType" type="class" />
+	<entry oldName="net.minecraft.network.handshake.ServerHandshakeNetHandler" newName="net.minecraft.network.handshake.ServerHandshakeNetHandler" type="class" />
+	<entry oldName="net.minecraft.network.login.ServerLoginNetHandler" newName="net.minecraft.network.login.ServerLoginNetHandler" type="class" />
+	<entry oldName="net.minecraft.network.status.ServerStatusNetHandler" newName="net.minecraft.network.status.ServerStatusNetHandler" type="class" />
+	<entry oldName="net.minecraft.stats.Stat" newName="net.minecraft.stats.Stat" type="class" />
+	<entry oldName="net.minecraft.util.math.shapes.VoxelShapes" newName="net.minecraft.util.math.shapes.VoxelShapes" type="class" />
+	<entry oldName="net.minecraft.world.Region" newName="net.minecraft.world.Region" type="class" />
+	<entry oldName="net.minecraft.world.FoliageColors" newName="net.minecraft.world.FoliageColors" type="class" />
+	<entry oldName="net.minecraft.world.GrassColors" newName="net.minecraft.world.GrassColors" type="class" />
+	<entry oldName="net.minecraft.world.biome.BiomeColors" newName="net.minecraft.world.biome.BiomeColors" type="class" />
+	<entry oldName="net.minecraft.world.gen.feature.GlowstoneFeature" newName="net.minecraft.world.gen.feature.GlowstoneFeature" type="class" />
+</migrationMap>

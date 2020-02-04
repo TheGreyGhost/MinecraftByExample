@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<migrationMap>
+	<name value="1.11-to-1.12.csv" />
+	<description value="1.11-to-1.12.csv" />
+	<entry oldName="net.minecraft.client.renderer.VertexBuffer" newName="net.minecraft.client.renderer.BufferBuilder" type="class" />
+	<entry oldName="net.minecraft.client.renderer.tileentity.RenderEnderCrystal" newName="net.minecraft.client.renderer.entity.EnderCrystalRenderer" type="class" />
+	<entry oldName="net.minecraft.client.renderer.tileentity.RenderItemFrame" newName="net.minecraft.client.renderer.entity.ItemFrameRenderer" type="class" />
+	<entry oldName="net.minecraft.client.renderer.tileentity.RenderWitherSkull" newName="net.minecraft.client.renderer.entity.WitherSkullRenderer" type="class" />
+	<entry oldName="net.minecraft.entity.boss.EntityDragonPart" newName="net.minecraft.entity.MultiPartEntityPart" type="class" />
+	<entry oldName="net.minecraft.world.BossInfoLerping" newName="net.minecraft.client.gui.ClientBossInfo" type="class" />
+	<entry oldName="net.minecraft.world.WorldSavedData" newName="net.minecraft.world.storage.WorldSavedData" type="class" />
+	<entry oldName="net.minecraft.world.WorldSavedDataCallableSave" newName="net.minecraft.world.storage.WorldSavedDataCallableSave" type="class" />
+	<entry oldName="net.minecraft.world.chunk.IChunkGenerator" newName="net.minecraft.world.gen.ChunkGenerator" type="class" />
+	<entry oldName="net.minecraft.world.demo.DemoWorldManager" newName="net.minecraft.server.management.DemoPlayerInteractionManager" type="class" />
+	<entry oldName="net.minecraft.world.demo.DemoWorldServer" newName="net.minecraft.world.WorldServerDemo" type="class" />
+	<entry oldName="net.minecraft.world.gen.ChunkProviderDebug" newName="net.minecraft.world.gen.DebugChunkGenerator" type="class" />
+	<entry oldName="net.minecraft.world.gen.ChunkProviderEnd" newName="net.minecraft.world.gen.EndChunkGenerator" type="class" />
+	<entry oldName="net.minecraft.world.gen.ChunkProviderFlat" newName="net.minecraft.world.gen.FlatChunkGenerator" type="class" />
+	<entry oldName="net.minecraft.world.gen.ChunkProviderHell" newName="net.minecraft.world.gen.NetherChunkGenerator" type="class" />
+	<entry oldName="net.minecraft.world.gen.ChunkProviderOverworld" newName="net.minecraft.world.gen.OverworldChunkGenerator" type="class" />
+	<entry oldName="net.minecraft.world.gen.ChunkProviderSettings" newName="net.minecraft.world.gen.ChunkGeneratorSettings" type="class" />
+</migrationMap>

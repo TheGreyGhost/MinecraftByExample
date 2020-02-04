@@ -144,7 +144,7 @@ Check out [this video][forge_installation] for more help installing Forge.
 [version1-11-2]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-11-2-final
 [version1-12-2]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-12-2-final
 [versionupdates]: https://gist.github.com/williewillus/353c872bcf1a6ace9921189f6100d09a
-[mapfiles]: 
+[mapfiles]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/miscellaneous
 
 With thanks to these helpful folks:
 alvaropp, 
