@@ -17,7 +17,7 @@ issueTrackerURL="https://github.com/TheGreyGhost/MinecraftByExample/issues" #opt
 [[mods]] #mandatory
 
 # The modid of the mod
-modId="examplemod" #mandatory
+modId="minecraftbyexample" #mandatory
 
 # The version number of the mod - "there's a few well known ${} variables useable here or just hardcode it" (Not well known by me, but hey)
 # Digging into the source (StringSubstitutor.class) I think the valid variables are currently (Forge 1.14.4-28.1.0):
@@ -45,8 +45,7 @@ authors="TGG and others" #optional
 
 # The description text for the mod (multi line!) (#mandatory)
 description='''
-Minecraft By Example - a collection of simple working examples of the important concepts in Minecraft and Forge.
-'''
+Minecraft By Example - a collection of simple working examples of the important concepts in Minecraft and Forge.'''
 
 # The lines below are not used for MBE but maybe you might want them
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.

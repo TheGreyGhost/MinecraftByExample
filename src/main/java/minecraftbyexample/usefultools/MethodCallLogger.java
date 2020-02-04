@@ -1,7 +1,7 @@
 package minecraftbyexample.usefultools;
 
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.common.thread.EffectiveSide;
 
 import java.io.PrintStream;
 import java.util.HashMap;
@@ -43,14 +43,14 @@ public class MethodCallLogger
   public void enterMethod(String methodName, String parameters)
   {
     if (!shouldLog(methodName)) return;
-    Side side = (forcedSideForTesting != null) ? forcedSideForTesting : FMLCommonHandler.instance().getEffectiveSide();
-    HashMap<String, Boolean> reentryFlagsSide = (side == Side.CLIENT) ? reentryFlagsClient : reentryFlagsServer;
-    final int indentLevel = (side == Side.CLIENT) ? indentLevelClient : indentLevelServer;
+    LogicalSide side = (forcedSideForTesting != null) ? forcedSideForTesting : EffectiveSide.get();
+    HashMap<String, Boolean> reentryFlagsSide = (side == LogicalSide.CLIENT) ? reentryFlagsClient : reentryFlagsServer;
+    final int indentLevel = (side == LogicalSide.CLIENT) ? indentLevelClient : indentLevelServer;
     if (reentryFlagsSide.containsKey(methodName) && reentryFlagsSide.get(methodName) ) {  // reentry: disable logging for this method
       String errorMessage = "!! Re-entry into " + methodName + "(" + parameters + ")";
       addIndentedOutputLine(side, indentLevel, errorMessage, false);
       errorMessage = "!!Further logging of " + methodName + " disabled!!";
-      if (side == Side.CLIENT) --indentLevelClient; else --indentLevelServer;
+      if (side == LogicalSide.CLIENT) --indentLevelClient; else --indentLevelServer;
       addIndentedOutputLine(side, indentLevel, errorMessage, indentLevel == 0 || immediateOutput);
       setShouldLog(methodName, false);
       return;
@@ -58,7 +58,7 @@ public class MethodCallLogger
 
     reentryFlagsSide.put(methodName, true);
     addIndentedOutputLine(side, indentLevel, methodName + "(" + parameters + ") {", immediateOutput);
-    if (side == Side.CLIENT) ++indentLevelClient; else ++indentLevelServer;
+    if (side == LogicalSide.CLIENT) ++indentLevelClient; else ++indentLevelServer;
   }
 
   /**
@@ -69,16 +69,16 @@ public class MethodCallLogger
   public void exitMethod(String methodName, String returnValue)
   {
     if (!shouldLog(methodName)) return;
-    Side side = (forcedSideForTesting != null) ? forcedSideForTesting : FMLCommonHandler.instance().getEffectiveSide();
-    HashMap<String, Boolean> reentryFlagsSide = (side == Side.CLIENT) ? reentryFlagsClient : reentryFlagsServer;
-    final int indentLevel = (side == Side.CLIENT) ? indentLevelClient : indentLevelServer;
+    LogicalSide side = (forcedSideForTesting != null) ? forcedSideForTesting : EffectiveSide.get();
+    HashMap<String, Boolean> reentryFlagsSide = (side == LogicalSide.CLIENT) ? reentryFlagsClient : reentryFlagsServer;
+    final int indentLevel = (side == LogicalSide.CLIENT) ? indentLevelClient : indentLevelServer;
 
     if (!reentryFlagsSide.containsKey(methodName) || !reentryFlagsSide.get(methodName) ) {  // never entered: ignore call
       return;
     }
 
     reentryFlagsSide.put(methodName, false);
-    if (side == Side.CLIENT) {
+    if (side == LogicalSide.CLIENT) {
       --indentLevelClient;
       if (indentLevelClient < 0) indentLevelClient = 0;  // should never happen.
     } else {
@@ -103,10 +103,10 @@ public class MethodCallLogger
    * @param side which side
    * @param shouldLog true to enable logging for this side
    */
-  public void setSideLogging(Side side, boolean shouldLog) {
-    if (side == Side.CLIENT) {
+  public void setSideLogging(LogicalSide side, boolean shouldLog) {
+    if (side == LogicalSide.CLIENT) {
       shouldLogClient = shouldLog;
-    } else if (side == Side.SERVER) {
+    } else if (side == LogicalSide.SERVER) {
       shouldLogServer = shouldLog;
     } else {
       System.out.println("Illegal side :" + side);
@@ -128,10 +128,10 @@ public class MethodCallLogger
    * @return true if should log, false if not.  defaults to true.
    */
   public boolean shouldLog(String methodName) {
-    Side side = (forcedSideForTesting != null) ? forcedSideForTesting : FMLCommonHandler.instance().getEffectiveSide();
-    if (side == Side.SERVER) {
+    LogicalSide side = (forcedSideForTesting != null) ? forcedSideForTesting : EffectiveSide.get();
+    if (side == LogicalSide.SERVER) {
       if (!shouldLogServer) return false;
-    } else if (side == Side.CLIENT) {
+    } else if (side == LogicalSide.CLIENT) {
       if (!shouldLogClient) return false;
     }
     if (!shouldLogMap.containsKey(methodName)) return true;  // default to true if user hasn't explicitly enabled logging
@@ -143,9 +143,9 @@ public class MethodCallLogger
    * @param outputToAdd the line to add
    * @param flushImmediately if true - flush the output buffer to the output device
    */
-  public void addOutputLine(Side side, String outputToAdd, boolean flushImmediately)
+  public void addOutputLine(LogicalSide side, String outputToAdd, boolean flushImmediately)
   {
-    StringBuilder outputBuffer = (side == Side.CLIENT) ? outputBufferClient : outputBufferServer;
+    StringBuilder outputBuffer = (side == LogicalSide.CLIENT) ? outputBufferClient : outputBufferServer;
     outputBuffer.append(outputToAdd);
     outputBuffer.append(CRLF);
     if (flushImmediately) {
@@ -161,10 +161,10 @@ public class MethodCallLogger
    * @param outputToAdd the line to add
    * @param flushImmediately if true - flush the output buffer to the output device
    */
-  private void addIndentedOutputLine(Side side, int indentLevel, String outputToAdd, boolean flushImmediately)
+  private void addIndentedOutputLine(LogicalSide side, int indentLevel, String outputToAdd, boolean flushImmediately)
   {
-    StringBuilder outputBuffer = (side == Side.CLIENT) ? outputBufferClient : outputBufferServer;
-    String sideSymbol = (side == Side.CLIENT) ? "C: " : "S: ";
+    StringBuilder outputBuffer = (side == LogicalSide.CLIENT) ? outputBufferClient : outputBufferServer;
+    String sideSymbol = (side == LogicalSide.CLIENT) ? "C: " : "S: ";
     outputBuffer.append((sideSymbol));
     int endIndex = indentLevel * SPACES_PER_INDENT;
     if (endIndex < 0) endIndex = 0;
@@ -189,7 +189,7 @@ public class MethodCallLogger
   private static final String CRLF = System.getProperty("line.separator");
   private static final String INDENT_STRING = "                                                            ";  // maximum indent 60 spaces
   private static final int SPACES_PER_INDENT = 2;
-  private Side forcedSideForTesting = null;
+  private LogicalSide forcedSideForTesting = null;
 
   /**
    * For testing purposes
@@ -214,7 +214,7 @@ public class MethodCallLogger
     System.out.println("MethodCallLogger test start");
 
     System.out.println("Test1");
-    logger.forcedSideForTesting = Side.CLIENT;
+    logger.forcedSideForTesting = LogicalSide.CLIENT;
     logger.enterMethod(NAME1, "param1");
       logger.enterMethod(NAME2, "param2");
         logger.enterMethod(NAME3, "3");
@@ -226,7 +226,7 @@ public class MethodCallLogger
 
     logger = new MethodCallLogger();
     System.out.println("Test2");    // result as per test1 except no method2
-    logger.forcedSideForTesting = Side.CLIENT;
+    logger.forcedSideForTesting = LogicalSide.CLIENT;
     logger.setShouldLog(NAME2, false);
     logger.enterMethod(NAME1, "param1");
                           logger.enterMethod(NAME2, "param2");
@@ -239,14 +239,14 @@ public class MethodCallLogger
 
     logger = new MethodCallLogger();
     System.out.println("Test3");    // result as per test1 except no method3 inside method2
-    logger.forcedSideForTesting = Side.CLIENT;
-    logger.setSideLogging(Side.SERVER, false);
+    logger.forcedSideForTesting = LogicalSide.CLIENT;
+    logger.setSideLogging(LogicalSide.SERVER, false);
     logger.enterMethod(NAME1, "param1");
       logger.enterMethod(NAME2, "param2");
-    logger.forcedSideForTesting = Side.SERVER;
+    logger.forcedSideForTesting = LogicalSide.SERVER;
                            logger.enterMethod(NAME3, "3");
                            logger.exitMethod(NAME3, "retval3");
-    logger.forcedSideForTesting = Side.CLIENT;
+    logger.forcedSideForTesting = LogicalSide.CLIENT;
       logger.exitMethod(NAME2, "retval2");
       logger.enterMethod(NAME3, "");
       logger.exitMethod(NAME3, "");
@@ -254,7 +254,7 @@ public class MethodCallLogger
 
     logger = new MethodCallLogger();
     System.out.println("Test4");    // rentrant: stop logging method2: error message on 2nd, then 3 and 3 again
-    logger.forcedSideForTesting = Side.CLIENT;
+    logger.forcedSideForTesting = LogicalSide.CLIENT;
     logger.enterMethod(NAME1, "param1");
       logger.enterMethod(NAME2, "param2");
                            logger.enterMethod(NAME2, "param2");
@@ -270,53 +270,53 @@ public class MethodCallLogger
 
     logger = new MethodCallLogger();
     System.out.println("Test5");      // client nested 1,2,3.  Server 1 then 3
-    logger.forcedSideForTesting = Side.CLIENT;
+    logger.forcedSideForTesting = LogicalSide.CLIENT;
     logger.enterMethod(NAME1, "param1");
       logger.enterMethod(NAME2, "param2");
 
-    logger.forcedSideForTesting = Side.SERVER;
+    logger.forcedSideForTesting = LogicalSide.SERVER;
     logger.enterMethod(NAME2, "Server1st");
 
-    logger.forcedSideForTesting = Side.CLIENT;
+    logger.forcedSideForTesting = LogicalSide.CLIENT;
         logger.enterMethod(NAME3, "3");
 
-    logger.forcedSideForTesting = Side.SERVER;
+    logger.forcedSideForTesting = LogicalSide.SERVER;
     logger.exitMethod(NAME2, "Server1stExit");
     logger.enterMethod(NAME3, "serverside");
 
-    logger.forcedSideForTesting = Side.CLIENT;
+    logger.forcedSideForTesting = LogicalSide.CLIENT;
         logger.exitMethod(NAME3, "retval3");
       logger.exitMethod(NAME2, "retval2");
 
-    logger.forcedSideForTesting = Side.SERVER;
+    logger.forcedSideForTesting = LogicalSide.SERVER;
     logger.exitMethod(NAME3, "serverside");
-    logger.forcedSideForTesting = Side.CLIENT;
+    logger.forcedSideForTesting = LogicalSide.CLIENT;
     logger.exitMethod(NAME1, "retval1");
 
     logger = new MethodCallLogger();
     System.out.println("Test6");      // interleaved output as per 5
     logger.setImmediateOutput(true);
-    logger.forcedSideForTesting = Side.CLIENT;
+    logger.forcedSideForTesting = LogicalSide.CLIENT;
     logger.enterMethod(NAME1, "param1");
       logger.enterMethod(NAME2, "param2");
 
-    logger.forcedSideForTesting = Side.SERVER;
+    logger.forcedSideForTesting = LogicalSide.SERVER;
     logger.enterMethod(NAME2, "Server1st");
 
-    logger.forcedSideForTesting = Side.CLIENT;
+    logger.forcedSideForTesting = LogicalSide.CLIENT;
         logger.enterMethod(NAME3, "3");
 
-    logger.forcedSideForTesting = Side.SERVER;
+    logger.forcedSideForTesting = LogicalSide.SERVER;
     logger.exitMethod(NAME2, "Server1stExit");
     logger.enterMethod(NAME3, "serverside");
 
-    logger.forcedSideForTesting = Side.CLIENT;
+    logger.forcedSideForTesting = LogicalSide.CLIENT;
         logger.exitMethod(NAME3, "retval3");
       logger.exitMethod(NAME2, "retval2");
 
-    logger.forcedSideForTesting = Side.SERVER;
+    logger.forcedSideForTesting = LogicalSide.SERVER;
     logger.exitMethod(NAME3, "serverside");
-    logger.forcedSideForTesting = Side.CLIENT;
+    logger.forcedSideForTesting = LogicalSide.CLIENT;
     logger.exitMethod(NAME1, "retval1");
 
     System.out.println("MethodCallLogger test complete");

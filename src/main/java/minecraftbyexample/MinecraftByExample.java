@@ -1,11 +1,15 @@
 package minecraftbyexample;
 
 import minecraftbyexample.mbe01_block_simple.StartupClientOnly;
+import minecraftbyexample.usefultools.ForgeLoggerTweaker;
 import net.minecraft.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.apache.logging.log4j.Level;
 
 /*
    Each mod has a main class which is used by Forge to interact with the mod during startup.
@@ -19,7 +23,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
       Register your function as a subscriber to the Event, on the correct Event bus (in this case - the ModEventBus).
       When the Event is triggered, it will call your function.
       There are basically three ways to do this; see the forge MDK ExampleMod for more details.
-      I've just picked my favourite (MinecraftForge.EVENT_BUS.register() with @SubscribeEvent), to make it easier to split MBE into different (self-contained) examples.
+      I've just picked my favourite (@SubscribeEvent), to make it easier to split MBE into different (self-contained) examples.
       More information here: http://greyminecraftcoder.blogspot.com/2020/02/how-forge-starts-up-your-code-1144.html
 
    2) your mod may have to initialise itself differently depending on whether it is being run on a DedicatedServer or a CombinedClient distribution of Minecraft
@@ -53,13 +57,33 @@ public class MinecraftByExample {
   public static final String MODID = "minecraftbyexample";
 //    public static final String GUIFACTORY = "minecraftbyexample.mbe70_configuration.MBEGuiFactory"; //delete if MBE70 not present
 
+
+  // get a reference to the event bus for this mod;  Registration events are
+  public static IEventBus MOD_EVENT_BUS;
+
   public MinecraftByExample() {
-    // The event bus will search these classes for methods which are interested in startup events
+//    ForgeLoggerTweaker.setMinimumLevel(Level.WARN);   // get rid of all the noise from the console to show warnings more clearly.  Doesn't work yet!
+
+    MOD_EVENT_BUS = FMLJavaModLoadingContext.get().getModEventBus();
+
+    // The event bus register method will search these classes for methods which are interested in startup events
     //    (i.e. methods that are decorated with the @SubscribeEvent annotation)
 
-    MinecraftForge.EVENT_BUS.register(minecraftbyexample.mbe01_block_simple.StartupClientOnly.class);
+    // Beware - there are two event busses: the MinecraftForge.EVENT_BUS and your own ModEventBus.
+    //  If you subscribe your event to the wrong bus, it will never get called.
+    // Based on my testing: ModEventBus is used for setup events only, in the following order:
+    // * RegistryEvent of all types
+    // * ColorHandlerEvent for blocks & items
+    // * ParticleFactoryRegisterEvent
+    // * FMLCommonSetupEvent
+    // * TextureStitchEvent
+    // * FMLClientSetupEvent or FMLDedicatedServerSetupEvent
+    // * ModelRegistryEvent
+    // * Other ModLifecycleEvents such as InterModEnqueueEvent, InterModProcessEvent
+    // Everything else: the MinecraftForge.EVENT_BUS
 
+    MOD_EVENT_BUS.register(minecraftbyexample.mbe01_block_simple.StartupClientOnly.class);
+    MOD_EVENT_BUS.register(minecraftbyexample.mbe01_block_simple.StartupCommon.class);
 
-    MinecraftForge.EVENT_BUS.register(minecraftbyexample.mbe01_block_simple.StartupCommon.class);
   }
 }

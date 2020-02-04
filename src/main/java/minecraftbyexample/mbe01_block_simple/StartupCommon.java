@@ -29,8 +29,13 @@ public class StartupCommon
   @SubscribeEvent
   public static void onItemsRegistration(final RegistryEvent.Register<Item> itemRegisterEvent) {
     // We need to create a BlockItem so the player can carry this block in their hand and it can appear in the inventory
-    Item.Properties itemSimpleProperties = new Item.Properties().maxStackSize(20).group(ItemGroup.BUILDING_BLOCKS);
+    final int MAXIMUM_STACK_SIZE = 20;  // player can only hold 20 of this block in their hand at once
+
+    Item.Properties itemSimpleProperties = new Item.Properties()
+                                                   .maxStackSize(MAXIMUM_STACK_SIZE)
+                                                   .group(ItemGroup.BUILDING_BLOCKS);  // which inventory tab?
     itemBlockSimple = new BlockItem(blockSimple, itemSimpleProperties);
+    itemBlockSimple.setRegistryName(blockSimple.getRegistryName());
     itemRegisterEvent.getRegistry().register(itemBlockSimple);
   }
 }

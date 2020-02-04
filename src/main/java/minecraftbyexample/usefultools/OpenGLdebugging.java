@@ -323,14 +323,8 @@ public class OpenGLdebugging
     }
 
     if (instance.propertyList[propertyListIndex].fetchCommand.equals("glGetBooleanv()")) {
-      ByteBuffer params = BufferUtils.createByteBuffer(16);
-
-      GL11.glGetBoolean(gLconstant, params);
-      String out = "";
-      for (int i = 0; i < params.capacity(); ++i) {
-        out += (i == 0 ? "" : ", ") + params.get(i);
-      }
-      return out;
+      boolean value = GL11.glGetBoolean(gLconstant);
+      return "" + value;
     }
 
     return "";
