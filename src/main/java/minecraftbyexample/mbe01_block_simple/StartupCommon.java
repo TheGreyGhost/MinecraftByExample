@@ -6,6 +6,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 /**
  * User: The Grey Ghost
@@ -37,5 +39,10 @@ public class StartupCommon
     itemBlockSimple = new BlockItem(blockSimple, itemSimpleProperties);
     itemBlockSimple.setRegistryName(blockSimple.getRegistryName());
     itemRegisterEvent.getRegistry().register(itemBlockSimple);
+  }
+
+  @SubscribeEvent
+  public void onCommonSetupEvent(FMLCommonSetupEvent event) {
+    // not actually required for this example....
   }
 }

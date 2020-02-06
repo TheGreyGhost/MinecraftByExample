@@ -16,4 +16,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
  */
 public class StartupClientOnly
 {
+    @SubscribeEvent
+    public void onClientSetupEvent(FMLClientSetupEvent event) {
+      // not actually required for this example....
+    }
 }

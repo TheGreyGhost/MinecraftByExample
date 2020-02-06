@@ -59,7 +59,7 @@ public class ForgeLoggerTweaker {
     // Apache/Log4J Filter - used by Forge
     @Override
     public Result filter(LogEvent event) {
-      if (minimumLevel.compareTo(event.getLevel()) > 0) return Result.DENY;
+      if (minimumLevel.compareTo(event.getLevel()) < 0) return Result.DENY;
       return Result.NEUTRAL;
     }
 

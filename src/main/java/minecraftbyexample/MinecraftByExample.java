@@ -62,7 +62,8 @@ public class MinecraftByExample {
   public static IEventBus MOD_EVENT_BUS;
 
   public MinecraftByExample() {
-//    ForgeLoggerTweaker.setMinimumLevel(Level.WARN);   // get rid of all the noise from the console to show warnings more clearly.  Doesn't work yet!
+//    ForgeLoggerTweaker.setMinimumLevel(Level.WARN);   // get rid of all the noise from the console (after mod is constructed) to show warnings more clearly.
+//    ForgeLoggerTweaker.applyLoggerFilter();
 
     MOD_EVENT_BUS = FMLJavaModLoadingContext.get().getModEventBus();
 
@@ -84,6 +85,9 @@ public class MinecraftByExample {
 
     MOD_EVENT_BUS.register(minecraftbyexample.mbe01_block_simple.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe01_block_simple.StartupCommon.class);
+
+    MOD_EVENT_BUS.register(minecraftbyexample.mbe10_item_simple.StartupClientOnly.class);
+    MOD_EVENT_BUS.register(minecraftbyexample.mbe10_item_simple.StartupCommon.class);
 
   }
 }

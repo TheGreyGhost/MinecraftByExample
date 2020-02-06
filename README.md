@@ -42,7 +42,7 @@ If you use IntelliJ, you might find these [xml mapping files][mapfiles] useful t
   - X [MBE08][08] - how to add a creative tab for organising your custom blocks / items
 
 ### Items
-  - X [MBE10][10] - a simple item
+  - [MBE10][10] - a simple item
   - X [MBE11][11] - an item with multiple variants - rendered using multiple models and multiple layers
   - X [MBE12][12] - an item that stores extra information in NBT, also illustrates the "in use" animation similar to drawing a bow
   - X [MBE13][13] - customise Mining behaviour of Blocks and Items - several test classes that show how mining works
