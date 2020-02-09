@@ -104,9 +104,8 @@ public class MinecraftByExample {
     MOD_EVENT_BUS.register(minecraftbyexample.mbe02_block_partial.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe02_block_partial.StartupCommon.class);
 
-    MOD_EVENT_BUS.register(minecraftbyexample.testingarea.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.testingarea.StartupCommon.class);
+    MOD_EVENT_BUS.register(minecraftbyexample.mbe45_commands.StartupClientOnly.class);
+    MOD_EVENT_BUS.register(minecraftbyexample.mbe45_commands.StartupCommon.class);
 
-    MinecraftForge.EVENT_BUS.register(minecraftbyexample.testingarea.StartupForgeEvents.class);
   }
 }

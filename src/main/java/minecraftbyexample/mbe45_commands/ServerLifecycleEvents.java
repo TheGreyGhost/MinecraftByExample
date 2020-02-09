@@ -1,10 +1,10 @@
 package minecraftbyexample.mbe45_commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import minecraftbyexample.testingarea.MBEsayCommand;
 import net.minecraft.command.CommandSource;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import minecraftbyexample.mbe45_commands.MBEsayCommand;
 
 /**
  * User: The Grey Ghost

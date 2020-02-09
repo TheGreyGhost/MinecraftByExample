@@ -42,7 +42,7 @@ public class StartupCommon
   }
 
   @SubscribeEvent
-  public void onCommonSetupEvent(FMLCommonSetupEvent event) {
+  public static void onCommonSetupEvent(FMLCommonSetupEvent event) {
     // not actually required for this example....
   }
 }
