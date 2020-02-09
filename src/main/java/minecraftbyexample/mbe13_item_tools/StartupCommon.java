@@ -1,7 +1,7 @@
 //package minecraftbyexample.mbe13_item_tools;
 //
 //import com.google.common.collect.Sets;
-//import minecraftbyexample.usefultools.MethodCallLogger;
+//import minecraftbyexample.usefultools.debugging.MethodCallLogger;
 //import net.minecraft.block.Block;
 //import net.minecraft.block.material.Material;
 //import net.minecraft.block.Blocks;

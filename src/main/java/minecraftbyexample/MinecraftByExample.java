@@ -1,13 +1,14 @@
 package minecraftbyexample;
 
-import minecraftbyexample.mbe01_block_simple.StartupClientOnly;
-import minecraftbyexample.usefultools.ForgeLoggerTweaker;
-import net.minecraft.block.Blocks;
+import com.mojang.brigadier.CommandDispatcher;
+import minecraftbyexample.testingarea.MBEsayCommand;
+import minecraftbyexample.usefultools.debugging.ForgeLoggerTweaker;
+import net.minecraft.command.CommandSource;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.Level;
 
@@ -62,8 +63,11 @@ public class MinecraftByExample {
   public static IEventBus MOD_EVENT_BUS;
 
   public MinecraftByExample() {
-//    ForgeLoggerTweaker.setMinimumLevel(Level.WARN);   // get rid of all the noise from the console (after mod is constructed) to show warnings more clearly.
-//    ForgeLoggerTweaker.applyLoggerFilter();
+    final boolean HIDE_CONSOLE_NOISE = true;  // get rid of all the noise from the console (after mod is constructed) to show warnings more clearly.
+    if (HIDE_CONSOLE_NOISE) {
+      ForgeLoggerTweaker.setMinimumLevel(Level.WARN);
+      ForgeLoggerTweaker.applyLoggerFilter();
+    }
 
     MOD_EVENT_BUS = FMLJavaModLoadingContext.get().getModEventBus();
 
@@ -72,6 +76,14 @@ public class MinecraftByExample {
 
     // Beware - there are two event busses: the MinecraftForge.EVENT_BUS and your own ModEventBus.
     //  If you subscribe your event to the wrong bus, it will never get called.
+    // likewise, beware of the difference between static and non-static methods, i.e.
+    //  If you register a class, but the @SubscribeEvent is on a non-static method, it won't be called.  e.g.
+    //  MOD_EVENT_BUS.register(MyClass.class);
+    //  public class ServerLifecycleEvents {
+    //    @SubscribeEvent
+    //      public void onServerStartingEvent(FMLServerStartingEvent event) { // missing static! --> never gets called}
+    //  }
+
     // Based on my testing: ModEventBus is used for setup events only, in the following order:
     // * RegistryEvent of all types
     // * ColorHandlerEvent for blocks & items
@@ -89,5 +101,12 @@ public class MinecraftByExample {
     MOD_EVENT_BUS.register(minecraftbyexample.mbe10_item_simple.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe10_item_simple.StartupCommon.class);
 
+    MOD_EVENT_BUS.register(minecraftbyexample.mbe02_block_partial.StartupClientOnly.class);
+    MOD_EVENT_BUS.register(minecraftbyexample.mbe02_block_partial.StartupCommon.class);
+
+    MOD_EVENT_BUS.register(minecraftbyexample.testingarea.StartupClientOnly.class);
+    MOD_EVENT_BUS.register(minecraftbyexample.testingarea.StartupCommon.class);
+
+    MinecraftForge.EVENT_BUS.register(minecraftbyexample.testingarea.StartupForgeEvents.class);
   }
 }

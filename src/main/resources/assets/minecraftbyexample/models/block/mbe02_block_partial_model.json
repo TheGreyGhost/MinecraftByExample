@@ -1,9 +1,9 @@
 {
     "ambientocclusion": false,
     "textures": {
-        "particle": "blocks/lapis_block",
-        "base": "blocks/lapis_block",
-        "pole": "blocks/stone"
+        "particle": "block/lapis_block",
+        "base": "block/lapis_block",
+        "pole": "block/stone"
     },
 
     "elements": [

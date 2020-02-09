@@ -1,9 +1,9 @@
 {
   "parent": "minecraftbyexample:block/mbe06_block_redstone_variable_source_model",
   "textures": {
-      "torch1": "blocks/redstone_torch_on",
-      "torch2": "blocks/redstone_torch_on",
-      "torch3": "blocks/redstone_torch_on",
-      "torch4": "blocks/redstone_torch_on"
+      "torch1": "block/redstone_torch_on",
+      "torch2": "block/redstone_torch_on",
+      "torch3": "block/redstone_torch_on",
+      "torch4": "block/redstone_torch_on"
   }
 }

@@ -1,4 +1,4 @@
-package minecraftbyexample.usefultools;
+package minecraftbyexample.usefultools.debugging;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;

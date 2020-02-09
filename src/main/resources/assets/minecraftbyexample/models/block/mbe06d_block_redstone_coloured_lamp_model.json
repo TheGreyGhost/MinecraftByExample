@@ -1,14 +1,14 @@
 {
   "textures": {
-    "particle": "minecraftbyexample:blocks/mbe06d/mbe06d_coloured_lamp_top",
-    "bottom": "blocks/obsidian",
-    "top": "minecraftbyexample:blocks/mbe06d/mbe06d_coloured_lamp_top",
-    "side_none": "minecraftbyexample:blocks/mbe06d/mbe06d_coloured_lamp_side_none",
-    "side_red": "minecraftbyexample:blocks/mbe06d/mbe06d_coloured_lamp_side_red",
-    "side_green": "minecraftbyexample:blocks/mbe06d/mbe06d_coloured_lamp_side_green",
-    "side_blue": "minecraftbyexample:blocks/mbe06d/mbe06d_coloured_lamp_side_blue",
-    "overlay_side": "minecraftbyexample:blocks/mbe06d/mbe06d_coloured_lamp_overlay_side",
-    "overlay_top": "minecraftbyexample:blocks/mbe06d/mbe06d_coloured_lamp_overlay_top"
+    "particle": "minecraftbyexample:block/mbe06d/mbe06d_coloured_lamp_top",
+    "bottom": "block/obsidian",
+    "top": "minecraftbyexample:block/mbe06d/mbe06d_coloured_lamp_top",
+    "side_none": "minecraftbyexample:block/mbe06d/mbe06d_coloured_lamp_side_none",
+    "side_red": "minecraftbyexample:block/mbe06d/mbe06d_coloured_lamp_side_red",
+    "side_green": "minecraftbyexample:block/mbe06d/mbe06d_coloured_lamp_side_green",
+    "side_blue": "minecraftbyexample:block/mbe06d/mbe06d_coloured_lamp_side_blue",
+    "overlay_side": "minecraftbyexample:block/mbe06d/mbe06d_coloured_lamp_overlay_side",
+    "overlay_top": "minecraftbyexample:block/mbe06d/mbe06d_coloured_lamp_overlay_top"
   },
   "elements": [
     {   "from": [ 0, 0, 0 ],
