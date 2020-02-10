@@ -1,0 +1,101 @@
+
+https://github.com/Mojang/brigadier
+
+public class SayCommand {
+   public static void register(CommandDispatcher<CommandSource> dispatcher) {
+      dispatcher.register(Commands.literal("say")
+                          .requires((commandSource) -> { return commandSource.hasPermissionLevel(2); })
+                          .then(Commands.argument("message", MessageArgument.message())
+                          .executes((commandContext) -> {
+                              ITextComponent itextcomponent = MessageArgument.getMessage(commandContext, "message");
+                              commandContext.getSource().getServer().getPlayerList().sendMessage(
+                                      new TranslationTextComponent("chat.type.announcement",
+                                              commandContext.getSource().getDisplayName(), itextcomponent));
+                              return 1;
+                              }
+                              )));
+   }
+}
+
+
+public class TagCommand {
+   private static final SimpleCommandExceptionType ADD_FAILED = new SimpleCommandExceptionType(new TranslationTextComponent("commands.tag.add.failed"));
+   private static final SimpleCommandExceptionType REMOVE_FAILED = new SimpleCommandExceptionType(new TranslationTextComponent("commands.tag.remove.failed"));
+
+   public static void register(CommandDispatcher<CommandSource> dispatcher) {
+      dispatcher.register(Commands.literal("tag")
+              .requires((p_198751_0_) -> { return p_198751_0_.hasPermissionLevel(2);})
+              .then(Commands.argument("targets", EntityArgument.entities())
+              .then(Commands.literal("add")
+                .then(Commands.argument("name", StringArgumentType.word())
+                .executes((p_198746_0_) -> {
+                  return addTag(p_198746_0_.getSource(), EntityArgument.getEntities(p_198746_0_, "targets"), StringArgumentType.getString(p_198746_0_, "name"));
+                  })
+                ))
+              .then(Commands.literal("remove")
+                 .then(Commands.argument("name", StringArgumentType.word())
+                       .suggests((p_198745_0_, p_198745_1_) -> {
+                            return ISuggestionProvider.suggest(getAllTags(EntityArgument.getEntities(p_198745_0_, "targets")), p_198745_1_); })
+                       .executes((p_198742_0_) -> {
+                            return removeTag(p_198742_0_.getSource(), EntityArgument.getEntities(p_198742_0_, "targets"), StringArgumentType.getString(p_198742_0_, "name"));
+                            })
+                       )
+                  )
+              .then(Commands.literal("list")
+                    .executes((p_198747_0_) -> {
+                      return listTags(p_198747_0_.getSource(), EntityArgument.getEntities(p_198747_0_, "targets"));
+                     })
+                   )
+              ));
+   }
+
+public class TimeCommand {
+   public static void register(CommandDispatcher<CommandSource> dispatcher) {
+      dispatcher.register(Commands.literal("time").requires((p_198828_0_) -> {return p_198828_0_.hasPermissionLevel(2);})
+        .then(Commands.literal("set")
+                .then(Commands.literal("day").executes((p_198832_0_) -> { return setTime(p_198832_0_.getSource(), 1000);}))
+                .then(Commands.literal("noon").executes((p_198825_0_) -> {return setTime(p_198825_0_.getSource(), 6000);}))
+                .then(Commands.literal("night").executes((p_198822_0_) -> {return setTime(p_198822_0_.getSource(), 13000);}))
+                .then(Commands.literal("midnight").executes((p_200563_0_) -> {return setTime(p_200563_0_.getSource(), 18000);}))
+                .then(Commands.argument("time", TimeArgument.func_218091_a())
+                      .executes((p_200564_0_) -> {return setTime(p_200564_0_.getSource(), IntegerArgumentType.getInteger(p_200564_0_, "time"));})))
+        .then(Commands.literal("add")
+                .then(Commands.argument("time", TimeArgument.func_218091_a())
+                      .executes((p_198830_0_) -> {return addTime(p_198830_0_.getSource(), IntegerArgumentType.getInteger(p_198830_0_, "time"));})))
+        .then(Commands.literal("query")
+                .then(Commands.literal("daytime")
+                      .executes((p_198827_0_) -> {return sendQueryResults(p_198827_0_.getSource(), getDayTime(p_198827_0_.getSource().getWorld()));}))
+                .then(Commands.literal("gametime")
+                      .executes((p_198821_0_) -> {return sendQueryResults(p_198821_0_.getSource(), (int)(p_198821_0_.getSource().getWorld().getGameTime() % 2147483647L));}))
+                .then(Commands.literal("day")
+                      .executes((p_198831_0_) -> {return sendQueryResults(p_198831_0_.getSource(), (int)(p_198831_0_.getSource().getWorld().getDayTime() / 24000L % 2147483647L));}))));
+   }
+
+   private static int getDayTime(ServerWorld worldIn) {
+      return (int)(worldIn.getDayTime() % 24000L);
+   }
+
+   private static int sendQueryResults(CommandSource source, int time) {
+      source.sendFeedback(new TranslationTextComponent("commands.time.query", time), false);
+      return time;
+   }
+
+   public static int setTime(CommandSource source, int time) {
+      for(ServerWorld serverworld : source.getServer().getWorlds()) {
+         serverworld.setDayTime((long)time);
+      }
+
+      source.sendFeedback(new TranslationTextComponent("commands.time.set", time), true);
+      return getDayTime(source.getWorld());
+   }
+
+   public static int addTime(CommandSource source, int amount) {
+      for(ServerWorld serverworld : source.getServer().getWorlds()) {
+         serverworld.setDayTime(serverworld.getDayTime() + (long)amount);
+      }
+
+      int i = getDayTime(source.getWorld());
+      source.sendFeedback(new TranslationTextComponent("commands.time.set", i), true);
+      return i;
+   }
+}

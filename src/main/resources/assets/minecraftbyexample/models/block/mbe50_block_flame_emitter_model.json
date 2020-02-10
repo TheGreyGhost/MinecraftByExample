@@ -1,9 +1,9 @@
 {
     "ambientocclusion": false,
     "textures": {
-        "particle": "blocks/obsidian",
-        "base": "blocks/redstone_block",
-        "pole": "blocks/obsidian"
+        "particle": "block/obsidian",
+        "base": "block/redstone_block",
+        "pole": "block/obsidian"
     },
 
     "elements": [

@@ -31,6 +31,9 @@ These are caused when you have specified a filename or path which is not correct
 
 1. you've misspelled it
 1. the upper/lower case doesn't match
-1. you've forgotten the resource domain, eg `blockmodel` instead of `minecraftbyexample:blockmodel`
+1. you've forgotten the resource domain, eg `item/mbe10_item_simple_icon` instead of 'minecraftbyexample:item/mbe10_item_simple_icon`
 1. the folder structure of your assets folders is incorrect
 
+Rule of thumb:
+If the item in your hand is a big purple-and-black cube, then your item model was not found or is missing (`resources\assets\minecraftbyexample\models\item\`).  Check the console for an error message that tells you where Forge is expecting to find your item model.
+If the item in your hand is the right shape but is purple and black, then your item model is right but the texture file wasn't found.  No console error message appears in this case.

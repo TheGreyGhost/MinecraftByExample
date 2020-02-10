@@ -1,4 +1,4 @@
-package minecraftbyexample.usefultools;
+package minecraftbyexample.usefultools.debugging;
 
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.thread.EffectiveSide;

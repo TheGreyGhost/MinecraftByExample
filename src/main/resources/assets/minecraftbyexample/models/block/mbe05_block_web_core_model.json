@@ -1,12 +1,12 @@
 {
   "ambientocclusion": false,
   "textures": {
-    "down": "minecraftbyexample:blocks/mbe05_block_3d_web",
-    "up": "minecraftbyexample:blocks/mbe05_block_3d_web",
-    "north": "minecraftbyexample:blocks/mbe05_block_3d_web",
-    "south": "minecraftbyexample:blocks/mbe05_block_3d_web",
-    "east": "minecraftbyexample:blocks/mbe05_block_3d_web",
-    "west": "minecraftbyexample:blocks/mbe05_block_3d_web"
+    "down": "minecraftbyexample:block/mbe05_block_3d_web",
+    "up": "minecraftbyexample:block/mbe05_block_3d_web",
+    "north": "minecraftbyexample:block/mbe05_block_3d_web",
+    "south": "minecraftbyexample:block/mbe05_block_3d_web",
+    "east": "minecraftbyexample:block/mbe05_block_3d_web",
+    "west": "minecraftbyexample:block/mbe05_block_3d_web"
   },
   "elements": [
     {  "from": [5.5, 5.5, 5.5],

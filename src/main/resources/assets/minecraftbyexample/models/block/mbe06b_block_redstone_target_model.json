@@ -1,8 +1,8 @@
 {
     "textures": {
-        "particle": "minecraftbyexample:blocks/mbe06b_redstone_target",
-        "wood": "blocks/planks_oak",
-        "target": "minecraftbyexample:blocks/mbe06b_redstone_target"
+        "particle": "minecraftbyexample:block/mbe06b_redstone_target",
+        "wood": "block/planks_oak",
+        "target": "minecraftbyexample:block/mbe06b_redstone_target"
     },
     "elements": [
         {   "from": [ 0, 0, 15 ],

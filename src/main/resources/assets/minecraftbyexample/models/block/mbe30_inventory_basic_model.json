@@ -1,10 +1,10 @@
 {
     "ambientocclusion": false,
     "textures": {
-        "particle": "minecraftbyexample:blocks/mbe30_bottom_top",
-        "updown": "minecraftbyexample:blocks/mbe30_bottom_top",
-        "side": "minecraftbyexample:blocks/mbe30_side",
-        "front": "minecraftbyexample:blocks/mbe30_front"
+        "particle": "minecraftbyexample:block/mbe30_bottom_top",
+        "updown": "minecraftbyexample:block/mbe30_bottom_top",
+        "side": "minecraftbyexample:block/mbe30_side",
+        "front": "minecraftbyexample:block/mbe30_front"
     },
 
     "elements": [
