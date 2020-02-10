@@ -12,6 +12,9 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Created by TGG on 9/02/2020.
  *
@@ -19,21 +22,22 @@ import net.minecraft.util.text.TranslationTextComponent;
  * Works exactly the same as the vanilla "say" command except that the words are converted to pig latin
  * https://www.geeksforgeeks.org/encoding-word-pig-latin/
  *
- * Information on permission levels:
+ * Information on permission levels for servers:
  * https://nodecraft.com/support/games/minecraft/how-to-set-a-player-as-op-admin
+ *
+ * https://github.com/Mojang/brigadier for syntax
  *
  */
 public class MBEsayCommand {
   public static void register(CommandDispatcher<CommandSource> dispatcher) {
-    LiteralArgumentBuilder<CommandSource> rootKeyword = Commands.literal("mbesay");
-    RequiredArgumentBuilder messageArgument =
-            Commands.argument("message", MessageArgument.message())
-                    .executes(commandContext -> sendPigLatinMessage(commandContext));
+    LiteralArgumentBuilder<CommandSource> mbesayCommand
+            = Commands.literal("mbesay")
+                 .requires((commandSource) -> commandSource.hasPermissionLevel(2))
+                 .then(Commands.argument("message", MessageArgument.message())
+                         .executes(MBEsayCommand::sendPigLatinMessage)
+                      );
 
-    LiteralArgumentBuilder<CommandSource> fullCommand = rootKeyword
-            .requires((commandSource) -> {return commandSource.hasPermissionLevel(2);})
-            .then(messageArgument);
-    dispatcher.register(fullCommand);
+    dispatcher.register(mbesayCommand);
   }
 
   /**
@@ -41,12 +45,13 @@ public class MBEsayCommand {
    */
   static int sendPigLatinMessage(CommandContext<CommandSource> commandContext) throws CommandSyntaxException {
     ITextComponent messageValue = MessageArgument.getMessage(commandContext, "message");
-    TranslationTextComponent translatedText = new TranslationTextComponent("chat.type.announcement",
-            commandContext.getSource().getDisplayName(), messageValue);
-    String unformattedText = translatedText.getString();
-
+    String unformattedText = messageValue.getString();
     String pigifiedText = convertParagraphToPigLatin(unformattedText);
-    ITextComponent finalText = new StringTextComponent(pigifiedText);
+    ITextComponent pigifiedTextComponent = new StringTextComponent(pigifiedText);
+
+    TranslationTextComponent finalText = new TranslationTextComponent("chat.type.announcement",
+            commandContext.getSource().getDisplayName(), pigifiedTextComponent);
+
     commandContext.getSource().getServer().getPlayerList().sendMessage(finalText);
     return 1;
   }
@@ -55,21 +60,22 @@ public class MBEsayCommand {
    * Break the body of text into words and convert each word into its pig latin equivalent
    */
   static String convertParagraphToPigLatin(String input) {
-    String LETTERS_OR_NONLETTERS = "\\P{L}+|[^\\P{L}+]"; // match either a group of letters, or a group of non-letters
-    String LETTERS_ONLY = "\\P{L}+";
+    String LETTERS_OR_NONLETTERS = "([a-zA-Z]+|[^a-zA-Z]+)"; // match either a group of letters, or a group of non-letters
+    String LETTERS_ONLY = "[a-zA-Z]+";
 
-    String[] lettersOrNonLettersTokens = input.split(LETTERS_OR_NONLETTERS);
+    Pattern lettersOrNonLettersPatten = Pattern.compile(LETTERS_OR_NONLETTERS);
+    Matcher matcher = lettersOrNonLettersPatten.matcher(input);
+
     StringBuilder output = new StringBuilder();
-
-    for (String wordOrSeparator : lettersOrNonLettersTokens) {
-      if (wordOrSeparator.matches(LETTERS_ONLY)) {
-        output.append(convertWordToPigLatin(wordOrSeparator));
+    while(matcher.find()) {
+      String tokenFound = matcher.group();
+      if (tokenFound.matches(LETTERS_ONLY)) {
+        output.append(convertWordToPigLatin(tokenFound));
       } else {
-        output.append(wordOrSeparator);
+        output.append(tokenFound);
       }
     }
     return output.toString();
-
   }
 
   /**

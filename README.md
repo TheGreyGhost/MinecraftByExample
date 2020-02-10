@@ -65,6 +65,9 @@ If you use IntelliJ, you might find these [xml mapping files][mapfiles] useful t
 ### Heads Up Display/Overlays
   - X [MBE40][40] - simple customisations of the heads up display (hotbar, health meter)
 
+### Commands
+  - [MBE45][45] - custom commands
+
 ### Particles - particle effects
   - X [MBE50][50] - shows how to use vanilla Particles; also how to generate your own custom Particles
 
@@ -120,6 +123,8 @@ Check out [this video][forge_installation] for more help installing Forge.
 
 [40]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe40_hud_overlay
 
+[45]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe45_commands
+
 [50]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe50_particle
 
 [60]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe60_network_messages
@@ -133,9 +138,7 @@ Check out [this video][forge_installation] for more help installing Forge.
 [fabricwiki]: https://fabricmc.net/wiki/start
 
 [forge_installation]: http://youtu.be/8VEdtQLuLO0
-[alternate_idea]: #alternate-setup-for-intellij-idea
 [gradle_tool_window]: https://www.jetbrains.com/idea/help/gradle-tool-window.html
-
 
 [version1-8]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-8final
 [version1-8-9]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-8-9final

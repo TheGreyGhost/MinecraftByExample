@@ -20,5 +20,6 @@ public class ServerLifecycleEvents
   public static void onServerStartingEvent(FMLServerStartingEvent event) {
     CommandDispatcher<CommandSource> commandDispatcher = event.getCommandDispatcher();
     MBEsayCommand.register(commandDispatcher);
+    MBEquoteCommand.register(commandDispatcher);
   }
 }
