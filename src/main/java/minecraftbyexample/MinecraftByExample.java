@@ -107,5 +107,8 @@ public class MinecraftByExample {
     MOD_EVENT_BUS.register(minecraftbyexample.mbe45_commands.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe45_commands.StartupCommon.class);
 
+    //----------------
+    MOD_EVENT_BUS.register(minecraftbyexample.usefultools.debugging.StartupClientOnly.class);
+    MOD_EVENT_BUS.register(minecraftbyexample.usefultools.debugging.StartupCommon.class);
   }
 }
