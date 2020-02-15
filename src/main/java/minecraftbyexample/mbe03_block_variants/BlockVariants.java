@@ -1,219 +1,145 @@
-//package minecraftbyexample.mbe03_block_variants;
-//
-//import net.minecraft.block.Block;
-//import net.minecraft.block.BlockRenderType;
-//import net.minecraft.block.BlockState;
-//import net.minecraft.block.material.Material;
-//import net.minecraft.block.properties.IProperty;
-//import net.minecraft.block.properties.PropertyDirection;
-//import net.minecraft.block.properties.PropertyEnum;
-//import net.minecraft.block.state.BlockStateContainer;
-//import net.minecraft.entity.LivingEntity;
-//import net.minecraft.item.ItemGroup;
-//import net.minecraft.item.ItemStack;
-//import net.minecraft.util.*;
-//import net.minecraft.util.math.AxisAlignedBB;
-//import net.minecraft.util.math.BlockPos;
-//import net.minecraft.world.IBlockAccess;
-//import net.minecraft.world.World;
-//import net.minecraftforge.fml.relauncher.Side;
-//import net.minecraftforge.fml.relauncher.SideOnly;
-//
-///**
-// * User: The Grey Ghost
-// * Date: 24/12/2014
-// *
-// * BlockVariants uses a model which
-// * - doesn't occupy the entire 1x1x1m space,
-// * - is made up of two pieces,
-// * - uses a CUTOUT texture (with seethrough holes)
-// * - has variants (can face in four directions, and can be four different colours)
-// * We can walk over it without colliding.
-// * For background information on block see here http://greyminecraftcoder.blogspot.com.au/2014/12/blocks-18.html
-// * For a couple of the methods below the Forge guys have marked it as deprecated.  But you still need to override those
-// *   "deprecated" block methods.  What they mean is "when you want to find out if a block is (eg) isOpaqueCube(),
-// *   don't call block.isOpaqueCube(), call iBlockState.isOpaqueCube() instead".
-// * If that doesn't make sense to you yet, don't worry.  Just ignore the "deprecated method" warning.
-// */
-//public class BlockVariants extends Block
-//{
-//  public BlockVariants()
-//  {
-//    super(Material.ROCK);
-//    this.setCreativeTab(ItemGroup.BUILDING_BLOCKS);   // the block will appear on the Blocks tab in creative
-//  }
-//
-//  // the block will render in the CUTOUT layer.  See http://greyminecraftcoder.blogspot.co.at/2014/12/block-rendering-18.html for more information.
-//  @OnlyIn(Dist.CLIENT)
-//  public BlockRenderLayer getBlockLayer()
-//  {
-//    return BlockRenderLayer.CUTOUT;
-//  }
-//
-//  // used by the renderer to control lighting and visibility of other block.
-//  // set to false because this block doesn't fill the entire 1x1x1 space
-//  @Override
-//  public boolean isOpaqueCube(BlockState iBlockState) {
-//    return false;
-//  }
-//
-//  // used by the renderer to control lighting and visibility of other block, also by
-//  // (eg) wall or fence to control whether the fence joins itself to this block
-//  // set to false because this block doesn't fill the entire 1x1x1 space
-//  @Override
-//  public boolean isFullCube(BlockState iBlockState) {
-//    return false;
-//  }
-//
-//  // render using a BakedModel (mbe01_block_simple.json --> mbe01_block_simple_model.json)
-//  // not strictly required because the default (super method) is 3.
-//  @Override
-//  public BlockRenderType getRenderType(BlockState iBlockState) {
-//    return BlockRenderType.MODEL;
-//  }
-//
-//  // by returning a null collision bounding box we stop the player from colliding with it
-//  @Override
-//  public AxisAlignedBB getCollisionBoundingBox(BlockState state, IBlockAccess worldIn, BlockPos pos)
-//  {
-//    return NULL_AABB;
-//  }
-//
-//  // Our block has two properties:
-//  // 1) PROPERTYFACING for which way the sign points (east, west, north, south).  EnumFacing is as standard used by vanilla for a number of block.
-//  // 2) PROPERTYCOLOUR for the sign's colour.  ColoursEnum is a custom class (see below)
-//  public static final PropertyDirection PROPERTYFACING = PropertyDirection.create("facing", Direction.Plane.HORIZONTAL);
-//  public static final PropertyEnum PROPERTYCOLOUR = PropertyEnum.create("colour", EnumColour.class);
-//
-//  // this function returns the correct item type corresponding to the colour of our block;
-//  // i.e. when a sign is broken, it will drop the correct item.  Ignores Facing, because we get the same item
-//  //   no matter which way the block is facing
-//  @Override
-//  public int damageDropped(BlockState state)
-//  {
-//    EnumColour enumColour = (EnumColour)state.getValue(PROPERTYCOLOUR);
-//    return enumColour.getMetadata();
-//  }
-//
-//  // create a list of the subBlocks available for this block, i.e. one for each colour
-//  // ignores facings, because the facing is calculated when we place the item.
-//  //  - used to populate item for the creative inventory
-//  // - the "metadata" value of the block is set to the colours metadata
-//  @Override
-//  @OnlyIn(Dist.CLIENT)
-//  public void getSubBlocks(ItemGroup whichTab, NonNullList<ItemStack> items)
-//  {
-//    EnumColour[] allColours = EnumColour.values();
-//    for (EnumColour colour : allColours) {
-//      items.add(new ItemStack(this, 1, colour.getMetadata()));
-//    }
-//  }
-//
-//  // getStateFromMeta, getMetaFromState are used to interconvert between the block's property values and
-//  //   the stored metadata (which must be an integer in the range 0 - 15 inclusive)
-//  // The property is encoded as:
-//  // - lower two bits = facing direction (i.e. 0, 1, 2, 3)
-//  // - upper two bits = colour (i.e. 0, 4, 8, 12)
-//  @Override
-//  public BlockState getStateFromMeta(int meta)
-//  {
-//    Direction facing = Direction.getHorizontal(meta);
-//    int colourbits = (meta & 0x0c) >> 2; // 0x0c is hexadecimal, in binary 1100 - the upper two bits, corresponding to the colour
-//    EnumColour colour = EnumColour.byMetadata(colourbits);
-//    return this.getDefaultState().withProperty(PROPERTYCOLOUR, colour).withProperty(PROPERTYFACING, facing);
-//  }
-//
-//  @Override
-//  public int getMetaFromState(BlockState state)
-//  {
-//    Direction facing = (Direction)state.getValue(PROPERTYFACING);
-//    EnumColour colour = (EnumColour)state.getValue(PROPERTYCOLOUR);
-//
-//    int facingbits = facing.getHorizontalIndex();
-//    int colourbits = colour.getMetadata() << 2;
-//    return facingbits | colourbits;
-//  }
-//
-//  // this method isn't required if your properties only depend on the stored metadata.
-//  // it is required if:
-//  // 1) you are making a multiblock which stores information in other block eg BlockBed, BlockDoor
-//  // 2) your block's state depends on other neighbours (eg BlockFence)
-//  @Override
-//  public BlockState getActualState(BlockState state, IBlockAccess worldIn, BlockPos pos)
-//  {
-//    return state;
-//  }
-//
-//  // necessary to define which properties your block use
-//  // will also affect the variants listed in the blockstates model file
-//  @Override
-//  protected BlockStateContainer createBlockState()
-//  {
-//    return new BlockStateContainer(this, new IProperty[] {PROPERTYFACING, PROPERTYCOLOUR});
-//  }
-//
-//  // when the block is placed, set the appropriate facing direction based on which way the player is looking
-//  // the colour of block is contained in meta, it corresponds to the values we used for getSubBlocks
-//  @Override
-//  public BlockState getStateForPlacement(World worldIn, BlockPos pos, Direction blockFaceClickedOn, float hitX, float hitY, float hitZ, int meta, LivingEntity placer)
-//  {
-//    EnumColour colour = EnumColour.byMetadata(meta);
-//    // find the quadrant the player is facing
-//    Direction enumfacing = (placer == null) ? Direction.NORTH : Direction.fromAngle(placer.rotationYaw);
-//
-//    return this.getDefaultState().withProperty(PROPERTYFACING, enumfacing).withProperty(PROPERTYCOLOUR, colour);
-//  }
-//
-//  // create a new enum for our four colours, with some supporting methods to convert to & from metadata, and to get
-//  //  human-readable names.
-//  public static enum EnumColour implements IStringSerializable
-//  {
-//    BLUE(0, "blue"),
-//    RED(1, "red"),
-//    GREEN(2, "green"),
-//    YELLOW(3, "yellow");
-//
-//    public int getMetadata()
-//    {
-//      return this.meta;
-//    }
-//
-//    @Override
-//    public String toString()
-//    {
-//      return this.name;
-//    }
-//
-//    public static EnumColour byMetadata(int meta)
-//    {
-//      if (meta < 0 || meta >= META_LOOKUP.length)
-//      {
-//        meta = 0;
-//      }
-//
-//      return META_LOOKUP[meta];
-//    }
-//
-//    public String getName()
-//    {
-//      return this.name;
-//    }
-//
-//    private final int meta;
-//    private final String name;
-//    private static final EnumColour[] META_LOOKUP = new EnumColour[values().length];
-//
-//    private EnumColour(int i_meta, String i_name)
-//    {
-//      this.meta = i_meta;
-//      this.name = i_name;
-//    }
-//
-//    static
-//    {
-//      for (EnumColour colour : values()) {
-//        META_LOOKUP[colour.getMetadata()] = colour;
-//      }
-//    }
-//  }
-//}
+package minecraftbyexample.mbe03_block_variants;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.HorizontalBlock;
+import net.minecraft.block.material.Material;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.fluid.IFluidState;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.IProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.state.properties.DoorHingeSide;
+import net.minecraft.state.properties.DoubleBlockHalf;
+import net.minecraft.util.*;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
+import net.minecraft.world.chunk.BlockStateContainer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+import javax.annotation.Nullable;
+
+/**
+ * User: The Grey Ghost
+ * Date: 24/12/2014
+ *
+ * BlockVariants uses a model which
+ * - doesn't occupy the entire 1x1x1m space,
+ * - is made up of two pieces,
+ * - uses a CUTOUT texture (with seethrough holes)
+ * - has variants (can face in four directions, and can be four different colours)
+ * - can be waterlogged (filled with water) similar to a vanilla sign or fence
+ * We can walk over it without colliding.
+ * Note that the method for implementing block with variants has changed a lot since 1.12.  See here for more info:
+ * https://gist.github.com/williewillus/353c872bcf1a6ace9921189f6100d09a
+ *
+ * The basic rules for properly implementing variant blocks are:
+ * 1) For each variant which has a different item, create a unique block instance.
+ *    For example - different coloured beds are YELLOW_BED, RED_BED, GREEN_BED etc
+ *    They all share the same BedBlock class; the colour for each instance is provided to the constructor
+ * 2) For variants which affect the block in the world, but not the corresponding held item, use a blockstate property
+ *    For example - the direction that the bed is facing (north, east, south, west)
+ *
+ * For background information on block see here http://greyminecraftcoder.blogspot.com.au/2014/12/blocks-18.html
+ * For a couple of the methods below the Forge guys have marked it as deprecated.  But you still need to override those
+ * "deprecated" block methods.  What they mean is "when you want to find out what is a block's getRenderType(),
+ * don't call block.getRenderType(), call blockState.getRenderType() instead".
+ * If that doesn't make sense to you yet, don't worry.  Just ignore the "deprecated method" warning.
+ */
+public class BlockVariants extends Block
+{
+  public BlockVariants(EnumColour blockColour)
+  {
+    super(Block.Properties.create(Material.ROCK).doesNotBlockMovement() // we don't want this to block movement through the block
+         );
+    this.blockColour = blockColour;
+
+    BlockState defaultBlockState = this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(WATERLOGGED, false);
+    this.setDefaultState(defaultBlockState);
+  }
+
+  private EnumColour blockColour;
+
+  // the block will render in the CUTOUT layer.  See http://greyminecraftcoder.blogspot.co.at/2014/12/block-rendering-18.html for more information.
+  @OnlyIn(Dist.CLIENT)
+  public BlockRenderLayer getBlockLayer()
+  {
+    return BlockRenderLayer.CUTOUT;
+  }
+
+  // render using a BakedModel (mbe03_block_variants.json --> mbe03_block_variants_model.json)
+  // not strictly required because the default (super method) is BlockRenderType.MODEL;
+  @Override
+  public BlockRenderType getRenderType(BlockState iBlockState) {
+    return BlockRenderType.MODEL;
+  }
+
+  /**
+   * when the block is placed into the world, calculates the correct BlockState based on which direction the player is facing and whether there is already water
+   *   in this block or not
+   *   Copied from StandingSignBlock
+   * @param blockItemUseContext
+   * @return
+   */
+  @Nullable
+  public BlockState getStateForPlacement(BlockItemUseContext blockItemUseContext) {
+    World world = blockItemUseContext.getWorld();
+    BlockPos blockPos = blockItemUseContext.getPos();
+
+    IFluidState fluidLevelOfCurrentBlock = world.getFluidState(blockPos);
+    boolean blockContainsWater = fluidLevelOfCurrentBlock.getFluid() == Fluids.WATER;  // getFluid returns EMPTY if no fluid
+
+    Direction direction = blockItemUseContext.getPlacementHorizontalFacing();  // north, east, south, or west
+    float playerFacingDirectionAngle = blockItemUseContext.getPlacementYaw(); //if you want more directions than just NESW, you can use the yaw instead.
+        // likewise the pitch is also available for up/down placement.
+
+    BlockState blockState = getDefaultState().with(FACING, direction).with(WATERLOGGED, blockContainsWater);
+    return blockState;
+  }
+
+  @Override
+  protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    builder.add(FACING, WATERLOGGED);
+  }
+
+  public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
+      // Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST
+  public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+
+
+  // create a new enum for our four colours, with some supporting methods to get human-readable names.
+  public  enum EnumColour implements IStringSerializable
+  {
+    BLUE("blue"),
+    RED("red"),
+    GREEN("green"),
+    YELLOW("yellow");
+
+    @Override
+    public String toString()
+    {
+      return this.name;
+    }
+    public String getName()
+    {
+      return this.name;
+    }
+
+    private final String name;
+
+    private EnumColour(String i_name)
+    {
+      this.name = i_name;
+    }
+  }
+}
