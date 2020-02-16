@@ -1,29 +1,23 @@
 package minecraftbyexample.mbe03_block_variants;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.HorizontalBlock;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.IProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.state.properties.DoorHingeSide;
-import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.util.*;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.BlockStateContainer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -56,7 +50,7 @@ import javax.annotation.Nullable;
  * don't call block.getRenderType(), call blockState.getRenderType() instead".
  * If that doesn't make sense to you yet, don't worry.  Just ignore the "deprecated method" warning.
  */
-public class BlockVariants extends Block
+public class BlockVariants extends Block implements IWaterLoggable
 {
   public BlockVariants(EnumColour blockColour)
   {
@@ -68,7 +62,7 @@ public class BlockVariants extends Block
     this.setDefaultState(defaultBlockState);
   }
 
-  private EnumColour blockColour;
+  private EnumColour blockColour;  // not strictly needed for this example because each colour variant has its own registry name and corresponding model
 
   // the block will render in the CUTOUT layer.  See http://greyminecraftcoder.blogspot.co.at/2014/12/block-rendering-18.html for more information.
   @OnlyIn(Dist.CLIENT)
@@ -92,6 +86,7 @@ public class BlockVariants extends Block
    * @return
    */
   @Nullable
+  @Override
   public BlockState getStateForPlacement(BlockItemUseContext blockItemUseContext) {
     World world = blockItemUseContext.getWorld();
     BlockPos blockPos = blockItemUseContext.getPos();
@@ -107,18 +102,85 @@ public class BlockVariants extends Block
     return blockState;
   }
 
+  /**
+   * Defines the properties needed for the BlockState
+   * @param builder
+   */
   @Override
   protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
     builder.add(FACING, WATERLOGGED);
   }
 
-  public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
-      // Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST
-  public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+  // returns the shape of the block:
+  //  The image that you see on the screen (when a block is rendered) is determined by the block model (i.e. the model json file).
+  //  But Minecraft also uses a number of other ‘shapes’ to control the interaction of the block with its environment and with the player.
+  // See  https://greyminecraftcoder.blogspot.com/2020/02/block-shapes-voxelshapes-1144.html
+  @Override
+  public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+    return POST_SHAPE;
+  }
 
+  private static final Vec3d POST_MIN_CORNER = new Vec3d(7.0, 0.0, 7.0);
+  private static final Vec3d POST_MAX_CORNER = new Vec3d(8.0, 14.0, 8.0);
+  private static final VoxelShape POST_SHAPE = Block.makeCuboidShape(POST_MIN_CORNER.getX(), POST_MIN_CORNER.getY(), POST_MIN_CORNER.getZ(),
+                                                                     POST_MAX_CORNER.getX(), POST_MAX_CORNER.getY(), POST_MAX_CORNER.getZ());
+
+  private static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
+      // Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST
+  private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+
+  //----some methods to help handle the waterlogging correctly -----------
+
+  /**
+   * Try to fill water into this block
+   * @param world
+   * @param blockPos
+   * @param blockState
+   * @param fluidState
+   * @return true for success, false for failure
+   */
+  @Override
+  public boolean receiveFluid(IWorld world, BlockPos blockPos, BlockState blockState, IFluidState fluidState) {
+    if (world.isRemote()) return false; // only perform on the server
+    // if block is waterlogged already, or the fluid isn't water, return without doing anything.
+    if (fluidState.getFluid() != Fluids.WATER) return false;
+    if (blockState.get(BlockStateProperties.WATERLOGGED).booleanValue()) return false;
+
+    final int BLOCK_UPDATE_FLAG = 1;
+    final int SEND_UPDATE_TO_CLIENT_FLAG = 2;
+    world.setBlockState(blockPos, blockState.with(BlockStateProperties.WATERLOGGED, true),
+            BLOCK_UPDATE_FLAG + SEND_UPDATE_TO_CLIENT_FLAG);
+    world.getPendingFluidTicks().scheduleTick(blockPos, fluidState.getFluid(), fluidState.getFluid().getTickRate(world));
+    return true;
+  }
+
+  /**
+   * Try to use a bucket to remove waterlogging from this block
+   * @param world
+   * @param blockPos
+   * @param blockState
+   * @return Fluids.WATER for successful removal, Fluids.EMPTY if no water present
+   */
+  @Override
+  public Fluid pickupFluid(IWorld world, BlockPos blockPos, BlockState blockState) {
+    final int BLOCK_UPDATE_FLAG = 1;
+    final int SEND_UPDATE_TO_CLIENT_FLAG = 2;
+
+    // if block is waterlogged, remove the water from the block and return water to the caller
+    if (blockState.get(BlockStateProperties.WATERLOGGED).booleanValue()) {
+      world.setBlockState(blockPos, blockState.with(BlockStateProperties.WATERLOGGED, false),
+              BLOCK_UPDATE_FLAG + SEND_UPDATE_TO_CLIENT_FLAG);
+      return Fluids.WATER;
+    } else {
+      return Fluids.EMPTY;
+    }
+  }
+
+
+  //----------------
 
   // create a new enum for our four colours, with some supporting methods to get human-readable names.
-  public  enum EnumColour implements IStringSerializable
+  public enum EnumColour implements IStringSerializable
   {
     BLUE("blue"),
     RED("red"),

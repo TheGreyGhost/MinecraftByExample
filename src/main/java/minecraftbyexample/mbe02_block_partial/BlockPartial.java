@@ -75,25 +75,25 @@ public class BlockPartial extends Block {
   //  The image that you see on the screen (when a block is rendered) is determined by the block model (i.e. the model json file).
   //  But Minecraft also uses a number of other ‘shapes’ to control the interaction of the block with its environment and with the player.
   // See  https://greyminecraftcoder.blogspot.com/2020/02/block-shapes-voxelshapes-1144.html
-  @Deprecated
+  @Override
   public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
     return COMBINED_SHAPE;
   }
 
   // not needed for this example; see  https://greyminecraftcoder.blogspot.com/2020/02/block-shapes-voxelshapes-1144.html
-  @Deprecated
+  @Override
   public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
     return super.getCollisionShape(state, worldIn, pos, context);
   }
 
   // not needed for this example; see  https://greyminecraftcoder.blogspot.com/2020/02/block-shapes-voxelshapes-1144.html
-  @Deprecated
+  @Override
   public VoxelShape getRenderShape(BlockState state, IBlockReader worldIn, BlockPos pos) {
     return super.getRenderShape(state, worldIn, pos);
   }
 
   // not needed for this example; see  https://greyminecraftcoder.blogspot.com/2020/02/block-shapes-voxelshapes-1144.html
-  @Deprecated
+  @Override
   public VoxelShape getRaytraceShape(BlockState state, IBlockReader worldIn, BlockPos pos) {
     return super.getRaytraceShape(state, worldIn, pos);
   }

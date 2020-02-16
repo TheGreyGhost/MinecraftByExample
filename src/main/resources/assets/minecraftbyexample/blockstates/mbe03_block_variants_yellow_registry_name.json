@@ -1,0 +1,8 @@
+{
+    "variants": {
+           "facing=north": { "model": "minecraftbyexample:block/mbe03_block_variants_model_yellow"},
+            "facing=east": { "model": "minecraftbyexample:block/mbe03_block_variants_model_yellow", "y": 90 },
+           "facing=south": { "model": "minecraftbyexample:block/mbe03_block_variants_model_yellow", "y": 180 },
+            "facing=west": { "model": "minecraftbyexample:block/mbe03_block_variants_model_yellow", "y": 270 }
+    }
+}

@@ -1,5 +1,8 @@
 # MBE11_ITEM_VARIANTS
 
+** IItemTier ***
+
+
 This example is an Item with variants, illustrating two different ways of changing the rendering to suit the variant.
 
 The bottle has two types of information, both stored in the metadata / damage of the ItemStack:
