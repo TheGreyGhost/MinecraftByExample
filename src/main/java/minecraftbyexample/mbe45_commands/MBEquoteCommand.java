@@ -76,7 +76,7 @@ public class MBEquoteCommand {
                                                                                                    "lettercount"))))
                       )
               )
-         .then(Commands.argument("custommessage", MessageArgument.message())
+         .then(Commands.argument("custommessage", MessageArgument.message())  // see also StringArgumentType; .word() or .string() or .greedystring()
                  .executes(commandContext -> {
                                  ITextComponent iTextComponent = MessageArgument.getMessage(commandContext, "custommessage");
                                  sendMessage(commandContext, iTextComponent.getFormattedText());

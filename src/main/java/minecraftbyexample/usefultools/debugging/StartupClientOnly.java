@@ -1,4 +1,4 @@
-package minecraftbyexample.mbe03_block_variants;
+package minecraftbyexample.usefultools.debugging;
 
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -12,8 +12,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
  */
 public class StartupClientOnly
 {
-  @SubscribeEvent
-  public void onClientSetupEvent(FMLClientSetupEvent event) {
-    // not actually required for this example....
-  }
+    @SubscribeEvent
+    public void onClientSetupEvent(FMLClientSetupEvent event) {
+      // not actually required for this example....
+    }
 }

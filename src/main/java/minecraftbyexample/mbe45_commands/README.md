@@ -24,8 +24,10 @@ The basic concepts are:
 4) The end of each chain is an .executes(), which uses a lambda to tell the command parser which function should be executed 
    when the end of that chain is reached.
 
-There are a couple of other fancy features: redirect() which is just an alias for an existing command (eg "tm" is 
-  redirected to "teammsg") and fork() which is used by the execute command to execute other commands.<br>
+There are a couple of other fancy features: 
+* redirect() which is just an alias for an existing command (eg "tm" is redirected to "teammsg") 
+* fork() which is used by the execute command to execute other commands.
+* suggests() which is used to provide autocomplete suggestions to the user (eg a list of valid team names)
   
 If you are creating a new command, it's very helpful to think of a vanilla command which is similar, and look at the
 corresponding class.  (see Commands constructor for all registered commands)<br>

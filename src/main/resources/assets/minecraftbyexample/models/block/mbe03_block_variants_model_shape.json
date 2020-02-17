@@ -1,7 +1,7 @@
 {
     "ambientocclusion": false,
     "textures": {
-        "pole": "block/log_big_oak"
+        "pole": "block/oak_log"
     },
     "elements": [
         {  "from": [7, 0, 7],

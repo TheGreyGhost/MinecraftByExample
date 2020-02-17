@@ -14,7 +14,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
  * Date: 24/12/2014
  *
  * The Startup classes for this example are called during startup, in the following order:
- * onBlocksRegistration then onItemsRegistration
+ * onBlocksRegistration then onItemsRegistration then onCommonSetupEvent
  *  See MinecraftByExample class for more information
  */
 public class StartupCommon

@@ -1,194 +1,124 @@
-//package minecraftbyexample.usefultools.debugging;
-//
-//import com.TheRPGAdventurer.ROTD.DragonMounts;
-//import net.minecraft.util.math.Vec3d;
-//
-//import java.util.HashMap;
-//
-///**
-// * Created by TGG on 29/06/2015.
-// * Freeze dragon animation and updates for debugging purposes
-// * frozen when the scroll lock key is down (and debug mode is set)
-// */
-//public class DebugSettings {
-//
-//  public static boolean isDebugGuiEnabled() {
-//    return DragonMounts.instance.getConfig().isDebug() && debugGuiEnabled;
-//  }
-//
-//  public static void setDebugGuiEnabled(boolean newstate) {
-//    debugGuiEnabled = newstate;
-//  }
-//
-//  public static boolean isSpawningInhibited() {
-//    return DragonMounts.instance.getConfig().isDebug() && spawningInhibited;
-//  }
-//
-//  public static void setSpawningInhibited(boolean newstate) {
-//    spawningInhibited = newstate;
-//  }
-//
-//  /**
-//   * are the draqon and breath animations be frozen in place?
-//   * Usage:
-//   * 1) setAnimationFreezeEnabled to enable freezing
-//   * 2) whenever you want the animation to be frozen, call setAnimationFreezeActive
-//   * (this does nothing unless freezing has been enabled)
-//   * Disabling the freezing will also deactivate freezing
-//   *
-//   * @return
-//   */
-//  public static boolean isAnimationFrozen() {
-//    return DragonMounts.instance.getConfig().isDebug() && frozenEnabled && frozenActive;
-//  }
-//
-//  public static float animationFrozenPartialTicks() {
-//    return partialTicks;
-//  }
-//
-//  public static boolean isAnimationFreezeEnabled() {
-//    return frozenEnabled;
-//  }
-//
-//  public static void setAnimationFreezeEnabled(boolean newstate) {
-//    frozenEnabled = newstate;
-//    if (!frozenEnabled) frozenActive = false;
-//  }
-//
-//  public static void setAnimationFreezeActive(boolean newstate) {
-//    frozenActive = newstate;
-//  }
-//
-//  public static boolean isRenderCentrePoints() {
-//    return renderCentrePoints;
-//  }
-//
-//  public static void setRenderCentrePoints(boolean renderCentrePoints) {
-//    DebugSettings.renderCentrePoints = renderCentrePoints;
-//  }
-//
-//  public static boolean isRenderXYZmarkers() {
-//    return renderXYZmarkers;
-//  }
-//
-//  public static void setRenderXYZmarkers(boolean renderXYZmarkers) {
-//    DebugSettings.renderXYZmarkers = renderXYZmarkers;
-//  }
-//
-//  public static boolean isRenderDragonPoints() {
-//    return renderDragonPoints;
-//  }
-//
-//  public static void setRenderDragonPoints(boolean renderDragonPoints) {
-//    DebugSettings.renderDragonPoints = renderDragonPoints;
-//  }
-//
-//  public static boolean isForceDragonModel() {
-//    return forceDragonModel;
-//  }
-//
-//  public static void setForceDragonModel(boolean forceDragonModel) {
-//    DebugSettings.forceDragonModel = forceDragonModel;
-//  }
-//
-//  public static boolean isBoxDragon() {
-//    return boxDragon;
-//  }
-//
-//  public static void setBoxDragon(boolean boxDragon) {
-//    DebugSettings.boxDragon = boxDragon;
-//  }
-//
-//  public static boolean isRiderPositionTweak() {
-//    return riderPositionTweak;
-//  }
-//
-//  public static void setRiderPositionTweak(boolean riderPositionTweak) {
-//    DebugSettings.riderPositionTweak = riderPositionTweak;
-//  }
-//
-//  public static Vec3d getRiderPositionOffset(int rider, Vec3d offset) {
-//    double x = offset.x;
-//    double y = offset.y;
-//    double z = offset.z;
-//    if (existsDebugParameter("rx" + rider)) {
-//      x = (float) DebugSettings.getDebugParameter("rx" + rider);
-//    }
-//    if (existsDebugParameter("ry" + rider)) {
-//      y = (float) DebugSettings.getDebugParameter("ry" + rider);
-//    }
-//    if (existsDebugParameter("rz" + rider)) {
-//      z = (float) DebugSettings.getDebugParameter("rz" + rider);
-//    }
-//    return new Vec3d(x, y, z);
-//  }
-//
-//  public static boolean isForceDragonWalk() {
-//    return forceDragonWalk;
-//  }
-//
-//  public static void setForceDragonWalk(boolean forceDragonWalk) {
-//    DebugSettings.forceDragonWalk = forceDragonWalk;
-//  }
-//
-//  public static float getForceDragonWalkCycles() {
-//    float dragonWalkCycle = (float) getDebugParameter("dragonwalkcycle");
-//    if (dragonWalkCycle < 0) {
-//      final long FULL_CYCLE_MS = 3000;
-//      long cycleRemainder = System.currentTimeMillis() % FULL_CYCLE_MS;
-//      dragonWalkCycle = cycleRemainder / (float) FULL_CYCLE_MS;
-//    }
-//    return dragonWalkCycle;
-//  }
-//
-//  public static boolean isDragonWalkStraightLine() {
-//    return dragonWalkStraightLine;
-//  }
-//
-//  public static void setDragonWalkStraightLine(boolean dragonWalkStraightLine) {
-//    DebugSettings.dragonWalkStraightLine = dragonWalkStraightLine;
-//  }
-//
-//  public static float getDragonWalkSpeed() {
-//    return (float) getDebugParameter("dragonwalkspeed");
-//  }
-//
-//  /**
-//   * Debug parameters can be set using the command console
-//   * /dragon debug parameter {name} {value}
-//   * eg
-//   * /dragon debug parameter x 0.3
-//   * Useful for interactively adjusting rendering offsets in-game
-//   *
-//   * @param parameterName
-//   * @param value
-//   */
-//  public static void setDebugParameter(String parameterName, double value) {
-//    debugParameters.put(parameterName, value);
-//  }
-//
-//  public static double getDebugParameter(String parameterName) {
-//    Double value = debugParameters.get(parameterName);
-//    return (value == null) ? 0.0 : value;
-//  }
-//
-//  public static boolean existsDebugParameter(String parameterName) {
-//    return debugParameters.containsKey(parameterName);
-//  }
-//  private static final float partialTicks = 0.25F;
-//  private static boolean debugGuiEnabled;
-//  private static boolean spawningInhibited;
-//  private static boolean frozenEnabled;
-//  private static boolean frozenActive;
-//  private static boolean renderCentrePoints;
-//  private static boolean renderXYZmarkers;
-//  private static boolean renderDragonPoints;
-//  private static boolean forceDragonModel = false; //todo restore to false
-//  private static boolean boxDragon = false;    //todo restore to false
-//  private static boolean riderPositionTweak = false;
-//  private static boolean forceDragonWalk = false;
-//  private static boolean dragonWalkStraightLine = false;
-//  private static HashMap<String, Double> debugParameters = new HashMap<>();
-//
-//
-//}
+package minecraftbyexample.usefultools.debugging;
+
+import net.minecraft.util.math.Vec3d;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+/**
+ * Created by TGG on 29/06/2015.
+ *
+ * Holds debugging settings for interactive debugging:
+ * Typical usage
+ * 1) setDebugParameter(name, value) - for example in response to user command\
+ *    /mbedebug param <name> <value></value>
+ *    /mbedebug param x 0.3
+ * 2) getDebugParameter(name) - for example in a rendering routine
+ *    double renderOffsetX = getDebugParameter("x");
+ *    which can then be subsequently used for (eg) interactively adjusting rendering offsets in-game
+ * 3) listAllDebugParameters() to be used for (eg) autocompletion suggestions
+ *        is automatically populated when code sets or gets a name
+ *
+ *  Also has parallel implementation for Vec3d instead of double.
+ *
+ *  Also has parallel implementation for triggers (set the trigger, which is automatically reset upon read)
+ *
+ */
+public class DebugSettings {
+
+  public static void setDebugParameter(String parameterName, double value) {
+    debugParameters.put(parameterName, value);
+  }
+
+  /**
+   * Gets the value of the given debug parameter; or 0 if not previously set
+   * @param parameterName
+   * @return
+   */
+  public static double getDebugParameter(String parameterName) {
+    Double value = debugParameters.get(parameterName);
+    if (value == null) {
+      value = 0.0;
+      debugParameters.put(parameterName, value);
+    }
+    return value;
+  }
+
+  public static Set<String> listAllDebugParameters() {
+    return debugParameters.keySet();
+  }
+
+  private static HashMap<String, Double> debugParameters = new HashMap<>();
+
+  //-----------
+
+  public static void setDebugParameterVec3d(String parameterName, Vec3d value) {
+    debugParameterVec3ds.put(parameterName, value);
+  }
+
+  /**
+   * Gets the value of the given debug parameter; or 0 if not previously set
+   * @param parameterName
+   * @return
+   */
+  public static Vec3d getDebugParameterVec3d(String parameterName) {
+    Vec3d value = debugParameterVec3ds.get(parameterName);
+    if (value == null) {
+      value = Vec3d.ZERO;
+      debugParameterVec3ds.put(parameterName, value);
+    }
+    return value;
+  }
+
+  public static Set<String> listAllDebugParameterVec3ds() {
+    return debugParameterVec3ds.keySet();
+  }
+
+  private static HashMap<String, Vec3d> debugParameterVec3ds = new HashMap<>();
+
+  //-----------
+
+  public static void setDebugTrigger(String parameterName) {
+    debugTriggers.put(parameterName, true);
+  }
+
+  /**
+   * Returns true if the trigger is set.  Resets to false.
+   * @param parameterName
+   * @return
+   */
+  public static boolean getDebugTrigger(String parameterName) {
+    Boolean value = debugTriggers.get(parameterName);
+    if (value == null) {
+      value = false;
+      debugTriggers.put(parameterName, value);
+    }
+    return value;
+  }
+
+  public static Set<String> listAllDebugTriggers() {
+    return debugTriggers.keySet();
+  }
+
+  private static HashMap<String, Boolean> debugTriggers = new HashMap<>();
+
+  //-----------------
+
+  public static void setDebugTest(int testnumber) {
+    debugTest = testnumber;
+  }
+
+  /**
+   * Returns a test number if one has been triggered.  resets after being called
+   * @return the test number to execute, or -1 if none triggered
+   */
+  public static int getDebugTest() {
+    int value = debugTest;
+    debugTest = -1;
+    return value;
+  }
+
+  private static int debugTest = -1;
+}
