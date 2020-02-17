@@ -182,7 +182,7 @@ public class BlockVariants extends Block implements IWaterLoggable
     if (world.isRemote()) return false; // only perform on the server
     // if block is waterlogged already, or the fluid isn't water, return without doing anything.
     if (fluidState.getFluid() != Fluids.WATER) return false;
-    if (blockState.get(WATERLOGGED).booleanValue()) return false;
+    if (blockState.get(WATERLOGGED)) return false;
 
     final int BLOCK_UPDATE_FLAG = 1;
     final int SEND_UPDATE_TO_CLIENT_FLAG = 2;
@@ -205,7 +205,7 @@ public class BlockVariants extends Block implements IWaterLoggable
     final int SEND_UPDATE_TO_CLIENT_FLAG = 2;
 
     // if block is waterlogged, remove the water from the block and return water to the caller
-    if (blockState.get(WATERLOGGED).booleanValue()) {
+    if (blockState.get(WATERLOGGED)) {
       world.setBlockState(blockPos, blockState.with(WATERLOGGED, false),
               BLOCK_UPDATE_FLAG + SEND_UPDATE_TO_CLIENT_FLAG);
       return Fluids.WATER;
