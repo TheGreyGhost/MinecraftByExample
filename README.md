@@ -36,7 +36,7 @@ If you use IntelliJ, you might find these [xml mapping files][mapfiles] useful t
 ### Blocks
   - [MBE01][01] - a simple cube
   - [MBE02][02] - a block with a more complicated shape
-  - X [MBE03][03] - a block (coloured signpost) with multiple variants- four colours, can be placed facing in four directions
+  - [MBE03][03] - a block (coloured signpost) with multiple variants- four colours, can be placed facing in four directions
   - X [MBE04][04] - a camouflage ("secret door") block which dynamically changes its appearance to match adjacent blocks - uses IBlockModel.getQuads() and onModelBakeEvent() 
   - X [MBE05][05] - a 3D web which joins to neighbours in all six directions - uses IBlockModel.getQuads() and ICustomModelLoader
   - X [MBE06][06] - several different types of block which use redstone
