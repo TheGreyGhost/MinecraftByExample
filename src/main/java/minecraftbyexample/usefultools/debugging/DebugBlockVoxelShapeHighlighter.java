@@ -103,7 +103,7 @@ public class DebugBlockVoxelShapeHighlighter {
     double eyeX = activeRenderInfo.getProjectedView().x;
     double eyeY = activeRenderInfo.getProjectedView().y;
     double eyeZ = activeRenderInfo.getProjectedView().z;
-    final float ALPHA = 1.0f;
+    final float ALPHA = 0.5f;
     worldRenderer.drawShape(shape,
             blockPos.getX() - eyeX, blockPos.getY() - eyeY, blockPos.getZ() - eyeZ,
             color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, ALPHA);
@@ -113,6 +113,4 @@ public class DebugBlockVoxelShapeHighlighter {
     GlStateManager.enableTexture();
     GlStateManager.disableBlend();
   }
-
-
 }

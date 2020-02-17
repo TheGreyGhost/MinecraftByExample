@@ -25,7 +25,7 @@ The block will appear in the Blocks tab in the creative inventory.
 
 For background information on:
 
-* blocks: see [http://greyminecraftcoder.blogspot.com.au/2014/12/blocks-18.html](http://greyminecraftcoder.blogspot.com.au/2014/12/blocks-18.html)
+* blocks: see [http://greyminecraftcoder.blogspot.com/2020/02/blocks-1144.html](http://greyminecraftcoder.blogspot.com/2020/02/blocks-1144.html)
 * rendering blocks: see [http://greyminecraftcoder.blogspot.com.au/p/list-of-topics.html](http://greyminecraftcoder.blogspot.com.au/p/list-of-topics.html) (the topics under the Block Rendering heading)
 * Block Shapes (VoxelShapes): see [https://greyminecraftcoder.blogspot.com/2020/02/block-shapes-voxelshapes-1144.html](https://greyminecraftcoder.blogspot.com/2020/02/block-shapes-voxelshapes-1144.html)
 

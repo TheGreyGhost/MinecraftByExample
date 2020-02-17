@@ -1,5 +1,6 @@
 package minecraftbyexample.mbe03_block_variants;
 
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.fluid.Fluid;
@@ -15,6 +16,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -22,6 +24,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
+import java.util.Map;
 
 /**
  * User: The Grey Ghost
@@ -66,7 +69,8 @@ public class BlockVariants extends Block implements IWaterLoggable
 
   // the block will render in the CUTOUT layer.  See http://greyminecraftcoder.blogspot.co.at/2014/12/block-rendering-18.html for more information.
   @OnlyIn(Dist.CLIENT)
-  public BlockRenderLayer getBlockLayer()
+  @Override
+  public BlockRenderLayer getRenderLayer()
   {
     return BlockRenderLayer.CUTOUT;
   }
@@ -113,23 +117,57 @@ public class BlockVariants extends Block implements IWaterLoggable
 
   // returns the shape of the block:
   //  The image that you see on the screen (when a block is rendered) is determined by the block model (i.e. the model json file).
-  //  But Minecraft also uses a number of other ‘shapes’ to control the interaction of the block with its environment and with the player.
+  //  But Minecraft also uses a number of other ï¿½shapesï¿½ to control the interaction of the block with its environment and with the player.
   // See  https://greyminecraftcoder.blogspot.com/2020/02/block-shapes-voxelshapes-1144.html
   @Override
   public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-    return POST_SHAPE;
+    Direction direction = state.get(FACING);
+    VoxelShape voxelShape = POST_SHAPES.get(direction);
+    return voxelShape != null ? voxelShape : VoxelShapes.fullCube();  // should always find it... just being defensive
+    // you can also use direction.getHorizontalIndex() if you want, instead of a map.
   }
 
-  private static final Vec3d POST_MIN_CORNER = new Vec3d(7.0, 0.0, 7.0);
-  private static final Vec3d POST_MAX_CORNER = new Vec3d(8.0, 14.0, 8.0);
-  private static final VoxelShape POST_SHAPE = Block.makeCuboidShape(POST_MIN_CORNER.getX(), POST_MIN_CORNER.getY(), POST_MIN_CORNER.getZ(),
-                                                                     POST_MAX_CORNER.getX(), POST_MAX_CORNER.getY(), POST_MAX_CORNER.getZ());
+  // the position of the post changes depending on the direction that the sign is facing.
+
+  private static final Vec3d POST_MIN_CORNER_N = new Vec3d(7.0, 0.0, 7.0);
+  private static final Vec3d POST_MAX_CORNER_N = new Vec3d(8.0, 14.0, 8.0);
+  private static final VoxelShape POST_SHAPE_N = Block.makeCuboidShape(POST_MIN_CORNER_N.getX(), POST_MIN_CORNER_N.getY(), POST_MIN_CORNER_N.getZ(),
+                                                                       POST_MAX_CORNER_N.getX(), POST_MAX_CORNER_N.getY(), POST_MAX_CORNER_N.getZ());
+
+  private static final Vec3d POST_MIN_CORNER_E = new Vec3d(8.0, 0.0, 7.0);
+  private static final Vec3d POST_MAX_CORNER_E = new Vec3d(9.0, 14.0, 8.0);
+  private static final VoxelShape POST_SHAPE_E = Block.makeCuboidShape(POST_MIN_CORNER_E.getX(), POST_MIN_CORNER_E.getY(), POST_MIN_CORNER_E.getZ(),
+                                                                       POST_MAX_CORNER_E.getX(), POST_MAX_CORNER_E.getY(), POST_MAX_CORNER_E.getZ());
+
+  private static final Vec3d POST_MIN_CORNER_S = new Vec3d(8.0, 0.0, 8.0);
+  private static final Vec3d POST_MAX_CORNER_S = new Vec3d(9.0, 14.0, 9.0);
+  private static final VoxelShape POST_SHAPE_S = Block.makeCuboidShape(POST_MIN_CORNER_S.getX(), POST_MIN_CORNER_S.getY(), POST_MIN_CORNER_S.getZ(),
+          POST_MAX_CORNER_S.getX(), POST_MAX_CORNER_S.getY(), POST_MAX_CORNER_S.getZ());
+
+  private static final Vec3d POST_MIN_CORNER_W = new Vec3d(7.0, 0.0, 8.0);
+  private static final Vec3d POST_MAX_CORNER_W = new Vec3d(8.0, 14.0, 9.0);
+  private static final VoxelShape POST_SHAPE_W = Block.makeCuboidShape(POST_MIN_CORNER_W.getX(), POST_MIN_CORNER_W.getY(), POST_MIN_CORNER_W.getZ(),
+                                                                       POST_MAX_CORNER_W.getX(), POST_MAX_CORNER_W.getY(), POST_MAX_CORNER_W.getZ());
+
+  private static final Map<Direction, VoxelShape> POST_SHAPES =
+        ImmutableMap.of(Direction.NORTH,POST_SHAPE_N,   Direction.EAST,POST_SHAPE_E,   Direction.SOUTH,POST_SHAPE_S,   Direction.WEST,POST_SHAPE_W);
+
 
   private static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
       // Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST
   private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
   //----some methods to help handle the waterlogging correctly -----------
+
+  /**
+   * Is there water in this block or not?
+   * @param state
+   * @return
+   */
+  @Override
+  public IFluidState getFluidState(BlockState state) {
+    return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : Fluids.EMPTY.getDefaultState();
+  }
 
   /**
    * Try to fill water into this block
@@ -144,7 +182,7 @@ public class BlockVariants extends Block implements IWaterLoggable
     if (world.isRemote()) return false; // only perform on the server
     // if block is waterlogged already, or the fluid isn't water, return without doing anything.
     if (fluidState.getFluid() != Fluids.WATER) return false;
-    if (blockState.get(BlockStateProperties.WATERLOGGED).booleanValue()) return false;
+    if (blockState.get(WATERLOGGED).booleanValue()) return false;
 
     final int BLOCK_UPDATE_FLAG = 1;
     final int SEND_UPDATE_TO_CLIENT_FLAG = 2;
@@ -167,8 +205,8 @@ public class BlockVariants extends Block implements IWaterLoggable
     final int SEND_UPDATE_TO_CLIENT_FLAG = 2;
 
     // if block is waterlogged, remove the water from the block and return water to the caller
-    if (blockState.get(BlockStateProperties.WATERLOGGED).booleanValue()) {
-      world.setBlockState(blockPos, blockState.with(BlockStateProperties.WATERLOGGED, false),
+    if (blockState.get(WATERLOGGED).booleanValue()) {
+      world.setBlockState(blockPos, blockState.with(WATERLOGGED, false),
               BLOCK_UPDATE_FLAG + SEND_UPDATE_TO_CLIENT_FLAG);
       return Fluids.WATER;
     } else {

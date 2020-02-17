@@ -44,22 +44,22 @@ public class MBEdebugCommand {
       = Commands.literal("mbedebug")
             .then(Commands.literal("param")
                     .then(Commands.argument("parametername", StringArgumentType.word())
-                            .then(Commands.argument("parametervalue", DoubleArgumentType.doubleArg()))
                             .suggests((context, builder) ->
                                     ISuggestionProvider.suggest(DebugSettings.listAllDebugParameters().stream(), builder))
-                            .executes(context -> { DebugSettings.setDebugParameter(
-                                    StringArgumentType.getString(context, "parametername"),
-                                    DoubleArgumentType.getDouble(context, "parametervalue")); return 1;})
+                            .then(Commands.argument("parametervalue", DoubleArgumentType.doubleArg())
+                                    .executes(context -> { DebugSettings.setDebugParameter(
+                                              StringArgumentType.getString(context, "parametername"),
+                                              DoubleArgumentType.getDouble(context, "parametervalue")); return 1;}))
                     )
             )
             .then(Commands.literal("paramvec3d")
                     .then(Commands.argument("parametername", StringArgumentType.word())
-                            .then(Commands.argument("parametervalue", Vec3Argument.vec3()))
                             .suggests((context, builder) ->
                                     ISuggestionProvider.suggest(DebugSettings.listAllDebugParameterVec3ds().stream(), builder))
-                            .executes(context -> { DebugSettings.setDebugParameterVec3d(
-                                    StringArgumentType.getString(context, "parametername"),
-                                    Vec3Argument.getVec3(context, "parametervalue")); return 1;})
+                            .then(Commands.argument("parametervalue", Vec3Argument.vec3())
+                              .executes(context -> { DebugSettings.setDebugParameterVec3d(
+                                      StringArgumentType.getString(context, "parametername"),
+                                      Vec3Argument.getVec3(context, "parametervalue")); return 1;}))
                     )
             )
             .then(Commands.literal("trigger")
@@ -71,9 +71,9 @@ public class MBEdebugCommand {
                     )
             )
             .then(Commands.literal("test")
-                        .then(Commands.argument("testnumber", IntegerArgumentType.integer()))
-                        .executes(context -> { DebugSettings.setDebugTest(
-                                IntegerArgumentType.getInteger(context, "testnumber")); return 1;})
+                        .then(Commands.argument("testnumber", IntegerArgumentType.integer())
+                          .executes(context -> { DebugSettings.setDebugTest(
+                                  IntegerArgumentType.getInteger(context, "testnumber")); return 1;}))
             );
     dispatcher.register(mbesayCommand);
   }
