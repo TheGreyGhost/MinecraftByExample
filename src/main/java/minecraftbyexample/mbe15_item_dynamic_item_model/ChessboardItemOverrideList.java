@@ -30,7 +30,7 @@
 //   * @return
 //   */
 //  @Override
-//  public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, LivingEntity entity)
+//  public IBakedModel getModelWithOverrides(IBakedModel originalModel, ItemStack stack, World world, LivingEntity entity)
 //  {
 //    int numberOfChessPieces = 0;
 //    if (stack != null) {

@@ -5,10 +5,20 @@
 
 This example is an Item with variants, illustrating two different ways of changing the rendering to suit the variant.
 
-The bottle has two types of information, both stored in the metadata / damage of the ItemStack:
+Note that- in general, if you have an Item with a few variants (say up to sixteen), you should implement these as separate items 
+For example - see vanilla's GREEN_BED, BLACK_BED, RED_BED etc.  If you do that, then the techniques in this example are not required and you 
+can just base your code on mbe10.
 
-* Bottle contents (LIME, LEMON, CHERRY, ORANGE)
-* Bottle fullness (EMPTY, 25%, 50%, 75%, 100%)
+However if you have many different variants, or your item changes its appearance based on its state 
+(for example:
+ * a magical wand that charges up over time and gradually changes its appearance
+ * a sword where you can independently customise the appearance of the blade, crossguard, and pommel
+ ), then the two methods in this example might be of interest.
+
+The bottle has two types of information, both stored in the NBT data of the itemstack:
+
+* Bottle contents (LIME, LEMON, CHERRY, ORANGE) - uses IItemColor to change the colour
+* Bottle fullness (EMPTY, 25%, 50%, 75%, 100%) - uses custom BakedModel to change the shape
 
 It will show you:
 
@@ -39,9 +49,12 @@ For background information on:
 * items: see [http://greyminecraftcoder.blogspot.com/2013/12/items.html](http://greyminecraftcoder.blogspot.com/2013/12/items.html)
 * rendering items: see [http://greyminecraftcoder.blogspot.com.au/2014/12/item-rendering-18.html](http://greyminecraftcoder.blogspot.com.au/2014/12/item-rendering-18.html)
 
+NOTE - I've used four colours as an example because it lets me demonstrate the IItemColor lambda interface.  But in general, if you had an Item with four colour variants, you should implement these as four separate items (LIME_BOTTLE, CHERRY_BOTTLE, etc) - see for example vanilla's GREEN_BED, BLACK_BED, RED_BED etc.
+
+
 Useful vanilla classes for further info:
 
-`ItemPotion`, `ItemMonsterPlacer` (spawn egg), `ItemDye`, `ItemColors.init()`
+`ItemPotion`, `SpawnEggItem', `ItemDye`, `ItemColors.init()`
 
 ## Common errors
 
