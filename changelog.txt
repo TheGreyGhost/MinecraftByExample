@@ -1,0 +1,1257 @@
+Build: 1.14.4-28.1.0 - Thu Sep 12 16:14:54 GMT 2019
+	lex:
+		Fix Entity.getPersistentData function name. Closes #6131 Bump spec
+		version for first 1.14.4 RB.
+
+=========
+Build: 1.14.4-28.0.107 - Thu Sep 12 16:01:53 GMT 2019
+	JDLogic:
+		Fix ParticleFactoryRegisterEvent not firing (#6126)
+
+=========
+Build: 1.14.4-28.0.106 - Thu Sep 12 15:43:48 GMT 2019
+	gigaherz:
+		Minor fixes to the fluids (#6150)
+		* Fixed vanilla rendering of fluids to take into account the alpha bits
+		of the color, and fix usages accordingly.
+		* Fixed missing texture derp.
+
+=========
+Build: 1.14.4-28.0.105 - Wed Sep 11 14:00:40 GMT 2019
+	gigaherz:
+		Some (sadly breaking) improvements to the Fluid API (#6110)
+		* Some (sadly breaking) improvements to the API, after feedback and
+		concerns provided by users:
+		 - Moved calculation of the translation key to the FluidAttributes
+		constructor, so that builders can be shared between still & flowing
+		sub-fluids.
+		 - Moved biome-based coloring to a dedicated FluidAttributes.Water
+		variant, which is not used by default.
+		 - Added logic to automatically gather fluid textures into the list of
+		textures to bake.
+		 - Patched BucketItem and FlowingFluidBlock to avoid eager access to the
+		fluid objects.
+		 - Added a ForgeFlowingFluid class, as a more user-friendly way to
+		construct a new FlowingFluid.
+
+=========
+Build: 1.14.4-28.0.104 - Tue Sep 10 23:02:31 GMT 2019
+	lex:
+		Delay Block loot table name generation until needed, as calling early
+		will result in an empty name as the block is not registered yet.
+
+	lex:
+		Add new DeferredRegistry helper, and change RegistryObject to update
+		when overrides are registered.
+
+=========
+Build: 1.14.4-28.0.102 - Mon Sep 09 22:30:19 GMT 2019
+	lex:
+		Fix slimes splitting more times then they should. Closes #6138
+
+=========
+Build: 1.14.4-28.0.101 - Mon Sep 09 03:32:59 GMT 2019
+	tterrag:
+		Fix a couple places not calling forge getLightValue
+
+=========
+Build: 1.14.4-28.0.100 - Sun Sep 08 06:23:38 GMT 2019
+	cpw:
+		Fix problem with network connections timing out frequently. Turns out
+		there's a race condition - and the extra work forge does causes it to
+		happen much more frequently than vanilla (though I'm sure it's a vanilla
+		issue). Closes #6124, #5767 and probably lots more.
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+	tterrag:
+		Fix SCommandListPacket underflowing buffer when encountering a missing
+		argument type
+
+	tterrag:
+		Remove StructureArgument to work around vanilla issue, clean up custom
+		arguments
+
+	tterrag:
+		Fix vanilla typo causing errors when client is missing entity attributes
+
+	tterrag:
+		Properly fix missing attribute issue, add vanilla bug ID
+
+=========
+Build: 1.14.4-28.0.95 - Sat Sep 07 05:10:08 GMT 2019
+	tterrag:
+		Make /locate command support modded structures
+
+=========
+Build: 1.14.4-28.0.94 - Sat Sep 07 03:42:47 GMT 2019
+	tterrag:
+		Make STRUCTURE_FEATURE registry a slave map of the FEATURE registry
+		Also convert Feature.STRUCTURES to a slave map
+
+=========
+Build: 1.14.4-28.0.93 - Thu Sep 05 22:38:25 GMT 2019
+	lex:
+		Fix REGISTER packet encode/decode issues. Changed ForgeConfig values to
+		return the default value if the config is not loaded, and exposed the
+		value objects as a internal config.
+
+=========
+Build: 1.14.4-28.0.92 - Thu Sep 05 05:33:28 GMT 2019
+	lex:
+		Fix naming conflicts with official names.
+
+=========
+Build: 1.14.4-28.0.91 - Wed Sep 04 02:59:06 GMT 2019
+	lex:
+		Fix item used stat not triggering properly on last item in the stack.
+
+=========
+Build: 1.14.4-28.0.90 - Wed Sep 04 01:51:34 GMT 2019
+	lex:
+		Add a bunch of tags from the omnibus. Fix test imports. And update
+		patches for line numbers.
+
+	bl4ckscor33:
+		Add spawn reason to spawn events (#6096)
+
+=========
+Build: 1.14.4-28.0.88 - Tue Sep 03 21:50:35 GMT 2019
+	6596492+yrsegal:
+		Add collisionExtendsVertically hook to allow modded blocks that extend
+		collision into the block above similar to fences. (#6092)
+
+=========
+Build: 1.14.4-28.0.87 - Tue Sep 03 21:41:54 GMT 2019
+	danielgoossens:
+		Fixed PlayerInteractEvent.LeftClickBlock useItem/useBlock (#6045)
+
+=========
+Build: 1.14.4-28.0.86 - Tue Sep 03 21:31:04 GMT 2019
+	danielgoossens:
+		Readded IForgeItem#getHighlightTip hook. (#6036)
+
+=========
+Build: 1.14.4-28.0.85 - Tue Sep 03 20:20:52 GMT 2019
+	goto.minecraft:
+		Added gravity as attribute to Entities (#5630)
+
+=========
+Build: 1.14.4-28.0.84 - Tue Sep 03 19:59:53 GMT 2019
+	ichttt:
+		Fix CME on chunk unload in FarmlandTicketManager (#5998)
+
+=========
+Build: 1.14.4-28.0.83 - Sun Sep 01 18:42:33 GMT 2019
+	cpw:
+		Add a modfolderfactory. Fix up login payload exposure.
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.4-28.0.82 - Sun Sep 01 15:33:27 GMT 2019
+	cpw:
+		Peel IModLocator into the SPI package and extract a small IModFile
+		interface as well. This allows building external IModLocator
+		implementations.
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.4-28.0.81 - Sat Aug 31 17:57:15 GMT 2019
+	cpw:
+		Move indexFor and biConsumer into FMLHandshakeHandler and expose them
+		publicly, so mods can add additional login messages. Closes #6087
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+	faj10:
+		Added getters for FMLPlayMessages.SpawnEntity
+
+	tobias.hotz:
+		move default log level for debug file to debug instead of trace, and
+		remove millis from console and GUI. Also remove unused config xmls
+
+	cpw:
+		Add in MC REGISTER nonsense. Shut up #5730
+		Tweak network a bit to fix initialization order stupidity. (Constants
+		don't load classes!)
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+	cpw:
+		Add in some client only player connectivity events. Closes #5536
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.4-28.0.76 - Sat Aug 31 12:15:17 GMT 2019
+	gigaherz:
+		Hookup BlockEvent.FluidPlaceBlockEvent (#6103)
+
+=========
+Build: 1.14.4-28.0.75 - Fri Aug 30 03:42:51 GMT 2019
+	cpw:
+		Update libs to 1.0 versions, bump grgit, and fix tag search behaviour
+		that resulted.
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.4-28.0.74 - Thu Aug 29 19:09:49 GMT 2019
+	gigaherz:
+		Fluid rework derp fixes. (#6098)
+		* Fix nulls returning from non-null methods, and null-check of
+		non-nullable values.
+		* Fix missed computation of the isEmpty flag in FluidStack
+		* Cleanup getAmount/isEmpty calls.
+		* Remove redundant suppliers. That info is readily available from the
+		vanilla Fluid / FluidState.
+
+=========
+Build: 1.14.4-28.0.73 - Thu Aug 29 04:34:22 GMT 2019
+	daemon.umbra:
+		Change fml.modloading.brokenfile.optifine to not imply that Forge is
+		responsible for Forge-Optifine compatibility. (#6080)
+
+	ichttt:
+		Fix Digging particle sometimes using the wrong block pos to get
+		additional model data (#6077)
+
+	williewillus:
+		Minor model system cleanup/documentation (#6089)
+
+=========
+Build: 1.14.4-28.0.70 - Thu Aug 29 04:28:28 GMT 2019
+	ichttt:
+		Add a config comment that lists the available constants of enums (#6079)
+
+=========
+Build: 1.14.4-28.0.69 - Thu Aug 29 04:18:57 GMT 2019
+	bl4ckscor33:
+		Restore PotionShiftEvent (#6042)
+
+=========
+Build: 1.14.4-28.0.68 - Thu Aug 29 04:13:38 GMT 2019
+	danielgoossens:
+		Added new InputEvent.MouseScrollEvent, fixes #5811 (#6037)
+
+=========
+Build: 1.14.4-28.0.67 - Thu Aug 29 03:34:14 GMT 2019
+	luasmrks:
+		Strip side annotations from CropsBlock.getSeedsItem (#6013)
+
+	Bward7864:
+		Add Villager Trading Events (#6016)
+
+=========
+Build: 1.14.4-28.0.65 - Thu Aug 29 03:14:27 GMT 2019
+	wynprice999:
+		Updated constants to 1.14 (#6012)
+
+	46117728+valoeghese:
+		Added hook to allow biomes to specify custom river variants. (#5969)
+
+=========
+Build: 1.14.4-28.0.63 - Thu Aug 29 01:42:25 GMT 2019
+	williewillus:
+		Add particle factory registration event (#6018)
+
+=========
+Build: 1.14.4-28.0.62 - Thu Aug 29 01:30:04 GMT 2019
+	lex:
+		Recipe system cleanup. (#6014)
+
+	gigaherz:
+		Fluid API rework (#5983) - Moved forge fluids into FluidAttributes
+		companion object to the vanilla Fluid. By gigaherz - Redesigned the
+		Fluid API to be closer to the Items API. By King Lemming Co-authored-by:
+		King Lemming <kinglemming@gmail.com>
+
+	gigaherz:
+		Fix license headers so `gradlew build` is happy.
+
+	gigaherz:
+		Make FluidStacks non-nullable, and implement some TODOs.
+
+=========
+Build: 1.14.4-28.0.58 - Thu Aug 29 01:12:54 GMT 2019
+	bjfccb:
+		Fix regular arrows giving off particles after a world reload (MC-107941)
+		(#6061)
+
+	ichttt:
+		Fix coremod not redirecting to the correct method (#6078)
+
+=========
+Build: 1.14.4-28.0.56 - Wed Aug 28 19:59:19 GMT 2019
+	lex:
+		Fix blocks being placed in adventure mode. Closes #6085 Add early error
+		for setting invalid world directory. Closes #6084 Fix PlayerTickEvent
+		not firing when dead, even if player isn't removed from world yet.
+		Closes #6074 Fix PlayerDestroyItemEvent not firing for some cases.
+		Closes #6067
+
+=========
+Build: 1.14.4-28.0.55 - Tue Aug 20 22:40:50 GMT 2019
+	lex:
+		Fix Javac generics breakage.
+
+	lex:
+		Sort server.properties while writing.
+
+	lex:
+		Add Argument serializer for ModIdArgument. EnumArgument can't as vanilla
+		doesn't support extra data.
+
+	lex:
+		Prevent worlds from unloading while players are in out-of-world states
+		by tracking all worlds references by every player in the server's player
+		list.
+
+=========
+Build: 1.14.4-28.0.51 - Tue Aug 20 02:46:20 GMT 2019
+	lex:
+		Fix Configs not generating correctly on first load Closes #6069
+
+	lex:
+		Fix chunk load failure when entering End portal Closes #6068
+
+=========
+Build: 1.14.4-28.0.49 - Thu Aug 15 18:04:06 GMT 2019
+	williewillus:
+		Add hook to load custom mrls/rls not attached to a block or item. 
+		(#6010)
+
+=========
+Build: 1.14.4-28.0.48 - Thu Aug 15 17:35:07 GMT 2019
+	bl4ckscor33:
+		Cover more cases for RightClickBlock event and restore onItemUseFirst
+		(#6009)
+
+=========
+Build: 1.14.4-28.0.47 - Thu Aug 15 17:17:36 GMT 2019
+	kirderf4:
+		Make DimensionManager.SavedEntry save sky light consistently (#6019)
+
+=========
+Build: 1.14.4-28.0.46 - Wed Aug 14 23:13:25 GMT 2019
+	lex:
+		Fix extract inheritance not using proper classpath and update
+		buildscript for FG asm changes.
+
+=========
+Build: 1.14.4-28.0.45 - Mon Aug 05 12:56:59 GMT 2019
+	cpw:
+		Grrr. Stupid error. Sorry lex: I fixed it.
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+	cpw:
+		Bump modlauncher to 3.2.x. Add a sender modid and document IMC. Closes
+		#5746
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+	cpw:
+		Move fml's PlayerEvent and TickEvent to forge. Update `import
+		net.minecraftforge.fml.common.gameevent.PlayerEvent;` to `import
+		net.minecraftforge.event.entity.player.PlayerEvent;` and `import
+		net.minecraftforge.fml.common.gameevent.TickEvent;` to `import
+		net.minecraftforge.event.TickEvent;`
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+	cpw:
+		Actually reload config when it changes on disk. Closes #5541 and #5959
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.4-28.0.41 - Mon Aug 05 01:19:19 GMT 2019
+	cpw:
+		Turned minecraft into a proper Mod, with a "dummy" language provider.
+		Also fixed the "translations" not being available early if an exception
+		occurs by force loading the forge and MC ones. Closes #5984
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.4-28.0.40 - Sat Aug 03 01:48:54 GMT 2019
+	daemon.umbra:
+		Fix a crash I caused by misunderstanding formatToString (#6007)
+
+=========
+Build: 1.14.4-28.0.39 - Sat Aug 03 01:03:37 GMT 2019
+	lex:
+		Fix userdev setup by moving SAS concept to FG.
+
+=========
+Build: 1.14.4-28.0.38 - Fri Aug 02 21:13:51 GMT 2019
+	mods.itsmeow:
+		Add piston events (#5798)
+
+=========
+Build: 1.14.4-28.0.37 - Fri Aug 02 21:07:42 GMT 2019
+	des.herriott:
+		Make ParticleManager.IParticleMetaFactory public (#5926)
+
+	mods.itsmeow:
+		Fix AT for EntitySpawnPlacementRegistry.register
+
+=========
+Build: 1.14.4-28.0.35 - Fri Aug 02 21:01:02 GMT 2019
+	jojohostert:
+		Add button to open mods folder (#5986)
+
+=========
+Build: 1.14.4-28.0.34 - Fri Aug 02 20:50:19 GMT 2019
+	mh:
+		Fixed PlayerInteractEvents not working (#5976)
+
+	daemon.umbra:
+		Change ModLoadingException to display ModID instead of ModInfo instance
+		identifier. (#5999)
+
+=========
+Build: 1.14.4-28.0.32 - Fri Aug 02 20:44:09 GMT 2019
+	Gamebuster19901:
+		Fix LazyOptional throwing NPE to consumers when owners null. (#5772)
+
+	Gamebuster19901:
+		Fixed Buttons in the error screen are incorrectly rendered if they are
+		extremely long Closes #5687 (#5924)
+
+=========
+Build: 1.14.4-28.0.30 - Fri Aug 02 20:37:17 GMT 2019
+	lex:
+		Make Villager profession unlocalized name use modids when not
+		'minecraft' Closes #5977 Fixed trees able to be generated through water.
+		Closes #6000 Change Block#toString to use getRegistryName instead of
+		getNameForObject Closes #5937 Allow Cooking Recipes to deserialize
+		results with stack sizes. Closes #5960
+
+=========
+Build: 1.14.4-28.0.29 - Thu Aug 01 05:43:58 GMT 2019
+	lex:
+		Fixed DimensionType.getRegistryName() returning null Closes #5992 Fixed
+		RegisterDimensionEvent not firing for new worlds. Closes #5987
+
+=========
+Build: 1.14.4-28.0.28 - Thu Aug 01 04:15:51 GMT 2019
+	lex:
+		Introduce new Side Annotation Stripper system to semi-automate the
+		shipment of Sided methods and cleanup patches. New forge:checkSAS task
+		to validate this config file. Closes #5995
+
+=========
+Build: 1.14.4-28.0.27 - Tue Jul 30 23:42:43 GMT 2019
+	ichttt:
+		Move world unload patch to tick function to prevent duplicate unloading,
+		fix log message in dim manager, fix javadoc for unload method (#5964)
+
+=========
+Build: 1.14.4-28.0.26 - Tue Jul 30 23:36:37 GMT 2019
+	bl4ckscor33:
+		fix melon and pumpkin seeds being peaceable on more than just farmland
+		(#5980)
+
+=========
+Build: 1.14.4-28.0.25 - Tue Jul 30 23:30:21 GMT 2019
+	thecheaterpaul:
+		Fixed possible ClassCastException with dye-able armor. (#5985)
+
+=========
+Build: 1.14.4-28.0.24 - Tue Jul 30 00:20:04 GMT 2019
+	cpw:
+		Fix naming for dev launch providers - they're in MCP..
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.4-28.0.23 - Mon Jul 29 01:10:50 GMT 2019
+	cpw:
+		Register a config command. Currently one subcommand: showfile, which
+		when passed a modid and a type (CLIENT, COMMON or SERVER) will display a
+		link in the caller's chat to open that file in the OS file viewer of
+		choice.
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.4-28.0.22 - Sun Jul 28 17:45:41 GMT 2019
+	cpw:
+		Load default configs from the defaultconfig directory by default. (Can
+		be overridden in the fml.toml config file if desired).
+		Will load any type of config tracked file from there - client, common,
+		server or custom tracked file. This means you can ship defaults for your
+		pack in a defaultconfig directory. I am thinking about ways to force a
+		specific config override for an existing config.
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.4-28.0.21 - Sat Jul 27 16:48:19 GMT 2019
+	cpw:
+		Fix vanilla bug that hardcore death doesn't clean up properly, leaving a
+		running server and a broken GUI. Vanilla bug MC-148865
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.4-28.0.20 - Sat Jul 27 09:35:20 GMT 2019
+	lex:
+		Fixed network ticking player entity while it is dead. And explicitly
+		prevent overworld from unloading. Closes #5978
+
+=========
+Build: 1.14.4-28.0.19 - Sat Jul 27 00:02:37 GMT 2019
+	cpw:
+		Crash report extended to show ModLauncher FML and Forge data.
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.4-28.0.18 - Fri Jul 26 04:35:17 GMT 2019
+	cpw:
+		Fix potion transformer to look up the right name depending on context.
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.4-28.0.17 - Fri Jul 26 03:02:48 GMT 2019
+	cpw:
+		Added a coremod, shush, don't tell Lex.
+		Seriously, this is how to do targeted changes to specific classes.
+		In this case, adding a fieldtomethod redirect for EffectInstance.potion 
+		to allow substitution.
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.4-28.0.16 - Fri Jul 26 01:00:15 GMT 2019
+	lex:
+		Fix @ObjectHolderRegistry not properly detecting vanilla class level
+		references. Closes #5958
+
+	lex:
+		Fix Slimes not splitting on death Closes #5973
+
+=========
+Build: 1.14.4-28.0.14 - Wed Jul 24 18:15:36 GMT 2019
+	lex:
+		Fixed missed patch causing blocks to not dropping EXP and BreakEvent to
+		not fire.
+
+=========
+Build: 1.14.4-28.0.13 - Tue Jul 23 02:23:28 GMT 2019
+	gigaherz:
+		Fix & Improve state comparison when checking vanilla block replacements
+		(#5922)
+
+=========
+Build: 1.14.4-28.0.12 - Mon Jul 22 22:45:51 GMT 2019
+	lex:
+		Keep player cap data until they have revived. Closes #5956
+
+=========
+Build: 1.14.4-28.0.11 - Sun Jul 21 01:04:23 GMT 2019
+	cpw:
+		Fix datafixer exception catch: Closes #5951
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+	cpw:
+		Fix objloader registering at wrong time. Closes #5847. Added test class
+		as suggested in the issue.
+		Note: most tests are commented out at the present time, pending rework.
+		Tests that work, work.
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.4-28.0.9 - Sat Jul 20 23:38:35 GMT 2019
+	Barteks2x:
+		Fix RegistryObject when used with generic registry entry classes
+
+	cpw:
+		Realms' removal has removed the need for additional jar transformation.
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+	cpw:
+		Fix error when ModsDiscoverer visits a non existent mods dir.
+		Closes cpw/modlauncher#30
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.4-28.0.5 - Sat Jul 20 23:20:18 GMT 2019
+	cpw:
+		Make I18N format errors less spammy, also remove single apostrophes from
+		current translations in en_us.json. Other langs may still have problems.
+		Closes #5952 Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.4-28.0.4 - Sat Jul 20 21:55:28 GMT 2019
+	jojohostert:
+		Fix spam during startup (#5957)
+
+=========
+Build: 1.14.4-28.0.3 - Sat Jul 20 19:59:31 GMT 2019
+	ichttt:
+		Fix forge 1.14.4 startup in obfed enviroment (#5955)
+
+=========
+Build: 1.14.4-28.0.2 - Sat Jul 20 16:06:15 GMT 2019
+	thaun1:
+		Updated Example Version Range for 1.14.4 (#5950)
+		* Updated Example Version Range for 1.14.4
+		
+		* Also changed loader version and version range
+
+=========
+Build: 1.14.4-28.0.1 - Sat Jul 20 06:27:42 GMT 2019
+	lex:
+		Fix javac compile issues.
+
+	cpw:
+		Provisional update to 1.14.4. Missing a lot of playerinteractionmanager
+		patches because everything moved and I'm tired.
+		Fix up immediate problems.
+		bump to 28.
+
+=========
+Build: 1.14.3-27.0.60 - Fri Jul 19 16:08:38 GMT 2019
+	cpw:
+		Update mappings to 20190719 in prep for 1.14.4..
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.3-27.0.59 - Thu Jul 18 21:22:01 GMT 2019
+	github:
+		Remove OnlyIn Client Distribution from Effect and EffectType methods.
+		(#5925)
+
+=========
+Build: 1.14.3-27.0.58 - Thu Jul 18 21:15:19 GMT 2019
+	lex:
+		Change default BrewingRecipe to use an Ingredient for the input instead
+		of ItemStack. Closes #5944 Add AT for GameRules.register Closes #5946
+		Fix Forge Blockstate loader model path is inconsistent with vanilla
+		blockstates Closes #5892 Fix client crashing when opting not to load a
+		world when there's missing blocks Closes #5886
+
+=========
+Build: 1.14.3-27.0.57 - Wed Jul 17 05:38:23 GMT 2019
+	lex:
+		Fix CheckSpawn event logic for natural spawns.
+
+=========
+Build: 1.14.3-27.0.56 - Tue Jul 16 23:03:04 GMT 2019
+	lex:
+		Fixed item breaking particles not capturing current state of the
+		ItemStack. Closes #5934
+
+=========
+Build: 1.14.3-27.0.55 - Tue Jul 16 19:47:33 GMT 2019
+	ewewukek:
+		Fix RenderSpecificHandEvent firing with wrong hand stack (#5927)
+
+=========
+Build: 1.14.3-27.0.54 - Tue Jul 16 19:41:28 GMT 2019
+	mods.itsmeow:
+		 [1.14.x] Fix text positioning issues caused by scaling loading screen 
+		(#5932)
+
+=========
+Build: 1.14.3-27.0.53 - Tue Jul 16 18:53:16 GMT 2019
+	lex:
+		Fixed PlayerSleepInBedEvent pos is always null Closes #5936 Fixed
+		decompile error causing Endless Loop in ModelBackery if model errors
+		exist. Fixed NPEs related to teleporting players without portals.
+
+=========
+Build: 1.14.3-27.0.52 - Tue Jul 16 16:59:45 GMT 2019
+	lex:
+		Add simple concurrency protection to Server world list. Closes #5938 and
+		#5739
+
+=========
+Build: 1.14.3-27.0.51 - Mon Jul 15 02:48:45 GMT 2019
+	cpw:
+		Update modlauncher to the 3.x series.
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.3-27.0.50 - Thu Jul 11 03:14:20 GMT 2019
+	tterrag1098:
+		Rework GuiModList mod info to use custom scrolling panel impl
+
+=========
+Build: 1.14.3-27.0.49 - Thu Jul 11 00:39:30 GMT 2019
+	lex:
+		Fix race condition in client mouse handler. Closes #5888
+
+	lex:
+		Cleanup Forge's Access Transformer, and add ATs for
+		Block.Properties#noDrop, and AxeItem/PickaxeItem. Closes #5866 and
+		Closes #5921
+
+=========
+Build: 1.14.3-27.0.47 - Wed Jul 10 02:21:09 GMT 2019
+	lex:
+		Re-implement state.onBlockExploded() Closes #5914
+
+	lex:
+		Implement Item.isRepairable in Crafting and Grindstone. Closes #5917
+
+	lex:
+		Implemented Item.get/setDamage hooks. Closes #5899
+
+	lex:
+		Added LootPool.Builder#bonusRolls setter. Closes #5887
+
+=========
+Build: 1.14.3-27.0.43 - Tue Jul 09 03:43:09 GMT 2019
+	williewillus:
+		Add general damage hook for items. Closes #5502 (#5670)
+
+=========
+Build: 1.14.3-27.0.42 - Tue Jul 09 03:14:52 GMT 2019
+	lex:
+		Fix syntax error in IRenderHandler.
+
+	lex:
+		Pass tick counter to custom render handlers (#5744)
+
+=========
+Build: 1.14.3-27.0.40 - Tue Jul 09 02:55:01 GMT 2019
+	support:
+		Fix logoFile not working properly (#5775)
+
+	37298044+Cadiboo:
+		Fire Loading event (#5795)
+
+=========
+Build: 1.14.3-27.0.38 - Tue Jul 09 02:49:22 GMT 2019
+	37298044+Cadiboo:
+		Added documentation to ObfuscationReflectionHelper adn deprecated index
+		based functions. (#5893)
+
+	bk1325:
+		Add isServer and isClient methods to LogicalSide (#5606)
+		* Add helper methods to LogicalSide.
+		
+		* Fix backwards docs.
+
+	sargun.vohra:
+		Throw exception when a mod returns null from a dispatched capability
+		provider (#5646)
+
+	ichttt:
+		Fixed BakedModelWrapper not delegating new methods (#5761)
+
+	ichttt:
+		Add IModelData to getParticleTexture (#5756)
+
+	alucas:
+		Add InputEvent documentation (#5698)
+
+	ichttt:
+		Adds some explanatory javadocs and check world in ModelDataManager
+		(#5762)
+
+=========
+Build: 1.14.3-27.0.31 - Tue Jul 09 02:43:35 GMT 2019
+	lex:
+		Fixed EntityJoinWorldEvent not being fired when player is added to
+		ServerWorld. #5827 Fixed wrong example path for the access transformer
+		in the MDK build.gradle. #5891 Added getters for mouse x/y velocity and
+		if the middle-mouse button is being held down. #5776 Modify issue
+		template for better clarity. #5874 Fixed grindstone not using
+		ItemStack-sensitive getMaxDamage. #5831 Added
+		ParticleManager.registerFactory to Forge's AT. #5896 Fixed NPE in
+		SidedInvWrapper when side was null. #5787 Moved
+		EndermanEntity.setAttackTarget super call to allow
+		LivingSetAttackTargetEvent the ability to override default behavior.
+		#5778 Added field to make "Looking at" debug info maximum distance
+		configurable #5714
+
+=========
+Build: 1.14.3-27.0.30 - Mon Jul 08 22:59:04 GMT 2019
+	daemon.umbra:
+		Disable Config Button when no mods are selected (#5905)
+		Closes #5889
+
+=========
+Build: 1.14.3-27.0.29 - Mon Jul 08 22:53:13 GMT 2019
+	me+github:
+		Fix link applying to whole component in chat if component starts with
+		link (#5909)
+
+	daemon.umbra:
+		Fixed #5895: Shearing via Displenser drops Shears (#5906)
+
+	tedstar.dev:
+		Fix MC-258 on mod list screen, enable sorting, minor tweaks. (#5846)
+
+=========
+Build: 1.14.3-27.0.26 - Mon Jul 08 22:46:01 GMT 2019
+	gerjan2001:
+		Added harvestLevel and harvestTool setter to the Block.Properties.
+		(#5916)
+
+=========
+Build: 1.14.3-27.0.25 - Fri Jul 05 20:26:34 GMT 2019
+	lex:
+		Fix installer realms issue on server. Uptake EventBus changes to fix
+		some potential dead locks.
+
+=========
+Build: 1.14.3-27.0.24 - Thu Jul 04 20:03:53 GMT 2019
+	elepet1906:
+		Fix old entity not being removed on dimension change (#5833)
+
+=========
+Build: 1.14.3-27.0.23 - Wed Jul 03 19:35:33 GMT 2019
+	primetoxinzz:
+		Update TextureStitchEvent.Pre to give access to the list of
+		ResourceLocations that will be loaded as textures. (#5870)
+
+=========
+Build: 1.14.3-27.0.22 - Wed Jul 03 08:08:39 GMT 2019
+	lex:
+		Add installer processor to deobfuscate Mincraft's Realms library. This
+		task will processes the current realms library from the json, so the
+		installer must be re-ran every time they update it.
+
+=========
+Build: 1.14.3-27.0.21 - Tue Jul 02 20:08:57 GMT 2019
+	gigaherz:
+		Redirect a method to the recipe book container, to allow modded screens
+		to have a recipe book. (#5873)
+
+=========
+Build: 1.14.3-27.0.20 - Tue Jul 02 20:03:05 GMT 2019
+	diesieben07:
+		Fix WorldEvent.Unload not firing on the client (fixes #5880) (#5884)
+
+=========
+Build: 1.14.3-27.0.19 - Tue Jul 02 19:57:14 GMT 2019
+	diesieben07:
+		Fix TickEvent.PlayerTickEvent firing twice for tick end (fixes #5878)
+		(#5885)
+
+=========
+Build: 1.14.3-27.0.18 - Tue Jul 02 18:55:13 GMT 2019
+	lex:
+		Fix type cast issues in ForgeConfig values. Closes #5894 Added config
+		value set and save functions. By default mod configs are auto-saved, so
+		you do not need to call save unless you create your own Config object.
+
+=========
+Build: 1.14.3-27.0.17 - Mon Jul 01 03:49:18 GMT 2019
+	cpw:
+		Remove legacy StartupProgress. Implement properly scalable progress
+		thanks to @gigaherz. Closes #5863. Implement API for pushing messages to
+		the startup screen from mods. Add memory display.
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.3-27.0.16 - Sat Jun 29 21:05:43 GMT 2019
+	cpw:
+		Update coremods to newer version, with support for new targets.
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.3-27.0.15 - Fri Jun 28 00:23:46 GMT 2019
+	lex:
+		Fix duplicate WorldEvent.Unload call in client key handler. Add recipe
+		generator to replace vanilla recipes with Forge tags.
+
+=========
+Build: 1.14.3-27.0.14 - Thu Jun 27 17:57:18 GMT 2019
+	lex:
+		Fix dimension save data invalid cache being to aggressive.
+
+=========
+Build: 1.14.3-27.0.13 - Wed Jun 26 20:23:56 GMT 2019
+	alalwww:
+		Fix garbled "µs" (#5818)
+
+=========
+Build: 1.14.3-27.0.12 - Wed Jun 26 01:16:22 GMT 2019
+	lex:
+		Fix fmluserdevdata not being a valid launch target.
+
+=========
+Build: 1.14.3-27.0.11 - Wed Jun 26 01:04:02 GMT 2019
+	lex:
+		Split userdev data entry point into it's own provider to fix duplicate
+		mod issue.
+
+=========
+Build: 1.14.3-27.0.10 - Tue Jun 25 23:57:02 GMT 2019
+	tterrag:
+		Fix configs correcting numeric values when the primitive type differs
+		Fix configs with range not clamping the corrected value, and instead 
+		just replacing with the default
+		Closes #5855
+
+=========
+Build: 1.14.3-27.0.9 - Tue Jun 25 21:02:27 GMT 2019
+	bs2609:
+		Fix item placement losing NBT data in creative mode (#5757)
+
+=========
+Build: 1.14.3-27.0.8 - Tue Jun 25 20:56:41 GMT 2019
+	kevin.iselborn:
+		 Add extension to write entry id's to PacketBuffer's (#5812)
+
+=========
+Build: 1.14.3-27.0.7 - Tue Jun 25 20:50:53 GMT 2019
+	33880787+RedBorg:
+		Add isItemValid check for ItemStackHandler (#5850)
+
+=========
+Build: 1.14.3-27.0.5 - Tue Jun 25 20:45:02 GMT 2019
+	tedstar.dev:
+		[1.14.x] Replace dye items in Forge tags. (#5843)
+
+=========
+Build: 1.14.3-27.0.4 - Tue Jun 25 20:38:40 GMT 2019
+	Unnoen:
+		Update readme and issue template. (#5773)
+
+=========
+Build: 1.14.3-27.0.3 - Tue Jun 25 17:25:42 GMT 2019
+	donalddani9612:
+		implement Ingredient.getSerializer for custom ingredients (#5813)
+
+=========
+Build: 1.14.3-27.0.2 - Tue Jun 25 03:06:02 GMT 2019
+	lex:
+		Fix vines and scaffolding not being climbable. Fix powered rails not
+		spreading power correctly. Closes: #5854
+
+=========
+Build: 1.14.3-27.0.1 - Tue Jun 25 02:37:14 GMT 2019
+	lex:
+		Fix misaligned ServerWorld initCapabilities patch.
+
+=========
+Build: 1.14.3-27.0.0 - Tue Jun 25 02:01:47 GMT 2019
+	lex:
+		Initial 1.14.3 update.
+
+=========
+Build: 1.14.2-26.0.63 - Sun Jun 23 23:55:05 GMT 2019
+	cpw:
+		Fix too many registries being sent from server to client
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.2-26.0.62 - Sun Jun 23 22:36:43 GMT 2019
+	tterrag:
+		Remove OnlyIn on TagCollection#getOwningTags
+		Fixes Block#getTags crashing on servers
+
+=========
+Build: 1.14.2-26.0.61 - Sun Jun 23 20:01:37 GMT 2019
+	cpw:
+		Reorganize sided event dispatch slightly. Dispatch model and
+		entityrenderer functions at more appropriate times.
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.2-26.0.60 - Sun Jun 23 18:52:15 GMT 2019
+	jojohostert:
+		Add mod failure identification
+
+	cpw:
+		Tweak for lowercase handling.
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.2-26.0.57 - Sun Jun 23 18:37:19 GMT 2019
+	cpw:
+		Fix crash when crashing during modloading. Fix GuiModList being weird.
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.2-26.0.56 - Sun Jun 23 16:27:18 GMT 2019
+	cpw:
+		Process the main modloading work on the async thread, but still do
+		deferred work on the main thread by passing in the executor.
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.2-26.0.55 - Sun Jun 23 06:57:15 GMT 2019
+	tterrag:
+		Clean up config comments, make comment array nonnull
+
+=========
+Build: 1.14.2-26.0.54 - Sun Jun 23 06:18:04 GMT 2019
+	tterrag:
+		Automatically add range to config comments
+
+	tterrag:
+		Fix forge event bus never starting up
+
+=========
+Build: 1.14.2-26.0.52 - Sun Jun 23 03:39:20 GMT 2019
+	cpw:
+		First pass of adding text to the loading progress UI. It deliberately
+		uses the very primitive STB generated font, so can only render basic
+		ASCII text, and also only renders pre-defined strings, as translations
+		aren't available either.
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.2-26.0.51 - Sun Jun 23 00:43:36 GMT 2019
+	cpw:
+		Moved some events to the Mod's event bus. You'll need to update which
+		bus you're listening to for these. (The Mod event bus is the only one
+		actively dispatching events during model loading).
+		ModelRegistryEvent, ModelBakeEvent, TextureStitchEvent.Pre,
+		TextureStitchEvent.Post, ColourHandlerEvent.Block,
+		ColourHandlerEvent.Item
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.2-26.0.50 - Sat Jun 22 23:58:24 GMT 2019
+	cpw:
+		Fix StartupQuery, and put tests back.
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.2-26.0.49 - Sat Jun 22 23:10:09 GMT 2019
+	cpw:
+		Fix stupid bug introduced with the refactor..
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.2-26.0.48 - Sat Jun 22 16:53:05 GMT 2019
+	cpw:
+		Tidy up mod loading a bit more, and also crash if the [[mods]] list
+		isn't a list.
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.2-26.0.47 - Sat Jun 22 16:34:07 GMT 2019
+	cpw:
+		Update mappings, move mod initialization to the async loader.
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+	cpw:
+		Fix server side loading, tweak mods command.
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.2-26.0.43 - Sat Jun 22 03:35:29 GMT 2019
+	tterrag:
+		Fix ModelDataTest
+
+=========
+Build: 1.14.2-26.0.42 - Sat Jun 22 01:16:01 GMT 2019
+	tterrag:
+		Fix #5612 add entity to ISelectionContext
+
+=========
+Build: 1.14.2-26.0.41 - Sat Jun 22 00:29:32 GMT 2019
+	tterrag:
+		Fix #5768 add access to MainWindow object in RenderGameOverlayEvent
+
+=========
+Build: 1.14.2-26.0.40 - Sat Jun 22 00:23:47 GMT 2019
+	tterrag:
+		Fix #5810 incorrect cullface on some models
+
+=========
+Build: 1.14.2-26.0.39 - Fri Jun 21 23:48:06 GMT 2019
+	tterrag:
+		Fix bad patch breaking armor dyeing
+
+	tterrag:
+		Fix #5686 ArmorLayer still calls deprecated getArmorResource
+
+=========
+Build: 1.14.2-26.0.37 - Fri Jun 21 23:35:42 GMT 2019
+	tterrag:
+		Fix #5805 ModelBakeEvent does not fire
+
+	tterrag:
+		Make sure test mods load, fix BlockstateRetextureTest
+
+=========
+Build: 1.14.2-26.0.35 - Thu Jun 20 01:10:15 GMT 2019
+	lex:
+		Fix some compile errors in test classes.
+
+	lex:
+		Fix lighting not being sent to client when large amounts of blocks
+		change at once. Closes #5839 Remove RecipeType/VanillaRecipeTypes, as
+		1.14 has a vanilla system for this.
+
+=========
+Build: 1.14.2-26.0.33 - Mon Jun 17 21:08:30 GMT 2019
+	lex:
+		Fix Vanilla resources loading from classpath, instead of the extra jar.
+		Causing issues in dev time, and Forge replacements. Closes #5824
+
+=========
+Build: 1.14.2-26.0.32 - Sun Jun 16 07:48:59 GMT 2019
+	lex:
+		Make ReverseTagWrapper unmodifiable, fix error in log when mods folder
+		doesn't exist initial scan.
+
+	lex:
+		Add temporary hard crash when mods error until we can load our error
+		screen.
+
+=========
+Build: 1.14.2-26.0.30 - Sun Jun 16 04:48:14 GMT 2019
+	cpw:
+		Skip running the datagenerator on unrequested mods. Add a run config for
+		the data task for modders to use
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.2-26.0.29 - Sun Jun 16 03:11:29 GMT 2019
+	cpw:
+		Remove paulscode hack. It is not needed in 1.14, since paulscode is no
+		longer used.
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.2-26.0.28 - Sun Jun 16 01:35:44 GMT 2019
+	lex:
+		Expose the data entry point and generate Forge's Tags using it.
+
+	cpw:
+		Add params for the exception message
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+		tweak logging
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+	cpw:
+		Modify lex's data handler to use proper mod lifecycle event mechanisms
+		instead. New Lifecycle Event for requesting data harvesting. Mods will
+		be constructed, the registry will fire, and then a new Data event will
+		fire. Submit new data tag files to the data gatherer if you wish. The
+		game will shutdown after this. No other mod elements will happen.
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.2-26.0.25 - Thu Jun 13 02:28:25 GMT 2019
+	lex:
+		Add reverse tag cache, to make looking up tags for items/blocks/etc..
+		less costly.
+
+	28928887+marcus8448:
+		Update Example Mod (#5781)
+
+=========
+Build: 1.14.2-26.0.23 - Wed Jun 12 23:22:23 GMT 2019
+	mods.itsmeow:
+		Fix AT for EntitySpawnPlacementRegistry.register (#5799)
+
+=========
+Build: 1.14.2-26.0.22 - Wed Jun 12 23:16:39 GMT 2019
+	hycrafthd:
+		Implement getValue in ClearableRegistry fixing DimensionArgument.
+		(#5809)
+		Fix DimensionArgument
+
+=========
+Build: 1.14.2-26.0.21 - Wed Jun 12 05:06:33 GMT 2019
+	kashike:
+		Use dragon_immune block tag instead of manually checking blocks (#5792)
+
+	bonzoweb:
+		Fix RenderSpecificHandEvent firing with wrong hand (#5789)
+
+=========
+Build: 1.14.2-26.0.19 - Wed Jun 12 05:00:33 GMT 2019
+	tterrag:
+		Fix #5806 sheep drop shears instead of wool
+		lol
+
+=========
+Build: 1.14.2-26.0.18 - Wed Jun 12 04:54:30 GMT 2019
+	tterrag:
+		Fix incorrect method used in ShrubFeature patch
+
+=========
+Build: 1.14.2-26.0.17 - Wed Jun 12 04:48:37 GMT 2019
+	tterrag:
+		Rework AbstractTreeFeature patches to reduce impact and avoid name
+		conflicts
+
+=========
+Build: 1.14.2-26.0.16 - Mon Jun 10 22:14:58 GMT 2019
+	tterrag:
+		Add IContainerFactory for reading custom container data on the client
+
+=========
+Build: 1.14.2-26.0.15 - Mon Jun 10 21:04:07 GMT 2019
+	lex:
+		Fix Fishing and Mineshaft Minecarts loot tables erroring. #5785 Fix
+		Client block breaking speed not matching the server. #5790 Fix Village
+		Siege event location, and MC-154328 preventing Sieges starting. #5800
+		Fix EntityJoinWorldEvent not firing on client, or some server code
+		paths. #5786
+
+=========
+Build: 1.14.2-26.0.14 - Mon Jun 10 04:13:40 GMT 2019
+	tterrag:
+		Adjust NetworkEvent#enqueueWork to match vanilla logic
+		In singleplayer our packet work could get delayed until the next tick, 
+		breaking the expectation of packet read order. Fixes that using 
+		NetworkHooks.openGui would result in missing inventory data on the
+		client
+
+=========
+Build: 1.14.2-26.0.13 - Sun Jun 09 18:19:15 GMT 2019
+	lex:
+		Fix gameDir argument error on dedicated server.
+
+=========
+Build: 1.14.2-26.0.12 - Sun Jun 09 08:24:28 GMT 2019
+	tterrag:
+		Add registry flag for syncing
+
+	tterrag:
+		Add forge registries for most vanilla registries
+		Made all registry names consistent with their vanilla counterparts Also
+		added a system for legacy registry names, so no data will be lost 
+		Cleaned up formatting in GameData and ForgeRegistries
+
+=========
+Build: 1.14.2-26.0.10 - Sun Jun 09 04:19:52 GMT 2019
+	tterrag:
+		Add forge registry for container types, expose
+		ScreenManager.registerFactory
+
+	tterrag:
+		Fix issues preventing test mods loading
+
+=========
+Build: 1.14.2-26.0.8 - Sat Jun 08 18:30:30 GMT 2019
+	cpw:
+		Don't NPE during construction of ModLoadingException..
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.2-26.0.7 - Sat Jun 08 16:22:18 GMT 2019
+	lex:
+		Fix misobfed methods due to mapping conflict.
+
+=========
+Build: 1.14.2-26.0.6 - Sat Jun 08 14:45:48 GMT 2019
+	cpw:
+		Update mappings
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.2-26.0.5 - Sat Jun 08 05:33:37 GMT 2019
+	tterrag:
+		Fix block activation not occurring serverside
+		Missing block of code from the old patch caused it to be skipped
+
+=========
+Build: 1.14.2-26.0.4 - Sat Jun 08 05:02:43 GMT 2019
+	tterrag:
+		Rework model patches/classes for new bake signature
+
+=========
+Build: 1.14.2-26.0.3 - Sat Jun 08 02:41:53 GMT 2019
+	lex:
+		Fix NamespacedWrapper not delegating a new getter. Fixing data loading
+		spam at world start. Update red/yellow/green tags with new vanilla item
+		names. Reenabled test source directory in project and made ModelDataTest
+		compile.
+
+=========
+Build: 1.14.2-26.0.2 - Fri Jun 07 21:49:40 GMT 2019
+	cpw:
+		Fix realms class name
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
