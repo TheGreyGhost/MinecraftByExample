@@ -15,6 +15,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 
 /**
@@ -26,7 +27,9 @@ import java.awt.*;
  * Bottle flavour (LIME, LEMON, CHERRY, ORANGE), stored in the "flavour" NBT tag
  * Bottle fullness (EMPTY, 25%, 50%, 75%, 100%), stored in the "fullness" NBT tag
  * The FULLNESS is used to select the model name: each different fullness has a different layer1 texture for the liquid level
- * The FLAVOUR is used to select the colour of the contents (layer1 render)
+ *   This is done using a custom PropertyOverride "fullness" which is used in the mbe11_item_variants_registry_name.json to
+ *   select the correct model.
+ * The FLAVOUR is used to select the colour of the contents (layer1 render) via IItemColor
  */
 public class ItemVariants extends Item
 {
@@ -34,6 +37,8 @@ public class ItemVariants extends Item
 
   public ItemVariants() {
     super(new Item.Properties().maxStackSize(MAXIMUM_NUMBER_OF_BOTTLES).group(ItemGroup.MISC));
+    this.addPropertyOverride(new ResourceLocation("fullness"), ItemVariants::getFullnessPropertyOverride);
+            // use lambda function to link the NBT fullness value to a suitable property override value
   }
 
     /**
@@ -56,6 +61,21 @@ public class ItemVariants extends Item
   {
     CompoundNBT compoundNBT = stack.getOrCreateTag();
     return EnumBottleFullness.fromNBT(compoundNBT, NBT_TAG_NAME_FULLNESS);
+  }
+
+  /**
+   * gets the fullness property override, used in mbe11_item_variants_registry_name.json to select which model should
+   *   be rendered
+   * @param itemStack
+   * @param world
+   * @param livingEntity
+   * @return
+   */
+  @OnlyIn(Dist.CLIENT)
+  private static float getFullnessPropertyOverride(ItemStack itemStack, @Nullable World world, @Nullable LivingEntity livingEntity)
+  {
+    EnumBottleFullness enumBottleFullness = getFullness(itemStack);
+    return enumBottleFullness.getPropertyOverrideValue();
   }
 
   /**
@@ -151,7 +171,7 @@ public class ItemVariants extends Item
   public ITextComponent getDisplayName(ItemStack stack)
   {
     String fullnessText= getFullness(stack).getDescription();
-    return new TranslationTextComponent(this.getTranslationKey(), fullnessText);
+    return new TranslationTextComponent(this.getTranslationKey(stack), fullnessText);
       // the entry in the lang file contains a %s which inserts our fullnessText into the description
   }
 
@@ -180,6 +200,8 @@ public class ItemVariants extends Item
     }
 
     public String getDescription() {return this.description;}
+
+    public float getPropertyOverrideValue() {return nbtID;}
 
     public EnumBottleFullness decreaseFullnessByOneStep() {
       if (nbtID ==0) return this;

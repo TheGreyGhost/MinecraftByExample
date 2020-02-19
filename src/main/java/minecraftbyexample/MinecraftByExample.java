@@ -98,14 +98,17 @@ public class MinecraftByExample {
     MOD_EVENT_BUS.register(minecraftbyexample.mbe01_block_simple.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe01_block_simple.StartupCommon.class);
 
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe10_item_simple.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe10_item_simple.StartupCommon.class);
-
     MOD_EVENT_BUS.register(minecraftbyexample.mbe02_block_partial.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe02_block_partial.StartupCommon.class);
 
     MOD_EVENT_BUS.register(minecraftbyexample.mbe03_block_variants.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe03_block_variants.StartupCommon.class);
+
+    MOD_EVENT_BUS.register(minecraftbyexample.mbe10_item_simple.StartupClientOnly.class);
+    MOD_EVENT_BUS.register(minecraftbyexample.mbe10_item_simple.StartupCommon.class);
+
+    MOD_EVENT_BUS.register(minecraftbyexample.mbe11_item_variants.StartupClientOnly.class);
+    MOD_EVENT_BUS.register(minecraftbyexample.mbe11_item_variants.StartupCommon.class);
 
     MOD_EVENT_BUS.register(minecraftbyexample.mbe45_commands.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe45_commands.StartupCommon.class);

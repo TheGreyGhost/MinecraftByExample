@@ -31,7 +31,7 @@ It will show you:
 The item has two layers in the model file (also referred to as "tintindex" in the code):
 
 * `Layer0` is the bottle outline, which is always black
-* `Layer1` is the liquid contents, which change colour depending on the LIME, LEMON, CHERRY, ORANGE metadata.
+* `Layer1` is the liquid contents, which change colour depending on the LIME, LEMON, CHERRY, ORANGE NBT data.
 
 The pieces you need to understand are located in:
 

@@ -6,35 +6,21 @@ import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 /**
  * User: The Grey Ghost
  * Date: 24/12/2014
  *
- * The Startup classes for this example are called during startup, in the following order:
- *  preInitCommon
- *  preInitClientOnly
- *  initCommon
- *  initClientOnly
- *  postInitCommon
- *  postInitClientOnly
  *  See MinecraftByExample class for more information
  */
 public class StartupClientOnly
 {
-  public static void preInitClientOnly()
-  {
-//    need to add the variants to the bakery so it knows what models are available for rendering the different subtypes
-//    In previous versions, this was required, however as of 1.8.9 ModelLoader.setCustomModelResourceLocation does this
-//      for you - see later on - so it's not necessary.
-//    ModelBakery.addVariantName(StartupCommon.itemVariants,  "minecraftbyexample:mbe11_item_variants_0pc",
-//            "minecraftbyexample:mbe11_item_variants_25pc",
-//            "minecraftbyexample:mbe11_item_variants_50pc",
-//            "minecraftbyexample:mbe11_item_variants_75pc",
-//            "minecraftbyexample:mbe11_item_variants_100pc"
-//    );
-
+  @SubscribeEvent
+  public void onClientSetupEvent(FMLClientSetupEvent event) {
+    // not actually required for this example....
   }
+
   @SubscribeEvent
   public static void onColorHandlerEvent(ColorHandlerEvent.Item event)
   {
@@ -46,9 +32,10 @@ public class StartupClientOnly
   @SubscribeEvent
   public static void onModelRegistryEvent(ModelRegistryEvent event)
   {
+    //todo actually perhaps this is not required now that we have overrides in the model
     // The item we registered in StartupCommon will only load and bake models\item\mbe11_item_variants_registry_name
     // For this reason, we need to tell Minecraft to load and bake the other models (one for each bottle fullness),
-    // because no registered items refer to those and hence they wouldn't be loaded.
+    // because no registered items refer to those and hence they wouldn't otherwise be loaded.
 
     for (ItemVariants.EnumBottleFullness fullness : ItemVariants.EnumBottleFullness.values()) {
       String itemModelName = "mbe11_item_variants_registry_name" + fullness.getName();
