@@ -14,6 +14,7 @@ If you want more information and explanatory text about the concepts, the follow
   - [Guide to how Minecraft works][greyminecraftcoder] (still being updated from 1.8 to 1.14.4+)
   - [Fabric Wiki][fabricwiki] (some of it is specific to the Fabric API, but a lot of useful general info too) 
   - [Forge modder support forum][Forge forum]
+  - [McJty tutorials][McJty]
 
 #### For earlier versions, see the relevant GitHub branch:
  - MBE for Forge 1.8: [1-8final][version1-8]
@@ -135,6 +136,7 @@ Check out [this video][forge_installation] for more help installing Forge.
 [more_help]: http://www.minecraftforge.net/forum/index.php?topic=21354.msg108332#msg108332
 [Forge forum]: https://www.minecraftforge.net/forum/forum/70-modder-support/
 [fabricwiki]: https://fabricmc.net/wiki/start
+[McJty]: https://wiki.mcjty.eu/modding/index.php?title=YouTube-1.14
 
 [forge_installation]: http://youtu.be/8VEdtQLuLO0
 [gradle_tool_window]: https://www.jetbrains.com/idea/help/gradle-tool-window.html

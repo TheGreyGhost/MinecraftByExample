@@ -38,40 +38,40 @@ minecraft {
     
     // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
-    // Default run configurations.
-    // These can be tweaked, removed, or duplicated as needed.
-    runs {
-        client {
-            workingDirectory project.file('run')
+       // Default run configurations.
+        // These can be tweaked, removed, or duplicated as needed.
+        runs {
+            client {
+                workingDirectory project.file('run')
 
-            // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+                // Recommended logging data for a userdev environment
+                property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
 
-            // Recommended logging level for the console
-            property 'forge.logging.console.level', 'debug'
+                // Recommended logging level for the console
+                property 'forge.logging.console.level', 'debug'
 
-            mods {
-                minecraftbyexample {
-                    source sourceSets.main
+                mods {
+                    minecraftbyexample {
+                        source sourceSets.main
+                    }
                 }
             }
-        }
-        clientfewerconsolemessages {
-            workingDirectory project.file('run')
+            clientfewerconsolemessages {
+                workingDirectory project.file('run')
 
-            // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+                // Recommended logging data for a userdev environment
+                property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
 
-            // Recommended logging level for the console
-            property 'forge.logging.console.level', 'debug'
+                // Recommended logging level for the console
+                property 'forge.logging.console.level', 'debug'
 
-            mods {
-                minecraftbyexample {
-                    source sourceSets.main
+                mods {
+                    minecraftbyexample {
+                        source sourceSets.main
+                    }
                 }
             }
-        }
-        server {
+            server {
             workingDirectory project.file('run')
 
             // Recommended logging data for a userdev environment
