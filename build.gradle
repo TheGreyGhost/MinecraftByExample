@@ -1,3 +1,11 @@
+// places in this file that you should customise:
+// add your mod info to version, group, archivesBaseName
+// add your mod's root source folder to minecraft.runs.client.mod, minecraft.runs.server.mod, minecraft.runs.data.mod 
+// add your mod's info to jar.manifest.attributes (optional)
+// if you're updating the forge version:
+//  Easiest way is to download the new forge mdk, decompress it, then look in the build.gradle file to copy the settings for
+// minecraft mappings channel, and dependencies.minecraft
+
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
@@ -13,9 +21,9 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.0'
-group = 'com.yourname.modid' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'modid'
+version = "1.14.4a"
+group= "thegreyghost" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "minecraftbyexample"
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
@@ -27,7 +35,7 @@ minecraft {
     // Simply re-run your setup task after changing the mappings to update your workspace.
     mappings channel: 'snapshot', version: '20190719-1.14.3'
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
-
+    
     // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     // Default run configurations.
@@ -43,7 +51,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                examplemod {
+                minecraftbyexample {
                     source sourceSets.main
                 }
             }
@@ -59,7 +67,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                examplemod {
+                minecraftbyexample {
                     source sourceSets.main
                 }
             }
@@ -74,10 +82,10 @@ minecraft {
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
 
-            args '--mod', 'examplemod', '--all', '--output', file('src/generated/resources/')
+            args '--mod', 'minecraftbyexample', '--all', '--output', file('src/generated/resources/')
 
             mods {
-                examplemod {
+                minecraftbyexample {
                     source sourceSets.main
                 }
             }
@@ -89,7 +97,7 @@ dependencies {
     // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    minecraft 'net.minecraftforge:forge:1.15.2-31.1.0'
+    minecraft 'net.minecraftforge:forge:1.14.4-28.1.0'
 
     // You may put jars on which you depend on in ./libs or you may define them like so..
     // compile "some.group:artifact:version:classifier"
@@ -115,13 +123,13 @@ dependencies {
 jar {
     manifest {
         attributes([
-                "Specification-Title": "examplemod",
-                "Specification-Vendor": "examplemodsareus",
-                "Specification-Version": "1", // We are version 1 of ourselves
-                "Implementation-Title": project.name,
-                "Implementation-Version": "${version}",
-                "Implementation-Vendor" :"examplemodsareus",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+            "Specification-Title": "minecraftbyexample",
+            "Specification-Vendor": "thegreyghost",
+            "Specification-Version": "1", // The version number of the specification, not the version of the mod
+            "Implementation-Title": project.name,
+            "Implementation-Version": "${version}",  // the version number of the mod.  copy the version from earlier in this file
+            "Implementation-Vendor" :"thegreyghost",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
 }
