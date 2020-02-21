@@ -45,18 +45,10 @@ public class BlockPartial extends Block {
       // Vanilla uses this to (eg) make a cavity in a composter block or cauldron.
 
   public BlockPartial() {
-    super(Block.Properties.create(Material.ROCK).doesNotBlockMovement()   // we don't want this to block movement through the block
+    super(Block.Properties.create(Material.WOOD).doesNotBlockMovement()  // we don't want this to block movement through the block
+            // other typically useful properties: hardnessAndResistance(), harvestLevel(), harvestTool()
     );
   }
-
-//  // the block will render in the SOLID layer.  See http://greyminecraftcoder.blogspot.co.at/2014/12/block-rendering-18.html for more information.
-//  // not strictly required because the default (super method) is SOLID.
-//
-//  @OnlyIn(Dist.CLIENT)
-//  @Override
-//  public BlockRenderLayer getRenderLayer() {
-//    return BlockRenderLayer.SOLID;
-//  }
 
   // render using a BakedModel (mbe02_block_partial.json --> mbe02_block_partial_model.json)
   // not strictly required because the default (super method) is BlockRenderType.MODEL

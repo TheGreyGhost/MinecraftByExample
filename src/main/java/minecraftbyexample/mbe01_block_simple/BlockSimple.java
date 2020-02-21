@@ -24,6 +24,7 @@ public class BlockSimple extends Block
   public BlockSimple()
   {
     super(Block.Properties.create(Material.ROCK)  // look at Block.Properties for further options
+            // typically useful: hardnessAndResistance(), harvestLevel(), harvestTool()
          );
   }
 

@@ -24,7 +24,7 @@ If you want more information and explanatory text about the concepts, the follow
  - MBE for Forge 1.12.2: [1-12-2final][version1-12-2]
  - MBE for Forge 1.14.4: [1-14-4partial][version1-14-4] (partially updated only)
 
-If you are updating from previous forge versions, you will probably find [this link][versionupdates] very helpful.  For better or for worse, MCP decided to rename a very large number of classes (eg all Blocks Blockxxx --> xxxxBlock, etc) so this might save you a stack of time.
+If you are updating from previous forge versions, you will probably find [this link][versionupdates] and [this link][versionupdates1-15]very helpful.  For better or for worse, MCP decided to rename a very large number of classes (eg all Blocks Blockxxx --> xxxxBlock, etc) so this might save you a stack of time.
 If you use IntelliJ, you might find these [xml mapping files][mapfiles] useful too
 
 
@@ -147,6 +147,7 @@ Check out [this video][forge_installation] for more help installing Forge.
 [version1-12-2]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-12-2-final
 [version1-14-4]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-14-4-partial
 [versionupdates]: https://gist.github.com/williewillus/353c872bcf1a6ace9921189f6100d09a
+[versionupdates1-15]:https://gist.github.com/williewillus/30d7e3f775fe93c503bddf054ef3f93e
 [mapfiles]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/miscellaneous
 
 With thanks to these helpful folks:
