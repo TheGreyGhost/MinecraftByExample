@@ -1,23 +1,24 @@
 package minecraftbyexample.mbe01_block_simple;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
-import net.minecraftforge.client.model.ModelLoader;
+import minecraftbyexample.usefultools.RenderTypeMBE;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 /**
  * User: The Grey Ghost
  * Date: 24/12/2014
  *
- *  No client-only events are needed for this example
  *  See MinecraftByExample class for more information
  */
 public class StartupClientOnly
 {
-    @SubscribeEvent
-    public void onClientSetupEvent(FMLClientSetupEvent event) {
-      // not actually required for this example....
-    }
+  /**
+   * Tell the renderer this is a solid block (default is translucent)
+   * @param event
+   */
+  @SubscribeEvent
+  public static void onClientSetupEvent(FMLClientSetupEvent event) {
+    RenderTypeLookup.setRenderLayer(StartupCommon.blockSimple, RenderTypeMBE.SOLID());
+  }
 }

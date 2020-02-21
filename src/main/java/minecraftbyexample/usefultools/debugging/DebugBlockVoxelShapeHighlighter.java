@@ -1,18 +1,20 @@
 package minecraftbyexample.usefultools.debugging;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import minecraftbyexample.usefultools.RenderTypeMBE;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.DrawBlockHighlightEvent;
+import net.minecraftforge.client.event.DrawHighlightEvent;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.eventbus.api.Event;
@@ -29,7 +31,7 @@ import static minecraftbyexample.usefultools.debugging.DebugSettings.getDebugPar
  */
 public class DebugBlockVoxelShapeHighlighter {
   @SubscribeEvent
-  public static void onDrawBlockHighlightEvent(DrawBlockHighlightEvent event) {
+  public static void onDrawBlockHighlightEvent(DrawHighlightEvent.HighlightBlock event) {
     RayTraceResult rayTraceResult = event.getTarget();
     if (rayTraceResult.getType() != RayTraceResult.Type.BLOCK) return;
     World world;
@@ -58,21 +60,23 @@ public class DebugBlockVoxelShapeHighlighter {
 
     ActiveRenderInfo activeRenderInfo = event.getInfo();
     ISelectionContext iSelectionContext = ISelectionContext.forEntity(activeRenderInfo.getRenderViewEntity());
+    IRenderTypeBuffer renderTypeBuffers = event.getBuffers();
+    MatrixStack matrixStack = event.getMatrix();
     if (showshape) {
       VoxelShape shape = blockstate.getShape(world, blockpos, iSelectionContext);
-      drawSelectionBox(event.getContext(), blockpos, activeRenderInfo, shape, SHAPE_COLOR);
+      drawSelectionBox(event.getContext(), renderTypeBuffers, matrixStack, blockpos, activeRenderInfo, shape, SHAPE_COLOR);
     }
     if (showrendershapeshape) {
       VoxelShape shape = blockstate.getRenderShape(world, blockpos);
-      drawSelectionBox(event.getContext(), blockpos, activeRenderInfo, shape, RENDERSHAPE_COLOR);
+      drawSelectionBox(event.getContext(), renderTypeBuffers, matrixStack, blockpos, activeRenderInfo, shape, RENDERSHAPE_COLOR);
     }
     if (showcollisionshape) {
       VoxelShape shape = blockstate.getCollisionShape(world, blockpos, iSelectionContext);
-      drawSelectionBox(event.getContext(), blockpos, activeRenderInfo, shape, COLLISIONSHAPE_COLOR);
+      drawSelectionBox(event.getContext(), renderTypeBuffers, matrixStack, blockpos, activeRenderInfo, shape, COLLISIONSHAPE_COLOR);
     }
     if (showraytraceshape) {
       VoxelShape shape = blockstate.getRaytraceShape(world, blockpos);
-      drawSelectionBox(event.getContext(), blockpos, activeRenderInfo, shape, RAYTRACESHAPE_COLOR);
+      drawSelectionBox(event.getContext(), renderTypeBuffers, matrixStack, blockpos, activeRenderInfo, shape, RAYTRACESHAPE_COLOR);
     }
     event.setCanceled(true);
   }
@@ -87,30 +91,36 @@ public class DebugBlockVoxelShapeHighlighter {
   private static Field worldField;
 
   /**
-   * copied from WorldRenderer.drawSelectionBox()
+   * copied from WorldRenderer; starting from the code marked with iprofiler.endStartSection("outline");
    *
    * @param activeRenderInfo
    */
-  public static void drawSelectionBox(WorldRenderer worldRenderer, BlockPos blockPos, ActiveRenderInfo activeRenderInfo, VoxelShape shape, Color color) {
-    GlStateManager.enableBlend();
-    GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-    GlStateManager.lineWidth(Math.max(2.5F, (float) Minecraft.getInstance().mainWindow.getFramebufferWidth() / 1920.0F * 2.5F));
-    GlStateManager.disableTexture();
-    GlStateManager.depthMask(false);
-    GlStateManager.matrixMode(5889);
-    GlStateManager.pushMatrix();
-    GlStateManager.scalef(1.0F, 1.0F, 0.999F);
-    double eyeX = activeRenderInfo.getProjectedView().x;
-    double eyeY = activeRenderInfo.getProjectedView().y;
-    double eyeZ = activeRenderInfo.getProjectedView().z;
+  private static void drawSelectionBox(WorldRenderer worldRenderer, IRenderTypeBuffer renderTypeBuffers, MatrixStack matrixStack,
+                                      BlockPos blockPos, ActiveRenderInfo activeRenderInfo, VoxelShape shape, Color color) {
+    RenderType renderType = RenderTypeMBE.LINES();
+    IVertexBuilder vertexBuilder = renderTypeBuffers.getBuffer(renderType);
+
+    double eyeX = activeRenderInfo.getProjectedView().getX();
+    double eyeY = activeRenderInfo.getProjectedView().getY();
+    double eyeZ = activeRenderInfo.getProjectedView().getZ();
     final float ALPHA = 0.5f;
-    worldRenderer.drawShape(shape,
+    drawShapeOutline(matrixStack, vertexBuilder, shape,
             blockPos.getX() - eyeX, blockPos.getY() - eyeY, blockPos.getZ() - eyeZ,
             color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, ALPHA);
-    GlStateManager.popMatrix();
-    GlStateManager.matrixMode(5888);
-    GlStateManager.depthMask(true);
-    GlStateManager.enableTexture();
-    GlStateManager.disableBlend();
+
   }
+
+  private static void drawShapeOutline(MatrixStack matrixStack,
+                                       IVertexBuilder vertexBuilder,
+                                       VoxelShape voxelShape,
+                                       double originX, double originY, double originZ,
+                                       float red, float green, float blue, float alpha) {
+
+    Matrix4f matrix4f = matrixStack.func_227866_c_().func_227870_a_();
+    voxelShape.forEachEdge((x0, y0, z0, x1, y1, z1) -> {
+      vertexBuilder.func_227888_a_(matrix4f, (float)(x0 + originX), (float)(y0 + originY), (float)(z0 + originZ)).func_227885_a_(red, green, blue, alpha).endVertex();
+      vertexBuilder.func_227888_a_(matrix4f, (float)(x1 + originX), (float)(y1 + originY), (float)(z1 + originZ)).func_227885_a_(red, green, blue, alpha).endVertex();
+    });
+  }
+
 }

@@ -4,7 +4,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.util.BlockRenderLayer;
 
 /**
  * User: The Grey Ghost
@@ -17,7 +16,8 @@ import net.minecraft.util.BlockRenderLayer;
  *   "deprecated" block methods.  What they mean is "when you want to find out what is a block's getRenderType(),
  *     don't call block.getRenderType(), call blockState.getRenderType() instead".
  * If that doesn't make sense to you yet, don't worry.  Just ignore the "deprecated method" warning.
-
+ *
+ * //todo: add loot table
  */
 public class BlockSimple extends Block
 {
@@ -25,13 +25,6 @@ public class BlockSimple extends Block
   {
     super(Block.Properties.create(Material.ROCK)  // look at Block.Properties for further options
          );
-  }
-
-  // the block will render in the SOLID layer.  See http://greyminecraftcoder.blogspot.com/2014/12/block-rendering-18.html for more information.
-  // not strictly required because the default (super method) is SOLID.
-  @Override
-  public BlockRenderLayer getRenderLayer() {
-    return BlockRenderLayer.SOLID;
   }
 
   // render using a BakedModel (mbe01_block_simple.json --> mbe01_block_simple_model.json)

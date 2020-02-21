@@ -1,4 +1,8 @@
 New stuff:
+RenderType: solid, cutout mipped, etc
+RenderTypeLookup manually sets the render type for each block now
+
+--------
 Tags for grouping types of objects together eg crops, leaves, wool
 eg for leaves tag:
 data.minecraft.tags.blocks.leaves.json contains a list of all the blocks which receive this tag

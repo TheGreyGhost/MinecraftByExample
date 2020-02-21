@@ -6,6 +6,7 @@ It will show you:
 
 1. how to create a Block class and register it
 1. how to define and register the model for rendering the block
+1. how to set the type of rendering for the block (SOLID, CUTOUT, TRANSLUCENT etc)
 1. how to define and register the item corresponding to the block (i.e. when the block is shown in the inventory, or in your hand)
 
 The pieces you need to understand are located in:
@@ -24,9 +25,10 @@ The block will appear in the Blocks tab in the creative inventory.
 For background information on:
 
 * blocks: see [https://greyminecraftcoder.blogspot.com/2020/02/blocks-1144.html](https://greyminecraftcoder.blogspot.com/2020/02/blocks-1144.html)
-          or [forge blocks](https://documentation-tterrag.readthedocs.io/en/latest/blocks/blocks/)
-* registering blocks: see [https://documentation-tterrag.readthedocs.io/en/latest/concepts/registries/#registering-things](https://documentation-tterrag.readthedocs.io/en/latest/concepts/registries/#registering-things) 
+          or [forge blocks](https://mcforge.readthedocs.io/en/latest/blocks/blocks/)
+* registering blocks: see [https://mcforge.readthedocs.io/en/latest/concepts/registries/#registering-things](https://mcforge.readthedocs.io/en/latest/concepts/registries/#registering-things) 
 * rendering blocks: see [http://greyminecraftcoder.blogspot.com.au/p/list-of-topics.html](http://greyminecraftcoder.blogspot.com.au/p/list-of-topics.html) (the topics under the Block Rendering heading)
+* render types: see [http://greyminecraftcoder.blogspot.com/2014/12/block-rendering-18.html](http://greyminecraftcoder.blogspot.com/2014/12/block-rendering-18.html) - the method for specifying the render type is different, but the concepts of the different types (SOLID, CUTOUT etc are the same)
 
 ## Common errors
 
@@ -39,3 +41,8 @@ These are caused when you have specified a filename or path which is not correct
 1. You've forgotten the resource domain, eg `blockmodel` instead of `minecraftbyexample:blockmodel`
 1. The folder structure of your assets folders is incorrect
 
+Blocks or Items don't register (don't appear in the game at all):
+1. You've registered your event handlers on the wrong bus (see MinecraftByExample class for more detail)
+1. You're registering MyEventHandler.class on the event bus, but your event handler methods aren't static.
+  1. or... You're registering myEventHandler instance on the event bus, but your event handler methods are static.
+1. You haven't specified a tab for the item, eg .group(ItemGroup.BUILDING_BLOCKS);  // which inventory tab?

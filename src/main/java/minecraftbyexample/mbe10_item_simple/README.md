@@ -37,3 +37,9 @@ These are caused when you have specified a filename or path which is not correct
 Rule of thumb:
 If the item in your hand is a big purple-and-black cube, then your item model was not found or is missing (`resources\assets\minecraftbyexample\models\item\`).  Check the console for an error message that tells you where Forge is expecting to find your item model.
 If the item in your hand is the right shape but is purple and black, then your item model is right but the texture file wasn't found.  No console error message appears in this case.
+
+Items don't register (don't appear in the game at all):
+1. You've registered your event handlers on the wrong bus (see MinecraftByExample class for more detail)
+1. You're registering MyEventHandler.class on the event bus, but your event handler methods aren't static.
+  1. or... You're registering myEventHandler instance on the event bus, but your event handler methods are static.
+1. You haven't specified a tab for the item, eg .group(ItemGroup.BUILDING_BLOCKS);  // which inventory tab?

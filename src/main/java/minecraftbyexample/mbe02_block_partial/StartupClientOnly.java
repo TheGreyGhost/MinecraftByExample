@@ -1,5 +1,7 @@
 package minecraftbyexample.mbe02_block_partial;
 
+import minecraftbyexample.usefultools.RenderTypeMBE;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
@@ -13,8 +15,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 public class StartupClientOnly
 {
   @SubscribeEvent
-  public void onClientSetupEvent(FMLClientSetupEvent event) {
-    // not actually required for this example....
+  public static void onClientSetupEvent(FMLClientSetupEvent event) {
+    RenderTypeLookup.setRenderLayer(StartupCommon.blockPartial, RenderTypeMBE.SOLID());
   }
 }
 

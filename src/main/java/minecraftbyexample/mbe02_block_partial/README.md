@@ -28,6 +28,7 @@ For background information on:
 * blocks: see [http://greyminecraftcoder.blogspot.com/2020/02/blocks-1144.html](http://greyminecraftcoder.blogspot.com/2020/02/blocks-1144.html)
 * rendering blocks: see [http://greyminecraftcoder.blogspot.com.au/p/list-of-topics.html](http://greyminecraftcoder.blogspot.com.au/p/list-of-topics.html) (the topics under the Block Rendering heading)
 * Block Shapes (VoxelShapes): see [https://greyminecraftcoder.blogspot.com/2020/02/block-shapes-voxelshapes-1144.html](https://greyminecraftcoder.blogspot.com/2020/02/block-shapes-voxelshapes-1144.html)
+* render types: see [http://greyminecraftcoder.blogspot.com/2014/12/block-rendering-18.html](http://greyminecraftcoder.blogspot.com/2014/12/block-rendering-18.html) - the method for specifying the render type is different, but the concepts of the different types (SOLID, CUTOUT etc are the same)
 
 ## Common errors
 
@@ -41,3 +42,9 @@ For background information on:
 The model has the wrong shape or is textured strangely:
 
 1. your model file is wrong. 
+
+Blocks or Items don't register (don't appear in the game at all):
+1. You've registered your event handlers on the wrong bus (see MinecraftByExample class for more detail)
+1. You're registering MyEventHandler.class on the event bus, but your event handler methods aren't static.
+  1. or... You're registering myEventHandler instance on the event bus, but your event handler methods are static.
+1. You haven't specified a tab for the item, eg .group(ItemGroup.BUILDING_BLOCKS);  // which inventory tab?

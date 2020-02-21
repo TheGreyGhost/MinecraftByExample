@@ -1,8 +1,6 @@
-MinecraftByExample [1.14.4]
+MinecraftByExample [1.15.2]
 ==================
 ** Work in Progress **
-
-(1.15 isn't stable yet so I've decided to convert to 1.14.4 first)
 
 The purpose of MinecraftByExample is to give simple working examples of the important concepts in Minecraft and Forge. If you're anything like me, a good code example is worth several screens of waffling explanation, and can very quickly explain the key concepts.  I also find it much easier to adapt and debug something that already works, than to have to synthesize something from scratch and spend hours trying to discover the missing bit of information I didn't know about.
 
@@ -24,6 +22,7 @@ If you want more information and explanatory text about the concepts, the follow
  - MBE for Forge 1.11: [1-11final][version1-11]
  - MBE for Forge 1.11.2: [1-11-2final][version1-11-2]
  - MBE for Forge 1.12.2: [1-12-2final][version1-12-2]
+ - MBE for Forge 1.14.4: [1-14-4partial][version1-14-4] (partially updated only)
 
 If you are updating from previous forge versions, you will probably find [this link][versionupdates] very helpful.  For better or for worse, MCP decided to rename a very large number of classes (eg all Blocks Blockxxx --> xxxxBlock, etc) so this might save you a stack of time.
 If you use IntelliJ, you might find these [xml mapping files][mapfiles] useful too
@@ -146,6 +145,7 @@ Check out [this video][forge_installation] for more help installing Forge.
 [version1-11]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-11-final
 [version1-11-2]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-11-2-final
 [version1-12-2]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-12-2-final
+[version1-14-4]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-14-4-partial
 [versionupdates]: https://gist.github.com/williewillus/353c872bcf1a6ace9921189f6100d09a
 [mapfiles]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/miscellaneous
 

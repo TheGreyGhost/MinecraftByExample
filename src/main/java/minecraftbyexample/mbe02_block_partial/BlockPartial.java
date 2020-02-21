@@ -4,20 +4,13 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * User: The Grey Ghost
@@ -56,14 +49,14 @@ public class BlockPartial extends Block {
     );
   }
 
-  // the block will render in the SOLID layer.  See http://greyminecraftcoder.blogspot.co.at/2014/12/block-rendering-18.html for more information.
-  // not strictly required because the default (super method) is SOLID.
-
-  @OnlyIn(Dist.CLIENT)
-  @Override
-  public BlockRenderLayer getRenderLayer() {
-    return BlockRenderLayer.SOLID;
-  }
+//  // the block will render in the SOLID layer.  See http://greyminecraftcoder.blogspot.co.at/2014/12/block-rendering-18.html for more information.
+//  // not strictly required because the default (super method) is SOLID.
+//
+//  @OnlyIn(Dist.CLIENT)
+//  @Override
+//  public BlockRenderLayer getRenderLayer() {
+//    return BlockRenderLayer.SOLID;
+//  }
 
   // render using a BakedModel (mbe02_block_partial.json --> mbe02_block_partial_model.json)
   // not strictly required because the default (super method) is BlockRenderType.MODEL

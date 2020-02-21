@@ -67,13 +67,15 @@ public class BlockVariants extends Block implements IWaterLoggable
 
   private EnumColour blockColour;  // not strictly needed for this example because each colour variant has its own registry name and corresponding model
 
-  // the block will render in the CUTOUT layer.  See http://greyminecraftcoder.blogspot.co.at/2014/12/block-rendering-18.html for more information.
-  @OnlyIn(Dist.CLIENT)
-  @Override
-  public BlockRenderLayer getRenderLayer()
-  {
-    return BlockRenderLayer.CUTOUT;
-  }
+  // the getRenderLayer has now moved to RenderType and RenderTypeLookup registration
+
+//  // the block will render in the CUTOUT layer.  See http://greyminecraftcoder.blogspot.co.at/2014/12/block-rendering-18.html for more information.
+//  @OnlyIn(Dist.CLIENT)
+//  @Override
+//  public BlockRenderLayer getRenderLayer()
+//  {
+//    return BlockRenderLayer.CUTOUT;
+//  }
 
   // render using a BakedModel (mbe03_block_variants.json --> mbe03_block_variants_model.json)
   // not strictly required because the default (super method) is BlockRenderType.MODEL;
