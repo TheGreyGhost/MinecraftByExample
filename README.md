@@ -4,7 +4,7 @@ MinecraftByExample [1.14.4]
 
 (1.15 isn't stable yet so I've decided to convert to 1.14.4 first)
 
-The purpose of MinecraftByExample is to give simple working examples of the important concepts in Minecraft and Forge. If you're anything like me, a good code example is worth several screens worth of waffling explanation, and can very quickly explain the key concepts.  I also find it much easier to adapt and debug something that already works, than to have to synthesize something from scratch and spend hours trying to discover the missing bit of information I didn't know about.
+The purpose of MinecraftByExample is to give simple working examples of the important concepts in Minecraft and Forge. If you're anything like me, a good code example is worth several screens of waffling explanation, and can very quickly explain the key concepts.  I also find it much easier to adapt and debug something that already works, than to have to synthesize something from scratch and spend hours trying to discover the missing bit of information I didn't know about.
 
 I've tried to keep the code simple and obvious and to resist the urge to be clever. The examples might not be the most efficient or succinct implementation, I've deliberately left the optimization to you.
 
@@ -44,7 +44,7 @@ If you use IntelliJ, you might find these [xml mapping files][mapfiles] useful t
 
 ### Items
   - [MBE10][10] - a simple item
-  - X [MBE11][11] - an item with multiple variants - rendered using multiple models and multiple layers
+  - [MBE11][11] - an item with multiple variants - rendered using multiple models and multiple layers
   - X [MBE12][12] - an item that stores extra information in NBT, also illustrates the "in use" animation similar to drawing a bow
   - X [MBE13][13] - customise Mining behaviour of Blocks and Items - several test classes that show how mining works
   - X [MBE14][14] - an interactive helper tool to adjust the ItemCameraTransforms for your custom item

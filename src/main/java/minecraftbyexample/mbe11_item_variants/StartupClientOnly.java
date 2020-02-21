@@ -29,21 +29,4 @@ public class StartupClientOnly
     event.getItemColors().register(new LiquidColour(), StartupCommon.itemVariants);
   }
 
-  @SubscribeEvent
-  public static void onModelRegistryEvent(ModelRegistryEvent event)
-  {
-    //todo actually perhaps this is not required now that we have overrides in the model
-    // The item we registered in StartupCommon will only load and bake models\item\mbe11_item_variants_registry_name
-    // For this reason, we need to tell Minecraft to load and bake the other models (one for each bottle fullness),
-    // because no registered items refer to those and hence they wouldn't otherwise be loaded.
-
-    for (ItemVariants.EnumBottleFullness fullness : ItemVariants.EnumBottleFullness.values()) {
-      String itemModelName = "mbe11_item_variants_registry_name" + fullness.getName();
-      ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation("minecraftbyexample:" + itemModelName, "inventory");
-                // --> eg minecraftbyexample:mbe11_item_variants_0pc, mbe11_item_variants_25pc, etc
-      ModelLoader.addSpecialModel(itemModelResourceLocation);
-    }
-  }
-
-
 }

@@ -1,8 +1,8 @@
 {
     "parent": "builtin/generated",
     "textures": {
-        "layer0": "minecraftbyexample:items/mbe11_item_variants_layer0",
-        "layer1": "minecraftbyexample:items/mbe11_item_variants_layer1_0pc"
+        "layer0": "minecraftbyexample:item/mbe11_item_variants_layer0",
+        "layer1": "minecraftbyexample:item/mbe11_item_variants_layer1_0pc"
     },
   "__comment": "instead of parent:builtin/generated above, you could use item/generated to get default 'display' settings, i.e. most of the display settings below would be unnecessary",
   "display": {

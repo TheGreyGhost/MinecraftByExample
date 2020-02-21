@@ -25,10 +25,14 @@ import java.util.Set;
  *
  *  Also has parallel implementation for triggers (set the trigger, which is automatically reset upon read)
  *
+ *  Note that this class only works properly for debugging on an integrated server;  i.e. the DebugSettings can be
+ *    read from either the client or the server side.  There are no network messages to synchronise debug settings
+ *    between the server and multiple clients.
+ *
  */
 public class DebugSettings {
 
-  public static void setDebugParameter(String parameterName, double value) {
+  public static synchronized void setDebugParameter(String parameterName, double value) {
     debugParameters.put(parameterName, value);
   }
 
@@ -37,7 +41,7 @@ public class DebugSettings {
    * @param parameterName
    * @return
    */
-  public static double getDebugParameter(String parameterName) {
+  public static synchronized double getDebugParameter(String parameterName) {
     Double value = debugParameters.get(parameterName);
     if (value == null) {
       value = 0.0;
@@ -46,7 +50,7 @@ public class DebugSettings {
     return value;
   }
 
-  public static Set<String> listAllDebugParameters() {
+  public static synchronized Set<String> listAllDebugParameters() {
     return debugParameters.keySet();
   }
 
@@ -54,7 +58,7 @@ public class DebugSettings {
 
   //-----------
 
-  public static void setDebugParameterVec3d(String parameterName, Vec3d value) {
+  public static synchronized void setDebugParameterVec3d(String parameterName, Vec3d value) {
     debugParameterVec3ds.put(parameterName, value);
   }
 
@@ -63,7 +67,7 @@ public class DebugSettings {
    * @param parameterName
    * @return
    */
-  public static Vec3d getDebugParameterVec3d(String parameterName) {
+  public static synchronized Vec3d getDebugParameterVec3d(String parameterName) {
     Vec3d value = debugParameterVec3ds.get(parameterName);
     if (value == null) {
       value = Vec3d.ZERO;
@@ -72,7 +76,7 @@ public class DebugSettings {
     return value;
   }
 
-  public static Set<String> listAllDebugParameterVec3ds() {
+  public static synchronized Set<String> listAllDebugParameterVec3ds() {
     return debugParameterVec3ds.keySet();
   }
 
@@ -80,7 +84,7 @@ public class DebugSettings {
 
   //-----------
 
-  public static void setDebugTrigger(String parameterName) {
+  public static synchronized void setDebugTrigger(String parameterName) {
     debugTriggers.put(parameterName, true);
   }
 
@@ -89,16 +93,13 @@ public class DebugSettings {
    * @param parameterName
    * @return
    */
-  public static boolean getDebugTrigger(String parameterName) {
-    Boolean value = debugTriggers.get(parameterName);
-    if (value == null) {
-      value = false;
-      debugTriggers.put(parameterName, value);
-    }
+  public static synchronized boolean getDebugTrigger(String parameterName) {
+    Boolean value = debugTriggers.getOrDefault(parameterName, false);
+    debugTriggers.put(parameterName, false);
     return value;
   }
 
-  public static Set<String> listAllDebugTriggers() {
+  public static synchronized Set<String> listAllDebugTriggers() {
     return debugTriggers.keySet();
   }
 
@@ -106,7 +107,7 @@ public class DebugSettings {
 
   //-----------------
 
-  public static void setDebugTest(int testnumber) {
+  public static synchronized void setDebugTest(int testnumber) {
     debugTest = testnumber;
   }
 
@@ -114,7 +115,7 @@ public class DebugSettings {
    * Returns a test number if one has been triggered.  resets after being called
    * @return the test number to execute, or -1 if none triggered
    */
-  public static int getDebugTest() {
+  public static synchronized int getDebugTest() {
     int value = debugTest;
     debugTest = -1;
     return value;

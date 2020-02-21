@@ -1,8 +1,8 @@
 {
     "parent": "builtin/generated",
     "textures": {
-        "layer0": "minecraftbyexample:items/mbe11_item_variants_layer0",
-        "layer1": "minecraftbyexample:items/mbe11_item_variants_layer1_100pc"
+        "layer0": "minecraftbyexample:item/mbe11_item_variants_layer0",
+        "layer1": "minecraftbyexample:item/mbe11_item_variants_layer1_100pc"
     },
   "display": {
     "thirdperson_righthand": {

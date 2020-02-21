@@ -31,7 +31,7 @@ import net.minecraftforge.registries.ForgeRegistries;
  *    triggers an action, eg
  *      /mbedebug trigger killallentities
  *    which a subsequent code can check for
- *      if (Debugsettings.getDebugTrigger()) killAllEntities();
+ *      if (Debugsettings.getDebugTrigger("killallentities")) killAllEntities();
  * 4) mbedebug test <testnumber>
  *    executes a debug test eg
  *      /mbedebug test 34
