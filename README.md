@@ -91,13 +91,12 @@ If you use IntelliJ, you might find these [xml mapping files][mapfiles] useful t
 
     
 #### If You're Still Confused
-Head over [here][more_help] if this didn't make sense to you, alternatively [this tutorial][diesieben_idea] by diesieben07.
-
-Check out [this video][forge_installation] for more help installing Forge.
+Head over [here][more_help] if this didn't make sense to you (check comments for differences with latest versions of IDEA).
 
 [main_classes]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample
-[greyminecraftcoder]: http://greyminecraftcoder.blogspot.com/p/list-of-topics-1144.html
-[forgedocs]:http://mcforge.readthedocs.org/en/latest/
+[greyminecraftcoder]: https://greyminecraftcoder.blogspot.com/p/list-of-topics-1144.html
+[forgedocs]:https://mcforge.readthedocs.org/en/latest/
+[more_help]:https://suppergerrie2.com/minecraft-1-14-modding-with-forge-1-setting-up-a-dev-environment/
 
 [01]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe01_block_simple
 [02]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe02_block_partial
@@ -133,12 +132,10 @@ Check out [this video][forge_installation] for more help installing Forge.
 
 [75]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe75_testing_framework
 
-[more_help]: http://www.minecraftforge.net/forum/index.php?topic=21354.msg108332#msg108332
 [Forge forum]: https://www.minecraftforge.net/forum/forum/70-modder-support/
 [fabricwiki]: https://fabricmc.net/wiki/start
 [McJty]: https://wiki.mcjty.eu/modding/index.php?title=YouTube-1.14
 
-[forge_installation]: http://youtu.be/8VEdtQLuLO0
 [gradle_tool_window]: https://www.jetbrains.com/idea/help/gradle-tool-window.html
 
 [version1-8]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-8final

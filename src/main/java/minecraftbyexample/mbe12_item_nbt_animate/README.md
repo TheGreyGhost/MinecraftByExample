@@ -48,5 +48,3 @@ These are caused when you have specified a filename or path which is not correct
 1. the upper/lower case doesn't match
 1. you've forgotten the resource domain, eg `blockmodel` instead of `minecraftbyexample:blockmodel`
 1. the folder structure of your assets folders is incorrect
-1. If using IntelliJ 14--the assets isn't be copied to the right place, you need to apply a fix to your `build.gradle`, see [http://www.minecraftforge.net/forum/index.php/topic,21354.0.html](http://www.minecraftforge.net/forum/index.php/topic,21354.0.html)
-1. You haven't properly registered with the `ModelBakery` and/or the `ItemModelMesher`

@@ -1,6 +1,5 @@
 package minecraftbyexample.mbe11_item_variants;
 
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.entity.player.PlayerEntity;
@@ -87,7 +86,7 @@ public class ItemVariants extends Item
   public static void setFlavour(ItemStack stack, EnumBottleFlavour enumBottleFlavour)
   {
     CompoundNBT compoundNBT = stack.getOrCreateTag();
-    enumBottleFlavour.putNBT(compoundNBT, NBT_TAG_NAME_FLAVOUR
+    enumBottleFlavour.putIntoNBT(compoundNBT, NBT_TAG_NAME_FLAVOUR
 
     );
   }
@@ -101,7 +100,7 @@ public class ItemVariants extends Item
   public static void setFullness(ItemStack stack, EnumBottleFullness enumBottleFullness)
   {
     CompoundNBT compoundNBT = stack.getOrCreateTag();
-    enumBottleFullness.putNBT(compoundNBT, NBT_TAG_NAME_FULLNESS);
+    enumBottleFullness.putIntoNBT(compoundNBT, NBT_TAG_NAME_FULLNESS);
   }
 
   // add a subitem for each item that we want to appear in the creative tab
@@ -152,7 +151,7 @@ public class ItemVariants extends Item
   {
     EnumBottleFullness fullness = getFullness(stack);
     fullness = fullness.decreaseFullnessByOneStep();
-    fullness.putNBT(stack.getTag(), NBT_TAG_NAME_FULLNESS);
+    fullness.putIntoNBT(stack.getTag(), NBT_TAG_NAME_FULLNESS);
     return stack;
   }
 
@@ -232,7 +231,7 @@ public class ItemVariants extends Item
      * @param compoundNBT
      * @param tagname
      */
-    public void putNBT(CompoundNBT compoundNBT, String tagname)
+    public void putIntoNBT(CompoundNBT compoundNBT, String tagname)
     {
       compoundNBT.putByte(tagname, nbtID);
     }
@@ -300,7 +299,7 @@ public class ItemVariants extends Item
      * @param compoundNBT
      * @param tagname
      */
-    public void putNBT(CompoundNBT compoundNBT, String tagname)
+    public void putIntoNBT(CompoundNBT compoundNBT, String tagname)
     {
       compoundNBT.putByte(tagname, nbtID);
     }

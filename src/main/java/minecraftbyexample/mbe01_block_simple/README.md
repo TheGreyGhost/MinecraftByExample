@@ -54,3 +54,4 @@ My block doesn't drop an item when I harvest it:
 1. You have to harvest the block in survival mode (creative mode doesn't drop items when blocks are harvested)
 1. You have to harvest the block using a suitable tool, depending on the Material you used to define your block and 
 the harvestLevel and harvestTool Block Properties.  (eg: you need a pickaxe to mine Material.ROCK)
+1. You've stored the loot table json in the wrong folder or given it a name that doesn't correspond to the block
