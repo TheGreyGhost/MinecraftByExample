@@ -4,6 +4,16 @@ RenderTypeLookup manually sets the render type for each block now
 
 https://medium.com/grandcentrix/how-to-debug-gradle-plugins-with-intellij-eef2ef681a7b
 
+TileEntity:
+read; write
+markDirty
+getUpdatePacket
+getUpdateTag
+receiveClientEvent -?
+
+   public static final TileEntityType<FurnaceTileEntity> FURNACE = register("furnace", TileEntityType.Builder.create(FurnaceTileEntity::new, Blocks.FURNACE));
+
+
 --------
 Tags for grouping types of objects together eg crops, leaves, wool
 eg for leaves tag:

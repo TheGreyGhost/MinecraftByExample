@@ -17,8 +17,8 @@ The example will show you:
 
 The pieces you need to understand are located in:
 
-* `Startup`
-* `ItemVariants`
+* `StartupCommon` class
+* `ItemNBTAnimate` class
 * `resources\assets\minecraftbyexample\lang\en_US.lang` -- for the displayed name of the item variants
 * `resources\assets\minecraftbyexample\models\item\mbe12_item_nbt_animate_xxx` -- for the models used to render the item variants
 * `resources\assets\minecraftbyexample\textures\items\mbe12_item_nbt_animate_xxx.png` -- textures used for the item rendering
@@ -28,15 +28,13 @@ The item will appear in the Miscellaneous tab in the creative inventory.
 For background information on:
 
 * items: see [http://greyminecraftcoder.blogspot.com/2013/12/items.html](http://greyminecraftcoder.blogspot.com/2013/12/items.html)
-* rendering items: see [http://greyminecraftcoder.blogspot.com.au/2014/12/item-rendering-18.html](http://greyminecraftcoder.blogspot.com.au/2014/12/item-rendering-18.html)
-* NBT explorer--helpful tool for viewing NBT files
+* rendering items: see [http://greyminecraftcoder.blogspot.com.au/2014/12/item-rendering-18.html](http://greyminecraftcoder.blogspot.com.au/2014/12/item-rendering-18.html)  Old, but the concepts are still similar
+* NBT explorer--helpful tool for viewing NBT files  (old, but still works when I tried it):
     * [http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-tools/1262665-nbtexplorer-nbt-editor-for-windows-and-mac](http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-tools/1262665-nbtexplorer-nbt-editor-for-windows-and-mac)
-* Useful helper class for NBT:
-    * [https://github.com/brandon3055/Draconic-Evolution/blob/master/src/main/java/com/brandon3055/draconicevolution/common/utills/ItemNBTHelper.java](https://github.com/brandon3055/Draconic-Evolution/blob/master/src/main/java/com/brandon3055/draconicevolution/common/utills/ItemNBTHelper.java)
 
 Useful vanilla classes for further info:
 
-`ItemStack.addEnchantment()`, `ItemPotion`
+`ItemStack.addEnchantment()`, `PotionItem`
 
 ## Common errors
 
@@ -48,3 +46,9 @@ These are caused when you have specified a filename or path which is not correct
 1. the upper/lower case doesn't match
 1. you've forgotten the resource domain, eg `blockmodel` instead of `minecraftbyexample:blockmodel`
 1. the folder structure of your assets folders is incorrect
+
+Items don't register (don't appear in the game at all):
+1. You've registered your event handlers on the wrong bus (see MinecraftByExample class for more detail)
+1. You're registering MyEventHandler.class on the event bus, but your event handler methods aren't static.
+  1. or... You're registering myEventHandler instance on the event bus, but your event handler methods are static.
+1. You haven't specified a tab for the item, eg .group(ItemGroup.BUILDING_BLOCKS);  // which inventory tab?
