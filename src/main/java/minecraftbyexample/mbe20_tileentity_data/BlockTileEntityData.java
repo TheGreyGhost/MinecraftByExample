@@ -10,6 +10,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -40,7 +41,7 @@ public class BlockTileEntityData extends Block
   // Called when the block is placed or loaded client side to get the tile entity for the block
   // Should return a new instance of the tile entity for the block
   @Override
-  public TileEntity createTileEntity(World world, BlockState state) {return new  TileEntityData();}
+  public TileEntity createTileEntity(BlockState state, IBlockReader world) {return new  TileEntityData();}
 
   // Called just after the player places a block.  Start the tileEntity's timer
   @Override

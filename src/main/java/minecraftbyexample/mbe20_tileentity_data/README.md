@@ -33,7 +33,9 @@ The block will appear in the Blocks tab in the creative inventory.
 
 Further information:
 
-NBTexplorer is a very useful tool to examine the structure of your NBT saved data and make sure it's correct: [http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-tools/1262665-nbtexplorer-nbt-editor-for-windows-and-mac](http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-tools/1262665-nbtexplorer-nbt-editor-for-windows-and-mac)
+NBTexplorer is a very useful tool to examine the structure of your NBT saved data and make sure it's correct: [http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-tools/1262665-nbtexplorer-nbt-editor-for-windows-and-mac](http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-tools/1262665-nbtexplorer-nbt-editor-for-windows-and-mac)<br>
+[Forge info on TileEntities](https://mcforge.readthedocs.io/en/latest/tileentities/tileentity/)
+
 
 ## Common errors
 
