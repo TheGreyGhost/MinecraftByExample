@@ -1,15 +1,13 @@
 package minecraftbyexample.mbe20_tileentity_data;
 
+import minecraftbyexample.usefultools.NBTtypesMBE;
 import net.minecraft.block.*;
 import net.minecraft.block.SaplingBlock;
 import net.minecraft.block.TNTBlock;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.DoubleNBT;
-import net.minecraft.nbt.IntNBT;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.*;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -52,8 +50,8 @@ public class TileEntityData extends TileEntity implements ITickableTileEntity {
   {
 		CompoundNBT nbtTagCompound = new CompoundNBT();
 		write(nbtTagCompound);
-		int metadata = getBlockMetadata();
-		return new SUpdateTileEntityPacket(this.pos, metadata, nbtTagCompound);
+		int tileEntityType = 42;  // arbitrary number; only used for vanilla TileEntities.  You can use it, or not, as you want.
+		return new SUpdateTileEntityPacket(this.pos, tileEntityType, nbtTagCompound);
 	}
 
 	@Override
@@ -61,7 +59,7 @@ public class TileEntityData extends TileEntity implements ITickableTileEntity {
 		read(pkt.getNbtCompound());
 	}
 
-  /* Creates a tag containing the TileEntity information, used by vanilla to transmit from server to client
+  /* Creates a tag containing all of the TileEntity information, used by vanilla to transmit from server to client
  */
   @Override
   public CompoundNBT getUpdateTag()
@@ -94,6 +92,7 @@ public class TileEntityData extends TileEntity implements ITickableTileEntity {
 
 		// some examples of other NBT tags - browse NBTTagCompound or search for the subclasses of INBT for more examples
 
+    // simple string
 		parentNBTTagCompound.putString("testString", testString);
 
 		// group x,y,z together under a "testBlockPos" tag
@@ -125,7 +124,7 @@ public class TileEntityData extends TileEntity implements ITickableTileEntity {
 			Double value = testDoubleArrayWithNulls[i];
 			if (value != null) {
 				CompoundNBT dataForThisSlot = new CompoundNBT();
-				dataForThisSlot.putInt("i", i+1);   // avoid using 0, so the default when reading a missing value (0) is obviously invalid
+				dataForThisSlot.putInt("i", i + 1);   // avoid using 0, so the default when reading a missing value (0) is obviously invalid
 				dataForThisSlot.putDouble("v", value);
 				doubleArrayWithNullsNBT.add(dataForThisSlot);
 			}
@@ -142,64 +141,70 @@ public class TileEntityData extends TileEntity implements ITickableTileEntity {
 
 		// important rule: never trust the data you read from NBT, make sure it can't cause a crash
 
-		final int NBT_INT_ID = 3;					// see NBTBase.createNewByType()
+		final int NBT_INT_ID = NBTtypesMBE.INT_NBT_ID;
 		int readTicks = INVALID_VALUE;
-		if (parentNBTTagCompound.hasKey("ticksLeft", NBT_INT_ID)) {  // check if the key exists and is an Int. You can omit this if a default value of 0 is ok.
-			readTicks = parentNBTTagCompound.getInteger("ticksLeft");
+		if (parentNBTTagCompound.contains("ticksLeft", NBT_INT_ID)) {  // check if the key exists and is an Int. You can omit this if a default value of 0 is ok.
+			readTicks = parentNBTTagCompound.getInt("ticksLeft");
 			if (readTicks < 0) readTicks = INVALID_VALUE;
 		}
 		ticksLeftTillDisappear = readTicks;
 
-		// some examples of other NBT tags - browse NBTTagCompound or search for the subclasses of NBTBase for more
+		// some examples of other NBT tags - browse CompoundNBT or search for the subclasses of INBT for more
 
-		String readTestString = null;
-		final int NBT_STRING_ID = 8;          // see NBTBase.createNewByType()
-		if (parentNBTTagCompound.hasKey("testString", NBT_STRING_ID)) {
+    // simple string
+    String readTestString = null;
+		final int NBT_STRING_ID = NBTtypesMBE.STRING_NBT_ID;
+		if (parentNBTTagCompound.contains("testString", NBT_STRING_ID)) {
 			readTestString = parentNBTTagCompound.getString("testString");
 		}
 		if (!testString.equals(readTestString)) {
 			System.err.println("testString mismatch:" + readTestString);
 		}
 
-		CompoundNBT blockPosNBT = parentNBTTagCompound.getCompoundTag("testBlockPos");
+    // group x,y,z together under a "testBlockPos" tag
+    CompoundNBT blockPosNBT = parentNBTTagCompound.getCompound("testBlockPos");
 		BlockPos readBlockPos = null;
-		if (blockPosNBT.hasKey("x", NBT_INT_ID) && blockPosNBT.hasKey("y", NBT_INT_ID) && blockPosNBT.hasKey("z", NBT_INT_ID) ) {
-			readBlockPos = new BlockPos(blockPosNBT.getInteger("x"), blockPosNBT.getInteger("y"), blockPosNBT.getInteger("z"));
+		if (blockPosNBT.contains("x", NBT_INT_ID) && blockPosNBT.contains("y", NBT_INT_ID) && blockPosNBT.contains("z", NBT_INT_ID) ) {
+			readBlockPos = new BlockPos(blockPosNBT.getInt("x"), blockPosNBT.getInt("y"), blockPosNBT.getInt("z"));
 		}
 		if (readBlockPos == null || !testBlockPos.equals(readBlockPos)) {
 			System.err.println("testBlockPos mismatch:" + readBlockPos);
 		}
 
-		CompoundNBT itemStackNBT = parentNBTTagCompound.getCompoundTag("testItemStack");
-		ItemStack readItemStack = new ItemStack(itemStackNBT);
+    // ItemStack
+		CompoundNBT itemStackNBT = parentNBTTagCompound.getCompound("testItemStack");
+		ItemStack readItemStack = ItemStack.read(itemStackNBT);
 		if (!ItemStack.areItemStacksEqual(testItemStack, readItemStack)) {
 			System.err.println("testItemStack mismatch:" + readItemStack);
 		}
 
+    // IntArray
 		int [] readIntArray = parentNBTTagCompound.getIntArray("testIntArray");
 		if (!Arrays.equals(testIntArray, readIntArray)) {
 			System.err.println("testIntArray mismatch:" + readIntArray);
 		}
 
-		final int NBT_DOUBLE_ID = 6;					// see NBTBase.createNewByType()
-		ListNBT doubleArrayNBT = parentNBTTagCompound.getTagList("testDoubleArray", NBT_DOUBLE_ID);
-		int numberOfEntries = Math.min(doubleArrayNBT.tagCount(), testDoubleArray.length);
+    // List of Doubles
+		final int NBT_DOUBLE_ID = NBTtypesMBE.DOUBLE_NBT_ID;
+		ListNBT doubleArrayNBT = parentNBTTagCompound.getList("testDoubleArray", NBT_DOUBLE_ID);
+		int numberOfEntries = Math.min(doubleArrayNBT.size(), testDoubleArray.length);
 		double [] readDoubleArray = new double[numberOfEntries];
 		for (int i = 0; i < numberOfEntries; ++i) {
-			 readDoubleArray[i] = doubleArrayNBT.getDoubleAt(i);
+			 readDoubleArray[i] = doubleArrayNBT.getDouble(i);
 		}
-		if (doubleArrayNBT.tagCount() != numberOfEntries || !Arrays.equals(readDoubleArray, testDoubleArray)) {
+		if (doubleArrayNBT.size() != numberOfEntries || !Arrays.equals(readDoubleArray, testDoubleArray)) {
 			System.err.println("testDoubleArray mismatch:" + readDoubleArray);
 		}
 
-		final int NBT_COMPOUND_ID = 10;					// see NBTBase.createNewByType()
-		ListNBT doubleNullArrayNBT = parentNBTTagCompound.getTagList("testDoubleArrayWithNulls", NBT_COMPOUND_ID);
-		numberOfEntries = Math.min(doubleArrayNBT.tagCount(), testDoubleArrayWithNulls.length);
+    // List of (integer, double) pairs
+		final int NBT_COMPOUND_ID = NBTtypesMBE.COMPOUND_NBT_ID;
+		ListNBT doubleNullArrayNBT = parentNBTTagCompound.getList("testDoubleArrayWithNulls", NBT_COMPOUND_ID);
+		numberOfEntries = Math.min(doubleArrayNBT.size(), testDoubleArrayWithNulls.length);
 		Double [] readDoubleNullArray = new Double[numberOfEntries];
-		for (int i = 0; i < doubleNullArrayNBT.tagCount(); ++i)	{
-			CompoundNBT nbtEntry = doubleNullArrayNBT.getCompoundTagAt(i);
-			int idx = nbtEntry.getInteger("i") - 1;
-			if (nbtEntry.hasKey("v", NBT_DOUBLE_ID) && idx >= 0 && idx < numberOfEntries) {
+		for (int i = 0; i < doubleNullArrayNBT.size(); ++i)	{
+			CompoundNBT nbtEntry = doubleNullArrayNBT.getCompound(i);
+			int idx = nbtEntry.getInt("i") - 1;
+			if (nbtEntry.contains("v", NBT_DOUBLE_ID) && idx >= 0 && idx < numberOfEntries) {
 				readDoubleNullArray[idx] = nbtEntry.getDouble("v");
 			}
 		}
@@ -215,7 +220,7 @@ public class TileEntityData extends TileEntity implements ITickableTileEntity {
 		if (!this.hasWorld()) return;  // prevent crash
 		World world = this.getWorld();
 		if (world.isRemote) return;   // don't bother doing anything on the client side.
-    ServerWorld serverWorld = (ServerWorld)world;
+    ServerWorld serverWorld = (ServerWorld)world;  // we can now be sure world is a ServerWorld
 		if (ticksLeftTillDisappear == INVALID_VALUE) return;  // do nothing until the time is valid
 		--ticksLeftTillDisappear;
 //		this.markDirty();            // if you update a tileentity variable on the server and this should be communicated to the client,
@@ -233,7 +238,7 @@ public class TileEntityData extends TileEntity implements ITickableTileEntity {
 		} else if (chosenBlock == Blocks.OAK_SAPLING) {
 			SaplingBlock blockSapling = (SaplingBlock)Blocks.OAK_SAPLING;
 			// blockSapling.generateTree(world, this.pos, blockSapling.getDefaultState(),random);
-      blockSapling.func_226942_a_(serverWorld, this.pos, blockSapling.getDefaultState(),random);  //todo rename at next MCP update
+      blockSapling.func_226942_a_(serverWorld, this.pos, blockSapling.getDefaultState(), random);  //todo rename at next MCP update
 		}
 	}
 
