@@ -1,39 +1,28 @@
-//package minecraftbyexample.mbe20_tileentity_data;
-//
-//import net.minecraft.client.renderer.model.ModelResourceLocation;
-//import net.minecraftforge.client.model.ModelLoader;
-//
-///**
-// * User: The Grey Ghost
-// * Date: 24/12/2014
-// *
-// * The Startup classes for this example are called during startup, in the following order:
-// *  preInitCommon
-// *  preInitClientOnly
-// *  initCommon
-// *  initClientOnly
-// *  postInitCommon
-// *  postInitClientOnly
-// *  See MinecraftByExample class for more information
-// */
-//public class StartupClientOnly
-//{
-//  public static void preInitClientOnly()
-//  {
-//    // This step is necessary in order to make your block render properly when it is an item (i.e. in the inventory
-//    //   or in your hand or thrown on the ground).
-//    // It must be done on client only, and must be done after the block has been created in Common.preinit().
-//    ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation("minecraftbyexample:mbe20_tileentity_data_block", "inventory");
-//    final int DEFAULT_ITEM_SUBTYPE = 0;
-//    ModelLoader.setCustomModelResourceLocation(StartupCommon.itemBlockTileEntityData, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation);
-//  }
-//
-//  public static void initClientOnly()
-//  {
-//  }
-//
-//  public static void postInitClientOnly()
-//  {
-//  }
-//
-//}
+package minecraftbyexample.mbe20_tileentity_data;
+
+import minecraftbyexample.mbe01_block_simple.*;
+import minecraftbyexample.usefultools.RenderTypeMBE;
+import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+
+/**
+ * User: The Grey Ghost
+ * Date: 24/12/2014
+ *
+ *
+ *  See MinecraftByExample class for more information
+ */
+public class StartupClientOnly
+{
+  /**
+   * Tell the renderer this is a solid block (default is translucent)
+   * @param event
+   */
+  @SubscribeEvent
+  public static void onClientSetupEvent(FMLClientSetupEvent event) {
+    RenderTypeLookup.setRenderLayer(StartupCommon.blockTileEntityData, RenderTypeMBE.SOLID());
+  }
+}

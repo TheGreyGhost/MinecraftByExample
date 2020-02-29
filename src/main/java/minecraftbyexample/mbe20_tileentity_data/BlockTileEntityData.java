@@ -7,13 +7,10 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * User: The Grey Ghost
@@ -26,8 +23,8 @@ public class BlockTileEntityData extends Block
 {
   public BlockTileEntityData()
   {
-    super(Material.ROCK);
-    this.setCreativeTab(ItemGroup.BUILDING_BLOCKS);   // the block will appear on the Blocks tab in creative
+    super(Block.Properties.create(Material.ROCK)
+        );
   }
 
   private final int TIMER_COUNTDOWN_TICKS = 20 * 10; // duration of the countdown, in ticks = 10 seconds
@@ -52,30 +49,6 @@ public class BlockTileEntityData extends Block
       TileEntityData tileEntityData = (TileEntityData)tileentity;
       tileEntityData.setTicksLeftTillDisappear(TIMER_COUNTDOWN_TICKS);
     }
-  }
-
-  // the block will render in the SOLID layer.  See http://greyminecraftcoder.blogspot.co.at/2014/12/block-rendering-18.html for more information.
-  @OnlyIn(Dist.CLIENT)
-  public BlockRenderLayer getBlockLayer()
-  {
-    return BlockRenderLayer.SOLID;
-  }
-
-  // used by the renderer to control lighting and visibility of other block.
-  // set to false because this block doesn't fill the entire 1x1x1 space
-  @Override
-  public boolean isOpaqueCube(BlockState state)
-  {
-    return false;
-  }
-
-  // used by the renderer to control lighting and visibility of other block, also by
-  // (eg) wall or fence to control whether the fence joins itself to this block
-  // set to false because this block doesn't fill the entire 1x1x1 space
-  @Override
-  public boolean isFullCube(BlockState state)
-  {
-    return false;
   }
 
   // render using a BakedModel

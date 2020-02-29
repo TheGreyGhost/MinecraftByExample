@@ -8,26 +8,27 @@ This example will show you:
 
 1. how to create a `Block` class with an associated `TileEntity`
 1. how to create a `TileEntity` class and register it
-1. how to save and load the state of the `TileEntity` using NBT: `writeToNBT()` and `readFromNBT()`
-1. an overview of how to use NBT for a variety of different data types--see `writeToNBT()` and `readFromNBT()`
+1. how to save and load the state of the `TileEntity` using NBT: `write()` and `read()`
+1. an overview of how to use NBT for a variety of different data types--see `write()` and `read()`
 1. how to send the server `TileEntity` information to the client using packets:
     1. `getUpdatePacket()` and `onDataPacket()` -- for single `TileEntity` updates
     1. `getUpdateTag()` and `handleUpdateTag()` -- for sending as part of a chunk update packet
-1. how to get your `TileEntity` updated every tick: implementing `ITickable`
+1. how to get your `TileEntity` updated every tick: implementing `ITickableTileEntity`
 
 The pieces you need to understand are located in:
 
-* `Startup`
-* `BlockTileEntityData`
-* `TileEntityData`
+* `StartupCommon` and `StartupClient` class
+* `BlockTileEntityData` class
+* `TileEntityData` class
 
 Various other resources associated with the block rendering (see mbe01 for more details) are located in:
 
 * `resources\assets\minecraftbyexample\lang\en_US.lang`
 * `resources\assets\minecraftbyexample\blockstates\`
 * `resources\assets\minecraftbyexample\models\block\`
-* `resources\assets\minecraftbyexample\textures\blocks\`
 * `resources\assets\minecraftbyexample\models\item\`
+* `resources\assets\minecraftbyexample\textures\block\`
+* `resources\data\minecraftbyexample\loot_tables\blocks\` 
 
 The block will appear in the Blocks tab in the creative inventory.
 
@@ -39,7 +40,7 @@ NBTexplorer is a very useful tool to examine the structure of your NBT saved dat
 
 ## Common errors
 
-* `TileEntity` doesn't properly restore after loading a saved game--your NBT read/write code is wrong / mismatched. Did you forget the `super.writeToNBT()` and/or `super.readFromNBT()`?
+* `TileEntity` doesn't properly restore after loading a saved game--your NBT read/write code is wrong / mismatched. Did you forget the `super.write()` and/or `super.read()`?
 * The `TileEntity` on the client doesn't synchronise properly--`getUpdatePacket()`, `getUpdateTag()`, `onDataPacket()`, and/or `handleUpdateTag()` are probably wrong
 * "{your tileentity class} is missing a mapping! This is a bug!"--you forgot to `GameRegistry.registerTileEntity()`
 

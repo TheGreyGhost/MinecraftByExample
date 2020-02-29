@@ -12,7 +12,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ITickable;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -30,7 +30,11 @@ import java.util.Random;
  */
 public class TileEntityData extends TileEntity implements ITickableTileEntity {
 
-	private final int INVALID_VALUE = -1;
+  public TileEntityData() {
+    super(StartupCommon.tileEntityDataType);
+  }
+
+  private final int INVALID_VALUE = -1;
 	private int ticksLeftTillDisappear = INVALID_VALUE;  // the time (in ticks) left until the block disappears
 
 	// set by the block upon creation

@@ -25,6 +25,7 @@ public class StartupCommon
 {
   public static BlockTileEntityData blockTileEntityData;  // this holds the unique instance of your block
   public static BlockItem itemBlockTileEntityData; // this holds the unique instance of the ItemBlock corresponding to your block
+  public static TileEntityType<TileEntityData> tileEntityDataType;  // Holds the type of our tile entity; needed for the TileEntityData constructor
 
   @SubscribeEvent
   public static void onBlocksRegistration(final RegistryEvent.Register<Block> blockRegisterEvent) {
@@ -47,10 +48,10 @@ public class StartupCommon
 
   @SubscribeEvent
   public static void onTileEntityTypeRegistration(final RegistryEvent.Register<TileEntityType<?>> event) {
-    TileEntityType<TileEntityData> tileEntityType =
+    tileEntityDataType =
             TileEntityType.Builder.create(TileEntityData::new, blockTileEntityData).build(null);  // you probably don't need a datafixer --> null should be fine
-    tileEntityType.setRegistryName("minecraftbyexample:mbe20_tile_entity_type_registry_name");
-    event.getRegistry().register(tileEntityType);
+    tileEntityDataType.setRegistryName("minecraftbyexample:mbe20_tile_entity_type_registry_name");
+    event.getRegistry().register(tileEntityDataType);
   }
 
   @SubscribeEvent

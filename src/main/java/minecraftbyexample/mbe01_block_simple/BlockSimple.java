@@ -17,7 +17,6 @@ import net.minecraft.block.material.Material;
  *     don't call block.getRenderType(), call blockState.getRenderType() instead".
  * If that doesn't make sense to you yet, don't worry.  Just ignore the "deprecated method" warning.
  *
- * //todo: add loot table
  */
 public class BlockSimple extends Block
 {
