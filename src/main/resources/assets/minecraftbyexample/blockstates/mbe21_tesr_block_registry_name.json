@@ -1,5 +1,5 @@
 {
   "variants": {
-    "normal": { "model": "block/hopper_side" }
+    "": { "model": "block/hopper_side" }
   }
 }

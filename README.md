@@ -45,14 +45,14 @@ If you use IntelliJ, you might find these [xml mapping files][mapfiles] useful t
 ### Items
   - [MBE10][10] - a simple item
   - [MBE11][11] - an item with multiple variants - rendered using multiple models and multiple layers
-  - X [MBE12][12] - an item that stores extra information in NBT, also illustrates the "in use" animation similar to drawing a bow
+  - [MBE12][12] - an item that stores extra information in NBT, also illustrates the "in use" animation similar to drawing a bow
   - X [MBE13][13] - customise Mining behaviour of Blocks and Items - several test classes that show how mining works
   - X [MBE14][14] - an interactive helper tool to adjust the ItemCameraTransforms for your custom item
   - X [MBE15][15] - a chessboard item with 1 - 64 pieces; uses ItemOverrideList.handleItemState(), IBlockModel.getQuads() and onModelBakeEvent()
 
 
 ### TileEntities
-  - X [MBE20][20] - using a tile entity to store information about a block - also shows examples of using NBT storage
+  - [MBE20][20] - using a tile entity to store information about a block - also shows examples of using NBT storage
   - X [MBE21][21] - using the TileEntitySpecialRenderer to render unusual shapes or animations
 
 ### Containers (Inventories)

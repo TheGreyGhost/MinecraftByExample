@@ -1,7 +1,7 @@
 {
   "parent": "builtin/generated",
   "textures": {
-    "layer0": "minecraftbyexample:items/mbe12_item_nbt_animate_5"
+    "layer0": "minecraftbyexample:item/mbe12_item_nbt_animate_5"
   },
   "display": {
     "thirdperson_righthand": {

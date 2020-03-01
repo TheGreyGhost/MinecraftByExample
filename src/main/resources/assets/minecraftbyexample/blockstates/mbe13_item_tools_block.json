@@ -1,5 +1,5 @@
 {
     "variants": {
-        "normal": { "model": "minecraftbyexample:block/mbe13_item_tools_block_model" }
+        "": { "model": "minecraftbyexample:block/mbe13_item_tools_block_model" }
     }
 }

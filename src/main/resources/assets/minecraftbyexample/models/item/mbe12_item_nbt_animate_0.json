@@ -1,7 +1,7 @@
 {
   "parent": "builtin/generated",
   "textures": {
-    "layer0": "minecraftbyexample:items/mbe12_item_nbt_animate_0"
+    "layer0": "minecraftbyexample:item/mbe12_item_nbt_animate_0"
   },
   "__comment": "instead of parent:builtin/generated above, you could use item/generated to get default 'display' settings, i.e. most of the display settings below would be unnecessary",
   "display": {
