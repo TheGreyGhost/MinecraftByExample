@@ -16,6 +16,14 @@ uIn appears to be partial ticks?
 
  OverlayTexture.func_229201_a_ getPackedUV
 
+The overlay texture is
+grid:
+i<8 ->  B200 00FF  RED
+i>=8 -> linear interpolate 64-255 << 24 OR 00FF FFFF
+
+
+ABGR
+
 
 https://medium.com/grandcentrix/how-to-debug-gradle-plugins-with-intellij-eef2ef681a7b
 

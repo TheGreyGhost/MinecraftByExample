@@ -1,10 +1,12 @@
 package minecraftbyexample.mbe21_tileentityrenderer;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import minecraftbyexample.usefultools.UsefulFunctions;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.tileentity.DualBrightnessCallback;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
@@ -25,27 +27,21 @@ public class TileEntityRendererMBE21 extends TileEntityRenderer<TileEntityMBE21>
   /**
    *  (this function is called "render" in previous mcp mappings)
    * render the tile entity - called every frame while the tileentity is in view of the player
-   * @param tileEntity the associated tile entity
-   * @param relativeX the x distance from the player's eye to the tileentity
-   * @param relativeY the y distance from the player's eye to the tileentity
-   * @param relativeZ the z distance from the player's eye to the tileentity
+   * @param tileEntityMBE21 the associated tile entity
    * @param partialTicks the fraction of a tick that this frame is being rendered at - used to interpolate frames between
    *                     ticks, to make animations smoother.  For example - if the frame rate is steady at 80 frames per second,
    *                     this method will be called four times per tick, with partialTicks spaced 0.25 apart, (eg) 0, 0.25, 0.5, 0.75
-   * @param blockDamageProgress the progress of the block being damaged (0 - 10), if relevant.  -1 if not relevant.
-   * @param alpha I'm not sure what this is used for; the name suggests alpha blending but Vanilla doesn't appear to use it
+   * @param matrixStack the matrixStack is used to track the current view transformations that have been applied - i.e translation, rotation, scaling
+   *                    it is needed for you to render the view properly.
+   * @param renderBuffer the buffer that you should render your model to
+   * @param combinedLight the blocklight + skylight value for the tileEntity.  see http://greyminecraftcoder.blogspot.com/2014/12/lighting-18.html (outdated, but the concepts are still valid)
+   * @param combinedOverlay value for the "combined overlay" which changes the render based on an overlay texture (see OverlayTexture class).
+   *                        Used by vanilla for (1) red tint when a living entity is damaged, and (2) "flash" effect for creeper when ignited
+   *                        CreeperRenderer.func_225625_b_()
    */
   @Override
   public void func_225616_a_(TileEntityMBE21 tileEntityMBE21, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderBuffer,
                              int combinedLight, int combinedOverlay) {
-
-  }
-
-  public void render(TileEntityMBE21 tileEntity, double relativeX, double relativeY, double relativeZ,
-                     float partialTicks, int blockDamageProgress, float alpha) {
-
-    if (!(tileEntity instanceof TileEntityMBE21)) return; // should never happen
-    TileEntityMBE21 tileEntityMBE21 = tileEntity;
 
     // the gem changes its appearance and animation as the player approaches.
     // When the player is a long distance away, the gem is dark, resting in the hopper, and does not rotate.
@@ -58,6 +54,10 @@ public class TileEntityRendererMBE21 extends TileEntityRenderer<TileEntityMBE21>
     // 2) the brightness of the gem, which depends on player distance
     // 3) the distance that the gem rises above the pedestal, which depends on player distance
     // 4) the speed at which the gem is spinning, which depends on player distance.
+
+    // something to do with blocklight + sky light
+    int lvt_11_1_ = ((Int2IntFunction)lvt_10_1_.apply(new DualBrightnessCallback())).get(p_225616_5_);
+
 
     final double pedestalCentreOffsetX = 0.5;
     final double pedestalCentreOffsetY = 0.8;
