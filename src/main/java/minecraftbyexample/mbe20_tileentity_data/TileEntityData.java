@@ -12,7 +12,6 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -31,7 +30,7 @@ import java.util.Random;
 public class TileEntityData extends TileEntity implements ITickableTileEntity {
 
   public TileEntityData() {
-    super(StartupCommon.tileEntityDataType);
+    super(StartupCommon.tileEntityDataTypeMBE20);
   }
 
   private final int INVALID_VALUE = -1;

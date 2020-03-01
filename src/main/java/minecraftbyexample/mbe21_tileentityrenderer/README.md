@@ -1,10 +1,10 @@
-# MBE21_TILEENTITYSPECIALRENDERER
+# MBE21_TILEENTITYRENDERER
 
-This example shows how to use a `TileEntitySpecialRenderer`. It uses a simple block and a `TileEntity` to store the animation parameters.
+This example shows how to use a `TileEntityRenderer`. It uses a simple block and a `TileEntity` to store the animation parameters.
 
 It will show you:
 
-1. how to create a TESR and bind it to a `TileEntity`
+1. how to create a TER and bind it to a `TileEntity`
 1. how to correctly translate so that your `TileEntity` renders in the correct place
 1. how to save and restore the rendering settings so that subsequent renders by vanilla aren't affected
 1. how to set the typical settings for rendering
@@ -13,7 +13,7 @@ The pieces you need to understand are located in:
 
 * `Startup`
 * `TileEntityMBE21`
-* `TileEntitySpecialRendererMBE21`
+* `TileEntityRendererMBE21`
 * `resources\assets\minecraftbyexample\lang\en_US.lang` -- for the displayed name of the block
 * `resources\assets\minecraftbyexample\blockstates\mbe21_tesr_block.json` -- for the blockstate definition
 * `resources\assets\minecraftbyexample\models\item\mbe21_tesr_block.json` -- the model for rendering the item

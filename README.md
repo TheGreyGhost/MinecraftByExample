@@ -53,7 +53,7 @@ If you use IntelliJ, you might find these [xml mapping files][mapfiles] useful t
 
 ### TileEntities
   - [MBE20][20] - using a tile entity to store information about a block - also shows examples of using NBT storage
-  - X [MBE21][21] - using the TileEntitySpecialRenderer to render unusual shapes or animations
+  - X [MBE21][21] - using the TileEntityRenderer to render unusual shapes or animations
 
 ### Containers (Inventories)
   - X [MBE30][30] - a simple container for storing items in the world - similar to a Chest
@@ -114,7 +114,7 @@ Head over [here][more_help] if this didn't make sense to you (check comments for
 [15]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe15_item_dynamic_item_model
 
 [20]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe20_tileentity_data
-[21]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe21_tileentityspecialrenderer
+[21]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe21_tileentityrenderer
 
 [30]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe30_inventory_basic
 [31]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe31_inventory_furnace

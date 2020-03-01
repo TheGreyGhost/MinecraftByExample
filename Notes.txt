@@ -2,6 +2,21 @@ New stuff:
 RenderType: solid, cutout mipped, etc
 RenderTypeLookup manually sets the render type for each block now
 
+A clue to the OverlayTexture (CombinedOverlay) is in
+
+LivingRenderer:
+
+public static int getPackedOverlay (LivingEntity entity, float uIn)
+
+uIn appears to be partial ticks?
+
+   public static int func_229117_c_(LivingEntity p_229117_0_, float p_229117_1_) {
+      return OverlayTexture.func_229201_a_(OverlayTexture.func_229199_a_(p_229117_1_), OverlayTexture.func_229202_a_(p_229117_0_.hurtTime > 0 || p_229117_0_.deathTime > 0));
+   }
+
+ OverlayTexture.func_229201_a_ getPackedUV
+
+
 https://medium.com/grandcentrix/how-to-debug-gradle-plugins-with-intellij-eef2ef681a7b
 
 TileEntity:
