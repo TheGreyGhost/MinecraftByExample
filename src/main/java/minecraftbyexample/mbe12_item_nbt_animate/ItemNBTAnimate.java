@@ -83,7 +83,7 @@ public class ItemNBTAnimate extends Item
     CompoundNBT nbtTagCompound = itemStackIn.getTag();
 
       //todo fix isSneaking() name when mcp updated
-    if (playerIn.func_225608_bj_()) { // player isSneaking (shift pressed); save (or overwrite) current location
+    if (playerIn.isShiftKeyDown()) { // player isSneaking (shift pressed); save (or overwrite) current location
       if (nbtTagCompound == null) {
         nbtTagCompound = new CompoundNBT();
         itemStackIn.setTag(nbtTagCompound);

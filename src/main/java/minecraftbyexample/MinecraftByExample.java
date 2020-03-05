@@ -116,6 +116,9 @@ public class MinecraftByExample {
     MOD_EVENT_BUS.register(minecraftbyexample.mbe20_tileentity_data.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe20_tileentity_data.StartupCommon.class);
 
+    MOD_EVENT_BUS.register(minecraftbyexample.mbe21_tileentityrenderer.StartupClientOnly.class);
+    MOD_EVENT_BUS.register(minecraftbyexample.mbe21_tileentityrenderer.StartupCommon.class);
+
     MOD_EVENT_BUS.register(minecraftbyexample.mbe45_commands.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe45_commands.StartupCommon.class);
 

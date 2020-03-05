@@ -16,27 +16,27 @@ import java.util.OptionalDouble;
  */
 public class RenderTypeMBE {
   public static RenderType SOLID() {
-    return RenderType.func_228639_c_();
+    return RenderType.getSolid();
   }
   public static RenderType CUTOUT_MIPPED() {
-    return RenderType.func_228641_d_();
+    return RenderType.getCutoutMipped();
   }
   public static RenderType CUTOUT() {
-    return RenderType.func_228643_e_();
+    return RenderType.getCutout();
   }
   public static RenderType TRANSLUCENT() {
-    return RenderType.func_228645_f_();
+    return RenderType.getTranslucent();
   }
   public static RenderType TRANSLUCENT_NO_CRUMBLING() {
-    return RenderType.func_228647_g_();
+    return RenderType.getTranslucentNoCrumbling();
   }
   public static RenderType LEASH() {
-    return RenderType.func_228649_h_();
+    return RenderType.getLeash();
   }
   public static RenderType WATER_MASK() {
-    return RenderType.func_228651_i_();
+    return RenderType.getWaterMask();
   }
   public static RenderType LINES() {
-    return RenderType.func_228659_m_();
+    return RenderType.getLines();
   }
 }

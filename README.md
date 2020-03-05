@@ -1,6 +1,11 @@
 MinecraftByExample [1.15.2]
 ==================
 ** Work in Progress **
+* Note - this currently uses "latest" Forge version instead of "recommended" Forge version, because very many of the mappings
+  in the "latest" version are still obfuscated.  See build.gradle:
+      mappings channel: 'snapshot', version: '20200225-1.15.1'
+      minecraft 'net.minecraftforge:forge:1.15.2-31.1.18'
+
 
 The purpose of MinecraftByExample is to give simple working examples of the important concepts in Minecraft and Forge. If you're anything like me, a good code example is worth several screens of waffling explanation, and can very quickly explain the key concepts.  I also find it much easier to adapt and debug something that already works, than to have to synthesize something from scratch and spend hours trying to discover the missing bit of information I didn't know about.
 

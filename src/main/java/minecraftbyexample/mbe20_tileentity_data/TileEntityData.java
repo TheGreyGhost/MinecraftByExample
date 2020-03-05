@@ -116,7 +116,7 @@ public class TileEntityData extends TileEntity implements ITickableTileEntity {
     // List of Doubles
 		ListNBT doubleArrayNBT = new ListNBT();                     // an NBTTagList is similar to a Java ArrayList
 		for (double value : testDoubleArray) {
-			doubleArrayNBT.add(DoubleNBT.func_229684_a_(value)); //todo update when MCP updates
+			doubleArrayNBT.add(DoubleNBT.valueOf(value)); //todo update when MCP updates
 		}
 		parentNBTTagCompound.put("testDoubleArray", doubleArrayNBT);
 

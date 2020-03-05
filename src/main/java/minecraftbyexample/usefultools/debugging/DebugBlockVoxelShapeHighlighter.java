@@ -116,10 +116,10 @@ public class DebugBlockVoxelShapeHighlighter {
                                        double originX, double originY, double originZ,
                                        float red, float green, float blue, float alpha) {
 
-    Matrix4f matrix4f = matrixStack.func_227866_c_().func_227870_a_();
+    Matrix4f matrix4f = matrixStack.getLast().getMatrix();
     voxelShape.forEachEdge((x0, y0, z0, x1, y1, z1) -> {
-      vertexBuilder.func_227888_a_(matrix4f, (float)(x0 + originX), (float)(y0 + originY), (float)(z0 + originZ)).func_227885_a_(red, green, blue, alpha).endVertex();
-      vertexBuilder.func_227888_a_(matrix4f, (float)(x1 + originX), (float)(y1 + originY), (float)(z1 + originZ)).func_227885_a_(red, green, blue, alpha).endVertex();
+      vertexBuilder.pos(matrix4f, (float)(x0 + originX), (float)(y0 + originY), (float)(z0 + originZ)).color(red, green, blue, alpha).endVertex();
+      vertexBuilder.pos(matrix4f, (float)(x1 + originX), (float)(y1 + originY), (float)(z1 + originZ)).color(red, green, blue, alpha).endVertex();
     });
   }
 

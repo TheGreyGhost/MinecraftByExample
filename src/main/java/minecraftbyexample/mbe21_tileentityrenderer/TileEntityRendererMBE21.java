@@ -8,8 +8,10 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.tileentity.DualBrightnessCallback;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import org.lwjgl.opengl.GL11;
 
@@ -23,6 +25,12 @@ import java.awt.*;
  */
 public class TileEntityRendererMBE21 extends TileEntityRenderer<TileEntityMBE21>
 {
+
+  public static final ResourceLocation TEXTURE_BEACON_BEAM = new ResourceLocation("textures/entity/beacon_beam.png");
+
+  public TileEntityRendererMBE21(TileEntityRendererDispatcher tileEntityRendererDispatcher) {
+    super(tileEntityRendererDispatcher);
+  }
 
   /**
    *  (this function is called "render" in previous mcp mappings)
@@ -40,15 +48,36 @@ public class TileEntityRendererMBE21 extends TileEntityRenderer<TileEntityMBE21>
    *                        CreeperRenderer.func_225625_b_()
    */
   @Override
-  public void func_225616_a_(TileEntityMBE21 tileEntityMBE21, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderBuffer,
+  public void render(TileEntityMBE21 tileEntityMBE21, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderBuffer,
                              int combinedLight, int combinedOverlay) {
+    matrixStack.push(); // push
+    matrixStack.translate(0.5D, 0.0D, 0.5D); // translate
 
+    ResourceLocation beamTextureRL = TEXTURE_BEACON_BEAM;
+//    matrixStack.func_227860_a_(); //push
+//    matrixStack.func_227863_a_(   //rotate
+//            Vector3f.field_229181_d_.func_229187_a_(f * 2.25F - 45.0F));    //  YP.rotationDegrees
+    IVertexBuilder vertexBuilder = renderBuffer.getBuffer(RenderType.getBeaconBeam(beamTextureRL, false));
+    float red = 0;
+    float green = 0;
+    float blue = 0;
+    float alpha = 1.0f;
+    int startHeight = 0;
+    int endHeight = 1;
+    float u1 = 0;
+    float u2 = 1;
+    float v1 = 0;
+    float v2 = 0;
+    float beamRadius = 1;
 
+    float x1 = 0; float z1 = 0;
+    float x2 = 1; float z2 = 0;
+    float x3 = 0; float z3 = 1;
+    float x4 = 1; float z4 = 1;
 
-      bufferBuilder.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
-      addGemVertices(bufferBuilder);
-      tessellator.draw();
-
+    renderPart(matrixStack, vertexBuilder, red, green, blue, alpha, startHeight, endHeight,
+             x1, z1, x2, z2, x3, z3, x4, z4, u1, u2, v1, v2);
+    matrixStack.pop(); // pop
 
 
     // the gem changes its appearance and animation as the player approaches.
@@ -158,6 +187,20 @@ public class TileEntityRendererMBE21 extends TileEntityRenderer<TileEntityMBE21>
 //    }
   }
 
+  private static void renderPart(MatrixStack matrixStack, IVertexBuilder vertexBuilder,
+                                 float red, float green, float blue, float alpha, int ymin, int ymax,
+                                 float x1, float z1, float x2, float z2, float x3, float z3, float x4, float z4,
+                                 float u1, float u2, float v1, float v2) {
+    MatrixStack.Entry currentTransformMatrix = matrixStack.getLast();  // getLast
+    Matrix4f positionMatrix = currentTransformMatrix.getMatrix();  // getPositionMatrix
+    Matrix3f normalMatrix = currentTransformMatrix.getNormal();  // getNormalMatrix
+    addQuad(positionMatrix, normalMatrix, vertexBuilder, red, green, blue, alpha, ymin, ymax, x1, z1, x2, z2, u1, u2, v1, v2);
+    addQuad(positionMatrix, normalMatrix, vertexBuilder, red, green, blue, alpha, ymin, ymax, x4, z4, x3, z3, u1, u2, v1, v2);
+    addQuad(positionMatrix, normalMatrix, vertexBuilder, red, green, blue, alpha, ymin, ymax, x2, z2, x4, z4, u1, u2, v1, v2);
+    addQuad(positionMatrix, normalMatrix, vertexBuilder, red, green, blue, alpha, ymin, ymax, x3, z3, x1, z1, u1, u2, v1, v2);
+  }
+
+
   // this should be true for tileentities which render globally (no render bounding box), such as beacons.
   @Override
   public boolean isGlobalRenderer(TileEntityMBE21 tileEntityMBE21)
@@ -196,8 +239,8 @@ public class TileEntityRendererMBE21 extends TileEntityRenderer<TileEntityMBE21>
               };
 
     for (double [] vertex : vertexTable) {
-      bufferBuilder.func_225582_a_(vertex[0], vertex[1], vertex[2])   // func_225582_a_ is pos
-                   .func_225583_a_((float)vertex[3], (float)vertex[4])                         // func_225583_a_ is tex
+      bufferBuilder.pos(vertex[0], vertex[1], vertex[2])   // func_225582_a_ is pos
+                   .tex((float)vertex[3], (float)vertex[4])                         // func_225583_a_ is tex
                    .endVertex();
     }
   }
@@ -214,12 +257,12 @@ public class TileEntityRendererMBE21 extends TileEntityRenderer<TileEntityMBE21>
   private static void addVertex(Matrix4f matrixPos, Matrix3f matrixNormal, IVertexBuilder vertexBuilder,
                                 float red, float green, float blue, float alpha,
                                 int y, float x, float z, float texU, float texV) {
-    vertexBuilder.func_227888_a_(matrixPos, x, (float)y, z) // pos
-            .func_227885_a_(red, green, blue, alpha)        // color
-            .func_225583_a_(texU, texV)                     // tex
-            .func_227891_b_(OverlayTexture.field_229196_a_) // overlay; field_229196_a_ = no modifier
-            .func_227886_a_(0xf000f0)                       // lightmap with full brightness
-            .func_227887_a_(matrixNormal, 0.0F, 1.0F, 0.0F)  // normal
+    vertexBuilder.pos(matrixPos, x, (float)y, z) // pos
+            .color(red, green, blue, alpha)        // color
+            .tex(texU, texV)                     // tex
+            .overlay(OverlayTexture.NO_OVERLAY) // overlay; field_229196_a_ = no modifier
+            .lightmap(0xf000f0)                       // lightmap with full brightness
+            .normal(matrixNormal, 0.0F, 1.0F, 0.0F)  // normal
             .endVertex();
   }
 

@@ -2,6 +2,9 @@ package minecraftbyexample.mbe21_tileentityrenderer;
 
 import minecraftbyexample.usefultools.RenderTypeMBE;
 import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -15,18 +18,15 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 public class StartupClientOnly
 {
 
-  public static void initClientOnly()
-  {
-    ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMBE21.class, new TileEntityRendererMBE21());
-  }
-
   /**
-   * Tell the renderer this is a solid block (default is translucent)
    * @param event
    */
   @SubscribeEvent
   public static void onClientSetupEvent(FMLClientSetupEvent event) {
+    // Tell the renderer that the base is a solid block (default is translucent)
     RenderTypeLookup.setRenderLayer(StartupCommon.blockMBE21, RenderTypeMBE.CUTOUT_MIPPED());
+    // Register the custom renderer for our tile entity
+    ClientRegistry.bindTileEntityRenderer(StartupCommon.tileEntityDataTypeMBE21, TileEntityRendererMBE21::new);
   }
 
 }
