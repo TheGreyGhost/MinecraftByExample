@@ -52,6 +52,10 @@ public class TileEntityRendererMBE21 extends TileEntityRenderer<TileEntityMBE21>
                              int combinedLight, int combinedOverlay) {
     matrixStack.push(); // push
     matrixStack.translate(0.5D, 0.0D, 0.5D); // translate
+    Color gemColour = tileEntityMBE21.getGemColour();
+
+    drawTetrahedronWireframe(matrixStack, renderBuffer, gemColour);
+
 
     ResourceLocation beamTextureRL = TEXTURE_BEACON_BEAM;
 //    matrixStack.func_227860_a_(); //push
@@ -75,7 +79,7 @@ public class TileEntityRendererMBE21 extends TileEntityRenderer<TileEntityMBE21>
     float x3 = 0; float z3 = 1;
     float x4 = 1; float z4 = 1;
 
-    renderPart(matrixStack, vertexBuilder, red, green, blue, alpha, startHeight, endHeight,
+//    renderPart(matrixStack, vertexBuilder, red, green, blue, alpha, startHeight, endHeight,
              x1, z1, x2, z2, x3, z3, x4, z4, u1, u2, v1, v2);
     matrixStack.pop(); // pop
 
@@ -240,7 +244,7 @@ public class TileEntityRendererMBE21 extends TileEntityRenderer<TileEntityMBE21>
 
     for (double [] vertex : vertexTable) {
       bufferBuilder.pos(vertex[0], vertex[1], vertex[2])   // func_225582_a_ is pos
-                   .tex((float)vertex[3], (float)vertex[4])                         // func_225583_a_ is tex
+                   .tex((float) vertex[3], (float) vertex[4])                         // func_225583_a_ is tex
                    .endVertex();
     }
   }
@@ -257,7 +261,7 @@ public class TileEntityRendererMBE21 extends TileEntityRenderer<TileEntityMBE21>
   private static void addVertex(Matrix4f matrixPos, Matrix3f matrixNormal, IVertexBuilder vertexBuilder,
                                 float red, float green, float blue, float alpha,
                                 int y, float x, float z, float texU, float texV) {
-    vertexBuilder.pos(matrixPos, x, (float)y, z) // pos
+    vertexBuilder.pos(matrixPos, x, (float) y, z) // pos
             .color(red, green, blue, alpha)        // color
             .tex(texU, texV)                     // tex
             .overlay(OverlayTexture.NO_OVERLAY) // overlay; field_229196_a_ = no modifier
@@ -266,5 +270,60 @@ public class TileEntityRendererMBE21 extends TileEntityRenderer<TileEntityMBE21>
             .endVertex();
   }
 
+  /**
+   * Draw an upside-down wireframe tetrahedron with its tip at [0,0,0] and 1x1 square "base" at y = 1
+   * @param matrixStack transformation matrix and normal matrix
+   * @param renderBuffer the renderbuffers we'll be drawing to
+   */
+  private static void drawTetrahedronWireframe(MatrixStack matrixStack, IRenderTypeBuffer renderBuffer,
+                                               Color color) {
+
+      final Vec3d [] BASE_VERTICES = {
+              new Vec3d(0, 1, 0),
+              new Vec3d(1, 1, 0),
+              new Vec3d(1, 1, 1),
+              new Vec3d(0, 1, 1),
+      };
+      final Vec3d APEX_VERTEX = new Vec3d(0, 0, 0);
+
+    IVertexBuilder vertexBuilderLines = renderBuffer.getBuffer(RenderType.getLines());
+    Matrix4f matrixPos = matrixStack.getLast().getMatrix();  //retrieves the current transformation matrix
+    // draw the base
+    for (int i = 1; i < BASE_VERTICES.length; ++i) {
+      drawLine(matrixPos, vertexBuilderLines, color, BASE_VERTICES[i-1], BASE_VERTICES[i]);
+    }
+    // draw the sides (from the corners of the base to the apex)
+    for (Vec3d baseVertex : BASE_VERTICES) {
+      drawLine(matrixPos, vertexBuilderLines, color, APEX_VERTEX, baseVertex);
+    }
+  }
+
+
+  /**
+   * Draw a coloured line from a starting vertex to an end vertex
+   * @param matrixPos the current transformation matrix
+   * @param vertexBuilderLines the vertex builder used to draw the line
+   * @param startVertex
+   * @param endVertex
+   */
+  private static void drawLine(Matrix4f matrixPos, IVertexBuilder vertexBuilderLines,
+                               Color color,
+                               Vec3d startVertex, Vec3d endVertex) {
+    vertexBuilderLines.pos(matrixPos, (float) startVertex.getX(), (float) startVertex.getY(), (float) startVertex.getZ())
+            .color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha())   // there is also a version for floats (0 -> 1)
+            .endVertex();
+    vertexBuilderLines.pos(matrixPos, (float) endVertex.getX(), (float) endVertex.getY(), (float) endVertex.getZ())
+            .color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha())   // there is also a version for floats (0 -> 1)
+            .endVertex();
+  }
+
+
+
+
   private static final ResourceLocation gemTexture = new ResourceLocation("minecraftbyexample:textures/entity/mbe21_tesr_gem.png");
+
+  //notes see RenderType
+  // vertexbuilder addQuad for a baked quad
+
+
 }
