@@ -26,7 +26,7 @@
   "item.minecraftbyexample.mbe14_item_camera": "MBE14 Item Camera Transforms",
   "item.minecraftbyexample.mbe15_item_chessboard_registry_name": "MBE15 Smart Item Model Chessboard",
   "block.minecraftbyexample.mbe20_tileentity_data_block_registry_name": "MBE20 TileEntity data",
-  "block.minecraftbyexample.mbe21_tesr_block_registry_name": "MBE21 TileEntitySpecialRenderer",
+  "block.minecraftbyexample.mbe21_ter_block_registry_name": "MBE21 TileEntityRenderer",
   "block.minecraftbyexample.mbe30_inventory_basic": "MBE30 Inventory Basic Block",
   "container.minecraftbyexample.mbe30_inventory_basic": "MBE30 Inventory Basic GUI",
   "block.minecraftbyexample.mbe31_block_inventory_furnace_registry_name": "MBE31 Inventory Furnace Block",

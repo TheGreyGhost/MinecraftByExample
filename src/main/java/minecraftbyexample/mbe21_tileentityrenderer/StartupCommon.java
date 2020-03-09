@@ -44,7 +44,7 @@ public class StartupCommon
 
   @SubscribeEvent
   public static void onBlocksRegistration(final RegistryEvent.Register<Block> blockRegisterEvent) {
-    blockMBE21 = (BlockMBE21)(new BlockMBE21().setRegistryName("minecraftbyexample", "mbe21_tesr_block_registry_name"));
+    blockMBE21 = (BlockMBE21)(new BlockMBE21().setRegistryName("minecraftbyexample", "mbe21_ter_block_registry_name"));
     blockRegisterEvent.getRegistry().register(blockMBE21);
   }
 

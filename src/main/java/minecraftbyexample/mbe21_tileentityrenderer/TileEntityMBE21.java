@@ -1,5 +1,6 @@
 package minecraftbyexample.mbe21_tileentityrenderer;
 
+import minecraftbyexample.mbe11_item_variants.ItemVariants;
 import minecraftbyexample.usefultools.NBTtypesMBE;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
@@ -8,10 +9,19 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import javax.annotation.Nullable;
 import java.awt.*;
+import java.util.Optional;
 
 /**
- * This is a simple tile entity which stores the gem colour, angular position and has an associated TileEntitySpecialRenderer (TESR)
- * The gem colour is saved to disk, the angular position isn't.
+ * This is a simple tile entity which stores information used by the associated TileEntityRenderer (TER):
+ * the render style:
+ *   * wireframe (using lines)
+ *   * quads
+ *   * blockmodel
+ *   * wavefront
+ * the colour
+ * the angular position
+ *
+ * The render style and colour are saved to disk, the angular position isn't.
  */
 public class TileEntityMBE21 extends TileEntity {
 
@@ -19,18 +29,25 @@ public class TileEntityMBE21 extends TileEntity {
 
 	public static final Color INVALID_COLOR = null;
 
-	// get the colour of the gem.  returns INVALID_COLOR if not set yet.
-	public Color getGemColour() {
-		return gemColour;
+	// get the colour of the object.  returns INVALID_COLOR if not set yet.
+	public Color getObjectColour() {
+		return objectColour;
 	}
-
-	public void setGemColour(Color newColour)
+  public void setObjectColour(Color newColour)
 	{
-		gemColour = newColour;
+		objectColour = newColour;
 	}
 
-	/**
-	 * Calculate the next angular position of the gem, given its current speed.
+
+  public EnumRenderStyle getObjectRenderStyle() {
+    return objectRenderStyle;
+  }
+  public void setObjectRenderStyle(EnumRenderStyle objectRenderStyle) {
+    this.objectRenderStyle = objectRenderStyle;
+  }
+
+  /**
+	 * Calculate the next angular position of the object, given its current speed.
 	 * @param revsPerSecond
 	 * @return the angular position in degrees (0 - 360)
 	 */
@@ -103,9 +120,10 @@ public class TileEntityMBE21 extends TileEntity {
 	public CompoundNBT write(CompoundNBT parentNBTTagCompound)
 	{
 		super.write(parentNBTTagCompound); // The super call is required to save the tiles location
-		if (gemColour != INVALID_COLOR) {
-			parentNBTTagCompound.putInt("gemColour", gemColour.getRGB());
+		if (objectColour != INVALID_COLOR) {
+			parentNBTTagCompound.putInt("objectColour", objectColour.getRGB());
 		}
+		objectRenderStyle.putIntoNBT(parentNBTTagCompound,"objectRenderStyle");
 		return parentNBTTagCompound;
 	}
 
@@ -118,17 +136,18 @@ public class TileEntityMBE21 extends TileEntity {
 		// important rule: never trust the data you read from NBT, make sure it can't cause a crash
 
 		final int NBT_INT_ID = NBTtypesMBE.INT_NBT_ID;
-		Color readGemColour = INVALID_COLOR;
-		if (parentNBTTagCompound.contains("gemColour", NBT_INT_ID)) {  // check if the key exists and is an Int. You can omit this if a default value of 0 is ok.
-			int colorRGB = parentNBTTagCompound.getInt("gemColour");
-			readGemColour = new Color(colorRGB);
+		Color readObjectColour = INVALID_COLOR;
+		if (parentNBTTagCompound.contains("objectColour", NBT_INT_ID)) {  // check if the key exists and is an Int. You can omit this if a default value of 0 is ok.
+			int colorRGB = parentNBTTagCompound.getInt("objectColour");
+			readObjectColour = new Color(colorRGB);
 		}
-		gemColour = readGemColour;
+		objectColour = readObjectColour;
+		objectRenderStyle = EnumRenderStyle.fromNBT(parentNBTTagCompound, "objectRenderStyle");
 	}
 
 	/**
-	 * Don't render the gem if the player is too far away
-	 * @return the maximum distance squared at which the TESR should render
+	 * Don't render the object if the player is too far away
+	 * @return the maximum distance squared at which the TER should render
 	 */
 	@Override
 	public double getMaxRenderDistanceSquared()
@@ -137,11 +156,11 @@ public class TileEntityMBE21 extends TileEntity {
 		return MAXIMUM_DISTANCE_IN_BLOCKS * MAXIMUM_DISTANCE_IN_BLOCKS;
 	}
 
-	/** Return an appropriate bounding box enclosing the TESR
-	 * This method is used to control whether the TESR should be rendered or not, depending on where the player is looking.
-	 * The default is the AABB for the parent block, which might be too small if the TESR renders outside the borders of the
+	/** Return an appropriate bounding box enclosing the TER
+	 * This method is used to control whether the TER should be rendered or not, depending on where the player is looking.
+	 * The default is the AABB for the parent block, which might be too small if the TER renders outside the borders of the
 	 *   parent block.
-	 * If you get the boundary too small, the TESR may disappear when you aren't looking directly at it.
+	 * If you get the boundary too small, the TER may disappear when you aren't looking directly at it.
 	 * @return an appropriately size AABB for the TileEntity
 	 */
 	@Override
@@ -155,8 +174,48 @@ public class TileEntityMBE21 extends TileEntity {
 		AxisAlignedBB aabb = new AxisAlignedBB(getPos(), getPos().add(1, 2, 1));
 		return aabb;
 	}
+  public enum EnumRenderStyle {
+    WIREFRAME(1), QUADS(2), BLOCKMODEL(3), WAVEFRONT(4);
 
-	private Color gemColour = INVALID_COLOR;  // the RGB colour of the gem
+    /**
+     * Read the renderstyle enum out of NBT
+     * @param compoundNBT
+     * @param tagname
+     * @return
+     */
+    public static EnumRenderStyle fromNBT(CompoundNBT compoundNBT, String tagname)
+    {
+      byte renderStyleID = 0;  // default in case of error
+      if (compoundNBT != null && compoundNBT.contains(tagname)) {
+        renderStyleID = compoundNBT.getByte(tagname);
+      }
+      Optional<EnumRenderStyle> enumRenderStyle = getEnumRenderStyleFromID(renderStyleID);
+      return enumRenderStyle.orElse(WIREFRAME);
+    }
+
+    /**
+     * Write this enum to NBT
+     * @param compoundNBT
+     * @param tagname
+     */
+    public void putIntoNBT(CompoundNBT compoundNBT, String tagname)
+    {
+      compoundNBT.putByte(tagname, nbtID);
+    }
+
+    private static Optional<EnumRenderStyle> getEnumRenderStyleFromID(byte ID) {
+      for (EnumRenderStyle enumRenderStyle : EnumRenderStyle.values()) {
+        if (enumRenderStyle.nbtID == ID) return Optional.of(enumRenderStyle);
+      }
+      return Optional.empty();
+    }
+
+    EnumRenderStyle(int i_NBT_ID) {this.nbtID = (byte)i_NBT_ID;}
+    private byte nbtID;
+  }
+
+  private Color objectColour = INVALID_COLOR;  // the RGB colour of the gem
+  private EnumRenderStyle objectRenderStyle = EnumRenderStyle.WIREFRAME;  // which method should we use to render this object?
 
 	private final long INVALID_TIME = 0;
 	private long lastTime = INVALID_TIME;  // used for animation

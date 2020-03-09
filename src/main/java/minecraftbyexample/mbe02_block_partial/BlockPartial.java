@@ -59,7 +59,7 @@ public class BlockPartial extends Block {
 
   // returns the shape of the block:
   //  The image that you see on the screen (when a block is rendered) is determined by the block model (i.e. the model json file).
-  //  But Minecraft also uses a number of other �shapes� to control the interaction of the block with its environment and with the player.
+  //  But Minecraft also uses a number of other "shapes" to control the interaction of the block with its environment and with the player.
   // See  https://greyminecraftcoder.blogspot.com/2020/02/block-shapes-voxelshapes-1144.html
   @Override
   public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {

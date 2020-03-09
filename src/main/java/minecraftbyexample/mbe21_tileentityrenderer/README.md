@@ -26,6 +26,12 @@ For background information on:
 
 * OpenGL rendering--see [http://www.glprogramming.com/red/](http://www.glprogramming.com/red/)
 
+Useful vanilla classes to look at:
+* RenderType and DefaultVertexFormats to see what information is needed for each type of rendering
+* BeaconTileEntityRenderer
+* CampfireTileEntityRenderer
+* ItemRenderer has useful examples of item rendering
+
 ## Common errors
 
 "Missing Model", "Missing texture", etc:

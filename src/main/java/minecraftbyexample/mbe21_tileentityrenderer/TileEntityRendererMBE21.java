@@ -13,6 +13,8 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -22,9 +24,28 @@ import java.awt.*;
  * Date: 12/01/2015
  * This class renders the gem floating above the block.
  * The base model (the hopper shape) is drawn by the block model, not this class.
+ * See assets/minecraftbyexample/blockstates/mbe21_tesr_block_registry_name.json
+ *
+ * The class demonstrates four different examples of rendering:
+ * 1) Lines
+ * 2) Manually drawing quads
+ * 3) Rendering a block model
+ * 4) Rendering a wavefront object
+ *
+ * 1) The lines have position and colour information only  (RenderType.getLines().  No lightmap information, which means that they will always be the
+ *   same brightness regardless of day/night or nearby torches.
+ *
+ * 2) The quads have position, colour, texture, normal, and lightmap information
+ *   RenderType.getSolid() is suitable if you're using a texture which has been stitched into the block texture sheet (either by defining it
+ *      in a block model, or by manually adding it during TextureStitchEvent.
+ *   Otherwise you need to create your own RenderType.
+ *
+ * 3) Reads the block model for vanilla object and renders a smaller version of it
+ *
+ * 4) Reads a custom wavefront object from a file
+ *
  */
-public class TileEntityRendererMBE21 extends TileEntityRenderer<TileEntityMBE21>
-{
+public class TileEntityRendererMBE21 extends TileEntityRenderer<TileEntityMBE21> {
 
   public static final ResourceLocation TEXTURE_BEACON_BEAM = new ResourceLocation("textures/entity/beacon_beam.png");
 
@@ -33,56 +54,78 @@ public class TileEntityRendererMBE21 extends TileEntityRenderer<TileEntityMBE21>
   }
 
   /**
-   *  (this function is called "render" in previous mcp mappings)
+   * (this function is called "render" in previous mcp mappings)
    * render the tile entity - called every frame while the tileentity is in view of the player
+   *
    * @param tileEntityMBE21 the associated tile entity
-   * @param partialTicks the fraction of a tick that this frame is being rendered at - used to interpolate frames between
-   *                     ticks, to make animations smoother.  For example - if the frame rate is steady at 80 frames per second,
-   *                     this method will be called four times per tick, with partialTicks spaced 0.25 apart, (eg) 0, 0.25, 0.5, 0.75
-   * @param matrixStack the matrixStack is used to track the current view transformations that have been applied - i.e translation, rotation, scaling
-   *                    it is needed for you to render the view properly.
-   * @param renderBuffer the buffer that you should render your model to
-   * @param combinedLight the blocklight + skylight value for the tileEntity.  see http://greyminecraftcoder.blogspot.com/2014/12/lighting-18.html (outdated, but the concepts are still valid)
+   * @param partialTicks    the fraction of a tick that this frame is being rendered at - used to interpolate frames between
+   *                        ticks, to make animations smoother.  For example - if the frame rate is steady at 80 frames per second,
+   *                        this method will be called four times per tick, with partialTicks spaced 0.25 apart, (eg) 0, 0.25, 0.5, 0.75
+   * @param matrixStack     the matrixStack is used to track the current view transformations that have been applied - i.e translation, rotation, scaling
+   *                        it is needed for you to render the view properly.
+   * @param renderBuffer    the buffer that you should render your model to
+   * @param combinedLight   the blocklight + skylight value for the tileEntity.  see http://greyminecraftcoder.blogspot.com/2014/12/lighting-18.html (outdated, but the concepts are still valid)
    * @param combinedOverlay value for the "combined overlay" which changes the render based on an overlay texture (see OverlayTexture class).
    *                        Used by vanilla for (1) red tint when a living entity is damaged, and (2) "flash" effect for creeper when ignited
    *                        CreeperRenderer.func_225625_b_()
    */
   @Override
   public void render(TileEntityMBE21 tileEntityMBE21, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderBuffer,
-                             int combinedLight, int combinedOverlay) {
-    matrixStack.push(); // push
-    matrixStack.translate(0.5D, 0.0D, 0.5D); // translate
-    Color gemColour = tileEntityMBE21.getGemColour();
+                     int combinedLight, int combinedOverlay) {
+    TileEntityMBE21.EnumRenderStyle objectRenderStyle = tileEntityMBE21.getObjectRenderStyle();
+
+    switch (objectRenderStyle) {
+      case WIREFRAME: renderWireframe(tileEntityMBE21, partialTicks, matrixStack, renderBuffer, combinedLight, combinedOverlay); break;
+      case QUADS: renderWireframe(tileEntityMBE21, partialTicks, matrixStack, renderBuffer, combinedLight, combinedOverlay); break;
+      case BLOCKMODEL: renderWireframe(tileEntityMBE21, partialTicks, matrixStack, renderBuffer, combinedLight, combinedOverlay); break;
+      case WAVEFRONT: renderWireframe(tileEntityMBE21, partialTicks, matrixStack, renderBuffer, combinedLight, combinedOverlay); break;
+      default: { LOGGER.debug("Unexpected objectRenderStyle:" + objectRenderStyle);}
+    }
+  }
+
+  private void renderWireframe(TileEntityMBE21 tileEntityMBE21, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderBuffer,
+                               int combinedLight, int combinedOverlay) {
+    // draw the object using lines
+    // When render method is called, the origin [0,0,0] is at the current [x,y,z] of the block.
+    // Draw an inverted tetrahedron wireframe above the rendered base block
+    // The tetrahedron-drawing method draws the tetrahedron in a cube region from [0,0,0] to [1,1,1] but we want it
+    //   to be in the block one above this, i.e. from [0,1,0] to [1,2,1],
+    //   so we need to translate up by one block, i.e. by [0,1,0]
+    final Vec3d TRANSLATION_OFFSET = new Vec3d(0, 1, 0);
+
+    matrixStack.push(); // push the current transformation matrix + normals matrix
+    matrixStack.translate(TRANSLATION_OFFSET.x,TRANSLATION_OFFSET.y,TRANSLATION_OFFSET.z); // translate
+    Color gemColour = tileEntityMBE21.getObjectColour();
 
     drawTetrahedronWireframe(matrixStack, renderBuffer, gemColour);
+    matrixStack.pop(); // restore the original transformation matrix + normals matrix
+  }
 
 
-    ResourceLocation beamTextureRL = TEXTURE_BEACON_BEAM;
-//    matrixStack.func_227860_a_(); //push
-//    matrixStack.func_227863_a_(   //rotate
-//            Vector3f.field_229181_d_.func_229187_a_(f * 2.25F - 45.0F));    //  YP.rotationDegrees
-    IVertexBuilder vertexBuilder = renderBuffer.getBuffer(RenderType.getBeaconBeam(beamTextureRL, false));
-    float red = 0;
-    float green = 0;
-    float blue = 0;
-    float alpha = 1.0f;
-    int startHeight = 0;
-    int endHeight = 1;
-    float u1 = 0;
-    float u2 = 1;
-    float v1 = 0;
-    float v2 = 0;
-    float beamRadius = 1;
-
-    float x1 = 0; float z1 = 0;
-    float x2 = 1; float z2 = 0;
-    float x3 = 0; float z3 = 1;
-    float x4 = 1; float z4 = 1;
-
-//    renderPart(matrixStack, vertexBuilder, red, green, blue, alpha, startHeight, endHeight,
-             x1, z1, x2, z2, x3, z3, x4, z4, u1, u2, v1, v2);
-    matrixStack.pop(); // pop
-
+//    ResourceLocation beamTextureRL = TEXTURE_BEACON_BEAM;
+////    matrixStack.func_227860_a_(); //push
+////    matrixStack.func_227863_a_(   //rotate
+////            Vector3f.field_229181_d_.func_229187_a_(f * 2.25F - 45.0F));    //  YP.rotationDegrees
+//    IVertexBuilder vertexBuilder = renderBuffer.getBuffer(RenderType.getBeaconBeam(beamTextureRL, false));
+//    float red = 0;
+//    float green = 0;
+//    float blue = 0;
+//    float alpha = 1.0f;
+//    int startHeight = 0;
+//    int endHeight = 1;
+//    float u1 = 0;
+//    float u2 = 1;
+//    float v1 = 0;
+//    float v2 = 0;
+//    float beamRadius = 1;
+//
+//    float x1 = 0; float z1 = 0;
+//    float x2 = 1; float z2 = 0;
+//    float x3 = 0; float z3 = 1;
+//    float x4 = 1; float z4 = 1;
+//
+////    renderPart(matrixStack, vertexBuilder, red, green, blue, alpha, startHeight, endHeight,
+////             x1, z1, x2, z2, x3, z3, x4, z4, u1, u2, v1, v2);
 
     // the gem changes its appearance and animation as the player approaches.
     // When the player is a long distance away, the gem is dark, resting in the hopper, and does not rotate.
@@ -189,7 +232,6 @@ public class TileEntityRendererMBE21 extends TileEntityRenderer<TileEntityMBE21>
 //      GL11.glPopAttrib();
 //      GL11.glPopMatrix();
 //    }
-  }
 
   private static void renderPart(MatrixStack matrixStack, IVertexBuilder vertexBuilder,
                                  float red, float green, float blue, float alpha, int ymin, int ymax,
@@ -271,7 +313,8 @@ public class TileEntityRendererMBE21 extends TileEntityRenderer<TileEntityMBE21>
   }
 
   /**
-   * Draw an upside-down wireframe tetrahedron with its tip at [0,0,0] and 1x1 square "base" at y = 1
+   * Draw an upside-down wireframe tetrahedron with its tip at [0.5,0,0.5]
+   *    and 1x1 square "base" at y = 1 (x= 0 to 1, z = 0 to 1)
    * @param matrixStack transformation matrix and normal matrix
    * @param renderBuffer the renderbuffers we'll be drawing to
    */
@@ -284,7 +327,7 @@ public class TileEntityRendererMBE21 extends TileEntityRenderer<TileEntityMBE21>
               new Vec3d(1, 1, 1),
               new Vec3d(0, 1, 1),
       };
-      final Vec3d APEX_VERTEX = new Vec3d(0, 0, 0);
+      final Vec3d APEX_VERTEX = new Vec3d(0.5, 0, 0.5);
 
     IVertexBuilder vertexBuilderLines = renderBuffer.getBuffer(RenderType.getLines());
     Matrix4f matrixPos = matrixStack.getLast().getMatrix();  //retrieves the current transformation matrix
@@ -292,6 +335,8 @@ public class TileEntityRendererMBE21 extends TileEntityRenderer<TileEntityMBE21>
     for (int i = 1; i < BASE_VERTICES.length; ++i) {
       drawLine(matrixPos, vertexBuilderLines, color, BASE_VERTICES[i-1], BASE_VERTICES[i]);
     }
+    drawLine(matrixPos, vertexBuilderLines, color, BASE_VERTICES[BASE_VERTICES.length - 1], BASE_VERTICES[0]);
+
     // draw the sides (from the corners of the base to the apex)
     for (Vec3d baseVertex : BASE_VERTICES) {
       drawLine(matrixPos, vertexBuilderLines, color, APEX_VERTEX, baseVertex);
@@ -317,13 +362,11 @@ public class TileEntityRendererMBE21 extends TileEntityRenderer<TileEntityMBE21>
             .endVertex();
   }
 
-
-
-
   private static final ResourceLocation gemTexture = new ResourceLocation("minecraftbyexample:textures/entity/mbe21_tesr_gem.png");
 
   //notes see RenderType
   // vertexbuilder addQuad for a baked quad
 
+  private static final Logger LOGGER = LogManager.getLogger();
 
 }

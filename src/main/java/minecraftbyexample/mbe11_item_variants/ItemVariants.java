@@ -1,5 +1,6 @@
 package minecraftbyexample.mbe11_item_variants;
 
+import minecraftbyexample.mbe21_tileentityrenderer.TileEntityMBE21;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.entity.player.PlayerEntity;
@@ -16,6 +17,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.awt.*;
+import java.util.Optional;
 
 /**
  * User: The Grey Ghost
@@ -204,7 +206,11 @@ public class ItemVariants extends Item
 
     public EnumBottleFullness decreaseFullnessByOneStep() {
       if (nbtID ==0) return this;
-      return LOOKUP_BY_NBTID[nbtID - 1];
+      for (EnumBottleFullness fullness : EnumBottleFullness.values()) {
+        if (fullness.nbtID == nbtID - 1) return fullness;
+      }
+      // error... return default
+      return this;
     }
 
     /**
@@ -219,11 +225,9 @@ public class ItemVariants extends Item
       byte fullnessID = 0;  // default in case of error
       if (compoundNBT != null && compoundNBT.contains(tagname)) {
         fullnessID = compoundNBT.getByte(tagname);
-        if (fullnessID < 0 || fullnessID >= EnumBottleFullness.LOOKUP_BY_NBTID.length) {
-          fullnessID = 0;
-        }
       }
-      return LOOKUP_BY_NBTID[fullnessID];
+      Optional<EnumBottleFullness> fullness = getFullnessFromID(fullnessID);
+      return fullness.orElse(FULL);
     }
 
     /**
@@ -239,7 +243,6 @@ public class ItemVariants extends Item
     private final byte nbtID;
     private final String name;
     private final String description;
-    private static final EnumBottleFullness[] LOOKUP_BY_NBTID = new EnumBottleFullness[values().length];
 
     EnumBottleFullness(int i_NBT_ID, String i_name, String i_description)
     {
@@ -248,11 +251,11 @@ public class ItemVariants extends Item
       this.description = i_description;
     }
 
-    static
-    {
-      for (EnumBottleFullness value : values()) {
-        LOOKUP_BY_NBTID[value.nbtID] = value;
+    private static Optional<EnumBottleFullness> getFullnessFromID(byte ID) {
+      for (EnumBottleFullness fullness : EnumBottleFullness.values()) {
+        if (fullness.nbtID == ID) return Optional.of(fullness);
       }
+      return Optional.empty();
     }
   }
 
@@ -287,11 +290,9 @@ public class ItemVariants extends Item
       byte flavourID = 0;  // default in case of error
       if (compoundNBT != null && compoundNBT.contains(tagname)) {
         flavourID = compoundNBT.getByte(tagname);
-        if (flavourID < 0 || flavourID >= LOOKUP_BY_NBTID.length) {
-          flavourID = 0;
-        }
       }
-      return LOOKUP_BY_NBTID[flavourID];
+      Optional<EnumBottleFlavour> flavour = getFlavourFromID(flavourID);
+      return flavour.orElse(LEMON); // default is lemon
     }
 
     /**
@@ -307,7 +308,6 @@ public class ItemVariants extends Item
     private final byte nbtID;
     private final String name;
     private final Color renderColour;
-    private static final EnumBottleFlavour[] LOOKUP_BY_NBTID = new EnumBottleFlavour[values().length];
 
     EnumBottleFlavour(int i_NBT_ID, String i_name, Color i_renderColour)
     {
@@ -316,12 +316,11 @@ public class ItemVariants extends Item
       this.renderColour = i_renderColour;
     }
 
-    static
-    {
-      for (EnumBottleFlavour value : values()) {
-        LOOKUP_BY_NBTID[value.nbtID] = value;
+    private static Optional<EnumBottleFlavour> getFlavourFromID(byte ID) {
+      for (EnumBottleFlavour flavour : EnumBottleFlavour.values()) {
+        if (flavour.nbtID == ID) return Optional.of(flavour);
       }
+      return Optional.empty();
     }
   }
-
 }
