@@ -6,6 +6,8 @@ import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -18,6 +20,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
  */
 public class StartupClientOnly
 {
+  public static final ResourceLocation MBE21_CUBE_TEXTURE = new ResourceLocation("minecraftbyexample:textures/entity/mbe21_ter_cube.png");
 
   /**
    * @param event
@@ -28,6 +31,12 @@ public class StartupClientOnly
     RenderTypeLookup.setRenderLayer(StartupCommon.blockMBE21, RenderType.getCutoutMipped());
     // Register the custom renderer for our tile entity
     ClientRegistry.bindTileEntityRenderer(StartupCommon.tileEntityDataTypeMBE21, TileEntityRendererMBE21::new);
+  }
+
+  // Stitch the cube texture into the block texture sheet so that we can use it later for rendering.
+  @SubscribeEvent
+  public static void onTextureStitchEvent(TextureStitchEvent.Pre event) {
+    event.addSprite(MBE21_CUBE_TEXTURE);
   }
 
 }

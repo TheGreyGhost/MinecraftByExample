@@ -26,6 +26,8 @@ For background information on:
 
 * OpenGL rendering--see [http://www.glprogramming.com/red/](http://www.glprogramming.com/red/)
 
+http://greyminecraftcoder.blogspot.com/2014/12/lighting-18.html
+
 Useful vanilla classes to look at:
 * RenderType and DefaultVertexFormats to see what information is needed for each type of rendering
 * BeaconTileEntityRenderer

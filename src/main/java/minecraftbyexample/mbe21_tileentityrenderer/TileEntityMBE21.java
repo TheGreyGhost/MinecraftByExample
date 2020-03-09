@@ -19,7 +19,7 @@ import java.util.Optional;
  *   * blockmodel
  *   * wavefront
  * the colour
- * the angular position
+ * the angular position (wavefront model only)
  *
  * The render style and colour are saved to disk, the angular position isn't.
  */
@@ -175,7 +175,7 @@ public class TileEntityMBE21 extends TileEntity {
 		return aabb;
 	}
   public enum EnumRenderStyle {
-    WIREFRAME(1), QUADS(2), BLOCKMODEL(3), WAVEFRONT(4);
+    WIREFRAME(1), QUADS(2), BLOCKQUADS(3), WAVEFRONT(4);
 
     /**
      * Read the renderstyle enum out of NBT
