@@ -103,6 +103,30 @@ receiveClientEvent -?
    public static final TileEntityType<FurnaceTileEntity> FURNACE = register("furnace", TileEntityType.Builder.create(FurnaceTileEntity::new, Blocks.FURNACE));
 
 
+    // retrieve the [U,V] coordinates of the texture that we want to use
+
+//    TextureAtlasSprite sprite = null;
+//    boolean textureIsMissing = true;
+//    ModelManager modelManager = Minecraft.getInstance().getModelManager();
+//    AtlasTexture atlasTexture = modelManager.getAtlasTexture(LOCATION_BLOCKS_TEXTURE);  // see static initialiser for SOLID in RenderType
+//    if (atlasTexture != null) {
+//       sprite = atlasTexture.getSprite(StartupClientOnly.MBE21_CUBE_TEXTURE);
+//      if (sprite != null) {
+//        textureIsMissing = false;
+//      }
+//    }
+//
+//    if (textureIsMissing || sprite == null) {  // null check is to prevent compiler complaining
+//      final ResourceLocation MISSING_TEXTURE = MissingTextureSprite.getLocation();
+//      sprite = modelManager.getAtlasTexture(LOCATION_BLOCKS_TEXTURE).getSprite(MISSING_TEXTURE);
+//    }
+
+//    Vec2f bottomLeftUV = new Vec2f(sprite.getMinU(), sprite.getMaxV());
+//    float UVwidth = sprite.getMaxU() - sprite.getMinU();
+//    float UVheight = sprite.getMinV() - sprite.getMaxV();
+
+
+
 --------
 Tags for grouping types of objects together eg crops, leaves, wool
 eg for leaves tag:

@@ -2,10 +2,7 @@ package minecraftbyexample.usefultools.debugging;
 
 import net.minecraft.util.math.Vec3d;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by TGG on 29/06/2015.
@@ -16,7 +13,7 @@ import java.util.Set;
  *    /mbedebug param <name> <value></value>
  *    /mbedebug param x 0.3
  * 2) getDebugParameter(name) - for example in a rendering routine
- *    double renderOffsetX = getDebugParameter("x");
+ *    double renderOffsetX = getDebugParameter("x").orElse(0.0);
  *    which can then be subsequently used for (eg) interactively adjusting rendering offsets in-game
  * 3) listAllDebugParameters() to be used for (eg) autocompletion suggestions
  *        is automatically populated when code sets or gets a name
@@ -33,19 +30,23 @@ import java.util.Set;
 public class DebugSettings {
 
   public static synchronized void setDebugParameter(String parameterName, double value) {
-    debugParameters.put(parameterName, value);
+    debugParameters.put(parameterName, Optional.of(value));
+  }
+
+  public static synchronized void clearDebugParameter(String parameterName) {
+    debugParameters.put(parameterName, Optional.empty());
   }
 
   /**
-   * Gets the value of the given debug parameter; or 0 if not previously set
+   * Gets the value of the given debug parameter; or empty if not previously set.
    * @param parameterName
    * @return
    */
-  public static synchronized double getDebugParameter(String parameterName) {
-    Double value = debugParameters.get(parameterName);
+  public static synchronized Optional<Double> getDebugParameter(String parameterName) {
+    Optional<Double> value = debugParameters.get(parameterName);
     if (value == null) {
-      value = 0.0;
-      debugParameters.put(parameterName, value);
+      debugParameters.put(parameterName, Optional.empty());
+      return Optional.empty();
     }
     return value;
   }
@@ -54,12 +55,16 @@ public class DebugSettings {
     return debugParameters.keySet();
   }
 
-  private static HashMap<String, Double> debugParameters = new HashMap<>();
+  private static HashMap<String, Optional<Double>> debugParameters = new HashMap<>();
 
   //-----------
 
   public static synchronized void setDebugParameterVec3d(String parameterName, Vec3d value) {
-    debugParameterVec3ds.put(parameterName, value);
+    debugParameterVec3ds.put(parameterName, Optional.of(value));
+  }
+
+  public static synchronized void clearDebugParameterVec3d(String parameterName) {
+    debugParameterVec3ds.put(parameterName, Optional.empty());
   }
 
   /**
@@ -67,11 +72,11 @@ public class DebugSettings {
    * @param parameterName
    * @return
    */
-  public static synchronized Vec3d getDebugParameterVec3d(String parameterName) {
-    Vec3d value = debugParameterVec3ds.get(parameterName);
+  public static synchronized Optional<Vec3d> getDebugParameterVec3d(String parameterName) {
+    Optional<Vec3d> value = debugParameterVec3ds.get(parameterName);
     if (value == null) {
-      value = Vec3d.ZERO;
-      debugParameterVec3ds.put(parameterName, value);
+      debugParameterVec3ds.put(parameterName, Optional.empty());
+      return Optional.empty();
     }
     return value;
   }
@@ -80,7 +85,7 @@ public class DebugSettings {
     return debugParameterVec3ds.keySet();
   }
 
-  private static HashMap<String, Vec3d> debugParameterVec3ds = new HashMap<>();
+  private static HashMap<String, Optional<Vec3d>> debugParameterVec3ds = new HashMap<>();
 
   //-----------
 

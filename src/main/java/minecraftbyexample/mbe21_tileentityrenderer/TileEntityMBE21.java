@@ -228,4 +228,6 @@ public class TileEntityMBE21 extends TileEntity {
 	private final long INVALID_TIME = 0;
 	private long lastTime = INVALID_TIME;  // used for animation
 	private double lastAngularPosition; // used for animation
+  private long ticksInExistence = 0; // how many ticks have we been in existence?
+
 }

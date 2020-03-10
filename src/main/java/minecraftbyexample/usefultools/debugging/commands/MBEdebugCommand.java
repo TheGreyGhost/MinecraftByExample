@@ -6,6 +6,7 @@ import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import minecraftbyexample.mbe45_commands.MBEquoteCommand;
 import minecraftbyexample.mbe45_commands.MBEsayCommand;
 import minecraftbyexample.usefultools.debugging.DebugSettings;
 import net.minecraft.command.CommandSource;
@@ -46,6 +47,12 @@ public class MBEdebugCommand {
                     .then(Commands.argument("parametername", StringArgumentType.word())
                             .suggests((context, builder) ->
                                     ISuggestionProvider.suggest(DebugSettings.listAllDebugParameters().stream(), builder))
+                            .then(Commands.literal("clear")
+                                    .executes(context -> {
+                                      DebugSettings.clearDebugParameter(StringArgumentType.getString(context, "parametername"));
+                                      return 1;
+                                    })
+                            )
                             .then(Commands.argument("parametervalue", DoubleArgumentType.doubleArg())
                                     .executes(context -> { DebugSettings.setDebugParameter(
                                               StringArgumentType.getString(context, "parametername"),
@@ -56,7 +63,13 @@ public class MBEdebugCommand {
                     .then(Commands.argument("parametername", StringArgumentType.word())
                             .suggests((context, builder) ->
                                     ISuggestionProvider.suggest(DebugSettings.listAllDebugParameterVec3ds().stream(), builder))
-                            .then(Commands.argument("parametervalue", Vec3Argument.vec3())
+                            .then(Commands.literal("clear")
+                                    .executes(context -> {
+                                      DebugSettings.clearDebugParameterVec3d(StringArgumentType.getString(context, "parametername"));
+                                      return 1;
+                                    })
+                            )
+                            .then(Commands.argument("parametervalue", Vec3Argument.vec3(false))  //don't automatically centre integers
                               .executes(context -> { DebugSettings.setDebugParameterVec3d(
                                       StringArgumentType.getString(context, "parametername"),
                                       Vec3Argument.getVec3(context, "parametervalue")); return 1;}))

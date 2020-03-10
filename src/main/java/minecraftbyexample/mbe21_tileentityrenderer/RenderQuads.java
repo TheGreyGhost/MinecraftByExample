@@ -42,16 +42,12 @@ import static net.minecraft.inventory.container.PlayerContainer.LOCATION_BLOCKS_
  *       .add(NORMAL_3B) // 3 bytes for normal vector
  *       .add(PADDING_1B).build());
  *
- *   RenderType.getSolid() is suitable if you're using a texture which has been stitched into the block texture sheet.
+ *   RenderType.getSolid() is also suitable if you're using a texture which has been stitched into the block texture sheet.
  *    Textures can be stitched into the texture sheet either
  *    1) automatically, if you have specified them in the block model for a registered block; or
  *    2) manually, by adding it yourself during TextureStitchEvent.Pre
  *
- *   If you want to use a texture that isn't in the texture sheet, you need to either repurpose one of the others in
- *      RenderType (for example: EntitySolid may be suitable) or create your own RenderType.
- *    getEntitySolid
- *
- *
+ *   Other types of rendering are possible by producing custom RenderTypes (see RenderTypeHelper)
  */
 public class RenderQuads {
 
@@ -59,7 +55,7 @@ public class RenderQuads {
   //        missing texture
   public static final ResourceLocation MBE21_CUBE_FACE_TEXTURE = new ResourceLocation("minecraftbyexample:textures/entity/mbe21_ter_cube.png");
 
-  public static void renderCubeUsingQuads(TileEntityMBE21 tileEntityMBE21, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderBuffer,
+  public static void renderCubeUsingQuads(TileEntityMBE21 tileEntityMBE21, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderBuffers,
                                     int combinedLight, int combinedOverlay) {
       // draw the object as a cube, using quads
       // When render method is called, the origin [0,0,0] is at the current [x,y,z] of the block.
@@ -73,46 +69,24 @@ public class RenderQuads {
       matrixStack.translate(TRANSLATION_OFFSET.x,TRANSLATION_OFFSET.y,TRANSLATION_OFFSET.z); // translate
       Color gemColour = tileEntityMBE21.getArtifactColour();
 
-      drawCubeQuads(matrixStack, renderBuffer, gemColour, combinedLight);
+      drawCubeQuads(matrixStack, renderBuffers, gemColour, combinedLight);
       matrixStack.pop(); // restore the original transformation matrix + normals matrix
     }
 
   /**
-   * Draw a cube from [0,0,0] to [1,1,1], same texture on all sides, using a texture which has been stitched into the
-   *   block texture sheet
+   * Draw a cube from [0,0,0] to [1,1,1], same texture on all sides, using a supplied texture
    */
   private static void drawCubeQuads(MatrixStack matrixStack, IRenderTypeBuffer renderBuffer,
                                     Color color, int combinedLight) {
 
-    // we are using a solid block render with texture that has been stitched into the block texture sheet
-//    IVertexBuilder vertexBuilderBlockQuads = renderBuffer.getBuffer(RenderType.getSolid());
     IVertexBuilder vertexBuilderBlockQuads = renderBuffer.getBuffer(RenderType.getEntitySolid(MBE21_CUBE_FACE_TEXTURE));
+    // other typical RenderTypes used by TER are:
+    // getEntityCutout, getBeaconBeam (which has translucency),
 
     Matrix4f matrixPos = matrixStack.getLast().getMatrix();     // retrieves the current transformation matrix
     Matrix3f matrixNormal = matrixStack.getLast().getNormal();  // retrieves the current transformation matrix for the normal vector
 
-    // retrieve the [U,V] coordinates of the texture that we want to use
-
-//    TextureAtlasSprite sprite = null;
-//    boolean textureIsMissing = true;
-//    ModelManager modelManager = Minecraft.getInstance().getModelManager();
-//    AtlasTexture atlasTexture = modelManager.getAtlasTexture(LOCATION_BLOCKS_TEXTURE);  // see static initialiser for SOLID in RenderType
-//    if (atlasTexture != null) {
-//       sprite = atlasTexture.getSprite(StartupClientOnly.MBE21_CUBE_TEXTURE);
-//      if (sprite != null) {
-//        textureIsMissing = false;
-//      }
-//    }
-//
-//    if (textureIsMissing || sprite == null) {  // null check is to prevent compiler complaining
-//      final ResourceLocation MISSING_TEXTURE = MissingTextureSprite.getLocation();
-//      sprite = modelManager.getAtlasTexture(LOCATION_BLOCKS_TEXTURE).getSprite(MISSING_TEXTURE);
-//    }
-
-//    Vec2f bottomLeftUV = new Vec2f(sprite.getMinU(), sprite.getMaxV());
-//    float UVwidth = sprite.getMaxU() - sprite.getMinU();
-//    float UVheight = sprite.getMinV() - sprite.getMaxV();
-
+    // we use the whole texture
     Vec2f bottomLeftUV = new Vec2f(0.0F, 1.0F);
     float UVwidth = 1.0F;
     float UVheight = 1.0F;
@@ -143,7 +117,7 @@ public class RenderQuads {
   }
 
     private static void addFace(Direction whichFace,
-                                Matrix4f matrixPos, Matrix3f matrixNormal, IVertexBuilder vertexBuilder,
+                                Matrix4f matrixPos, Matrix3f matrixNormal, IVertexBuilder renderBuffer,
                               Color color, Vec3d centrePos, float width, float height,
                               Vec2f bottomLeftUV, float texUwidth, float texVheight,
                               int lightmapValue) {
@@ -155,7 +129,8 @@ public class RenderQuads {
     // Eg when drawing the NORTH face, the face points north, but when we're looking at the face, we are facing south,
     //   so that the bottom left corner is the eastern-most, not the western-most!
 
-    //calculate the bottom left, bottom right, top right, top left vertices from the VIEWER's point of view (not the
+
+    // calculate the bottom left, bottom right, top right, top left vertices from the VIEWER's point of view (not the
     //  face's point of view)
 
     Vector3f leftToRightDirection, bottomToTopDirection;
@@ -227,7 +202,7 @@ public class RenderQuads {
 
     Vector3f normalVector = whichFace.toVector3f();  // gives us the normal to the face
 
-    addQuad(matrixPos, matrixNormal, vertexBuilder,
+    addQuad(matrixPos, matrixNormal, renderBuffer,
             bottomLeftPos, bottomRightPos, topRightPos, topLeftPos,
             bottomLeftUVpos, bottomRightUVpos, topLeftUVpos, topRightUVpos,
             normalVector, color, lightmapValue);
@@ -235,29 +210,29 @@ public class RenderQuads {
 
   /**
    * Add a quad.
-   * It is added in anti-clockwise order from the VIEWER's  point of view, i.e.
+   * The vertices are added in anti-clockwise order from the VIEWER's  point of view, i.e.
    * bottom left; bottom right, top right, top left
-   * If you add it in the other direction, the quad will face in the opposite direction; i.e. the viewer will be
+   * If you add the vertices in clockwise order, the quad will face in the opposite direction; i.e. the viewer will be
    *   looking at the back face, which is usually culled (not visible)
    * See
    * http://greyminecraftcoder.blogspot.com/2014/12/the-tessellator-and-worldrenderer-18.html
    * http://greyminecraftcoder.blogspot.com/2014/12/block-models-texturing-quads-faces.html
    */
-  private static void addQuad(Matrix4f matrixPos, Matrix3f matrixNormal, IVertexBuilder vertexBuilder,
+  private static void addQuad(Matrix4f matrixPos, Matrix3f matrixNormal, IVertexBuilder renderBuffer,
                               Vector3f blpos, Vector3f brpos, Vector3f trpos, Vector3f tlpos,
                               Vec2f blUVpos, Vec2f brUVpos, Vec2f trUVpos, Vec2f tlUVpos,
                               Vector3f normalVector, Color color, int lightmapValue) {
-    addQuadVertex(matrixPos, matrixNormal, vertexBuilder, blpos, blUVpos, normalVector, color, lightmapValue);
-    addQuadVertex(matrixPos, matrixNormal, vertexBuilder, brpos, brUVpos, normalVector, color, lightmapValue);
-    addQuadVertex(matrixPos, matrixNormal, vertexBuilder, trpos, trUVpos, normalVector, color, lightmapValue);
-    addQuadVertex(matrixPos, matrixNormal, vertexBuilder, tlpos, tlUVpos, normalVector, color, lightmapValue);
+    addQuadVertex(matrixPos, matrixNormal, renderBuffer, blpos, blUVpos, normalVector, color, lightmapValue);
+    addQuadVertex(matrixPos, matrixNormal, renderBuffer, brpos, brUVpos, normalVector, color, lightmapValue);
+    addQuadVertex(matrixPos, matrixNormal, renderBuffer, trpos, trUVpos, normalVector, color, lightmapValue);
+    addQuadVertex(matrixPos, matrixNormal, renderBuffer, tlpos, tlUVpos, normalVector, color, lightmapValue);
   }
 
   // suitable for vertexbuilders using the DefaultVertexFormats.ENTITY format
-  private static void addQuadVertex(Matrix4f matrixPos, Matrix3f matrixNormal, IVertexBuilder vertexBuilder,
+  private static void addQuadVertex(Matrix4f matrixPos, Matrix3f matrixNormal, IVertexBuilder renderBuffer,
                                     Vector3f pos, Vec2f texUV,
                                     Vector3f normalVector, Color color, int lightmapValue) {
-    vertexBuilder.pos(matrixPos, pos.getX(), pos.getY(), pos.getZ()) // position coordinate
+    renderBuffer.pos(matrixPos, pos.getX(), pos.getY(), pos.getZ()) // position coordinate
             .color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha())        // color
             .tex(texUV.x, texUV.y)                     // texel coordinate
             .overlay(OverlayTexture.NO_OVERLAY)  // only relevant for rendering Entities (Living)

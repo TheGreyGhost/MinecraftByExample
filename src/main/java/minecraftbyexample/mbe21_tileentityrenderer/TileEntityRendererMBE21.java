@@ -49,22 +49,22 @@ public class TileEntityRendererMBE21 extends TileEntityRenderer<TileEntityMBE21>
    *                        this method will be called four times per tick, with partialTicks spaced 0.25 apart, (eg) 0, 0.25, 0.5, 0.75
    * @param matrixStack     the matrixStack is used to track the current view transformations that have been applied - i.e translation, rotation, scaling
    *                        it is needed for you to render the view properly.
-   * @param renderBuffer    the buffer that you should render your model to
+   * @param renderBuffers    the buffer that you should render your model to
    * @param combinedLight   the blocklight + skylight value for the tileEntity.  see http://greyminecraftcoder.blogspot.com/2014/12/lighting-18.html (outdated, but the concepts are still valid)
    * @param combinedOverlay value for the "combined overlay" which changes the render based on an overlay texture (see OverlayTexture class).
    *                        Used by vanilla for (1) red tint when a living entity is damaged, and (2) "flash" effect for creeper when ignited
    *                        CreeperRenderer.func_225625_b_()
    */
   @Override
-  public void render(TileEntityMBE21 tileEntityMBE21, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderBuffer,
+  public void render(TileEntityMBE21 tileEntityMBE21, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderBuffers,
                      int combinedLight, int combinedOverlay) {
     TileEntityMBE21.EnumRenderStyle objectRenderStyle = tileEntityMBE21.getArtifactRenderStyle();
 
     switch (objectRenderStyle) {
-      case WIREFRAME: RenderLines.renderWireframe(tileEntityMBE21, partialTicks, matrixStack, renderBuffer, combinedLight, combinedOverlay); break;
-      case QUADS: RenderQuads.renderCubeUsingQuads(tileEntityMBE21, partialTicks, matrixStack, renderBuffer, combinedLight, combinedOverlay); break;
-//      case BLOCKQUADS: renderWireframe(tileEntityMBE21, partialTicks, matrixStack, renderBuffer, combinedLight, combinedOverlay); break;
-//      case WAVEFRONT: renderWireframe(tileEntityMBE21, partialTicks, matrixStack, renderBuffer, combinedLight, combinedOverlay); break;
+      case WIREFRAME: RenderLines.renderWireframe(tileEntityMBE21, partialTicks, matrixStack, renderBuffers, combinedLight, combinedOverlay); break;
+      case QUADS: RenderQuads.renderCubeUsingQuads(tileEntityMBE21, partialTicks, matrixStack, renderBuffers, combinedLight, combinedOverlay); break;
+      case BLOCKQUADS: RenderModelHourglass.renderUsingModel(tileEntityMBE21, partialTicks, matrixStack, renderBuffers, combinedLight, combinedOverlay); break;
+//      case WAVEFRONT: renderWireframe(tileEntityMBE21, partialTicks, matrixStack, renderBuffers, combinedLight, combinedOverlay); break;
       default: { LOGGER.debug("Unexpected objectRenderStyle:" + objectRenderStyle);}
     }
 

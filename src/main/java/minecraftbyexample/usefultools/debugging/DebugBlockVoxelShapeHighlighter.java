@@ -51,10 +51,10 @@ public class DebugBlockVoxelShapeHighlighter {
     final Color COLLISIONSHAPE_COLOR = Color.GREEN;
     final Color RAYTRACESHAPE_COLOR = Color.MAGENTA;
 
-    boolean showshape = (0 != DebugSettings.getDebugParameter("showshape"));
-    boolean showrendershapeshape = (0 != DebugSettings.getDebugParameter("showrendershape"));
-    boolean showcollisionshape = (0 != DebugSettings.getDebugParameter("showcollisionshape"));
-    boolean showraytraceshape = (0 != DebugSettings.getDebugParameter("showraytraceshape"));
+    boolean showshape = DebugSettings.getDebugParameter("showshape").isPresent();
+    boolean showrendershapeshape = DebugSettings.getDebugParameter("showrendershape").isPresent();
+    boolean showcollisionshape = DebugSettings.getDebugParameter("showcollisionshape").isPresent();
+    boolean showraytraceshape = DebugSettings.getDebugParameter("showraytraceshape").isPresent();
 
     if (!(showshape || showrendershapeshape || showcollisionshape || showraytraceshape)) return;
 

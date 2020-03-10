@@ -15,15 +15,15 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class DebugSpawnInhibitor {
   @SubscribeEvent
   public static void checkForSpawnDenial(LivingSpawnEvent.CheckSpawn event) {
-    if (DebugSettings.getDebugParameter("preventspawning") == 0.0) {
-      event.setResult(Event.Result.DEFAULT);
-    } else {
+    if (DebugSettings.getDebugParameter("preventspawning").isPresent()) {
       ResourceLocation entityname = ForgeRegistries.ENTITIES.getKey(event.getEntity().getType());
       if (entityname.getNamespace().equals("minecraft")) {
         event.setResult(Event.Result.DENY);
       } else {
         event.setResult(Event.Result.DEFAULT);
       }
+    } else {
+      event.setResult(Event.Result.DEFAULT);
     }
   }
 }

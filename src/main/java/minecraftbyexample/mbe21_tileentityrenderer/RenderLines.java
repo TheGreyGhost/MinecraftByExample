@@ -19,7 +19,7 @@ import java.awt.*;
  */
 public class RenderLines  {
 
-  public static void renderWireframe(TileEntityMBE21 tileEntityMBE21, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderBuffer,
+  public static void renderWireframe(TileEntityMBE21 tileEntityMBE21, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderBuffers,
                                int combinedLight, int combinedOverlay) {
     // draw the artifact using lines
     // (Draws an inverted tetrahedron wireframe above the rendered base block (hopper block model))
@@ -33,7 +33,7 @@ public class RenderLines  {
     matrixStack.translate(TRANSLATION_OFFSET.x,TRANSLATION_OFFSET.y,TRANSLATION_OFFSET.z); // translate
     Color artifactColour = tileEntityMBE21.getArtifactColour();
 
-    drawTetrahedronWireframe(matrixStack, renderBuffer, artifactColour);
+    drawTetrahedronWireframe(matrixStack, renderBuffers, artifactColour);
     matrixStack.pop(); // restore the original transformation matrix + normals matrix
   }
 
@@ -41,9 +41,9 @@ public class RenderLines  {
    * Draw an upside-down wireframe tetrahedron with its tip at [0.5,0,0.5]
    *    and 1x1 square "base" at y = 1 (x= 0 to 1, z = 0 to 1)
    * @param matrixStack transformation matrix and normal matrix
-   * @param renderBuffer the renderbuffers we'll be drawing to
+   * @param renderBuffers the renderbuffers we'll be drawing to
    */
-  private static void drawTetrahedronWireframe(MatrixStack matrixStack, IRenderTypeBuffer renderBuffer,
+  private static void drawTetrahedronWireframe(MatrixStack matrixStack, IRenderTypeBuffer renderBuffers,
                                                Color color) {
 
       final Vec3d [] BASE_VERTICES = {
@@ -54,7 +54,7 @@ public class RenderLines  {
       };
       final Vec3d APEX_VERTEX = new Vec3d(0.5, 0, 0.5);
 
-    IVertexBuilder vertexBuilderLines = renderBuffer.getBuffer(RenderTypeHelper.MBE_LINE_DEPTH_WRITING_ON);
+    IVertexBuilder vertexBuilderLines = renderBuffers.getBuffer(RenderTypeHelper.MBE_LINE_DEPTH_WRITING_ON);
     // Note that, although RenderType.getLines() might appear to be suitable, it leads to weird rendering if used in
     // tile entity rendering, because it doesn't write to the depth buffer.  In other words, any object in the scene
     // which is drawn after the lines, will render over the top of the line (erase it) even if the object is behind
@@ -78,20 +78,18 @@ public class RenderLines  {
   /**
    * Draw a coloured line from a starting vertex to an end vertex
    * @param matrixPos the current transformation matrix
-   * @param vertexBuilderLines the vertex builder used to draw the line
+   * @param renderBuffer the vertex builder used to draw the line
    * @param startVertex
    * @param endVertex
    */
-  private static void drawLine(Matrix4f matrixPos, IVertexBuilder vertexBuilderLines,
+  private static void drawLine(Matrix4f matrixPos, IVertexBuilder renderBuffer,
                                Color color,
                                Vec3d startVertex, Vec3d endVertex) {
-    vertexBuilderLines.pos(matrixPos, (float) startVertex.getX(), (float) startVertex.getY(), (float) startVertex.getZ())
+    renderBuffer.pos(matrixPos, (float) startVertex.getX(), (float) startVertex.getY(), (float) startVertex.getZ())
             .color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha())   // there is also a version for floats (0 -> 1)
             .endVertex();
-    vertexBuilderLines.pos(matrixPos, (float) endVertex.getX(), (float) endVertex.getY(), (float) endVertex.getZ())
+    renderBuffer.pos(matrixPos, (float) endVertex.getX(), (float) endVertex.getY(), (float) endVertex.getZ())
             .color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha())   // there is also a version for floats (0 -> 1)
             .endVertex();
   }
-
-  private static final Logger LOGGER = LogManager.getLogger();
 }
