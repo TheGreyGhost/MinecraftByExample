@@ -4,10 +4,14 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.block.BlockRenderType;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -22,8 +26,8 @@ import java.util.Random;
  * User: The Grey Ghost
  * Date: 11/01/2015
  *
- * BlockTileEntityData is a simple block with an associated TileEntity.  The base block is shaped like a hopper, the gem is
- *   rendered in the TESR.
+ * BlockTileEntityData is a simple block with an associated TileEntity.  The base block is shaped like a hopper, and
+ * the artifact hovering above it is rendered in the TER.
 */
 public class BlockMBE21 extends Block
 {
@@ -52,17 +56,34 @@ public class BlockMBE21 extends Block
     if (tileentity instanceof TileEntityMBE21) { // prevent a crash if not the right type, or is null
       TileEntityMBE21 tileEntityMBE21 = (TileEntityMBE21)tileentity;
 
-      // chose a random colour for the gem:
+      // chose a random colour for the artifact:
       Color [] colorChoices = {Color.BLUE, Color.CYAN, Color.YELLOW, Color.GREEN, Color.WHITE, Color.ORANGE, Color.RED};
       Random random = new Random();
-      Color gemColor = colorChoices[random.nextInt(colorChoices.length)];
-      tileEntityMBE21.setObjectColour(gemColor);
+      Color artifactColour = colorChoices[random.nextInt(colorChoices.length)];
+      tileEntityMBE21.setArtifactColour(artifactColour);
     }
   }
 
-  // render using a BakedModel
-  // not required because the default (super method) is MODEL
+  /**
+   * When the player right-clicks the block, update it to the next render style
+   */
   @Override
+  public ActionResultType onBlockActivated(BlockState blockState, World world, BlockPos blockPos,
+                                           PlayerEntity playerEntity, Hand hand, BlockRayTraceResult rayTraceResult) {
+    TileEntity tileentity = world.getTileEntity(blockPos);
+    if (tileentity instanceof TileEntityMBE21) { // prevent a crash if not the right type, or is null
+      TileEntityMBE21 tileEntityMBE21 = (TileEntityMBE21)tileentity;
+      TileEntityMBE21.EnumRenderStyle renderStyle = tileEntityMBE21.getArtifactRenderStyle();
+      renderStyle = renderStyle.getNextStyle();
+      tileEntityMBE21.setArtifactRenderStyle(renderStyle);
+      return ActionResultType.SUCCESS;
+    }
+    return ActionResultType.FAIL;  // should never get here
+  }
+
+   // render using a BakedModel
+   // not required because the default (super method) is MODEL
+       @Override
   public BlockRenderType getRenderType(BlockState iBlockState) {
     return BlockRenderType.MODEL;
   }

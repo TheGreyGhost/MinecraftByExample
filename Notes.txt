@@ -24,6 +24,72 @@ i>=8 -> linear interpolate 64-255 << 24 OR 00FF FFFF
 
 ABGR
 
+RenderTypes
+
+CUTOUT = alpha threshold
+MIPPED
+
+
+WorldRenderer::updateCameraAndRender
+
+Order of rendering:
+
+      iprofiler.endStartSection("terrain");
+        this.renderBlockLayer(RenderType.getSolid(), matrixStackIn, d0, d1, d2);
+        this.renderBlockLayer(RenderType.getCutoutMipped(), matrixStackIn, d0, d1, d2);
+        this.renderBlockLayer(RenderType.getCutout(), matrixStackIn, d0, d1, d2);
+
+      iprofiler.endStartSection("entities");
+         this.renderEntity(entity, d0, d1, d2, partialTicks, matrixStackIn, irendertypebuffer);
+      irendertypebuffer$impl.finish(RenderType.getEntitySolid(AtlasTexture.LOCATION_BLOCKS_TEXTURE));
+      irendertypebuffer$impl.finish(RenderType.getEntityCutout(AtlasTexture.LOCATION_BLOCKS_TEXTURE));
+      irendertypebuffer$impl.finish(RenderType.getEntityCutoutNoCull(AtlasTexture.LOCATION_BLOCKS_TEXTURE));
+      irendertypebuffer$impl.finish(RenderType.getEntitySmoothCutout(AtlasTexture.LOCATION_BLOCKS_TEXTURE));
+
+      iprofiler.endStartSection("blockentities");
+                TileEntityRendererDispatcher.instance.renderTileEntity(tileentity1, partialTicks, matrixStackIn, irendertypebuffer1);
+
+
+      irendertypebuffer$impl.finish(RenderType.getSolid());
+      irendertypebuffer$impl.finish(Atlases.getSolidBlockType());
+      irendertypebuffer$impl.finish(Atlases.getCutoutBlockType());
+      irendertypebuffer$impl.finish(Atlases.getBedType());
+      irendertypebuffer$impl.finish(Atlases.getShulkerBoxType());
+      irendertypebuffer$impl.finish(Atlases.getSignType());
+      irendertypebuffer$impl.finish(Atlases.getChestType());
+      this.renderTypeTextures.getOutlineBufferSource().finish();
+
+BellTileEntityRenderer:
+    BELL_BODY_TEXTURE = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation("entity/bell/bell_body"));
+    IVertexBuilder lvt_10_2_ = BELL_BODY_TEXTURE.getBuffer(p_225616_4_, RenderType::getEntitySolid);
+
+ChestTileEntityRenderer:
+         IVertexBuilder ivertexbuilder = material.getBuffer(bufferIn, RenderType::getEntityCutout);
+
+        private static Material getChestMaterial(String p_228774_0_) {
+          return new Material(CHEST_ATLAS, new ResourceLocation("entity/chest/" + p_228774_0_));
+        }
+
+SignTileEntityRenderer:
+      super(RenderType::getEntityCutoutNoCull);
+
+BeaconTileEntityRenderer:
+    p_228842_1_.getBuffer(RenderType.getBeaconBeam(p_228842_2_, false))
+    RenderType.State lvt_2_1_ = RenderType.State.getBuilder().texture(new TextureState(p_228637_0_, false, false)).transparency(p_228637_1_ ? TRANSLUCENT_TRANSPARENCY : NO_TRANSPARENCY).writeMask(p_228637_1_ ? COLOR_WRITE : COLOR_DEPTH_WRITE).fog(NO_FOG).build(false);
+    return makeType("beacon_beam", DefaultVertexFormats.BLOCK, 7, 256, false, true, lvt_2_1_);
+
+PistonTileEntityRenderer:
+
+    public static List<RenderType> getBlockRenderTypes() {
+      return ImmutableList.of(getSolid(), getCutoutMipped(), getCutout(), getTranslucent());
+    }
+
+  forEach(rendertype -> {
+        net.minecraftforge.client.ForgeHooksClient.setRenderLayer(rendertype);
+        IVertexBuilder ivertexbuilder = p_228876_4_.getBuffer(rendertype);
+
+        (block model renderer)
+
 
 https://medium.com/grandcentrix/how-to-debug-gradle-plugins-with-intellij-eef2ef681a7b
 

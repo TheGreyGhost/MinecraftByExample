@@ -1,6 +1,5 @@
 package minecraftbyexample.mbe21_tileentityrenderer;
 
-import minecraftbyexample.mbe11_item_variants.ItemVariants;
 import minecraftbyexample.usefultools.NBTtypesMBE;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
@@ -12,14 +11,15 @@ import java.awt.*;
 import java.util.Optional;
 
 /**
- * This is a simple tile entity which stores information used by the associated TileEntityRenderer (TER):
+ * This is a simple tile entity which stores information used by the associated TileEntityRenderer (TER) to render the
+ *   "artifact" floating above the hopper.  The information stored is:
  * the render style:
  *   * wireframe (using lines)
  *   * quads
  *   * blockmodel
  *   * wavefront
  * the colour
- * the angular position (wavefront model only)
+ * the angular position (only used by wavefront model render example)
  *
  * The render style and colour are saved to disk, the angular position isn't.
  */
@@ -29,21 +29,21 @@ public class TileEntityMBE21 extends TileEntity {
 
 	public static final Color INVALID_COLOR = null;
 
-	// get the colour of the object.  returns INVALID_COLOR if not set yet.
-	public Color getObjectColour() {
-		return objectColour;
+	// get the colour of the artifact.  returns INVALID_COLOR if not set yet.
+	public Color getArtifactColour() {
+		return artifactColour;
 	}
-  public void setObjectColour(Color newColour)
+  public void setArtifactColour(Color newColour)
 	{
-		objectColour = newColour;
+		artifactColour = newColour;
 	}
 
 
-  public EnumRenderStyle getObjectRenderStyle() {
-    return objectRenderStyle;
+  public EnumRenderStyle getArtifactRenderStyle() {
+    return artifactRenderStyle;
   }
-  public void setObjectRenderStyle(EnumRenderStyle objectRenderStyle) {
-    this.objectRenderStyle = objectRenderStyle;
+  public void setArtifactRenderStyle(EnumRenderStyle artifactRenderStyle) {
+    this.artifactRenderStyle = artifactRenderStyle;
   }
 
   /**
@@ -120,10 +120,10 @@ public class TileEntityMBE21 extends TileEntity {
 	public CompoundNBT write(CompoundNBT parentNBTTagCompound)
 	{
 		super.write(parentNBTTagCompound); // The super call is required to save the tiles location
-		if (objectColour != INVALID_COLOR) {
-			parentNBTTagCompound.putInt("objectColour", objectColour.getRGB());
+		if (artifactColour != INVALID_COLOR) {
+			parentNBTTagCompound.putInt("artifactColour", artifactColour.getRGB());
 		}
-		objectRenderStyle.putIntoNBT(parentNBTTagCompound,"objectRenderStyle");
+		artifactRenderStyle.putIntoNBT(parentNBTTagCompound,"artifactRenderStyle");
 		return parentNBTTagCompound;
 	}
 
@@ -136,13 +136,13 @@ public class TileEntityMBE21 extends TileEntity {
 		// important rule: never trust the data you read from NBT, make sure it can't cause a crash
 
 		final int NBT_INT_ID = NBTtypesMBE.INT_NBT_ID;
-		Color readObjectColour = INVALID_COLOR;
-		if (parentNBTTagCompound.contains("objectColour", NBT_INT_ID)) {  // check if the key exists and is an Int. You can omit this if a default value of 0 is ok.
-			int colorRGB = parentNBTTagCompound.getInt("objectColour");
-			readObjectColour = new Color(colorRGB);
+		Color readArtifactColour = INVALID_COLOR;
+		if (parentNBTTagCompound.contains("artifactColour", NBT_INT_ID)) {  // check if the key exists and is an Int. You can omit this if a default value of 0 is ok.
+			int colorRGB = parentNBTTagCompound.getInt("artifactColour");
+			readArtifactColour = new Color(colorRGB);
 		}
-		objectColour = readObjectColour;
-		objectRenderStyle = EnumRenderStyle.fromNBT(parentNBTTagCompound, "objectRenderStyle");
+		artifactColour = readArtifactColour;
+		artifactRenderStyle = EnumRenderStyle.fromNBT(parentNBTTagCompound, "artifactRenderStyle");
 	}
 
 	/**
@@ -176,6 +176,14 @@ public class TileEntityMBE21 extends TileEntity {
 	}
   public enum EnumRenderStyle {
     WIREFRAME(1), QUADS(2), BLOCKQUADS(3), WAVEFRONT(4);
+
+    public EnumRenderStyle getNextStyle() {
+      int nextLargestID = nbtID + 1;
+      for (EnumRenderStyle enumRenderStyle : EnumRenderStyle.values()) {
+        if (enumRenderStyle.nbtID == nextLargestID) return enumRenderStyle;
+      }
+      return WIREFRAME;
+    }
 
     /**
      * Read the renderstyle enum out of NBT
@@ -214,8 +222,8 @@ public class TileEntityMBE21 extends TileEntity {
     private byte nbtID;
   }
 
-  private Color objectColour = INVALID_COLOR;  // the RGB colour of the gem
-  private EnumRenderStyle objectRenderStyle = EnumRenderStyle.WIREFRAME;  // which method should we use to render this object?
+  private Color artifactColour = INVALID_COLOR;  // the RGB colour of the artifact
+  private EnumRenderStyle artifactRenderStyle = EnumRenderStyle.WIREFRAME;  // which method should we use to render this artifact?
 
 	private final long INVALID_TIME = 0;
 	private long lastTime = INVALID_TIME;  // used for animation

@@ -1,0 +1,268 @@
+package minecraftbyexample.mbe21_tileentityrenderer;
+
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.model.ModelManager;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.MissingTextureSprite;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec2f;
+import net.minecraft.util.math.Vec3d;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.awt.*;
+
+import static net.minecraft.inventory.container.PlayerContainer.LOCATION_BLOCKS_TEXTURE;
+
+/**
+ * User: The Grey Ghost
+ * Date: 12/01/2015
+ * This class renders the artifact floating above the block.
+ * The base model (the hopper shape) is drawn by the block model, not this class.
+ * See assets/minecraftbyexample/blockstates/mbe21_tesr_block_registry_name.json
+ *
+ * This class demonstrate manually drawing quads.
+ * The quads have position, colour, texture, normal, overlay, and lightmap information: see
+ *   DefaultVertexFormats
+ *       ENTITY = new VertexFormat(ImmutableList.builder().add(POSITION_3F).add(COLOR_4UB).add(TEX_2F).add(TEX_2S).add(TEX_2SB).add(NORMAL_3B).add(PADDING_1B).build());
+ *     ENTITY = new VertexFormat(ImmutableList.builder()
+ *       .add(POSITION_3F)
+ *       .add(COLOR_4UB) // 4 unsigned bytes of colour (R, G, B, alpha)
+ *       .add(TEX_2F)   // 2 floats for texture uv
+ *       .add(TEX_2S)   // 2 shorts for overlay coordinates
+ *       .add(TEX_2SB)  // 2 shorts for lightmap coordinates
+ *       .add(NORMAL_3B) // 3 bytes for normal vector
+ *       .add(PADDING_1B).build());
+ *
+ *   RenderType.getSolid() is suitable if you're using a texture which has been stitched into the block texture sheet.
+ *    Textures can be stitched into the texture sheet either
+ *    1) automatically, if you have specified them in the block model for a registered block; or
+ *    2) manually, by adding it yourself during TextureStitchEvent.Pre
+ *
+ *   If you want to use a texture that isn't in the texture sheet, you need to either repurpose one of the others in
+ *      RenderType (for example: EntitySolid may be suitable) or create your own RenderType.
+ *    getEntitySolid
+ *
+ *
+ */
+public class RenderQuads {
+
+  // note - must include textures/ at the start and .png at the end, otherwise it will fail silently and just give you the purple & black
+  //        missing texture
+  public static final ResourceLocation MBE21_CUBE_FACE_TEXTURE = new ResourceLocation("minecraftbyexample:textures/entity/mbe21_ter_cube.png");
+
+  public static void renderCubeUsingQuads(TileEntityMBE21 tileEntityMBE21, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderBuffer,
+                                    int combinedLight, int combinedOverlay) {
+      // draw the object as a cube, using quads
+      // When render method is called, the origin [0,0,0] is at the current [x,y,z] of the block.
+
+      // The cube-drawing method draws the cube in the region from [0,0,0] to [1,1,1] but we want it
+      //   to be in the block one above this, i.e. from [0,1,0] to [1,2,1],
+      //   so we need to translate up by one block, i.e. by [0,1,0]
+      final Vec3d TRANSLATION_OFFSET = new Vec3d(0, 1, 0);
+
+      matrixStack.push(); // push the current transformation matrix + normals matrix
+      matrixStack.translate(TRANSLATION_OFFSET.x,TRANSLATION_OFFSET.y,TRANSLATION_OFFSET.z); // translate
+      Color gemColour = tileEntityMBE21.getArtifactColour();
+
+      drawCubeQuads(matrixStack, renderBuffer, gemColour, combinedLight);
+      matrixStack.pop(); // restore the original transformation matrix + normals matrix
+    }
+
+  /**
+   * Draw a cube from [0,0,0] to [1,1,1], same texture on all sides, using a texture which has been stitched into the
+   *   block texture sheet
+   */
+  private static void drawCubeQuads(MatrixStack matrixStack, IRenderTypeBuffer renderBuffer,
+                                    Color color, int combinedLight) {
+
+    // we are using a solid block render with texture that has been stitched into the block texture sheet
+//    IVertexBuilder vertexBuilderBlockQuads = renderBuffer.getBuffer(RenderType.getSolid());
+    IVertexBuilder vertexBuilderBlockQuads = renderBuffer.getBuffer(RenderType.getEntitySolid(MBE21_CUBE_FACE_TEXTURE));
+
+    Matrix4f matrixPos = matrixStack.getLast().getMatrix();     // retrieves the current transformation matrix
+    Matrix3f matrixNormal = matrixStack.getLast().getNormal();  // retrieves the current transformation matrix for the normal vector
+
+    // retrieve the [U,V] coordinates of the texture that we want to use
+
+//    TextureAtlasSprite sprite = null;
+//    boolean textureIsMissing = true;
+//    ModelManager modelManager = Minecraft.getInstance().getModelManager();
+//    AtlasTexture atlasTexture = modelManager.getAtlasTexture(LOCATION_BLOCKS_TEXTURE);  // see static initialiser for SOLID in RenderType
+//    if (atlasTexture != null) {
+//       sprite = atlasTexture.getSprite(StartupClientOnly.MBE21_CUBE_TEXTURE);
+//      if (sprite != null) {
+//        textureIsMissing = false;
+//      }
+//    }
+//
+//    if (textureIsMissing || sprite == null) {  // null check is to prevent compiler complaining
+//      final ResourceLocation MISSING_TEXTURE = MissingTextureSprite.getLocation();
+//      sprite = modelManager.getAtlasTexture(LOCATION_BLOCKS_TEXTURE).getSprite(MISSING_TEXTURE);
+//    }
+
+//    Vec2f bottomLeftUV = new Vec2f(sprite.getMinU(), sprite.getMaxV());
+//    float UVwidth = sprite.getMaxU() - sprite.getMinU();
+//    float UVheight = sprite.getMinV() - sprite.getMaxV();
+
+    Vec2f bottomLeftUV = new Vec2f(0.0F, 1.0F);
+    float UVwidth = 1.0F;
+    float UVheight = 1.0F;
+
+    // all faces have the same height and width
+    final float WIDTH = 1.0F;
+    final float HEIGHT = 1.0F;
+
+    final Vec3d EAST_FACE_MIDPOINT = new Vec3d(1.0, 0.5, 0.5);
+    final Vec3d WEST_FACE_MIDPOINT = new Vec3d(0.0, 0.5, 0.5);
+    final Vec3d NORTH_FACE_MIDPOINT = new Vec3d(0.5, 0.5, 0.0);
+    final Vec3d SOUTH_FACE_MIDPOINT = new Vec3d(0.5, 0.5, 1.0);
+    final Vec3d UP_FACE_MIDPOINT = new Vec3d(0.5, 1.0, 0.5);
+    final Vec3d DOWN_FACE_MIDPOINT = new Vec3d(0.5, 0.0, 0.5);
+
+    addFace(Direction.EAST, matrixPos, matrixNormal, vertexBuilderBlockQuads,
+            color, EAST_FACE_MIDPOINT, WIDTH, HEIGHT, bottomLeftUV, UVwidth, UVheight, combinedLight);
+    addFace(Direction.WEST, matrixPos, matrixNormal, vertexBuilderBlockQuads,
+            color, WEST_FACE_MIDPOINT, WIDTH, HEIGHT, bottomLeftUV, UVwidth, UVheight, combinedLight);
+    addFace(Direction.NORTH, matrixPos, matrixNormal, vertexBuilderBlockQuads,
+            color, NORTH_FACE_MIDPOINT, WIDTH, HEIGHT, bottomLeftUV, UVwidth, UVheight, combinedLight);
+    addFace(Direction.SOUTH, matrixPos, matrixNormal, vertexBuilderBlockQuads,
+            color, SOUTH_FACE_MIDPOINT, WIDTH, HEIGHT, bottomLeftUV, UVwidth, UVheight, combinedLight);
+    addFace(Direction.UP, matrixPos, matrixNormal, vertexBuilderBlockQuads,
+            color, UP_FACE_MIDPOINT, WIDTH, HEIGHT, bottomLeftUV, UVwidth, UVheight, combinedLight);
+    addFace(Direction.DOWN, matrixPos, matrixNormal, vertexBuilderBlockQuads,
+            color, DOWN_FACE_MIDPOINT, WIDTH, HEIGHT, bottomLeftUV, UVwidth, UVheight, combinedLight);
+  }
+
+    private static void addFace(Direction whichFace,
+                                Matrix4f matrixPos, Matrix3f matrixNormal, IVertexBuilder vertexBuilder,
+                              Color color, Vec3d centrePos, float width, float height,
+                              Vec2f bottomLeftUV, float texUwidth, float texVheight,
+                              int lightmapValue) {
+    // the Direction class has a bunch of methods which can help you rotate quads
+    //  I've written the calculations out long hand, and based them on a centre position, to make it clearer what
+    //   is going on.
+    // Beware that the Direction class is based on which direction the face is pointing, which is opposite to
+    //   the direction that the viewer is facing when looking at the face.
+    // Eg when drawing the NORTH face, the face points north, but when we're looking at the face, we are facing south,
+    //   so that the bottom left corner is the eastern-most, not the western-most!
+
+    //calculate the bottom left, bottom right, top right, top left vertices from the VIEWER's point of view (not the
+    //  face's point of view)
+
+    Vector3f leftToRightDirection, bottomToTopDirection;
+
+    switch (whichFace) {
+      case NORTH: { // bottom left is east
+        leftToRightDirection = new Vector3f(-1, 0, 0);  // or alternatively Vector3f.XN
+        bottomToTopDirection = new Vector3f(0, 1, 0);  // or alternatively Vector3f.YP
+        break;
+      }
+      case SOUTH: {  // bottom left is west
+        leftToRightDirection = new Vector3f(1, 0, 0);
+        bottomToTopDirection = new Vector3f(0, 1, 0);
+        break;
+      }
+      case EAST: {  // bottom left is south
+        leftToRightDirection = new Vector3f(0, 0, -1);
+        bottomToTopDirection = new Vector3f(0, 1, 0);
+        break;
+      }
+      case WEST: { // bottom left is north
+        leftToRightDirection = new Vector3f(0, 0, 1);
+        bottomToTopDirection = new Vector3f(0, 1, 0);
+        break;
+      }
+      case UP: { // bottom left is southwest by minecraft block convention
+        leftToRightDirection = new Vector3f(-1, 0, 0);
+        bottomToTopDirection = new Vector3f(0, 0, 1);
+        break;
+      }
+      case DOWN: { // bottom left is northwest by minecraft block convention
+        leftToRightDirection = new Vector3f(1, 0, 0);
+        bottomToTopDirection = new Vector3f(0, 0, 1);
+        break;
+      }
+      default: {  // should never get here, but just in case;
+        leftToRightDirection = new Vector3f(0, 0, 1);
+        bottomToTopDirection = new Vector3f(0, 1, 0);
+        break;
+      }
+    }
+    leftToRightDirection.mul(0.5F * width);  // convert to half width
+    bottomToTopDirection.mul(0.5F * height);  // convert to half height
+
+    // calculate the four vertices based on the centre of the face
+
+    Vector3f bottomLeftPos = new Vector3f(centrePos);
+      bottomLeftPos.sub(leftToRightDirection);
+      bottomLeftPos.sub(bottomToTopDirection);
+
+    Vector3f bottomRightPos = new Vector3f(centrePos);
+    bottomRightPos.add(leftToRightDirection);
+    bottomRightPos.sub(bottomToTopDirection);
+
+    Vector3f topRightPos = new Vector3f(centrePos);
+    topRightPos.add(leftToRightDirection);
+    topRightPos.add(bottomToTopDirection);
+
+    Vector3f topLeftPos = new Vector3f(centrePos);
+    topLeftPos.sub(leftToRightDirection);
+    topLeftPos.add(bottomToTopDirection);
+
+    // texture coordinates are "upside down" relative to the face
+    // eg bottom left = [U min, V max]
+    Vec2f bottomLeftUVpos = new Vec2f(bottomLeftUV.x, bottomLeftUV.y);
+    Vec2f bottomRightUVpos = new Vec2f(bottomLeftUV.x + texUwidth, bottomLeftUV.y);
+    Vec2f topLeftUVpos = new Vec2f(bottomLeftUV.x + texUwidth, bottomLeftUV.y + texVheight);
+    Vec2f topRightUVpos = new Vec2f(bottomLeftUV.x, bottomLeftUV.y + texVheight);
+
+    Vector3f normalVector = whichFace.toVector3f();  // gives us the normal to the face
+
+    addQuad(matrixPos, matrixNormal, vertexBuilder,
+            bottomLeftPos, bottomRightPos, topRightPos, topLeftPos,
+            bottomLeftUVpos, bottomRightUVpos, topLeftUVpos, topRightUVpos,
+            normalVector, color, lightmapValue);
+  }
+
+  /**
+   * Add a quad.
+   * It is added in anti-clockwise order from the VIEWER's  point of view, i.e.
+   * bottom left; bottom right, top right, top left
+   * If you add it in the other direction, the quad will face in the opposite direction; i.e. the viewer will be
+   *   looking at the back face, which is usually culled (not visible)
+   * See
+   * http://greyminecraftcoder.blogspot.com/2014/12/the-tessellator-and-worldrenderer-18.html
+   * http://greyminecraftcoder.blogspot.com/2014/12/block-models-texturing-quads-faces.html
+   */
+  private static void addQuad(Matrix4f matrixPos, Matrix3f matrixNormal, IVertexBuilder vertexBuilder,
+                              Vector3f blpos, Vector3f brpos, Vector3f trpos, Vector3f tlpos,
+                              Vec2f blUVpos, Vec2f brUVpos, Vec2f trUVpos, Vec2f tlUVpos,
+                              Vector3f normalVector, Color color, int lightmapValue) {
+    addQuadVertex(matrixPos, matrixNormal, vertexBuilder, blpos, blUVpos, normalVector, color, lightmapValue);
+    addQuadVertex(matrixPos, matrixNormal, vertexBuilder, brpos, brUVpos, normalVector, color, lightmapValue);
+    addQuadVertex(matrixPos, matrixNormal, vertexBuilder, trpos, trUVpos, normalVector, color, lightmapValue);
+    addQuadVertex(matrixPos, matrixNormal, vertexBuilder, tlpos, tlUVpos, normalVector, color, lightmapValue);
+  }
+
+  // suitable for vertexbuilders using the DefaultVertexFormats.ENTITY format
+  private static void addQuadVertex(Matrix4f matrixPos, Matrix3f matrixNormal, IVertexBuilder vertexBuilder,
+                                    Vector3f pos, Vec2f texUV,
+                                    Vector3f normalVector, Color color, int lightmapValue) {
+    vertexBuilder.pos(matrixPos, pos.getX(), pos.getY(), pos.getZ()) // position coordinate
+            .color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha())        // color
+            .tex(texUV.x, texUV.y)                     // texel coordinate
+            .overlay(OverlayTexture.NO_OVERLAY)  // only relevant for rendering Entities (Living)
+            .lightmap(lightmapValue)             // lightmap with full brightness
+            .normal(matrixNormal, normalVector.getX(), normalVector.getY(), normalVector.getZ())
+            .endVertex();
+  }
+}

@@ -34,6 +34,10 @@ Useful vanilla classes to look at:
 * CampfireTileEntityRenderer
 * ItemRenderer has useful examples of item rendering
 
+Examples of different custom RenderTypes:
+https://github.com/Vazkii/Botania/blob/1.15/src/main/java/vazkii/botania/client/core/helper/RenderHelper.java#L102
+
+
 ## Common errors
 
 "Missing Model", "Missing texture", etc:
@@ -63,3 +67,24 @@ You can't see parts of your object from one side:
 
 1. If you want your faces to be visible on both sides, you need to disable `GL_CULL_FACE`.
 1. If your face should be one-sided, but is facing the wrong way, you need to reverse the order of the points for that face. For example, you have specified points in the order A, B, C, D --> change the order to D, C, B, A
+
+Console error message: "Not filled all elements of the vertex":
+Triggered at endVertex(), eg
+    vertexBuilder
+            .pos(matrixPos, x, y, z) 
+            .color(red, green, blue, alpha)      
+ here-->    .endVertex();    
+
+Your vertex building code doesn't exactly match the VertexFormat of the IVertexBuilder.  Either
+1. One of the builder methods is missing, eg
+    vertexBuilder
+            .pos(matrixPos, x, y, z) 
+            .endVertex();
+or
+1. The builder methods are in the wrong order relative to the VertexFormat definition, eg
+    vertexBuilder
+            .color(red, green, blue, alpha)        
+            .pos(matrixPos, x, y, z) // position coordinate
+            .endVertex();
+
+
