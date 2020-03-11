@@ -37,6 +37,10 @@ Useful vanilla classes to look at:
 Examples of different custom RenderTypes:
 https://github.com/Vazkii/Botania/blob/1.15/src/main/java/vazkii/botania/client/core/helper/RenderHelper.java#L102
 
+Blockbench
+https://blockbench.net/blog/
+
+
 
 ## Common errors
 

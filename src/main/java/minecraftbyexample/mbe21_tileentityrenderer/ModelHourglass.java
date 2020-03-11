@@ -90,7 +90,7 @@ public class ModelHourglass extends Model {
 //		sandT.addBox(0.0F, 0.0F, 0.0F, 4, 4, 4, 0.0F); // -2.0F, -5.0F, -2.0F
 		sandB = new ModelRenderer(this, 20, 14);
 		sandB.setRotationPoint(0.0F, 0.0F, 0.0F);
-		sandB.addBox(-2.0F, 0.0F, -2.0F, 4, 4, 4, 0.0F); 
+		sandB.addBox(-2.0F, 0.0F, -2.0F, 4, 4, 4, 0.0F);
 //
 //    overallModel = new ModelRenderer(this, )
 //
@@ -155,13 +155,13 @@ public class ModelHourglass extends Model {
       bottomSandFraction = debugBottomSandFraction.get().floatValue();
     }
 
-    // debugging purposes: use mbedebug paramvec3d mbe21SandRotation xrotation yrotation zrotation to rotate the sand to a fixed position
-    Optional<Vec3d> sandRotation = DebugSettings.getDebugParameterVec3d("mbe21SandRotation");
-    if (sandRotation.isPresent()) {
-      sandB.rotateAngleX = (float)Math.toRadians(sandRotation.get().x);
-      sandB.rotateAngleY = (float)Math.toRadians(sandRotation.get().y);
-      sandB.rotateAngleZ = (float)Math.toRadians(sandRotation.get().z);
-    }
+//    // debugging purposes: use mbedebug paramvec3d mbe21SandRotation xrotation yrotation zrotation to rotate the sand to a fixed position
+//    Optional<Vec3d> sandRotation = DebugSettings.getDebugParameterVec3d("mbe21SandRotation");
+//    if (sandRotation.isPresent()) {
+//      sandB.rotateAngleX = (float)Math.toRadians(sandRotation.get().x);
+//      sandB.rotateAngleY = (float)Math.toRadians(sandRotation.get().y);
+//      sandB.rotateAngleZ = (float)Math.toRadians(sandRotation.get().z);
+//    }
 
 
     if (bottomSandFraction > 0) {
@@ -178,6 +178,11 @@ public class ModelHourglass extends Model {
         matrixStack.translate(sandTranslation.get().x,sandTranslation.get().y, sandTranslation.get().z);
       }
 
+      // debugging purposes: use mbedebug paramvec3d mbe21SandRotation xrotation yrotation zrotation to rotate the sand to a fixed position
+      Optional<Vec3d> sandRotation = DebugSettings.getDebugParameterVec3d("mbe21SandRotation");
+      if (sandRotation.isPresent()) {
+        matrixStack.rotate(Vector3f.ZP.rotationDegrees((float)sandRotation.get().z));
+      }
       matrixStack.scale(1F, bottomSandFraction, 1F); // shrink in the y model direction
 			sandB.render(matrixStack, renderBuffer, combinedLight, combinedOverlay,
               sandRed, sandGreen, sandBlue, ALPHA_VALUE);
