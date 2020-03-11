@@ -12,16 +12,23 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.entity.model.PigModel;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
 
 /**
 
  */
 
 public class TestModelTileEntityRenderer extends net.minecraft.client.renderer.tileentity.TileEntityRenderer<TileEntityMBE80> {
+
+  // Vanilla models have a rescaling and translation applied to them before rendering: the x and y axes are inverted,
+  //   and the model is translated upwards by 1.5
+  // If you want to match this, set USE_ENTITY_MODEL_TRANSFORMATIONS to true
+  final static boolean USE_ENTITY_MODEL_TRANSFORMATIONS = true;
 
   public TestModelTileEntityRenderer(TileEntityRendererDispatcher tileEntityRendererDispatcher) {
     super(tileEntityRendererDispatcher);
@@ -48,35 +55,39 @@ public class TestModelTileEntityRenderer extends net.minecraft.client.renderer.t
     matrixStack.push(); // push the current transformation matrix + normals matrix
 
     TestModel.InteractiveParameters interactiveParameters = tileEntityMBE80.getInteractiveParameters();
-    interactiveParameters.updateFromDebugSettingsIfActive(tileEntityMBE80.getPos());
+//    interactiveParameters.updateFromDebugSettingsIfActive(tileEntityMBE80.getPos());  update in tileentity tick() instead
 
     // normally you would not create a new model at every render..!
     Model model = new TestModel(interactiveParameters);
 
-    // vanilla models have a rescaling and translation applied to them before rendering.
-    // generally, you will want to apply it to yours too.
+    // vanilla models have a rescaling and translation applied to them before rendering: the x and y axes are inverted,
+    //   and the model is translated upwards by 1.5
+    // generally, you will want to apply it to yours too, if you have designed it like an entity.
     // unfortunately this means that further translations will take place in the entity coordinate space, not the
-    //    world coordinate space, which gets confusing (eg translating towards +y will make the model render lower down in the world
-    final boolean USE_ENTITY_MODEL_TRANSFORMATIONS = true;
+    //    world coordinate space, which gets confusing (eg translating towards +y will make the model render lower down in the world)
 
     if (USE_ENTITY_MODEL_TRANSFORMATIONS) {
       matrixStack.scale(-1, -1, 1);
- //     matrixStack.translate(0.0D, (double) -1.501F, 0.0D);
+      matrixStack.translate(0.0D, (double) -1.501F, 0.0D);
     }
 
     // The model is defined to draw itself centred on [0,0,0], but we want it to hover above the ground otherwise we
     //  won't be able to see it, so translate it upwards (default is to move the origin by [0.5, 1.0, 0.5]
-    final Vector3f TRANSLATION_OFFSET = interactiveParameters.MODEL_TRANSLATE;
+    Vector3f TRANSLATION_OFFSET = interactiveParameters.MODEL_TRANSLATE;
+    TRANSLATION_OFFSET = new Vector3f(TRANSLATION_OFFSET.getX(), TRANSLATION_OFFSET.getY(), TRANSLATION_OFFSET.getZ());  // make a copy
+
+    if (USE_ENTITY_MODEL_TRANSFORMATIONS) {  // convert translation from world coordinates to model coordinates
+      TRANSLATION_OFFSET.mul(-1, -1, 1);
+    }
 
     matrixStack.translate(TRANSLATION_OFFSET.getX(),TRANSLATION_OFFSET.getY(),TRANSLATION_OFFSET.getZ()); // translate
 
     IVertexBuilder renderBuffer = renderBuffers.getBuffer(model.getRenderType(TEST_MODEL_TEXTURE));
     model.render(matrixStack, renderBuffer, combinedLight, combinedOverlay, 1.0F, 1.0F, 1.0F, 1.0F); // white, fully opaque
-
     matrixStack.pop();
   }
 
-  // Always render / never cull based on where the player is looking
+  // Always render: never cull based on where the player is looking
   @Override
   public boolean isGlobalRenderer(TileEntityMBE80 tileEntityMBE80) {
     return true;
@@ -84,5 +95,4 @@ public class TestModelTileEntityRenderer extends net.minecraft.client.renderer.t
 
   public static final ResourceLocation TEST_MODEL_TEXTURE
           = new ResourceLocation("minecraftbyexample:textures/model/mbe80_test_model_texture.png");
-
 }

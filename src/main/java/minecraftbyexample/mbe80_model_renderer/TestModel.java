@@ -174,6 +174,12 @@ public class TestModel extends Model {
 
     public void makeThisModelActive(BlockPos worldPos) {
       Vec3d vec3dWorldPos = new Vec3d(worldPos.getX(), worldPos.getY(), worldPos.getZ());
+      DebugSettings.clearDebugParameterVec3d("model_active");
+
+      for (Vector3fSetting entry : vector3fSettings.values()) entry.clearDebugSetting();
+      for (Vec3iSetting entry : vec3iSettings.values()) entry.clearDebugSetting();
+      for (DoubleSetting entry : doubleSettings.values()) entry.clearDebugSetting();
+
       DebugSettings.setDebugParameterVec3d("model_active", vec3dWorldPos);
     }
 
@@ -186,10 +192,6 @@ public class TestModel extends Model {
       for (Vec3iSetting entry : vec3iSettings.values()) entry.updateFromDebugSettings();
       for (DoubleSetting entry : doubleSettings.values()) entry.updateFromDebugSettings();
 
-      for (Vector3fSetting entry : vector3fSettings.values()) entry.clearDebugSetting();
-      for (Vec3iSetting entry : vec3iSettings.values()) entry.clearDebugSetting();
-      for (DoubleSetting entry : doubleSettings.values()) entry.clearDebugSetting();
-
       copyMapsToFields();
     }
 
@@ -200,7 +202,7 @@ public class TestModel extends Model {
     }
 
     public void printToConsole() {
-      System.out.println(this.toString());
+      LOGGER.warn(this.toString());
     }
 
     /**

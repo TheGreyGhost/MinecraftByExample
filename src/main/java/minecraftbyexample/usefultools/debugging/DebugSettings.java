@@ -3,6 +3,7 @@ package minecraftbyexample.usefultools.debugging;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.*;
+import java.util.concurrent.locks.Lock;
 
 /**
  * Created by TGG on 29/06/2015.

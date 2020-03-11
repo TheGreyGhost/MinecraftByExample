@@ -3,6 +3,7 @@ package minecraftbyexample.mbe80_model_renderer;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 
@@ -14,7 +15,7 @@ import java.util.Optional;
  * Saves the state in NBT
  *
  */
-public class TileEntityMBE80 extends TileEntity {
+public class TileEntityMBE80 extends TileEntity implements ITickableTileEntity {
 
   public TileEntityMBE80() {super(StartupCommon.tileEntityDataTypeMBE80);}
 
@@ -61,7 +62,7 @@ public class TileEntityMBE80 extends TileEntity {
 	@Override
 	public CompoundNBT write(CompoundNBT parentNBTTagCompound)
 	{
-		super.write(parentNBTTagCompound); // The super call is required to save the tiles location
+  		super.write(parentNBTTagCompound); // The super call is required to save the tiles location
     interactiveParameters.putToNBT(parentNBTTagCompound);
 		return parentNBTTagCompound;
 	}
@@ -103,4 +104,9 @@ public class TileEntityMBE80 extends TileEntity {
 	}
 
   private TestModel.InteractiveParameters interactiveParameters = TestModel.InteractiveParameters.createDefault();
+
+  @Override
+  public void tick() {
+    interactiveParameters.updateFromDebugSettingsIfActive(this.getPos());
+  }
 }

@@ -19,6 +19,8 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.awt.*;
 import java.util.Random;
@@ -60,9 +62,9 @@ public class BlockMBE80 extends Block
       TileEntityMBE80 tileEntityMBE80 = (TileEntityMBE80) tileentity;
       tileEntityMBE80.getInteractiveParameters().makeThisModelActive(pos);
     }
-    System.out.println("Usage:");
-    System.out.println("Right click block to activate it.");
-    System.out.println("Use command mbedebug param and mbedebug param3d to modify model parameters in real time");
+    LOGGER.warn("Usage:");
+    LOGGER.warn("Right click block to activate it.");
+    LOGGER.warn("Use command mbedebug param and mbedebug paramvec3d to modify model parameters in real time");
   }
 
   /**
@@ -71,6 +73,7 @@ public class BlockMBE80 extends Block
   @Override
   public ActionResultType onBlockActivated(BlockState blockState, World world, BlockPos blockPos,
                                            PlayerEntity playerEntity, Hand hand, BlockRayTraceResult rayTraceResult) {
+//    if (world.isRemote()) return ActionResultType.SUCCESS;
     TileEntity tileentity = world.getTileEntity(blockPos);
     if (tileentity instanceof TileEntityMBE80) { // prevent a crash if not the right type, or is null
       TileEntityMBE80 tileEntityMBE80 = (TileEntityMBE80)tileentity;
@@ -98,5 +101,7 @@ public class BlockMBE80 extends Block
 
   private static final VoxelShape SHAPE = Block.makeCuboidShape(0.0D, 0.0D, 0.0D,
           16.0D, 32.0D, 16.0D);
+
+  Logger LOGGER = LogManager.getLogger();
 
 }
