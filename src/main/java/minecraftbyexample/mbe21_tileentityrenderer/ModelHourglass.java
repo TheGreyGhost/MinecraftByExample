@@ -18,12 +18,8 @@ import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import org.apache.commons.lang3.tuple.Pair;
-import org.lwjgl.system.CallbackI;
 
-import java.awt.*;
 import java.util.Optional;
-
-import static minecraftbyexample.usefultools.debugging.DebugSettings.getDebugParameterVec3d;
 
 /**
  * This class is adapted from part of the Botania Mod, thanks to Vazkii and WillieWillus
@@ -36,15 +32,9 @@ import static minecraftbyexample.usefultools.debugging.DebugSettings.getDebugPar
 
 public class ModelHourglass extends Model {
 
-  public ModelRenderer overallModel;
-	public ModelRenderer top;
-	public ModelRenderer glassT;
-	public ModelRenderer ring;
-	public ModelRenderer glassB;
-	public ModelRenderer bottom;
-
-	public ModelRenderer sandT;
-	public ModelRenderer sandB;
+  public ModelRenderer solidParts;
+	public ModelRenderer upperSand;
+	public ModelRenderer lowerSand;
 
 	public ModelHourglass() {
 		super(RenderType::getEntityTranslucent);
@@ -59,38 +49,122 @@ public class ModelHourglass extends Model {
 		   i.e. a box which is 8x4x16 in size corresponds to a world block 0.5 x 0.25 x 1
 		   That 8x4x16 will have six faces with texture
 
-
+       For more information - see mbe80 and http://greyminecraftcoder.blogspot.com/2020/03/minecraft-model-1144.html
 		 */
 
-    final Vector3f TOP_CORNER = new Vector3f(-3.0F, -6.5F, -3.0F);
+		/*
+		    The solid parts of the hourglass are composed of the Top, Bottom, central ring, and two glass boxes.
+		    These are combined into one model.
+		    The rotation point is [0, 0, 0] for all added boxes; a setRotationPoint of [0, 24, 0] is added to counteract
+		      Vanilla's entity transformation upon rendering.  (see mbe80)
+		 */
+
+		final float EXPANSION_AMOUNT = 0;  // if not zero, the box is expanded on all sides by this amount
+
+    final Vector3f TOP_POS = new Vector3f(-3.0F, -6.5F, -3.0F);
     final Pair<Integer, Integer> TOP_TEXTURE_ORIGIN = Pair.of(20, 0);
-		final Vec3i TOP_BLOCK_DIMENSIONS = new Vec3i(6, 1, 6);
+		final Vec3i TOP_SIZE = new Vec3i(6, 1, 6);
 
-		top = new ModelRenderer(this,TOP_TEXTURE_ORIGIN.getLeft(), TOP_TEXTURE_ORIGIN.getRight());
-		top.setRotationPoint(0.0F, 0.0F, 0.0F);
-		top.addBox(TOP_CORNER.getX(), TOP_CORNER.getY(), TOP_CORNER.getZ(),
-            TOP_BLOCK_DIMENSIONS.getX(), TOP_BLOCK_DIMENSIONS.getY(), TOP_BLOCK_DIMENSIONS.getZ(),
-            0.0F);
+    final Vector3f BOTTOM_POS = new Vector3f(-3.0F, 5.5F, -3.0F);
+    final Pair<Integer, Integer> BOTTOM_TEXTURE_ORIGIN = Pair.of(20, 7);
+    final Vec3i BOTTOM_SIZE = new Vec3i(6, 1, 6);
 
-//		glassT = new ModelRenderer(this, 0, 0);
-//		glassT.setRotationPoint(0.0F, 0.0F, 0.0F);
-//		glassT.addBox(-2.5F, -5.5F, -2.5F, 5, 5, 5, 0.0F);
-		ring = new ModelRenderer(this, 0, 20);
-		ring.setRotationPoint(0.0F, 0.0F, 0.0F);
-		ring.addBox(-1.5F, -0.5F, -1.5F, 3, 1, 3, 0.0F);
-//		glassB = new ModelRenderer(this, 0, 10);
-//		glassB.setRotationPoint(0.0F, 0.0F, 0.0F);
-//		glassB.addBox(-2.5F, 0.5F, -2.5F, 5, 5, 5, 0.0F);
-//		bottom = new ModelRenderer(this, 20, 7);
-//		bottom.setRotationPoint(0.0F, 0.0F, 0.0F);
-//		bottom.addBox(-3.0F, 5.5F, -3.0F, 6, 1, 6, 0.0F);
+    final Vector3f RING_POS = new Vector3f(-1.5F, -0.5F, -1.5F);
+    final Pair<Integer, Integer> RING_TEXTURE_ORIGIN = Pair.of(0, 20);
+    final Vec3i RING_SIZE = new Vec3i(3, 1, 3);
+
+    final Vector3f TOP_GLASS_POS = new Vector3f(-2.5F, -5.5F, -2.5F);
+    final Pair<Integer, Integer> TOP_GLASS_TEXTURE_ORIGIN = Pair.of(0, 0);
+    final Vec3i TOP_GLASS_SIZE = new Vec3i(5, 5, 5);
+
+    final Vector3f BOTTOM_GLASS_POS = new Vector3f(-2.5F, 0.5F, -2.5F);
+    final Pair<Integer, Integer> BOTTOM_GLASS_TEXTURE_ORIGIN = Pair.of(0, 10);
+    final Vec3i BOTTOM_GLASS_SIZE = new Vec3i(5, 5, 5);
+
+    solidParts = new ModelRenderer(this);
+		solidParts.setTextureOffset(TOP_TEXTURE_ORIGIN.getLeft(), TOP_TEXTURE_ORIGIN.getRight());
+		solidParts.addBox(TOP_POS.getX(), TOP_POS.getY(), TOP_POS.getZ(),
+                      TOP_SIZE.getX(), TOP_SIZE.getY(), TOP_SIZE.getZ(),
+                      EXPANSION_AMOUNT);
+
+    solidParts.setTextureOffset(BOTTOM_TEXTURE_ORIGIN.getLeft(), BOTTOM_TEXTURE_ORIGIN.getRight());
+    solidParts.addBox(BOTTOM_POS.getX(), BOTTOM_POS.getY(), BOTTOM_POS.getZ(),
+                      BOTTOM_SIZE.getX(), BOTTOM_SIZE.getY(), BOTTOM_SIZE.getZ(),
+                      EXPANSION_AMOUNT);
+
+    solidParts.setTextureOffset(RING_TEXTURE_ORIGIN.getLeft(), RING_TEXTURE_ORIGIN.getRight());
+    solidParts.addBox(RING_POS.getX(), RING_POS.getY(), RING_POS.getZ(),
+                      RING_SIZE.getX(), RING_SIZE.getY(), RING_SIZE.getZ(),
+                      EXPANSION_AMOUNT);
+
+    solidParts.setTextureOffset(TOP_GLASS_TEXTURE_ORIGIN.getLeft(), TOP_GLASS_TEXTURE_ORIGIN.getRight());
+    solidParts.addBox(TOP_GLASS_POS.getX(), TOP_GLASS_POS.getY(), TOP_GLASS_POS.getZ(),
+            TOP_GLASS_SIZE.getX(), TOP_GLASS_SIZE.getY(), TOP_GLASS_SIZE.getZ(),
+            EXPANSION_AMOUNT);
+
+    solidParts.setTextureOffset(BOTTOM_GLASS_TEXTURE_ORIGIN.getLeft(), BOTTOM_GLASS_TEXTURE_ORIGIN.getRight());
+    solidParts.addBox(BOTTOM_GLASS_POS.getX(), BOTTOM_GLASS_POS.getY(), BOTTOM_GLASS_POS.getZ(),
+            BOTTOM_GLASS_SIZE.getX(), BOTTOM_GLASS_SIZE.getY(), BOTTOM_GLASS_SIZE.getZ(),
+            EXPANSION_AMOUNT);
+
+    float t3y = DebugSettings.getDebugParameter("t3y").orElse(23.9).floatValue(); // not 24, to prevent z-clashing
+
+    solidParts.setRotationPoint(0, t3y, 0); //24
+
+//    The sand in the upper glass is a second model, and the sand in the lower glass is a third model.  These must be
+//    split out because they are separately scaled to represent the filling/draining of sand and because the sand
+//      moves within the glass every time the hourglass is flipped over
+
+
+    float sy = DebugSettings.getDebugParameter("sy").orElse(-4.5).floatValue();
+
+    final Vector3f UPPER_SAND_POS = new Vector3f(-2, sy, -2);
+    final Pair<Integer, Integer> UPPER_SAND_TEXTURE_ORIGIN = Pair.of(20, 14);
+    final Vec3i UPPER_SAND_SIZE = new Vec3i(4, 4, 4);
+
+    upperSand = new ModelRenderer(this, UPPER_SAND_TEXTURE_ORIGIN.getLeft(), UPPER_SAND_TEXTURE_ORIGIN.getRight());
+    upperSand.addBox(UPPER_SAND_POS.getX(), UPPER_SAND_POS.getY(), UPPER_SAND_POS.getZ(),
+                    UPPER_SAND_SIZE.getX(), UPPER_SAND_SIZE.getY(), UPPER_SAND_SIZE.getZ(),
+                    EXPANSION_AMOUNT);
+
+    float sry = DebugSettings.getDebugParameter("sry").orElse(0.0).floatValue();
+    upperSand.setRotationPoint(0, sry, 0);
+
+    final Vector3f LOWER_SAND_POS = new Vector3f(-2, 0, -2);
+    final Pair<Integer, Integer> LOWER_SAND_TEXTURE_ORIGIN = Pair.of(20, 14);
+    final Vec3i LOWER_SAND_SIZE = new Vec3i(4, 4, 4);
+
+    lowerSand = new ModelRenderer(this, LOWER_SAND_TEXTURE_ORIGIN.getLeft(), LOWER_SAND_TEXTURE_ORIGIN.getRight());
+    lowerSand.addBox(LOWER_SAND_POS.getX(), LOWER_SAND_POS.getY(), LOWER_SAND_POS.getZ(),
+            LOWER_SAND_SIZE.getX(), LOWER_SAND_SIZE.getY(), LOWER_SAND_SIZE.getZ(),
+            EXPANSION_AMOUNT);
+    lowerSand.setRotationPoint(0, 1, 0);
+
+//    top = new ModelRenderer(this,TOP_TEXTURE_ORIGIN.getLeft(), TOP_TEXTURE_ORIGIN.getRight());
+//		top.setRotationPoint(0.0F, 0.0F, 0.0F);
+//		top.addBox(TOP_POS.getX(), TOP_POS.getY(), TOP_POS.getZ(),
+//            TOP_SIZE.getX(), TOP_SIZE.getY(), TOP_SIZE.getZ(),
+//            EXPANSION_AMOUNT);
 //
-//		sandT = new ModelRenderer(this, 20, 14);
-//		sandT.setRotationPoint(0.0F, 0.0F, 0.0F);
-//		sandT.addBox(0.0F, 0.0F, 0.0F, 4, 4, 4, 0.0F); // -2.0F, -5.0F, -2.0F
-		sandB = new ModelRenderer(this, 20, 14);
-		sandB.setRotationPoint(0.0F, 0.0F, 0.0F);
-		sandB.addBox(-2.0F, 0.0F, -2.0F, 4, 4, 4, 0.0F);
+////		glassT = new ModelRenderer(this, 0, 0);
+////		glassT.setRotationPoint(0.0F, 0.0F, 0.0F);
+////		glassT.addBox(-2.5F, -5.5F, -2.5F, 5, 5, 5, 0.0F);
+//		ring = new ModelRenderer(this, 0, 20);
+//		ring.setRotationPoint(0.0F, 0.0F, 0.0F);
+//		ring.addBox(-1.5F, -0.5F, -1.5F, 3, 1, 3, 0.0F);
+////		glassB = new ModelRenderer(this, 0, 10);
+////		glassB.setRotationPoint(0.0F, 0.0F, 0.0F);
+////		glassB.addBox(-2.5F, 0.5F, -2.5F, 5, 5, 5, 0.0F);
+////		bottom = new ModelRenderer(this, 20, 7);
+////		bottom.setRotationPoint(0.0F, 0.0F, 0.0F);
+////		bottom.addBox(-3.0F, 5.5F, -3.0F, 6, 1, 6, 0.0F);
+////
+////		sandT = new ModelRenderer(this, 20, 14);
+////		sandT.setRotationPoint(0.0F, 0.0F, 0.0F);
+////		sandT.addBox(0.0F, 0.0F, 0.0F, 4, 4, 4, 0.0F); // -2.0F, -5.0F, -2.0F
+//		sandB = new ModelRenderer(this, 20, 14);
+//		sandB.setRotationPoint(0.0F, 0.0F, 0.0F);
+//		sandB.addBox(-2.0F, 0.0F, -2.0F, 4, 4, 4, 0.0F);
 //
 //    overallModel = new ModelRenderer(this, )
 //
@@ -110,29 +184,67 @@ public class ModelHourglass extends Model {
     final float CONTAINER_BLUE = 1.0F;
 
     final float ALPHA_VALUE = 1.0F;
-		float f = 1F / 16F;
 
-		// debugging purposes: use mbedebug paramvec3d mbe21RingRotation xrotation yrotation zrotation to rotate the ring to a fixed position
-    Optional<Vec3d> debugRingRotation = DebugSettings.getDebugParameterVec3d("mbe21RingRotation");
-    if (debugRingRotation.isPresent()) {
-      ring.rotateAngleX = (float)Math.toRadians(debugRingRotation.get().x);
-      ring.rotateAngleY = (float)Math.toRadians(debugRingRotation.get().y);
-      ring.rotateAngleZ = (float)Math.toRadians(debugRingRotation.get().z);
+		// draw sand first so that the semi-transparent glass blends properly over the top of it
+
+		// debugging purposes: use mbedebug paramvec3d mbe21rotation xrotation yrotation zrotation to rotate the ring to a fixed position
+    Optional<Vec3d> debugRotation = DebugSettings.getDebugParameterVec3d("mbe21rotation");
+    if (debugRotation.isPresent()) {
+      solidParts.rotateAngleX = (float)Math.toRadians(debugRotation.get().x);
+      solidParts.rotateAngleY = (float)Math.toRadians(debugRotation.get().y);
+      solidParts.rotateAngleZ = (float)Math.toRadians(debugRotation.get().z);
+
+      upperSand.rotateAngleX = solidParts.rotateAngleX;
+      upperSand.rotateAngleY = solidParts.rotateAngleY;
+      upperSand.rotateAngleZ = solidParts.rotateAngleZ;
+
+      lowerSand.rotateAngleX = solidParts.rotateAngleX;
+      lowerSand.rotateAngleY = solidParts.rotateAngleY;
+      lowerSand.rotateAngleZ = solidParts.rotateAngleZ;
     }
 
-		ring.render(matrixStack, renderBuffer, combinedLight, combinedOverlay,
-            CONTAINER_RED, CONTAINER_GREEN, CONTAINER_BLUE, ALPHA_VALUE);
-
-    // debugging purposes: use mbedebug paramvec3d mbe21TopRotation xrotation yrotation zrotation to rotate the ring to a fixed position
-    Optional<Vec3d> topRotation = DebugSettings.getDebugParameterVec3d("mbe21TopRotation");
-    if (topRotation.isPresent()) {
-      top.rotateAngleX = (float)Math.toRadians(topRotation.get().x);
-      top.rotateAngleY = (float)Math.toRadians(topRotation.get().y);
-      top.rotateAngleZ = (float)Math.toRadians(topRotation.get().z);
+    Optional<Double> debugSandFraction = DebugSettings.getDebugParameter("mbe21sandfraction");
+    if (debugSandFraction.isPresent()) {
+      bottomSandFraction = debugSandFraction.get().floatValue();
+      topSandFraction = 1 - bottomSandFraction;
     }
 
-		top.render(matrixStack, renderBuffer, combinedLight, combinedOverlay,
-            CONTAINER_RED, CONTAINER_GREEN, CONTAINER_BLUE, ALPHA_VALUE);
+    if (topSandFraction > 0) {
+      matrixStack.push();
+      float sy1 = DebugSettings.getDebugParameter("sy1").orElse(1.5 - 0.03125).floatValue();
+      matrixStack.translate(0, sy1, 0);
+
+      matrixStack.scale(1F, topSandFraction, 1F); // shrink in the y model direction
+
+//      float sy2 = DebugSettings.getDebugParameter("sy2").orElse(0.0).floatValue();
+      matrixStack.translate(0, -sy1, 0);
+
+      upperSand.render(matrixStack, renderBuffer, combinedLight, combinedOverlay,
+              sandRed, sandGreen, sandBlue, ALPHA_VALUE);
+      matrixStack.pop();
+    }
+//
+//    if (bottomSandFraction > 0) {
+//      matrixStack.push();
+//      matrixStack.scale(1F, bottomSandFraction, 1F); // shrink in the y model direction
+//      lowerSand.render(matrixStack, renderBuffer, combinedLight, combinedOverlay,
+//              sandRed, sandGreen, sandBlue, ALPHA_VALUE);
+//      matrixStack.pop();
+//    }
+
+    solidParts.render(matrixStack, renderBuffer, combinedLight, combinedOverlay,
+                      CONTAINER_RED, CONTAINER_GREEN, CONTAINER_BLUE, ALPHA_VALUE);
+
+//    // debugging purposes: use mbedebug paramvec3d mbe21TopRotation xrotation yrotation zrotation to rotate the ring to a fixed position
+//    Optional<Vec3d> topRotation = DebugSettings.getDebugParameterVec3d("mbe21TopRotation");
+//    if (topRotation.isPresent()) {
+//      top.rotateAngleX = (float)Math.toRadians(topRotation.get().x);
+//      top.rotateAngleY = (float)Math.toRadians(topRotation.get().y);
+//      top.rotateAngleZ = (float)Math.toRadians(topRotation.get().z);
+//    }
+//
+//		top.render(matrixStack, renderBuffer, combinedLight, combinedOverlay,
+//            CONTAINER_RED, CONTAINER_GREEN, CONTAINER_BLUE, ALPHA_VALUE);
 //		bottom.render(matrixStack, renderBuffer, combinedLight, combinedOverlay,
 //            containerBlendingColor.getRed(), containerBlendingColor.getGreen(), containerBlendingColor.getBlue(), ALPHA_VALUE);
 //
@@ -150,10 +262,6 @@ public class ModelHourglass extends Model {
 //			matrixStack.pop();
 //		}
 		// debugging purposes: use mbedebug mbe21bottomSandFraction value to set the sandfraction to a desired value
-    Optional<Double> debugBottomSandFraction = DebugSettings.getDebugParameter("mbe21bottomSandFraction");
-    if (debugBottomSandFraction.isPresent()) {
-      bottomSandFraction = debugBottomSandFraction.get().floatValue();
-    }
 
 //    // debugging purposes: use mbedebug paramvec3d mbe21SandRotation xrotation yrotation zrotation to rotate the sand to a fixed position
 //    Optional<Vec3d> sandRotation = DebugSettings.getDebugParameterVec3d("mbe21SandRotation");
@@ -163,32 +271,32 @@ public class ModelHourglass extends Model {
 //      sandB.rotateAngleZ = (float)Math.toRadians(sandRotation.get().z);
 //    }
 
-
-    if (bottomSandFraction > 0) {
-			matrixStack.push();
-//			if (flip) {
-//				matrixStack.translate(-2.0F * f, -5.0F * f, -2.0F * f);
-//			} else {
-//				matrixStack.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(180F));
-//				matrixStack.translate(-2.0F * f, 1.0F * f, -2.0F * f);
-//			}
-      // debugging purposes: use mbedebug paramvec3d mbe21SandRotation xrotation yrotation zrotation to rotate the sand to a fixed position
-      Optional<Vec3d> sandTranslation = DebugSettings.getDebugParameterVec3d("mbe21SandTranslation");
-      if (sandTranslation.isPresent()) {
-        matrixStack.translate(sandTranslation.get().x,sandTranslation.get().y, sandTranslation.get().z);
-      }
-
-      // debugging purposes: use mbedebug paramvec3d mbe21SandRotation xrotation yrotation zrotation to rotate the sand to a fixed position
-      Optional<Vec3d> sandRotation = DebugSettings.getDebugParameterVec3d("mbe21SandRotation");
-      if (sandRotation.isPresent()) {
-        matrixStack.rotate(Vector3f.ZP.rotationDegrees((float)sandRotation.get().z));
-      }
-      matrixStack.scale(1F, bottomSandFraction, 1F); // shrink in the y model direction
-			sandB.render(matrixStack, renderBuffer, combinedLight, combinedOverlay,
-              sandRed, sandGreen, sandBlue, ALPHA_VALUE);
-			matrixStack.pop();
-		}
 //
+//    if (bottomSandFraction > 0) {
+//			matrixStack.push();
+////			if (flip) {
+////				matrixStack.translate(-2.0F * f, -5.0F * f, -2.0F * f);
+////			} else {
+////				matrixStack.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(180F));
+////				matrixStack.translate(-2.0F * f, 1.0F * f, -2.0F * f);
+////			}
+//      // debugging purposes: use mbedebug paramvec3d mbe21SandRotation xrotation yrotation zrotation to rotate the sand to a fixed position
+//      Optional<Vec3d> sandTranslation = DebugSettings.getDebugParameterVec3d("mbe21SandTranslation");
+//      if (sandTranslation.isPresent()) {
+//        matrixStack.translate(sandTranslation.get().x,sandTranslation.get().y, sandTranslation.get().z);
+//      }
+//
+//      // debugging purposes: use mbedebug paramvec3d mbe21SandRotation xrotation yrotation zrotation to rotate the sand to a fixed position
+//      Optional<Vec3d> sandRotation = DebugSettings.getDebugParameterVec3d("mbe21SandRotation");
+//      if (sandRotation.isPresent()) {
+//        matrixStack.rotate(Vector3f.ZP.rotationDegrees((float)sandRotation.get().z));
+//      }
+//      matrixStack.scale(1F, bottomSandFraction, 1F); // shrink in the y model direction
+//			sandB.render(matrixStack, renderBuffer, combinedLight, combinedOverlay,
+//              sandRed, sandGreen, sandBlue, ALPHA_VALUE);
+//			matrixStack.pop();
+//		}
+////
 //    Color glassBlendingColour = Color.WHITE;
 //    glassT.render(matrixStack, renderBuffer, combinedLight, combinedOverlay,
 //            glassBlendingColour.getRed(), glassBlendingColour.getGreen(), glassBlendingColour.getBlue(), ALPHA_VALUE);

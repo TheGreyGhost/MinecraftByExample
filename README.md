@@ -1,10 +1,10 @@
 MinecraftByExample [1.15.2]
 ==================
 ** Work in Progress **
-* Note - this currently uses "latest" Forge version instead of "recommended" Forge version, because very many of the mappings
-  in the "latest" version are still obfuscated.  See build.gradle:
-      mappings channel: 'snapshot', version: '20200225-1.15.1'
-      minecraft 'net.minecraftforge:forge:1.15.2-31.1.18'
+Note - this currently uses "latest" Forge version instead of "recommended" Forge version, because very many of the mappings
+  in the "latest" version are still obfuscated.  See `build.gradle`:<br>
+`      mappings channel: 'snapshot', version: '20200225-1.15.1`<br>
+`      minecraft 'net.minecraftforge:forge:1.15.2-31.1.18`<br>
 
 
 The purpose of MinecraftByExample is to give simple working examples of the important concepts in Minecraft and Forge. If you're anything like me, a good code example is worth several screens of waffling explanation, and can very quickly explain the key concepts.  I also find it much easier to adapt and debug something that already works, than to have to synthesize something from scratch and spend hours trying to discover the missing bit of information I didn't know about.
@@ -33,7 +33,6 @@ If you want more information and explanatory text about the concepts, the follow
 If you are updating from previous forge versions, you will probably find [this link][versionupdates] and [this link][versionupdates1-15]very helpful.  For better or for worse, MCP decided to rename a very large number of classes (eg all Blocks Blockxxx --> xxxxBlock, etc) so this might save you a stack of time.
 If you use IntelliJ, you might find these [xml mapping files][mapfiles] useful too
 
-
 ## List of examples
 
 ** examples marked with "x" haven't been converted yet **
@@ -54,7 +53,6 @@ If you use IntelliJ, you might find these [xml mapping files][mapfiles] useful t
   - X [MBE13][13] - customise Mining behaviour of Blocks and Items - several test classes that show how mining works
   - X [MBE14][14] - an interactive helper tool to adjust the ItemCameraTransforms for your custom item
   - X [MBE15][15] - a chessboard item with 1 - 64 pieces; uses ItemOverrideList.handleItemState(), IBlockModel.getQuads() and onModelBakeEvent()
-
 
 ### TileEntities
   - [MBE20][20] - using a tile entity to store information about a block - also shows examples of using NBT storage
@@ -85,6 +83,9 @@ If you use IntelliJ, you might find these [xml mapping files][mapfiles] useful t
 ### Testing tools
   - X [MBE75][75] - a tool to help you automate testing of your classes in-game.
 
+### Entities and Models
+  - [MBE80][80] - Shows the basics of Models (eg PigModel), model parameters adjustable in real time using commands
+  
 ## Usage
   - You can browse directly in GitHub, or alternatively, download it as a zip and browse it locally.
 
@@ -136,6 +137,8 @@ Head over [here][more_help] if this didn't make sense to you (check comments for
 [70]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe70_configuration
 
 [75]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe75_testing_framework
+
+[80]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe80_model_renderer
 
 [Forge forum]: https://www.minecraftforge.net/forum/forum/70-modder-support/
 [fabricwiki]: https://fabricmc.net/wiki/start

@@ -17,9 +17,8 @@ Usage:
 
 -------------
 
-The Model is rendered in two ways:
-1. Using a TileEntityRenderer with a simple block and a TileEntity (for more details see mbe21)
-2. Using an EntityRenderer
+The Model is rendered using a TileEntityRenderer with a simple block and a TileEntity (for more details see mbe21)
+For an example of rendering a model using an EntityRenderer, see mbe81 (under construction)
 
 The example will show you:
 

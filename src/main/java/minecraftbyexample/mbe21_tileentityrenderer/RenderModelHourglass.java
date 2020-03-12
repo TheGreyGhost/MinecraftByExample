@@ -10,9 +10,11 @@ package minecraftbyexample.mbe21_tileentityrenderer;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import minecraftbyexample.usefultools.debugging.DebugSettings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.ItemStack;
@@ -34,17 +36,22 @@ import java.util.Random;
 
 public class RenderModelHourglass  {
 
-	final static ModelHourglass model = new ModelHourglass();
+//	final static ModelHourglass model = new ModelHourglass();
 
 	public static void renderUsingModel(TileEntityMBE21 tileEntityMBE21, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderBuffers,
                                       int combinedLight, int combinedOverlay) {
+
+    ModelHourglass model = new ModelHourglass();
+
     matrixStack.push(); // push the current transformation matrix + normals matrix
 
     // The model is defined to draw itself centred on [0,0,0], but we want it to hover above the centre of the
     //   hopper base, so we need to translate up to the desired position
     final Vec3d TRANSLATION_OFFSET = new Vec3d(0.5, 1.5, 0.5);
 
-    matrixStack.translate(TRANSLATION_OFFSET.x,TRANSLATION_OFFSET.y,TRANSLATION_OFFSET.z); // translate
+    float t1y = DebugSettings.getDebugParameter("t1y").orElse(TRANSLATION_OFFSET.y).floatValue();
+
+    matrixStack.translate(TRANSLATION_OFFSET.x, t1y, TRANSLATION_OFFSET.z); // translate
 
     // we use an animation timer to manipulate the render
 
@@ -59,9 +66,19 @@ public class RenderModelHourglass  {
 //    matrixStack.translate(wiggle.getX(), wiggle.getY(), wiggle.getZ());
 
     AnimationState animationState = new AnimationState(animationTicks);
-//		matrixStack.rotate(Vector3f.ZP.rotationDegrees(animationState.flipRotationDegrees));  // flip around z axis
 
-//    matrixStack.scale(1F, -1F, -1F);
+    // Vanilla applies the following transformations to standard Models, set USE_ENTITY_MODEL_TRANSFORMATIONS to true
+    //  to apply those.
+    boolean USE_ENTITY_MODEL_TRANSFORMATIONS = true;
+
+    if (USE_ENTITY_MODEL_TRANSFORMATIONS) {
+      matrixStack.scale(-1, -1, 1);
+      matrixStack.translate(0.0D, (double) -1.501F, 0.0D);
+    }
+
+    float t2y = DebugSettings.getDebugParameter("t2y").orElse(0.0).floatValue();
+    matrixStack.translate(0.0D, (double) t2y, 0.0D);
+
     Color sandColour = tileEntityMBE21.getArtifactColour();
     float sandColourRed = sandColour.getRed()/255.0F;
     float sandColourGreen = sandColour.getGreen()/255.0F;
