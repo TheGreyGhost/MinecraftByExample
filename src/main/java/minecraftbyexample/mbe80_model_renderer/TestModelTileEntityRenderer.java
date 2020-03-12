@@ -10,25 +10,23 @@ package minecraftbyexample.mbe80_model_renderer;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Vector3f;
+import minecraftbyexample.usefultools.RenderTypeHelper;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.model.PigModel;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
+
+import java.awt.*;
 
 /**
 
  */
 
 public class TestModelTileEntityRenderer extends net.minecraft.client.renderer.tileentity.TileEntityRenderer<TileEntityMBE80> {
-
-  // Vanilla models have a rescaling and translation applied to them before rendering: the x and y axes are inverted,
-  //   and the model is translated upwards by 1.5
-  // If you want to match this, set USE_ENTITY_MODEL_TRANSFORMATIONS to true
-  final static boolean USE_ENTITY_MODEL_TRANSFORMATIONS = true;
 
   public TestModelTileEntityRenderer(TileEntityRendererDispatcher tileEntityRendererDispatcher) {
     super(tileEntityRendererDispatcher);
@@ -66,6 +64,11 @@ public class TestModelTileEntityRenderer extends net.minecraft.client.renderer.t
     // unfortunately this means that further translations will take place in the entity coordinate space, not the
     //    world coordinate space, which gets confusing (eg translating towards +y will make the model render lower down in the world)
 
+    // If you want to match this, set USE_ENTITY_MODEL_TRANSFORMATIONS to true
+    boolean USE_ENTITY_MODEL_TRANSFORMATIONS = true;
+    boolean interactiveSetting = 0.5 < interactiveParameters.USE_ENTITY_MODEL_TRANSFORMATIONS;
+    USE_ENTITY_MODEL_TRANSFORMATIONS = interactiveSetting;
+
     if (USE_ENTITY_MODEL_TRANSFORMATIONS) {
       matrixStack.scale(-1, -1, 1);
       matrixStack.translate(0.0D, (double) -1.501F, 0.0D);
@@ -73,19 +76,51 @@ public class TestModelTileEntityRenderer extends net.minecraft.client.renderer.t
 
     // The model is defined to draw itself centred on [0,0,0], but we want it to hover above the ground otherwise we
     //  won't be able to see it, so translate it upwards (default is to move the origin by [0.5, 1.0, 0.5]
-    Vector3f TRANSLATION_OFFSET = interactiveParameters.MODEL_TRANSLATE;
-    TRANSLATION_OFFSET = new Vector3f(TRANSLATION_OFFSET.getX(), TRANSLATION_OFFSET.getY(), TRANSLATION_OFFSET.getZ());  // make a copy
+    Vector3f ORIGIN_OFFSET = interactiveParameters.MODEL_TRANSLATE;
+    ORIGIN_OFFSET = new Vector3f(ORIGIN_OFFSET.getX(), ORIGIN_OFFSET.getY(), ORIGIN_OFFSET.getZ());  // make a copy
 
     if (USE_ENTITY_MODEL_TRANSFORMATIONS) {  // convert translation from world coordinates to model coordinates
-      TRANSLATION_OFFSET.mul(-1, -1, 1);
+      ORIGIN_OFFSET.mul(-1, -1, 1);
     }
 
-    matrixStack.translate(TRANSLATION_OFFSET.getX(),TRANSLATION_OFFSET.getY(),TRANSLATION_OFFSET.getZ()); // translate
+    matrixStack.translate(ORIGIN_OFFSET.getX(),ORIGIN_OFFSET.getY(),ORIGIN_OFFSET.getZ()); // translate
 
     IVertexBuilder renderBuffer = renderBuffers.getBuffer(model.getRenderType(TEST_MODEL_TEXTURE));
     model.render(matrixStack, renderBuffer, combinedLight, combinedOverlay, 1.0F, 1.0F, 1.0F, 1.0F); // white, fully opaque
     matrixStack.pop();
+
+    // draw red cross at model's origin, and blue cross at entity origin (if ENTITY_MODEL_TRANSFORMATIONS applied)
+    if (USE_ENTITY_MODEL_TRANSFORMATIONS) {
+      Vector3f CROSSHAIR_ORIGIN = interactiveParameters.MODEL_TRANSLATE;
+      ORIGIN_OFFSET = new Vector3f(CROSSHAIR_ORIGIN.getX(), CROSSHAIR_ORIGIN.getY(), CROSSHAIR_ORIGIN.getZ());  // make a copy
+      drawCrossHairAtOffset(matrixStack, renderBuffers, ORIGIN_OFFSET, Color.BLUE);
+      ORIGIN_OFFSET.add(0, 1.5F, 0);
+      drawCrossHairAtOffset(matrixStack, renderBuffers, ORIGIN_OFFSET, Color.RED);
+    } else {
+      drawCrossHairAtOffset(matrixStack, renderBuffers, interactiveParameters.MODEL_TRANSLATE, Color.RED);
+    }
+
   }
+
+
+  private void drawCrossHairAtOffset(MatrixStack matrixStack, IRenderTypeBuffer renderBuffers, Vector3f offset, Color colour) {
+    matrixStack.push();
+    Matrix4f matrixPos = matrixStack.getLast().getMatrix();  //retrieves the current transformation matrix
+    IVertexBuilder vertexBuilderLines = renderBuffers.getBuffer(RenderTypeHelper.MBE_LINE_DEPTH_WRITING_ON);
+
+    float cx = offset.getX(); float cy = offset.getY(); float cz = offset.getZ();
+    final float CROSSHAIR_RADIUS = 6.0F;
+    drawLine(matrixPos, vertexBuilderLines,cx - CROSSHAIR_RADIUS, cy, cz, cx + CROSSHAIR_RADIUS, cy, cz, colour);
+    drawLine(matrixPos, vertexBuilderLines, cx, cy - CROSSHAIR_RADIUS, cz, cx, cy + CROSSHAIR_RADIUS, cz, colour);
+    drawLine(matrixPos, vertexBuilderLines, cx, cy, cz - CROSSHAIR_RADIUS, cx, cy, cz + CROSSHAIR_RADIUS, colour);
+    matrixStack.pop();
+  }
+
+  private static void drawLine(Matrix4f matrixPos, IVertexBuilder vertexBuffer, float x1, float y1, float z1, float x2, float y2, float z2, Color colour) {
+    vertexBuffer.pos(matrixPos, x1, y1, z1).color(colour.getRed(), colour.getGreen(), colour.getBlue(), 255).endVertex();
+    vertexBuffer.pos(matrixPos, x2, y2, z2).color(colour.getRed(), colour.getGreen(), colour.getBlue(), 255).endVertex();
+  }
+
 
   // Always render: never cull based on where the player is looking
   @Override

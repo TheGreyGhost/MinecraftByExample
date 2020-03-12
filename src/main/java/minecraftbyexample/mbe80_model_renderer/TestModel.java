@@ -69,13 +69,13 @@ public class TestModel extends Model {
 	@Override
 	public void render(MatrixStack matrixStack, IVertexBuilder renderBuffer, int combinedLight, int combinedOverlay, float r, float g, float b, float a) {
 
-    childModel.rotateAngleX = ip.CHILD_ROTATION_ANGLE.getX();
-    childModel.rotateAngleY = ip.CHILD_ROTATION_ANGLE.getY();
-    childModel.rotateAngleZ = ip.CHILD_ROTATION_ANGLE.getZ();
+    childModel.rotateAngleX = (float)Math.toRadians(ip.CHILD_ROTATION_ANGLE.getX());
+    childModel.rotateAngleY = (float)Math.toRadians(ip.CHILD_ROTATION_ANGLE.getY());
+    childModel.rotateAngleZ = (float)Math.toRadians(ip.CHILD_ROTATION_ANGLE.getZ());
 
-    parentModel.rotateAngleX = ip.PARENT_ROTATION_ANGLE.getX();
-    parentModel.rotateAngleY = ip.PARENT_ROTATION_ANGLE.getY();
-    parentModel.rotateAngleZ = ip.PARENT_ROTATION_ANGLE.getZ();
+    parentModel.rotateAngleX = (float)Math.toRadians(ip.PARENT_ROTATION_ANGLE.getX());
+    parentModel.rotateAngleY = (float)Math.toRadians(ip.PARENT_ROTATION_ANGLE.getY());
+    parentModel.rotateAngleZ = (float)Math.toRadians(ip.PARENT_ROTATION_ANGLE.getZ());
 
 		parentModel.render(matrixStack, renderBuffer, combinedLight, combinedOverlay, r, g, b, a);
   }
@@ -86,7 +86,7 @@ public class TestModel extends Model {
    * InteractiveParameters holds the interactive parameters used to tweak the model in real time.
    * One model instance is active at a given time; when a model is active and the user issues a command:
    * mbedebug param    (eg /mbedebug param parent_delta 3.5)
-   * mbedebug param3d  (eg /mbedebug param3d parent_rotation_point 0.0 1.0 0.0)
+   * mbedebug param3d  (eg /mbedebug paramvec3d parent_rotation_point 0.0 1.0 0.0)
    * then the parameter is copied into the InteractiveParameters for that model instance
    *
    * Typical usage:
@@ -116,8 +116,9 @@ public class TestModel extends Model {
     public net.minecraft.util.math.Vec3i CHILD_BLOCK_DIMENSIONS = new net.minecraft.util.math.Vec3i(1, 3, 2);
     public Double CHILD_DELTA = 0.0;
 
-    public Vector3f MODEL_TRANSLATE = new Vector3f(0.0F, 0.0F, 0.0F);
-//    public Vector3f MODEL_TRANSLATE = new Vector3f(0.5F, 1.0F, 0.5F);
+    public Double USE_ENTITY_MODEL_TRANSFORMATIONS = 1D;  // less than 0.5 means don't apply vanilla's entity model transformations (scale, translate by 1.5)
+
+    public Vector3f MODEL_TRANSLATE = new Vector3f(0.5F, 1.0F, 0.5F);
 
     private InteractiveParameters() {
       vector3fSettings.put("parent_corner", new Vector3fSetting("parent_corner", PARENT_CORNER));
@@ -135,6 +136,7 @@ public class TestModel extends Model {
       doubleSettings.put("child_delta", new DoubleSetting("child_delta", CHILD_DELTA));
 
       vector3fSettings.put("model_translate", new Vector3fSetting("model_translate", MODEL_TRANSLATE));
+      doubleSettings.put("use_entity_model_transformations", new DoubleSetting("use_entity_model_transformations", USE_ENTITY_MODEL_TRANSFORMATIONS));
     }
 
     private void copyMapsToFields() {
@@ -153,6 +155,7 @@ public class TestModel extends Model {
       CHILD_DELTA = doubleSettings.get("child_delta").value;
 
       MODEL_TRANSLATE = vector3fSettings.get("model_translate").value;
+      USE_ENTITY_MODEL_TRANSFORMATIONS = doubleSettings.get("use_entity_model_transformations").value;
     }
 
     public static InteractiveParameters createDefault() {
@@ -325,7 +328,7 @@ public class TestModel extends Model {
 
       public void updateFromNBT(CompoundNBT nbt) {
         try {
-          value= nbt.getDouble(name);
+          value = nbt.getDouble(name);
         } catch (Exception e) {  // ignore all errors
         }
       }
