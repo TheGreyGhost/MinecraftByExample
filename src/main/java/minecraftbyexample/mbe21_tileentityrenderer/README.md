@@ -56,35 +56,42 @@ Useful tool to create Entity Models:
 
 ## Common errors
 
-"Missing Model", "Missing texture", etc:
-
+###"Missing Model", "Missing texture" errors, Model is a pink-and-black cube, model is the right shape but is pink and black, etc:
 These are caused when you have specified a filename or path which is not correct, typically:
 
 1. you've misspelled it
 1. the upper/lower case doesn't match
 1. you've forgotten the resource domain, eg `blockmodel` instead of `minecraftbyexample:blockmodel`
 1. the folder structure of your assets folders is incorrect
-1. If using IntelliJ 14--the assets isn't be copied to the right place, you need to apply a fix to your `build.gradle`, see [http://www.minecraftforge.net/forum/index.php/topic,21354.0.html](http://www.minecraftforge.net/forum/index.php/topic,21354.0.html)
+1. you've added a folder in a filename which forge automatically adds (eg "models/"), or haven't included one
+   where you should have.  
+1. you've included the extension where you shouldn't have, or didn't include it when you should have  (for example 
+   .png for texture files loaded automatically vs loaded manually)
+1. If you're using Wavefront Obj file, you need to edit the mtl file to contain the correct path to the texture
+Sometimes the console will give you an error message with an appropriate clue (eg "can't find file xxx:yyy"), other 
+times it fails silently or gives a message which is misleading.   Check all spellings of your json files and the
+parameters in the files, letter by letter.  Check against an example mod what paths+filenames they have used.
 
-Rendering doesn't look right--this is a relatively complex subject and can be difficult to troubleshoot. Generally:
+
+
+### Rendering doesn't look right:
+This is a relatively complex subject and can be difficult to troubleshoot. Generally:
 
 The object is in the wrong spot, or doesn't rotate how you expect:
 
 1. your translation is wrong
 1. your order of transformations (rotations, translations, scaling etc) are wrong. See Chapter 3 OpenGL red book: [http://www.glprogramming.com/red/chapter03.html](http://www.glprogramming.com/red/chapter03.html)
 
-If the object is too light or too dark:
-
+###If the object is too light or too dark:
 1. one or more of the openGL settings is incorrect (especially `GL_LIGHTING`)
 1. the multitexturing "brightness" (blocklight/skylight) is not right (see `OpenGlHelper.setLightmapTextureCoords`)
 1. your `GlStateManager.color(red, green, blue)` is wrong
 
-You can't see parts of your object from one side:
-
+###You can't see parts of your object from one side:
 1. If you want your faces to be visible on both sides, you need to disable `GL_CULL_FACE`.
 1. If your face should be one-sided, but is facing the wrong way, you need to reverse the order of the points for that face. For example, you have specified points in the order A, B, C, D --> change the order to D, C, B, A
 
-Console error message: "Not filled all elements of the vertex":
+###Console error message: "Not filled all elements of the vertex":
 Triggered at endVertex(), eg
     vertexBuilder
             .pos(matrixPos, x, y, z) 

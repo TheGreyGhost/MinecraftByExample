@@ -1,5 +1,10 @@
 {
+  "forge_marker": 1,
+  "defaults": {
+    "custom": { "flip-v": true }
+  },
   "variants": {
-    "": { "model": "block/hopper" }
+    "use_wavefront_obj_model=false": { "model": "block/hopper" },
+    "use_wavefront_obj_model=true": { "model": "minecraftbyexample:block/mbe21_ter_wavefront_model" }
   }
 }

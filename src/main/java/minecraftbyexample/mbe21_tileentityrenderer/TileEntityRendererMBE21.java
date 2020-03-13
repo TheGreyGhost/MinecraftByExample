@@ -7,6 +7,8 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import static minecraftbyexample.mbe21_tileentityrenderer.RenderWavefrontObj.renderWavefrontObj;
+
 /**
  * User: The Grey Ghost
  * Date: 12/01/2015
@@ -64,7 +66,7 @@ public class TileEntityRendererMBE21 extends TileEntityRenderer<TileEntityMBE21>
       case WIREFRAME: RenderLines.renderWireframe(tileEntityMBE21, partialTicks, matrixStack, renderBuffers, combinedLight, combinedOverlay); break;
       case QUADS: RenderQuads.renderCubeUsingQuads(tileEntityMBE21, partialTicks, matrixStack, renderBuffers, combinedLight, combinedOverlay); break;
       case BLOCKQUADS: RenderModelHourglass.renderUsingModel(tileEntityMBE21, partialTicks, matrixStack, renderBuffers, combinedLight, combinedOverlay); break;
-//      case WAVEFRONT: renderWireframe(tileEntityMBE21, partialTicks, matrixStack, renderBuffers, combinedLight, combinedOverlay); break;
+      case WAVEFRONT: renderWavefrontObj(tileEntityMBE21, partialTicks, matrixStack, renderBuffers, combinedLight, combinedOverlay); break;
       default: { LOGGER.debug("Unexpected objectRenderStyle:" + objectRenderStyle);}
     }
 

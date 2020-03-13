@@ -6,6 +6,9 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.IProperty;
+import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.util.ActionResultType;
@@ -35,6 +38,8 @@ public class BlockMBE21 extends Block
   {
     super(Block.Properties.create(Material.ROCK)
          );
+    BlockState defaultBlockState = this.stateContainer.getBaseState().with(USE_WAVERFRONT_OBJ_MODEL, false);
+    this.setDefaultState(defaultBlockState);
   }
 
   @Override
@@ -91,6 +96,19 @@ public class BlockMBE21 extends Block
   public BlockRenderType getRenderType(BlockState iBlockState) {
     return BlockRenderType.MODEL;
   }
+
+  // Used for visuals only, as an easy way to get Forge to load the obj model used by the WaveFront render style
+  public static final IProperty<Boolean> USE_WAVERFRONT_OBJ_MODEL = BooleanProperty.create("use_wavefront_obj_model");
+
+  /**
+   * Defines the properties needed for the BlockState
+   * @param builder
+   */
+  @Override
+  protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    builder.add(USE_WAVERFRONT_OBJ_MODEL);
+  }
+
 
   // see MBE02 for more guidance on block VoxelShapes
   @Override

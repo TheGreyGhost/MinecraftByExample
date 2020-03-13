@@ -1,0 +1,4 @@
+{
+    "loader": "forge:obj",
+    "model" : "minecraftbyexample:models/block/mbe21_gem.obj"
+}
