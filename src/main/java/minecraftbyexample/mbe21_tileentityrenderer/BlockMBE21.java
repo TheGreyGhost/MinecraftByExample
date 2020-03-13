@@ -61,6 +61,10 @@ public class BlockMBE21 extends Block
       Random random = new Random();
       Color artifactColour = colorChoices[random.nextInt(colorChoices.length)];
       tileEntityMBE21.setArtifactColour(artifactColour);
+
+      // choose a random render style for the artifact:
+      TileEntityMBE21.EnumRenderStyle renderStyle = TileEntityMBE21.EnumRenderStyle.pickRandom();
+      tileEntityMBE21.setArtifactRenderStyle(renderStyle);
     }
   }
 
@@ -82,7 +86,7 @@ public class BlockMBE21 extends Block
   }
 
    // render using a BakedModel
-   // not required because the default (super method) is MODEL
+   // not actually required because the default (super method) is MODEL
        @Override
   public BlockRenderType getRenderType(BlockState iBlockState) {
     return BlockRenderType.MODEL;

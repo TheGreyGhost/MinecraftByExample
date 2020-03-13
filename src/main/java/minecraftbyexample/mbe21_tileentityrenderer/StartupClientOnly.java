@@ -25,7 +25,6 @@ import static net.minecraft.inventory.container.PlayerContainer.LOCATION_BLOCKS_
  */
 public class StartupClientOnly
 {
-//  public static final ResourceLocation MBE21_CUBE_TEXTURE = new ResourceLocation("minecraftbyexample:entity/mbe21_ter_cube");
 
   /**
    * @param event
@@ -41,6 +40,7 @@ public class StartupClientOnly
   }
 
 //  // Stitch the cube texture into the block texture sheet so that we can use it later for rendering.
+//  Not needed for this example
 //  @SubscribeEvent
 //  public static void onTextureStitchEvent(TextureStitchEvent.Pre event) {
 //

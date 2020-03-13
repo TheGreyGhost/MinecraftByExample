@@ -59,7 +59,7 @@ public class MinecraftByExample {
 //    public static final String GUIFACTORY = "minecraftbyexample.mbe70_configuration.MBEGuiFactory"; //delete if MBE70 not present
 
 
-  // get a reference to the event bus for this mod;  Registration events are
+  // get a reference to the event bus for this mod;  Registration events are fired on this bus.
   public static IEventBus MOD_EVENT_BUS;
 
   public MinecraftByExample() {

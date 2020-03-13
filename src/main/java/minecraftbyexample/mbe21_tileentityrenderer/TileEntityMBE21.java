@@ -9,6 +9,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.Optional;
+import java.util.Random;
 
 /**
  * This is a simple tile entity which stores information used by the associated TileEntityRenderer (TER) to render the
@@ -16,7 +17,7 @@ import java.util.Optional;
  * the render style:
  *   * wireframe (using lines)
  *   * quads
- *   * blockmodel
+ *   * entity model
  *   * wavefront
  * the colour
  * the angular position (only used by wavefront model render example)
@@ -59,7 +60,7 @@ public class TileEntityMBE21 extends TileEntity {
 		// Alternatively, the elapsed time can be calculated as
 		//  time_in_seconds = (number_of_ticks_elapsed + partialTick) / 20.0;
 		//  where your tileEntity's update() method increments number_of_ticks_elapsed, and partialTick is passed by vanilla
-		//   to your TESR renderTileEntityAt() method.
+		//   to your TER renderTileEntityAt() method.
 		long timeNow = System.nanoTime();
 		if (lastTime == INVALID_TIME) {   // automatically initialise to 0 if not set yet
 			lastTime = timeNow;
@@ -211,6 +212,16 @@ public class TileEntityMBE21 extends TileEntity {
       compoundNBT.putByte(tagname, nbtID);
     }
 
+    /**
+     * Pick a random render style
+     * @return
+     */
+    public static EnumRenderStyle pickRandom() {
+      int count = EnumRenderStyle.values().length;
+      int whichIdx = new Random().nextInt(count);
+      return EnumRenderStyle.values()[whichIdx];
+    }
+
     private static Optional<EnumRenderStyle> getEnumRenderStyleFromID(byte ID) {
       for (EnumRenderStyle enumRenderStyle : EnumRenderStyle.values()) {
         if (enumRenderStyle.nbtID == ID) return Optional.of(enumRenderStyle);
@@ -228,6 +239,5 @@ public class TileEntityMBE21 extends TileEntity {
 	private final long INVALID_TIME = 0;
 	private long lastTime = INVALID_TIME;  // used for animation
 	private double lastAngularPosition; // used for animation
-  private long ticksInExistence = 0; // how many ticks have we been in existence?
 
 }

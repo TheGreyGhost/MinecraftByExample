@@ -9,24 +9,38 @@ It will show you:
 1. how to save and restore the rendering settings so that subsequent renders by vanilla aren't affected
 1. how to set the typical settings for rendering
 
+There are four different methods of rendering demonstrated in this example:
+1. Drawing lines
+1. Manually drawing quads
+1. Rendering a vanilla-style Entity Model
+1. Rendering a wavefront object (generated using Blender or equivalent)
+
+Usage: Place the mbe21 block and then right click on it to cycle through the different types of rendering. 
+
 The pieces you need to understand are located in:
 
-* `Startup`
+* `StartupClientOnly` and `StartupClientOnly` classes
 * `TileEntityMBE21`
 * `TileEntityRendererMBE21`
+* `RenderLines` to demonstrate rendering using lines
+* `RenderQuads` to demonstrate rendering using manually-added quads
+* `resources\assets\minecraftbyexample\textures\entity\mbe21_ter_cube.png` - texture for the quads rendering
+* `ModelHourglass` and `RenderModelHourglass` to demonstrate rendering using Entity Models
+* `resources\assets\minecraftbyexample\textures\model\mbe21_hourglass_model.png` -- texture for the hourglass
+
+There are a number of supporting files for the example which are explained in earlier mbe examples.
 * `resources\assets\minecraftbyexample\lang\en_US.lang` -- for the displayed name of the block
-* `resources\assets\minecraftbyexample\blockstates\mbe21_tesr_block.json` -- for the blockstate definition
+* `resources\assets\minecraftbyexample\blockstates\mbe21_tesr_block.json` -- for the blockstate definition (of the base)
 * `resources\assets\minecraftbyexample\models\item\mbe21_tesr_block.json` -- the model for rendering the item
 * `resources\assets\minecraftbyexample\textures\items\mbe21_tesr_item_icon.png` -- item icon
-* `resources\assets\minecraftbyexample\entity\items\mbe21_tesr_gem.png` -- texture used for the gem
 
 The block will appear in the Blocks tab in the creative inventory.
 
 For background information on:
 
 * OpenGL rendering--see [http://www.glprogramming.com/red/](http://www.glprogramming.com/red/)
-
-http://greyminecraftcoder.blogspot.com/2014/12/lighting-18.html
+* Lighting: see [Lighting](http://greyminecraftcoder.blogspot.com/2014/12/lighting-18.html)
+* Entity Models: [Model Basics](https://greyminecraftcoder.blogspot.com/2020/03/minecraft-model-1144.html)
 
 Useful vanilla classes to look at:
 * RenderType and DefaultVertexFormats to see what information is needed for each type of rendering
@@ -35,12 +49,10 @@ Useful vanilla classes to look at:
 * ItemRenderer has useful examples of item rendering
 
 Examples of different custom RenderTypes:
-https://github.com/Vazkii/Botania/blob/1.15/src/main/java/vazkii/botania/client/core/helper/RenderHelper.java#L102
+[Botania Mod](https://github.com/Vazkii/Botania/blob/1.15/src/main/java/vazkii/botania/client/core/helper/RenderHelper.java#L102)
 
-Blockbench
-https://blockbench.net/blog/
-
-
+Useful tool to create Entity Models:
+[Blockbench](https://blockbench.net/blog/)
 
 ## Common errors
 

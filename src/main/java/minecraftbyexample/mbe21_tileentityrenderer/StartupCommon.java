@@ -26,22 +26,6 @@ public class StartupCommon
   public static BlockItem itemBlockMBE21; // this holds the unique instance of the itemblock corresponding to the block
   public static TileEntityType<TileEntityMBE21> tileEntityDataTypeMBE21;  // Holds the type of our tile entity; needed for the TileEntityData constructor
 
-//  public static void preInitCommon()
-//  {
-//
-//    blockMBE21 = (BlockMBE21)(new BlockMBE21().setUnlocalizedName("mbe21_tesr_block_unlocalised_name"));
-//    blockMBE21.setRegistryName("minecraftbyexample:mbe21_tesr_block_registry_name");
-//    ForgeRegistries.BLOCKS.register(blockMBE21);
-//
-//    // We also need to create and register an ItemBlock for this block otherwise it won't appear in the inventory
-//    itemBlockMBE21 = new BlockItem(blockMBE21);
-//    itemBlockMBE21.setRegistryName(blockMBE21.getRegistryName());
-//    ForgeRegistries.ITEMS.register(itemBlockMBE21);
-//
-//    // Each of your tile entities needs to be registered with a name that is unique to your mod.
-//    GameRegistry.registerTileEntity(TileEntityMBE21.class, "minecraftbyexample:mbe21_tesr_tile_entity");
-//  }
-
   @SubscribeEvent
   public static void onBlocksRegistration(final RegistryEvent.Register<Block> blockRegisterEvent) {
     blockMBE21 = (BlockMBE21)(new BlockMBE21().setRegistryName("minecraftbyexample", "mbe21_ter_block_registry_name"));
