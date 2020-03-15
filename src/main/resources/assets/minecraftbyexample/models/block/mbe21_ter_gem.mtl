@@ -1,4 +1,4 @@
-# Blender MTL File: 'testcube.blend'
+# Blender MTL File: 'mbe21_ter_gem.blend'
 # Material Count: 1
 
 newmtl Material
@@ -10,4 +10,4 @@ Ke 0.0 0.0 0.0
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd mbe21_tesr_gem.png
+map_Kd minecraftbyexample:model/mbe21_ter_gem

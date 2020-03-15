@@ -25,14 +25,23 @@ The pieces you need to understand are located in:
 * `RenderLines` to demonstrate rendering using lines
 * `RenderQuads` to demonstrate rendering using manually-added quads
 * `resources\assets\minecraftbyexample\textures\entity\mbe21_ter_cube.png` - texture for the quads rendering
+
+Rendering using Entity Models:
 * `ModelHourglass` and `RenderModelHourglass` to demonstrate rendering using Entity Models
 * `resources\assets\minecraftbyexample\textures\model\mbe21_hourglass_model.png` -- texture for the hourglass
 
+Rendering using Wavefront Objects:
+* `resources\assets\minecraftbyexample\blockstates\mbe21_ter_block_registry_name.json`
+* `resources\assets\minecraftbyexample\block\mbe21_ter_wavefront_model.json`
+* `resources\assets\minecraftbyexample\block\mbe21_ter_gem.obj`
+* `resources\assets\minecraftbyexample\block\mbe21_ter_gem.mtl`
+* `resources\assets\minecraftbyexample\textures\model\mbe21_ter_gem.png`
+
 There are a number of supporting files for the example which are explained in earlier mbe examples.
 * `resources\assets\minecraftbyexample\lang\en_US.lang` -- for the displayed name of the block
-* `resources\assets\minecraftbyexample\blockstates\mbe21_tesr_block.json` -- for the blockstate definition (of the base)
-* `resources\assets\minecraftbyexample\models\item\mbe21_tesr_block.json` -- the model for rendering the item
-* `resources\assets\minecraftbyexample\textures\items\mbe21_tesr_item_icon.png` -- item icon
+* `resources\assets\minecraftbyexample\blockstates\mbe21_ter_block_registry_name.json` -- for the blockstate definition (of the base)
+* `resources\assets\minecraftbyexample\models\item\mbe21_ter_block_registry_name.json` -- the model for rendering the item
+* `resources\assets\minecraftbyexample\textures\item\mbe21_ter_item_icon.png` -- item icon
 
 The block will appear in the Blocks tab in the creative inventory.
 
@@ -67,11 +76,13 @@ These are caused when you have specified a filename or path which is not correct
    where you should have.  
 1. you've included the extension where you shouldn't have, or didn't include it when you should have  (for example 
    .png for texture files loaded automatically vs loaded manually)
+   
+Wavefront OBJ files:
 1. If you're using Wavefront Obj file, you need to edit the mtl file to contain the correct path to the texture
 Sometimes the console will give you an error message with an appropriate clue (eg "can't find file xxx:yyy"), other 
 times it fails silently or gives a message which is misleading.   Check all spellings of your json files and the
 parameters in the files, letter by letter.  Check against an example mod what paths+filenames they have used.
-
+1. java.lang.RuntimeException: Could not read OBJ model - your OBJ model .obj and/or .mtl files have a problem.  A breakpoint in OBJLoader::loadModel() can also be very helpful to track this down.
 
 
 ### Rendering doesn't look right:
@@ -82,14 +93,30 @@ The object is in the wrong spot, or doesn't rotate how you expect:
 1. your translation is wrong
 1. your order of transformations (rotations, translations, scaling etc) are wrong. See Chapter 3 OpenGL red book: [http://www.glprogramming.com/red/chapter03.html](http://www.glprogramming.com/red/chapter03.html)
 
+My best advice to you is: troubleshoot by taking baby steps, starting from something that you know works, and making
+   one small change at a time.  It can help to move to world pos [0,0,0] and/or dig into the ground to find out
+   where your object is actually being rendered. 
+
 ###If the object is too light or too dark:
 1. one or more of the openGL settings is incorrect (especially `GL_LIGHTING`)
 1. the multitexturing "brightness" (blocklight/skylight) is not right (see `OpenGlHelper.setLightmapTextureCoords`)
 1. your `GlStateManager.color(red, green, blue)` is wrong
+For Wavefront OBJ files:
+1. Look at the other model loading options in mbe21_ter_wavefront_model.json eg 
 
 ###You can't see parts of your object from one side:
+For manual rendering of quads:
 1. If you want your faces to be visible on both sides, you need to disable `GL_CULL_FACE`.
 1. If your face should be one-sided, but is facing the wrong way, you need to reverse the order of the points for that face. For example, you have specified points in the order A, B, C, D --> change the order to D, C, B, A
+
+For wavefront objects:
+1. Your face normals are pointing the wrong way (i.e pointing towards the inside of the object, not the outside)
+
+###Your texture is the right bitmap but is not in the correct places on the faces
+For manual rendering of quads:
+
+For Wavefront objects:
+1. You may need to enable flip-v = true in the model file (see mbe21_ter_wavefront_model.json)
 
 ###Console error message: "Not filled all elements of the vertex":
 Triggered at endVertex(), eg
