@@ -32,7 +32,7 @@ import static minecraftbyexample.mbe21_tileentityrenderer.RenderWavefrontObj.ren
  *
  * 3) Reads the block model for vanilla object and renders a smaller version of it
  *
- * 4) Reads a custom wavefront object from a file
+ * 4) Reads a custom wavefront object (as a block model), and renders it using block rendering methods
  *
  */
 public class TileEntityRendererMBE21 extends TileEntityRenderer<TileEntityMBE21> {
@@ -42,7 +42,6 @@ public class TileEntityRendererMBE21 extends TileEntityRenderer<TileEntityMBE21>
   }
 
   /**
-   * (this function is called "render" in previous mcp mappings)
    * render the tile entity - called every frame while the tileentity is in view of the player
    *
    * @param tileEntityMBE21 the associated tile entity
@@ -54,8 +53,8 @@ public class TileEntityRendererMBE21 extends TileEntityRenderer<TileEntityMBE21>
    * @param renderBuffers    the buffer that you should render your model to
    * @param combinedLight   the blocklight + skylight value for the tileEntity.  see http://greyminecraftcoder.blogspot.com/2014/12/lighting-18.html (outdated, but the concepts are still valid)
    * @param combinedOverlay value for the "combined overlay" which changes the render based on an overlay texture (see OverlayTexture class).
-   *                        Used by vanilla for (1) red tint when a living entity is damaged, and (2) "flash" effect for creeper when ignited
-   *                        CreeperRenderer.func_225625_b_()
+   *                        Used by vanilla for (1) red tint when a living entity takes damage, and (2) "flash" effect for creeper when ignited
+   *                        CreeperRenderer.getOverlayProgress()
    */
   @Override
   public void render(TileEntityMBE21 tileEntityMBE21, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderBuffers,
@@ -70,8 +69,9 @@ public class TileEntityRendererMBE21 extends TileEntityRenderer<TileEntityMBE21>
       default: { LOGGER.debug("Unexpected objectRenderStyle:" + objectRenderStyle);}
     }
 
+    // if you need to manually change the combinedLight you can use these helper functions...
     int blockLight = LightTexture.getLightBlock(combinedLight);
-    int skyLight = LightTexture.getLightBlock(combinedLight);
+    int skyLight = LightTexture.getLightSky(combinedLight);
     int repackedValue = LightTexture.packLight(blockLight, skyLight);
   }
 
@@ -80,43 +80,6 @@ public class TileEntityRendererMBE21 extends TileEntityRenderer<TileEntityMBE21>
   public boolean isGlobalRenderer(TileEntityMBE21 tileEntityMBE21)
   {
     return false;
-  }
-
-  // add the vertices for drawing the gem.  Generated using a model builder and pasted manually because the object model
-  //   loader wasn't implemented at the time I wrote this example...
-  private void addGemVertices(BufferBuilder bufferBuilder) {
-    final double[][] vertexTable = {
-            {0.000,1.000,0.000,0.000,0.118},          //1
-            {-0.354,0.500,-0.354,0.000,0.354},
-            {-0.354,0.500,0.354,0.236,0.236},
-            {-0.354,0.500,0.354,0.236,0.236},         //2
-            {-0.354,0.500,-0.354,0.000,0.354},
-            {0.000,0.000,0.000,0.236,0.471},
-            {-0.354,0.500,0.354,0.236,0.236},         //3
-            {0.000,0.000,0.000,0.236,0.471},
-            {0.354,0.500,0.354,0.471,0.354},
-            {-0.354,0.500,0.354,0.236,0.236},         //4
-            {0.354,0.500,0.354,0.471,0.354},
-            {0.000,1.000,0.000,0.471,0.118},
-            {0.000,1.000,0.000,0.471,0.118},          //5
-            {0.354,0.500,0.354,0.471,0.354},
-            {0.354,0.500,-0.354,0.707,0.236},
-            {0.354,0.500,-0.354,0.707,0.236},         //6
-            {0.354,0.500,0.354,0.471,0.354},
-            {0.000,0.000,0.000,0.707,0.471},
-            {0.354,0.500,-0.354,0.707,0.236},         //7
-            {0.000,0.000,0.000,0.707,0.471},
-            {-0.354,0.500,-0.354,0.943,0.354},
-            {0.000,1.000,0.000,0.943,0.118},          //8
-            {0.354,0.500,-0.354,0.707,0.236},
-            {-0.354,0.500,-0.354,0.943,0.354}
-              };
-
-    for (double [] vertex : vertexTable) {
-      bufferBuilder.pos(vertex[0], vertex[1], vertex[2])   // func_225582_a_ is pos
-                   .tex((float) vertex[3], (float) vertex[4])                         // func_225583_a_ is tex
-                   .endVertex();
-    }
   }
 
   private static final Logger LOGGER = LogManager.getLogger();

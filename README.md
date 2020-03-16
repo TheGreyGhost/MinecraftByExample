@@ -56,7 +56,7 @@ If you use IntelliJ, you might find these [xml mapping files][mapfiles] useful t
 
 ### TileEntities
   - [MBE20][20] - using a tile entity to store information about a block - also shows examples of using NBT storage
-  - X [MBE21][21] - using the TileEntityRenderer to render unusual shapes or animations
+  - [MBE21][21] - using the TileEntityRenderer to render unusual shapes or animations
 
 ### Containers (Inventories)
   - X [MBE30][30] - a simple container for storing items in the world - similar to a Chest

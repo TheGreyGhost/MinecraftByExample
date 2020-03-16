@@ -33,14 +33,10 @@ import java.awt.*;
  * and you need to put the texture into
  * assets/minecraftbyexample/textures/model
  * 2) You may need to define flip-v: true in your model.json if your textures appear upside-down
- * 3) You  need to set ambientToFullbright if your model is always rendering at maximum brightness and is ignoring
+ * 3) You may need to set ambientToFullbright if your model is always rendering at maximum brightness and is ignoring
  *    your combinedLight method parameter.
  *
  * A breakpoint in OBJloader::loadModel() can help you troubleshoot wavefront obj file problems
- *
- *
- *
- *
  */
 public class RenderWavefrontObj {
 
@@ -70,7 +66,7 @@ public class RenderWavefrontObj {
       scaleZ = WORLD_MODEL_SIZE.getZ() / OBJ_MODEL_SIZE.getZ();
     }
 
-    // must convert our model space to world space before translating
+    // must convert our model space size to world space before translating
     final Vec3d OBJ_MODEL_BOTTOM_APEX_WORLD_SPACE = new Vec3d(OBJ_MODEL_BOTTOM_APEX.getX() * scaleX,
             OBJ_MODEL_BOTTOM_APEX.getY() * scaleY,
             OBJ_MODEL_BOTTOM_APEX.getZ() * scaleZ);
@@ -78,13 +74,10 @@ public class RenderWavefrontObj {
     // translate model origin from [0,0,0] up to HOPPER_MIDDLE_OF_TOP and then further to place the apex in the right place
     final Vec3d TRANSLATION_OFFSET = HOPPER_MIDDLE_OF_TOP.subtract(OBJ_MODEL_BOTTOM_APEX_WORLD_SPACE);
 
-    // The  drawing method draws the gem in a cube region from [0,0,0] to [1,1,1] but w i.e. from [0,1,0] to [1,2,1],
-    //   so we need to translate up by one block, i.e. by [0,1,0]
-
     matrixStack.push(); // push the current transformation matrix + normals matrix
-    matrixStack.translate(TRANSLATION_OFFSET.x,TRANSLATION_OFFSET.y,TRANSLATION_OFFSET.z); // translate
+    matrixStack.translate(TRANSLATION_OFFSET.x,TRANSLATION_OFFSET.y,TRANSLATION_OFFSET.z); // translate to put the gem in the right place
 
-    applyAnimations(tileEntityMBE21, matrixStack);
+    applyAnimations(tileEntityMBE21, matrixStack);  // apply further translation and a rotation based on animation parameters
 
     matrixStack.scale((float)scaleX, (float)scaleY, (float)scaleZ);
 
@@ -122,8 +115,8 @@ public class RenderWavefrontObj {
   /**
    // The gem changes its appearance and animation as the player approaches.
    // When the player is a long distance away, the gem is dark, resting in the hopper, and does not rotate.
-   // As the player approaches closer than 16 blocks, the gem first starts to glow brighter
-   // When the player gets closer than 8 blocks, the gem is at maximum brightness, and the gem starts to levitate above the pedestal
+   // As the player approaches closer than 8 blocks, the gem first starts to glow brighter
+   // When the player gets closer than 6 blocks, the gem is at maximum brightness, and the gem starts to levitate above the pedestal
    // Once the player gets closer than 4 blocks, the gem reaches maximum height and starts to spin anti-clockwise
    // Once the player gets closer than 2 blocks, the gem reaches maximum spin speed
 
@@ -148,7 +141,7 @@ public class RenderWavefrontObj {
 
     final double DISTANCE_FOR_MIN_SPIN = 4.0;
     final double DISTANCE_FOR_MAX_SPIN = 2.0;
-    final double DISTANCE_FOR_MIN_LEVITATE = 8.0;
+    final double DISTANCE_FOR_MIN_LEVITATE = 6.0;
     final double DISTANCE_FOR_MAX_LEVITATE = 4.0;
 
     final double MIN_LEVITATE_HEIGHT = 0.0;
@@ -187,8 +180,8 @@ public class RenderWavefrontObj {
       playerDistance = playerFeet.distanceTo(pedestalCentre);
     }
 
-    final double DISTANCE_FOR_MIN_GLOW = 16.0;
-    final double DISTANCE_FOR_MAX_GLOW = 8.0;
+    final double DISTANCE_FOR_MIN_GLOW = 8.0;
+    final double DISTANCE_FOR_MAX_GLOW = 6.0;
     final double MIN_GLOW = 0.0;
     final double MAX_GLOW = 1.0;
     double glowMultiplier = UsefulFunctions.interpolate(playerDistance, DISTANCE_FOR_MIN_GLOW, DISTANCE_FOR_MAX_GLOW,
@@ -197,10 +190,7 @@ public class RenderWavefrontObj {
     // change the "multitexturing" lighting value (default value is the brightness of the tile entity's block)
     // - this will make the gem "glow" brighter than the surroundings if it is dark.
     final int SKY_LIGHT_VALUE = (int)(15 * glowMultiplier);
-    final int BLOCK_LIGHT_VALUE = 0;
-
-    int blockLight = LightTexture.getLightBlock(ambientCombinedLight);
-    int skyLight = LightTexture.getLightSky(ambientCombinedLight);
+    final int BLOCK_LIGHT_VALUE = (int)(15 * glowMultiplier);
 
     int repackedValue = LightTexture.packLight(BLOCK_LIGHT_VALUE, SKY_LIGHT_VALUE);
     return repackedValue;
