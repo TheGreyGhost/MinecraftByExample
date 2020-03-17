@@ -2,6 +2,12 @@ New stuff:
 RenderType: solid, cutout mipped, etc
 RenderTypeLookup manually sets the render type for each block now
 
+
+
+If you need to send additional data only on spawn, then you need to just implement IEntityAdditionalSpawnData on your entity and encode any additional data.
+
+If you need continuous synchronization, look at EntityDataManager.
+
 A clue to the OverlayTexture (CombinedOverlay) is in
 
 LivingRenderer:

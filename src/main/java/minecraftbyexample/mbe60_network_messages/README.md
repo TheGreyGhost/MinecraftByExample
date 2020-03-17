@@ -34,6 +34,17 @@ For further information:
 * four posts explaining network messages in more detail: [http://greyminecraftcoder.blogspot.com.au/2015/01/the-client-server-division.html](http://greyminecraftcoder.blogspot.com.au/2015/01/the-client-server-division.html)
 * general info on thread safety: [http://www.javaworld.com/article/2076747/core-java/design-for-thread-safety.html](http://www.javaworld.com/article/2076747/core-java/design-for-thread-safety.html)
 
+
+https://mcforge.readthedocs.io/en/1.15.x/networking/simpleimpl/
+
+
+network: SimpleImpl -> SimpleChannel
+enqueuework instead of addScheduledTask
+register free funcs
+See https://github.com/sinkillerj/ProjectE/blob/c17ff6e1b7151b9ef12396af47a937bb599bf7bf/src/main/java/moze_intel/projecte/network/PacketHandler.java#L23-L52
+
+
+
 ## Common errors
 
 * Getting the Side wrong, getting the packet ID wrong (missing, or duplicated).
