@@ -1,21 +1,25 @@
 package minecraftbyexample.mbe60_network_messages;
 
-import io.netty.buffer.ByteBuf;
+import com.sun.javaws.exceptions.InvalidArgumentException;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.Vec3d;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.Random;
 
 /**
  * This Network Message is sent from the client to the server, to tell it to spawn projectiles at a particular location.
  * Typical usage:
  * PREQUISITES:
- *   have previously setup SimpleNetworkWrapper, registered the message class and the handler
+ *   have previously setup SimpleChannel, registered the message class and the handler
  *
  * 1) User creates an AirStrikeMessageToServer(projectile, targetCoordinates)
- * 2) simpleNetworkWrapper.sendToServer(airstrikeMessageToServer);
- * 3) network code calls airstrikeMessageToServer.toBytes() to copy the message member variables to a ByteBuffer, ready for sending
+ * 2) simpleChannel.sendToServer(airstrikeMessageToServer);
+ * 3) Forge network code calls airstrikeMessageToServer.encode() to copy the message member variables to a PacketBuffer, ready for sending
  * ... bytes are sent over the network and arrive at the server....
- * 4) network code creates AirStrikeMessageToServer()
- * 5) network code calls airstrikeMessageToServer.fromBytes() to read from the ByteBuffer into the member variables
+ * 4) Forge network code calls airstrikeMessageToServer.decode() to recreate the airstrickeMessageToServer instance by reading
+ *    from the PacketBuffer into the member variables
  * 6) the handler.onMessage(airStrikeMessageToServer) is called to process the message
  *
  * User: The Grey Ghost
@@ -42,8 +46,8 @@ public class AirstrikeMessageToServer
     return messageIsValid;
   }
 
-  // for use by the message handler only.
-  public AirstrikeMessageToServer()
+  // not a valid way to construct the message
+  private AirstrikeMessageToServer()
   {
     messageIsValid = false;
   }
@@ -55,23 +59,25 @@ public class AirstrikeMessageToServer
    */
   public static AirstrikeMessageToServer decode(PacketBuffer buf)
   {
+    AirstrikeMessageToServer retval = new AirstrikeMessageToServer();
     try {
-      projectile = Projectile.fromBytes(buf);
+      retval.projectile = Projectile.fromPacketBuffer(buf);
       double x = buf.readDouble();
       double y = buf.readDouble();
       double z = buf.readDouble();
-      targetCoordinates = new Vec3d(x, y, z);
+      retval.targetCoordinates = new Vec3d(x, y, z);
 
       // these methods may also be of use for your code:
       // for Itemstacks - ByteBufUtils.readItemStack()
       // for NBT tags ByteBufUtils.readTag();
       // for Strings: ByteBufUtils.readUTF8String();
-
-    } catch (IndexOutOfBoundsException ioe) {
-      System.err.println("Exception while reading AirStrikeMessageToServer: " + ioe);
-      return;
+      // NB that PacketBuffer is a derived class of ByteBuf
+    } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
+      LOGGER.warn("Exception while reading AirStrikeMessageToServer: " + e);
+      return retval;
     }
-    messageIsValid = true;
+    retval.messageIsValid = true;
+    return retval;
   }
 
   /**
@@ -82,7 +88,7 @@ public class AirstrikeMessageToServer
   public void encode(PacketBuffer buf)
   {
     if (!messageIsValid) return;
-    projectile.toBytes(buf);
+    projectile.toPacketBuffer(buf);
     buf.writeDouble(targetCoordinates.x);
     buf.writeDouble(targetCoordinates.y);
     buf.writeDouble(targetCoordinates.z);
@@ -91,22 +97,29 @@ public class AirstrikeMessageToServer
     // for Itemstacks - ByteBufUtils.writeItemStack()
     // for NBT tags ByteBufUtils.writeTag();
     // for Strings: ByteBufUtils.writeUTF8String();
+    // NB that PacketBuffer is a derived class of ByteBuf
   }
 
 
   public enum Projectile {
     PIG(1, "PIG"), SNOWBALL(2, "SNOWBALL"), TNT(3, "TNT"), SNOWMAN(4, "SNOWMAN"), EGG(5, "EGG"), FIREBALL(6, "FIREBALL");
 
-    public void toBytes(ByteBuf buffer) {
+    public void toPacketBuffer(PacketBuffer buffer) {
       buffer.writeByte(projectileID);
     }
 
-    public static Projectile fromBytes(ByteBuf buffer) {
+    public static Projectile fromPacketBuffer(PacketBuffer buffer) throws IllegalArgumentException {
       byte ID = buffer.readByte();
       for (Projectile projectile : Projectile.values()) {
         if (ID == projectile.projectileID) return projectile;
       }
-      return null;
+      throw new IllegalArgumentException("Unrecognised Projectile ID:" + ID);
+    }
+
+    public static Projectile getRandom() {
+      Random random = new Random();
+      AirstrikeMessageToServer.Projectile [] choices = AirstrikeMessageToServer.Projectile.values();
+      return choices[random.nextInt(choices.length)];
     }
 
     @Override
@@ -122,8 +135,7 @@ public class AirstrikeMessageToServer
   }
 
   @Override
-  public String toString()
-  {
+  public String toString()  {
     return "AirstrikeMessageToServer[projectile=" + String.valueOf(projectile)
                                                   + ", targetCoordinates=" + String.valueOf(targetCoordinates) + "]";
   }
@@ -131,4 +143,6 @@ public class AirstrikeMessageToServer
   private Vec3d targetCoordinates;
   private Projectile projectile;
   private boolean messageIsValid;
+
+  private static final Logger LOGGER = LogManager.getLogger();
 }

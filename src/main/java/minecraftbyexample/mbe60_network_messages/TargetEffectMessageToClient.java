@@ -1,9 +1,7 @@
 package minecraftbyexample.mbe60_network_messages;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 /**
  * This Network Message is sent from the server to all clients, to tell them to draw a "target indicator" at the target point
