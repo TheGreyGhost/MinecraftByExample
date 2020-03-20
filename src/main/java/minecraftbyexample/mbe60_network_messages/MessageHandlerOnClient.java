@@ -2,63 +2,70 @@ package minecraftbyexample.mbe60_network_messages;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeConfig;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.LogicalSidedProvider;
+import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import javax.xml.ws.handler.MessageContext;
+import java.util.Optional;
 import java.util.Random;
 import java.util.function.Supplier;
 
 /**
  * The MessageHandlerOnClient is used to process the network message once it has arrived on the Server side.
- * WARNING!  From 1.8 onwards the MessageHandler now runs in its own thread.  This means that if your onMessage code
+ * WARNING!  The MessageHandler runs in its own thread.  This means that if your onMessage code
  * calls any vanilla objects, it may cause crashes or subtle problems that are hard to reproduce.
  * Your onMessage handler should create a task which is later executed by the client or server thread as
  * appropriate - see below.
  * User: The Grey Ghost
  * Date: 15/01/2015
  */
-public class MessageHandlerOnClient
-{
+public class MessageHandlerOnClient {
 
   /**
    * Called when a message is received of the appropriate type.
    * CALLED BY THE NETWORK THREAD, NOT THE CLIENT THREAD
+   *
    * @param message The message
    */
-  public static void onMessage(final TargetEffectMessageToClient message, Supplier<NetworkEvent.Context> ctx) {
-    if (ctx.side != Side.CLIENT) {
-      System.err.println("TargetEffectMessageToClient received on wrong side:" + ctx.side);
-      return null;
+  public static void onMessage(final TargetEffectMessageToClient message, Supplier<NetworkEvent.Context> ctxSupplier) {
+    NetworkEvent.Context ctx = ctxSupplier.get();
+    LogicalSide sideReceived = ctx.getDirection().getReceptionSide();
+    ctx.setPacketHandled(true);
+
+    if (sideReceived != LogicalSide.CLIENT) {
+      LOGGER.warn("TargetEffectMessageToClient received on wrong side:" + ctx.getDirection().getReceptionSide());
+      return;
     }
     if (!message.isMessageValid()) {
-      System.err.println("TargetEffectMessageToClient was invalid" + message.toString());
-      return null;
+      LOGGER.warn("TargetEffectMessageToClient was invalid" + message.toString());
+      return;
     }
-
     // we know for sure that this handler is only used on the client side, so it is ok to assume
     //  that the ctx handler is a client, and that Minecraft exists.
     // Packets received on the server side must be handled differently!  See MessageHandlerOnServer
 
-    // This code creates a new task which will be executed by the client during the next tick,
-    //  for example see Minecraft.runGameLoop() , just under section
-    //    this.mcProfiler.startSection("scheduledExecutables");
-    //  In this case, the task is to call messageHandlerOnClient.processMessage(worldclient, message)
-    Minecraft minecraft = Minecraft.getInstance();
-    final ClientWorld worldClient = minecraft.world;
-    minecraft.addScheduledTask(new Runnable()
-    {
-      public void run() {
-        processMessage(worldClient, message);
-      }
-    });
+    Optional<ClientWorld> clientWorld = LogicalSidedProvider.CLIENTWORLD.get(sideReceived);
+    if (!clientWorld.isPresent()) {
+      LOGGER.warn("TargetEffectMessageToClient context could not provide a ClientWorld.");
+      return;
+    }
 
-    return null;
+    // This code creates a new task which will be executed by the client during the next tick
+    //  In this case, the task is to call messageHandlerOnClient.processMessage(worldclient, message)
+    ctx.enqueueWork(() -> processMessage(clientWorld.get(), message));
   }
+
 
   // This message is called from the Client thread.
   //   It spawns a number of Particle particles at the target location within a short range around the target location
-  void private processMessage(ClientWorld worldClient, TargetEffectMessageToClient message)
+  private static void processMessage(ClientWorld worldClient, TargetEffectMessageToClient message)
   {
     Random random = new Random();
     final int NUMBER_OF_PARTICLES = 100;
@@ -68,7 +75,7 @@ public class MessageHandlerOnClient
       double spawnXpos = targetCoordinates.x + (2*random.nextDouble() - 1) * HORIZONTAL_SPREAD;
       double spawnYpos = targetCoordinates.y;
       double spawnZpos = targetCoordinates.z + (2*random.nextDouble() - 1) * HORIZONTAL_SPREAD;
-      worldClient.spawnParticle(EnumParticleTypes.SPELL_INSTANT, spawnXpos, spawnYpos, spawnZpos, 0, 0, 0);
+      worldClient.addParticle(ParticleTypes.INSTANT_EFFECT, spawnXpos, spawnYpos, spawnZpos, 0, 0, 0);
     }
 
     return;
@@ -78,4 +85,5 @@ public class MessageHandlerOnClient
     return StartupCommon.MESSAGE_PROTOCOL_VERSION.equals(protocolVersion);
   }
 
+  private static final Logger LOGGER = LogManager.getLogger();
 }

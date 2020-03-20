@@ -1,6 +1,6 @@
 package minecraftbyexample.mbe60_network_messages;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
+import net.minecraft.entity.EntityType;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.Vec3d;
 import org.apache.logging.log4j.LogManager;
@@ -100,13 +100,19 @@ public class AirstrikeMessageToServer
     // NB that PacketBuffer is a derived class of ByteBuf
   }
 
-
   public enum Projectile {
-    PIG(1, "PIG"), SNOWBALL(2, "SNOWBALL"), TNT(3, "TNT"), SNOWMAN(4, "SNOWMAN"), EGG(5, "EGG"), FIREBALL(6, "FIREBALL");
+    PIG(1, "PIG", EntityType.PIG),
+    SNOWBALL(2, "SNOWBALL", EntityType.SNOWBALL),
+    TNT(3, "TNT", EntityType.TNT),
+    SNOWMAN(4, "SNOWMAN", EntityType.SNOW_GOLEM),
+    EGG(5, "EGG", EntityType.EGG),
+    FIREBALL(6, "FIREBALL", EntityType.FIREBALL);
 
     public void toPacketBuffer(PacketBuffer buffer) {
       buffer.writeByte(projectileID);
     }
+
+    public EntityType getEntityType() {return entityType;}
 
     public static Projectile fromPacketBuffer(PacketBuffer buffer) throws IllegalArgumentException {
       byte ID = buffer.readByte();
@@ -125,13 +131,15 @@ public class AirstrikeMessageToServer
     @Override
     public String toString() {return name;}
 
-    private Projectile(int i_projectileID, String i_name) {
+    private Projectile(int i_projectileID, String i_name, EntityType i_entityType) {
       projectileID = (byte)i_projectileID;
       name = i_name;
+      entityType = i_entityType;
     }
 
     private final byte projectileID;
     private final String name;
+    private final EntityType entityType;
   }
 
   @Override

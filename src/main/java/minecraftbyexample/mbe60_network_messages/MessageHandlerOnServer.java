@@ -1,26 +1,37 @@
 package minecraftbyexample.mbe60_network_messages;
 
+import jdk.nashorn.internal.ir.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.item.TNTEntity;
 import net.minecraft.entity.passive.SnowGolemEntity;
 import net.minecraft.entity.passive.PigEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.EggEntity;
 import net.minecraft.entity.projectile.FireballEntity;
 import net.minecraft.entity.projectile.SnowballEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
-import net.minecraft.world.ServerWorld;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.world.dimension.Dimension;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.network.PacketDistributor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import sun.security.krb5.internal.crypto.EType;
 
+import javax.annotation.Nullable;
 import java.util.Random;
 import java.util.function.Supplier;
 
@@ -28,80 +39,66 @@ import static net.minecraft.entity.EntityType.FIREBALL;
 
 /**
  * The MessageHandlerOnServer is used to process the network message once it has arrived on the Server side.
- * WARNING!  In 1.8 onwards the MessageHandler now runs in its own thread.  This means that if your onMessage code
+ * WARNING!  The MessageHandler  runs in its own thread.  This means that if your onMessage code
  * calls any vanilla objects, it may cause crashes or subtle problems that are hard to reproduce.
  * Your onMessage handler should create a task which is later executed by the client or server thread as
  * appropriate - see below.
  * User: The Grey Ghost
  * Date: 15/01/2015
  */
-public class MessageHandlerOnServer implements IMessageHandler<AirstrikeMessageToServer, IMessage>
-{
-
-
-
-  public static void onMessage(final AirstrikeMessageToServer message, Supplier<NetworkEvent.Context> ctx) {
-    ctx.get().enqueueWork(() -> Minecraft.getInstance().player.stepHeight = message.value);
-    ctx.get().setPacketHandled(true);
-  }
-
+public class MessageHandlerOnServer {
 
   /**
    * Called when a message is received of the appropriate type.
-   * CALLED BY THE NETWORK THREAD
+   * CALLED BY THE NETWORK THREAD, NOT THE SERVER THREAD
    * @param message The message
    */
-  public IMessage onMessage(final AirstrikeMessageToServer message, MessageContext ctx) {
-    if (ctx.side != Side.SERVER) {
-      System.err.println("AirstrikeMessageToServer received on wrong side:" + ctx.side);
-      return null;
+  public static void onMessage(final AirstrikeMessageToServer message, Supplier<NetworkEvent.Context> ctxSupplier) {
+    NetworkEvent.Context ctx = ctxSupplier.get();
+    LogicalSide sideReceived = ctx.getDirection().getReceptionSide();
+    ctx.setPacketHandled(true);
+
+    if (sideReceived != LogicalSide.SERVER) {
+      LOGGER.warn("AirstrikeMessageToServer received on wrong side:" + ctx.getDirection().getReceptionSide());
+      return;
     }
     if (!message.isMessageValid()) {
-      System.err.println("AirstrikeMessageToServer was invalid" + message.toString());
-      return null;
+      LOGGER.warn("AirstrikeMessageToServer was invalid" + message.toString());
+      return;
     }
 
     // we know for sure that this handler is only used on the server side, so it is ok to assume
     //  that the ctx handler is a serverhandler, and that WorldServer exists.
     // Packets received on the client side must be handled differently!  See MessageHandlerOnClient
 
-    final ServerPlayerEntity sendingPlayer = ctx.getServerHandler().player;
+    final ServerPlayerEntity sendingPlayer = ctx.getSender();
     if (sendingPlayer == null) {
-      System.err.println("EntityPlayerMP was null when AirstrikeMessageToServer was received");
-      return null;
+      LOGGER.warn("EntityPlayerMP was null when AirstrikeMessageToServer was received");
     }
 
     // This code creates a new task which will be executed by the server during the next tick,
-    //  for example see MinecraftServer.updateTimeLightAndEntities(), just under section
-    //      this.theProfiler.startSection("jobs");
     //  In this case, the task is to call messageHandlerOnServer.processMessage(message, sendingPlayer)
-    final ServerWorld playerWorldServer = sendingPlayer.getServerWorld();
-    playerWorldServer.addScheduledTask(new Runnable() {
-      public void run() {
-        processMessage(message, sendingPlayer);
-      }
-    });
-
-    return null;
+    ctx.enqueueWork(() -> processMessage(message, sendingPlayer));
   }
 
   // This message is called from the Server thread.
   //   It spawns a random number of the given projectile at a position above the target location
-  void processMessage(AirstrikeMessageToServer message, ServerPlayerEntity sendingPlayer)
+  static void processMessage(AirstrikeMessageToServer message, ServerPlayerEntity sendingPlayer)
   {
-    // first send a message to all clients to render a "target" effect on the ground
-//    StartupCommon.simpleNetworkWrapper.sendToDimension(msg, sendingPlayer.dimension);  // DO NOT USE sendToDimension, it is buggy
-//    as of build 1419 - see https://github.com/MinecraftForge/MinecraftForge/issues/1908
+    // first send a message to all other clients in the same dimension to render a "target" effect on the ground
+    // There are a number of other PacketDistributor types defined for other cases, for example
+    // Sending to one player
+    //    INSTANCE.send(PacketDistributor.PLAYER.with(playerMP), new MyMessage());
+    //
+    // Send to all players tracking this chunk
+    //    INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(chunk), new MyMessage());
+    //
+    // Sending to all connected players
+    //    INSTANCE.send(PacketDistributor.ALL.noArg(), new MyMessage());
 
-    int dimension = sendingPlayer.dimension;
-    MinecraftServer minecraftServer = sendingPlayer.mcServer;
-
-    for (ServerPlayerEntity player : minecraftServer.getPlayerList().getPlayers()) {
-      TargetEffectMessageToClient msg = new TargetEffectMessageToClient(message.getTargetCoordinates());   // must generate a fresh message for every player!
-      if (dimension == player.dimension) {
-        StartupCommon.simpleNetworkWrapper.sendTo(msg, player);
-      }
-    }
+    TargetEffectMessageToClient msg = new TargetEffectMessageToClient(message.getTargetCoordinates());   // must generate a fresh message for every player!
+    DimensionType playerDimension = sendingPlayer.dimension;
+    StartupCommon.simpleChannel.send(PacketDistributor.DIMENSION.with(() -> playerDimension), msg);
 
     // spawn projectiles
     Random random = new Random();
@@ -117,61 +114,40 @@ public class MessageHandlerOnServer implements IMessageHandler<AirstrikeMessageT
       double xOffset = (random.nextDouble() * 2 - 1) * MAX_HORIZONTAL_SPREAD;
       double zOffset = (random.nextDouble() * 2 - 1) * MAX_HORIZONTAL_SPREAD;
       double yOffset = RELEASE_HEIGHT_ABOVE_TARGET + (random.nextDouble() * 2 - 1) * MAX_VERTICAL_SPREAD;
-      Vec3d releasePoint = message.getTargetCoordinates().addVector(xOffset, yOffset, zOffset);
-      float yaw = random.nextFloat() * 360;
-      float pitch = random.nextFloat() * 360;
+      Vec3d releasePoint = message.getTargetCoordinates().add(xOffset, yOffset, zOffset);
 
-      Entity entity;
+      EntityType entityType = message.getProjectile().getEntityType();
+
+      CompoundNBT spawnNBT = null;
+      ITextComponent customName = null;
+      PlayerEntity spawningPlayer = null;
+      BlockPos spawnLocation = new BlockPos(releasePoint);
+      boolean SPAWN_ON_TOP_OF_GIVEN_BLOCK_LOCATION = false;  // not 100% sure of what this does...
+      boolean SEARCH_DOWN_WHEN_PLACED_ON_TOP_OF_GIVEN_BLOCK_LOCATION = false; // not 100% sure of what this does...
+      Entity spawnedEntity = entityType.spawn(world, spawnNBT, customName, spawningPlayer, spawnLocation,
+              SpawnReason.SPAWN_EGG,
+              SPAWN_ON_TOP_OF_GIVEN_BLOCK_LOCATION, SEARCH_DOWN_WHEN_PLACED_ON_TOP_OF_GIVEN_BLOCK_LOCATION);
+
+      // special cases handled by switch() - clumsy method for purposes of simplicity only...
       switch (message.getProjectile()) {
-        case PIG: {
-          entity = new PigEntity(world);
-          entity.setLocationAndAngles(releasePoint.x, releasePoint.y, releasePoint.z, yaw, pitch);
-          break;
-        }
-        case SNOWBALL: {
-          entity = new SnowballEntity(world, releasePoint.x, releasePoint.y, releasePoint.z);
-          break;
-        }
-        case TNT: {
-          entity = new TNTEntity(world, releasePoint.x, releasePoint.y, releasePoint.z, sendingPlayer);
-          break;
-        }
-        case SNOWMAN: {
-          entity = new SnowGolemEntity(world);
-          entity.setLocationAndAngles(releasePoint.x, releasePoint.y, releasePoint.z, yaw, pitch);
-          break;
-        }
-        case EGG: {
-          entity = new EggEntity(world, releasePoint.x, releasePoint.y, releasePoint.z);
-          break;
-        }
         case FIREBALL: {
+          FireballEntity fireballEntity = (FireballEntity)spawnedEntity;
           final double Y_ACCELERATION = -0.5;
-          // this method is now client-side only, so use another constructor and manually set the missing values as copied from the
-          //   constructor
-//          entity = new EntityLargeFireball(world, releasePoint.xCoord, releasePoint.yCoord, releasePoint.zCoord, 0.0, Y_ACCELERATION, 0.0);
-
-          FireballEntity entityLargeFireball =  new FireballEntity(world);
-          entity = entityLargeFireball;
-          entity.setLocationAndAngles(releasePoint.x, releasePoint.y, releasePoint.z, entity.rotationYaw, entity.rotationPitch);
-          entity.setPosition(releasePoint.x, releasePoint.y, releasePoint.z);
-          entityLargeFireball.accelerationX = 0.0;
-          entityLargeFireball.accelerationY = Y_ACCELERATION;
-          entityLargeFireball.accelerationZ = 0.0;
+          fireballEntity.accelerationX = 0.0;
+          fireballEntity.accelerationY = Y_ACCELERATION;
+          fireballEntity.accelerationZ = 0.0;
           break;
         }
         default: {
-          System.err.println("Invalid projectile type in ServerMessageHandler:" + String.valueOf(message.getProjectile()));
-          return;
+          break;
         }
       }
 
-      world.spawnEntity(entity);
       final float VOLUME = 10000.0F;
       final float PITCH = 0.8F + random.nextFloat() * 0.2F;
-      final boolean DISTANCE_DELAY_FALSE = false;
-      world.playSound(releasePoint.x, releasePoint.y, releasePoint.z,
-                      SoundEvents.ENTITY_LIGHTNING_THUNDER, SoundCategory.WEATHER, VOLUME, PITCH, DISTANCE_DELAY_FALSE);
+      PlayerEntity playerCausingSound = null;
+      world.playSound(playerCausingSound, releasePoint.x, releasePoint.y, releasePoint.z,
+                      SoundEvents.ENTITY_LIGHTNING_BOLT_THUNDER, SoundCategory.WEATHER, VOLUME, PITCH);
     }
 
     return;
@@ -180,4 +156,6 @@ public class MessageHandlerOnServer implements IMessageHandler<AirstrikeMessageT
   public static boolean isThisProtocolAcceptedByServer(String protocolVersion) {
     return StartupCommon.MESSAGE_PROTOCOL_VERSION.equals(protocolVersion);
   }
+
+  private static final Logger LOGGER = LogManager.getLogger();
 }

@@ -33,6 +33,7 @@
   "container.minecraftbyexample.mbe31_inventory_furnace": "MBE31 Inventory Furnace GUI",
   "item.minecraftbyexample.mbe40_hud_overlay_item": "MBE40 HUD overlay activator",
   "block.minecraftbyexample.mbe50_block_flame_emitter_registry_name": "MBE50 Particle flame emitter",
+  "item.minecraftbyexample.mbe60_item_airstrike_registry_name": "MBE60 Network Messages Airstrike Targeter",
   "block.minecraftbyexample.mbe80_testmodel_block_registry_name": "MBE80 Test Model",
   "gui.minecraftbyexample.mbe70_configuration.mainTitle": "MinecraftByExample Configuration",
   "gui.minecraftbyexample.mbe70_configuration.ctgy.general": "General Configuration",

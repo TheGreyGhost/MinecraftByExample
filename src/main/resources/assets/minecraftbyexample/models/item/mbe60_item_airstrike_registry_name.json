@@ -1,7 +1,7 @@
 {
   "parent": "builtin/generated",
   "textures": {
-    "layer0": "minecraftbyexample:items/mbe60_airstrike_icon"
+    "layer0": "minecraftbyexample:item/mbe60_airstrike_icon"
   },
   "__comment": "instead of parent:builtin/generated above, you could use item/generated to get default 'display' settings, i.e. most of the display settings below would be unnecessary",
   "display": {

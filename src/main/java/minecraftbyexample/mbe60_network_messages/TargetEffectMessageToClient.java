@@ -2,6 +2,8 @@ package minecraftbyexample.mbe60_network_messages;
 
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.Vec3d;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This Network Message is sent from the server to all clients, to tell them to draw a "target indicator" at the target point
@@ -10,12 +12,12 @@ import net.minecraft.util.math.Vec3d;
  *   have previously setup SimpleNetworkWrapper, registered the message class and the handler
  *
  * 1) User creates a TargetEffectMessageToClient(targetCoordinates)
- * 2) simpleNetworkWrapper.sendToDimension(targetEffectMessageToClient);
- * 3) network code calls targetEffectMessageToClient.toBytes() to copy the message member variables to a ByteBuffer, ready for sending
+ * 2) simpleChannel.sendToDimension(targetEffectMessageToClient);
+ * 3) Forge network code calls targetEffectMessageToClient.encode() to copy the message member variables to a PacketBuffer, ready for sending
  * ... bytes are sent over the network and arrive at the client....
- * 4) network code creates TargetEffectMessageToClient()
- * 5) network code calls targetEffectMessageToClient.fromBytes() to read from the ByteBuffer into the member variables
- * 6) the handler.onMessage(targetEffectMessageToClient) is called to process the message
+ * 4) Forge network code calls targetEffectMessageToClient.decode() to recreate the targetEffectMessageToClient instance by reading
+ *     from the PacketBuffer into the member variables
+ * 5) the handler.onMessage(targetEffectMessageToClient) is called to process the message
  *
  * User: The Grey Ghost
  * Date: 15/01/2015
@@ -49,22 +51,25 @@ public class TargetEffectMessageToClient
    */
   public static TargetEffectMessageToClient decode(PacketBuffer buf)
   {
+    TargetEffectMessageToClient retval = new TargetEffectMessageToClient();
     try {
       double x = buf.readDouble();
       double y = buf.readDouble();
       double z = buf.readDouble();
-      targetCoordinates = new Vec3d(x, y, z);
+      retval.targetCoordinates = new Vec3d(x, y, z);
 
       // these methods may also be of use for your code:
       // for Itemstacks - ByteBufUtils.readItemStack()
       // for NBT tags ByteBufUtils.readTag();
       // for Strings: ByteBufUtils.readUTF8String();
+      // NB that PacketBuffer is a derived class of ByteBuf
 
-    } catch (IndexOutOfBoundsException ioe) {
-      System.err.println("Exception while reading TargetEffectMessageToClient: " + ioe);
-      return;
+    } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
+      LOGGER.warn("Exception while reading TargetEffectMessageToClient: " + e);
+      return retval;
     }
-    messageIsValid = true;
+    retval.messageIsValid = true;
+    return retval;
   }
 
   /**
@@ -94,4 +99,6 @@ public class TargetEffectMessageToClient
 
   private Vec3d targetCoordinates;
   private boolean messageIsValid;
+
+  private static final Logger LOGGER = LogManager.getLogger();
 }
