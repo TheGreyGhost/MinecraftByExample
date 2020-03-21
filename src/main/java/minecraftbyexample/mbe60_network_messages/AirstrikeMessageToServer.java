@@ -54,7 +54,7 @@ public class AirstrikeMessageToServer
 
   /**
    * Called by the network code once it has received the message bytes over the network.
-   * Used to read the ByteBuf contents into your member variables
+   * Used to read the PacketBuffer contents into your member variables
    * @param buf
    */
   public static AirstrikeMessageToServer decode(PacketBuffer buf)
@@ -82,7 +82,7 @@ public class AirstrikeMessageToServer
 
   /**
    * Called by the network code.
-   * Used to write the contents of your message member variables into the ByteBuf, ready for transmission over the network.
+   * Used to write the contents of your message member variables into the PacketBuffer, ready for transmission over the network.
    * @param buf
    */
   public void encode(PacketBuffer buf)

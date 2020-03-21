@@ -6,10 +6,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * This Network Message is sent from the server to all clients, to tell them to draw a "target indicator" at the target point
+ * This Network Message is sent from the server to all clients in the same dimension, to tell them to draw a "target indicator" at the target point
  * Typical usage:
  * PREQUISITES:
- *   have previously setup SimpleNetworkWrapper, registered the message class and the handler
+ *   have previously setup SimpleChannel, registered the message class and the handler
  *
  * 1) User creates a TargetEffectMessageToClient(targetCoordinates)
  * 2) simpleChannel.sendToDimension(targetEffectMessageToClient);

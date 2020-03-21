@@ -18,7 +18,7 @@ import java.util.Random;
 import java.util.function.Supplier;
 
 /**
- * The MessageHandlerOnClient is used to process the network message once it has arrived on the Server side.
+ * The MessageHandlerOnClient is used to process the network message once it has arrived on the Client side.
  * WARNING!  The MessageHandler runs in its own thread.  This means that if your onMessage code
  * calls any vanilla objects, it may cause crashes or subtle problems that are hard to reproduce.
  * Your onMessage handler should create a task which is later executed by the client or server thread as
@@ -31,10 +31,8 @@ public class MessageHandlerOnClient {
   /**
    * Called when a message is received of the appropriate type.
    * CALLED BY THE NETWORK THREAD, NOT THE CLIENT THREAD
-   *
-   * @param message The message
    */
-  public static void onMessage(final TargetEffectMessageToClient message, Supplier<NetworkEvent.Context> ctxSupplier) {
+  public static void onMessageReceived(final TargetEffectMessageToClient message, Supplier<NetworkEvent.Context> ctxSupplier) {
     NetworkEvent.Context ctx = ctxSupplier.get();
     LogicalSide sideReceived = ctx.getDirection().getReceptionSide();
     ctx.setPacketHandled(true);
@@ -62,7 +60,6 @@ public class MessageHandlerOnClient {
     ctx.enqueueWork(() -> processMessage(clientWorld.get(), message));
   }
 
-
   // This message is called from the Client thread.
   //   It spawns a number of Particle particles at the target location within a short range around the target location
   private static void processMessage(ClientWorld worldClient, TargetEffectMessageToClient message)
@@ -77,7 +74,6 @@ public class MessageHandlerOnClient {
       double spawnZpos = targetCoordinates.z + (2*random.nextDouble() - 1) * HORIZONTAL_SPREAD;
       worldClient.addParticle(ParticleTypes.INSTANT_EFFECT, spawnXpos, spawnYpos, spawnZpos, 0, 0, 0);
     }
-
     return;
   }
 

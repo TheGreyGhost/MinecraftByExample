@@ -35,11 +35,9 @@ public class ItemAirStrike extends Item
   // called when the item is used to right-click on a block
   @Override
   public ActionResultType onItemUse(ItemUseContext context) {
-//          PlayerEntity playerIn, World worldIn, BlockPos pos, Hand hand, Direction side, float hitX, float hitY, float hitZ) {
     if (!context.getWorld().isRemote) {  // don't execute on the server side!
       return ActionResultType.PASS;
     }
-//    Vec3d targetLocation = new Vec3d(pos.getX()+ 0.5, pos.getY() + 1.1, pos.getZ() + 0.5);
     Vec3d targetLocation = context.getHitVec();
     callAirstrikeOnTarget(targetLocation);
     return ActionResultType.SUCCESS;  // tell caller we have processed the click
@@ -86,10 +84,8 @@ public class ItemAirStrike extends Item
   @OnlyIn(Dist.CLIENT)
   @SuppressWarnings("unchecked")
   @Override
-  //public void addInformation(ItemStack stack, EntityPlayer playerIn, List tooltip, boolean advanced) {
   public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
   {
     tooltip.add(new StringTextComponent("Right click on target to call an air strike"));
   }
-
 }

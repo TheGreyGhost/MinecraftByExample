@@ -53,7 +53,7 @@ public class MessageHandlerOnServer {
    * CALLED BY THE NETWORK THREAD, NOT THE SERVER THREAD
    * @param message The message
    */
-  public static void onMessage(final AirstrikeMessageToServer message, Supplier<NetworkEvent.Context> ctxSupplier) {
+  public static void onMessageReceived(final AirstrikeMessageToServer message, Supplier<NetworkEvent.Context> ctxSupplier) {
     NetworkEvent.Context ctx = ctxSupplier.get();
     LogicalSide sideReceived = ctx.getDirection().getReceptionSide();
     ctx.setPacketHandled(true);
@@ -68,7 +68,7 @@ public class MessageHandlerOnServer {
     }
 
     // we know for sure that this handler is only used on the server side, so it is ok to assume
-    //  that the ctx handler is a serverhandler, and that WorldServer exists.
+    //  that the ctx handler is a serverhandler, and that ServerPlayerEntity exists
     // Packets received on the client side must be handled differently!  See MessageHandlerOnClient
 
     final ServerPlayerEntity sendingPlayer = ctx.getSender();
@@ -85,7 +85,8 @@ public class MessageHandlerOnServer {
   //   It spawns a random number of the given projectile at a position above the target location
   static void processMessage(AirstrikeMessageToServer message, ServerPlayerEntity sendingPlayer)
   {
-    // first send a message to all other clients in the same dimension to render a "target" effect on the ground
+    // 1) First send a message to all other clients who are in the same dimension, to tell them to render a "target"
+    //      effect on the ground
     // There are a number of other PacketDistributor types defined for other cases, for example
     // Sending to one player
     //    INSTANCE.send(PacketDistributor.PLAYER.with(playerMP), new MyMessage());
@@ -100,7 +101,7 @@ public class MessageHandlerOnServer {
     DimensionType playerDimension = sendingPlayer.dimension;
     StartupCommon.simpleChannel.send(PacketDistributor.DIMENSION.with(() -> playerDimension), msg);
 
-    // spawn projectiles
+    // 2) Next: spawn the projectiles on the server
     Random random = new Random();
     final int MAX_NUMBER_OF_PROJECTILES = 20;
     final int MIN_NUMBER_OF_PROJECTILES = 2;
@@ -143,13 +144,14 @@ public class MessageHandlerOnServer {
         }
       }
 
+
+      // 3: Play a thunder sound using the server method (sends to all clients, so all clients hear it)
       final float VOLUME = 10000.0F;
       final float PITCH = 0.8F + random.nextFloat() * 0.2F;
       PlayerEntity playerCausingSound = null;
       world.playSound(playerCausingSound, releasePoint.x, releasePoint.y, releasePoint.z,
                       SoundEvents.ENTITY_LIGHTNING_BOLT_THUNDER, SoundCategory.WEATHER, VOLUME, PITCH);
     }
-
     return;
   }
 

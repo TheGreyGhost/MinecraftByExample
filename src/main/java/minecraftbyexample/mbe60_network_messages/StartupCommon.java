@@ -8,7 +8,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Optional;
 
@@ -55,12 +54,12 @@ public class StartupCommon
 
     simpleChannel.registerMessage(AIRSTRIKE_MESSAGE_ID, AirstrikeMessageToServer.class,
             AirstrikeMessageToServer::encode, AirstrikeMessageToServer::decode,
-            MessageHandlerOnServer::onMessage,
+            MessageHandlerOnServer::onMessageReceived,
             Optional.of(PLAY_TO_SERVER));
 
     simpleChannel.registerMessage(TARGET_EFFECT_MESSAGE_ID, TargetEffectMessageToClient.class,
             TargetEffectMessageToClient::encode, TargetEffectMessageToClient::decode,
-            MessageHandlerOnClient::onMessage,
+            MessageHandlerOnClient::onMessageReceived,
             Optional.of(PLAY_TO_CLIENT));
 
     // it is possible to register the same message class and handler on both sides if you want, eg,
