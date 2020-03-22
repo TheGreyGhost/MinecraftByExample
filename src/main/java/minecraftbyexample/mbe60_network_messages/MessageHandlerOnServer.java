@@ -89,13 +89,13 @@ public class MessageHandlerOnServer {
     //      effect on the ground
     // There are a number of other PacketDistributor types defined for other cases, for example
     // Sending to one player
-    //    INSTANCE.send(PacketDistributor.PLAYER.with(playerMP), new MyMessage());
+    //    simpleChannel.send(PacketDistributor.PLAYER.with(playerMP), new MyMessage());
     //
     // Send to all players tracking this chunk
-    //    INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(chunk), new MyMessage());
+    //    simpleChannel.send(PacketDistributor.TRACKING_CHUNK.with(chunk), new MyMessage());
     //
     // Sending to all connected players
-    //    INSTANCE.send(PacketDistributor.ALL.noArg(), new MyMessage());
+    //    simpleChannel.send(PacketDistributor.ALL.noArg(), new MyMessage());
 
     TargetEffectMessageToClient msg = new TargetEffectMessageToClient(message.getTargetCoordinates());   // must generate a fresh message for every player!
     DimensionType playerDimension = sendingPlayer.dimension;
