@@ -22,6 +22,14 @@ The example also uses the following files to define the appearance of the block,
 
 The block will appear in the Blocks tab in the creative inventory.
 
+See also
+Lots of info on particles https://gist.github.com/williewillus/353c872bcf1a6ace9921189f6100d09a
+
+particle emitters
+various IParticleRenderTYpes
+terrain sheet, particle sheet opaque, particle sheet translucent, particle sheet lit
+ParticleManager::renderParticles
+
 ## Common errors
 
 * spawning the Particle on the server side instead of client only.
