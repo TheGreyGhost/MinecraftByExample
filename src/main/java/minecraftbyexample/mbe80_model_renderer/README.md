@@ -3,7 +3,8 @@
 This example shows some of the basics of Models (such as the PigModel)
 
 It uses a Model which can be adjusted in real time using commands; for example the size of the block can be adjusted using<br>
-`/mbedebug paramvec3d parent_block_dimensions 12 8 12`
+`/mbedebug paramvec3d parent_block_dimensions 12 8 12`<br>
+For a full list see below.
 
 The model is rendered with two crosshairs to show where the origin of the model is located:
 * Red crosshairs for the origin of the model
@@ -79,3 +80,23 @@ If the texture is wrong:
 1. your model's textureWidth and/or textureHeight don't match the actual size of the texture file you provided
 2. your texture sheet is not laid out properly
 3. you haven't applied the vanilla entity transformation (invert x-axis and y-axis)
+
+## List of interactive commands to modify the model
+`/mbedebug paramvec3d parent_corner 12 8 12` minx, miny, minz corner of parent box<br>
+`/mbedebug paramvec3d parent_block_dimensions 12 8 12` x * y * z size of parent box<br>
+`/mbedebug paramvec3d parent_texture_origin 12 8 12` u, v origin of parent box<br>
+`/mbedebug paramvec3d parent_texture_origin 12 8 12` u, v origin of parent box<br>
+`/mbedebug paramvec3d parent_rotation_point 12 8 12` x, y, z location of the parent box rotation point <br>
+`/mbedebug paramvec3d parent_rotation_angle 12 8 12` x, y, z angles of rotation (degrees) of parent box<br>
+
+`/mbedebug paramvec3d child_corner 12 8 12` minx, miny, minz corner of child box<br>
+`/mbedebug paramvec3d child_block_dimensions 12 8 12` x * y * z size of child box<br>
+`/mbedebug paramvec3d child_texture_origin 12 8 12` u, v origin of child box<br>
+`/mbedebug paramvec3d child_texture_origin 12 8 12` u, v origin of child box<br>
+`/mbedebug paramvec3d child_rotation_point 12 8 12` x, y, z location of the child box rotation point <br>
+`/mbedebug paramvec3d child_rotation_angle 12 8 12` x, y, z angles of rotation (degrees) of child box<br>
+
+`/mbedebug paramvec3d model_translate 12 8 12` x,y,z translation applied to model in the model renderer<br>
+
+`/mbedebug param parent_delta 0.1` delta value (expansion) of parent box<br>
+`/mbedebug param child_delta 0.1` delta value (expansion) of child box<br>

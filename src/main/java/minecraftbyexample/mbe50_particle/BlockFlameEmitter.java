@@ -7,11 +7,19 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Random;
 
@@ -21,45 +29,36 @@ import java.util.Random;
  *
  * BlockFlameEmitter is a simple block made from a couple of smaller pieces.
  * See mbe02_block_partial for more information
- * The interesting part for Particle is randomDisplayTick(), which spawns our FlameParticle... see below.
+ * The interesting part for Particle is animateTick(), which spawns our FlameParticle... see below.
  */
 public class BlockFlameEmitter extends Block
 {
   public BlockFlameEmitter()
   {
-    super(Material.ROCK);
-    this.setCreativeTab(ItemGroup.DECORATIONS);   // the block will appear on the Decorations tab in creative
+    super(Block.Properties.create(Material.ROCK));
   }
 
-  // the block will render in the SOLID layer.  See http://greyminecraftcoder.blogspot.co.at/2014/12/block-rendering-18.html for more information.
-  @OnlyIn(Dist.CLIENT)
-  public BlockRenderLayer getBlockLayer()
-  {
-    return BlockRenderLayer.SOLID;
-  }
+  // for this model, we're making the shape match the block model exactly
+  //    - see assets\minecraftbyexample\models\block\mbe50_block_flame_emitter_model.json
+  private static final Vec3d BASE_MIN_CORNER = new Vec3d(2.0, 0.0, 0.0);
+  private static final Vec3d BASE_MAX_CORNER = new Vec3d(14.0, 1.0, 16.0);
+  private static final Vec3d PILLAR_MIN_CORNER = new Vec3d(7.0, 1.0, 6.0);
+  private static final Vec3d PILLAR_MAX_CORNER = new Vec3d(9.0, 8.0, 10.0);
 
-  // used by the renderer to control lighting and visibility of other block.
-  // set to false because this block doesn't fill the entire 1x1x1 space
+  private static final VoxelShape BASE = Block.makeCuboidShape(BASE_MIN_CORNER.getX(), BASE_MIN_CORNER.getY(), BASE_MIN_CORNER.getZ(),
+          BASE_MAX_CORNER.getX(), BASE_MAX_CORNER.getY(), BASE_MAX_CORNER.getZ());
+  private static final VoxelShape PILLAR = Block.makeCuboidShape(PILLAR_MIN_CORNER.getX(), PILLAR_MIN_CORNER.getY(), PILLAR_MIN_CORNER.getZ(),
+          PILLAR_MAX_CORNER.getX(), PILLAR_MAX_CORNER.getY(), PILLAR_MAX_CORNER.getZ());
+
+  private static VoxelShape COMBINED_SHAPE = VoxelShapes.or(BASE, PILLAR);  // use this method to add two shapes together
+
+  // returns the shape of the block:
+  //  The image that you see on the screen (when a block is rendered) is determined by the block model (i.e. the model json file).
+  //  But Minecraft also uses a number of other "shapes" to control the interaction of the block with its environment and with the player.
+  // See  https://greyminecraftcoder.blogspot.com/2020/02/block-shapes-voxelshapes-1144.html
   @Override
-  public boolean isOpaqueCube(BlockState state)
-  {
-    return false;
-  }
-
-  // used by the renderer to control lighting and visibility of other block, also by
-  // (eg) wall or fence to control whether the fence joins itself to this block
-  // set to false because this block doesn't fill the entire 1x1x1 space
-  @Override
-  public boolean isFullCube(BlockState state)
-  {
-    return false;
-  }
-
-  // render using a BakedModel (mbe30_inventory_basic.json --> mbe30_inventory_basic_model.json)
-  // not required because the default (super method) is MODEL
-  @Override
-  public BlockRenderType getRenderType(BlockState iBlockState) {
-    return BlockRenderType.MODEL;
+  public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+    return COMBINED_SHAPE;
   }
 
   // This method is called at random intervals - typically used by block which produce occasional effects, like
@@ -68,12 +67,15 @@ public class BlockFlameEmitter extends Block
   // Don't forget     @OnlyIn(Dist.CLIENT) otherwise this will crash on a dedicated server.
   @Override
   @OnlyIn(Dist.CLIENT)
-  public void randomDisplayTick(BlockState stateIn, World worldIn, BlockPos pos, Random rand)
+  public void animateTick(BlockState stateIn, World worldIn, BlockPos pos, Random rand)
   {
-    // Particle must be spawned on the client only.
-    // If you want the server to be able to spawn Particle, you need to send a network message to the client and get the
-    //   client to spawn the Particle in response to the message (see mbe60 MessageHandlerOnClient for an example).
-    if (worldIn.isRemote) {  // is this on the client side?
+    // Usually, it is desirable to spawn particles on the client only.
+    // It is possible for the server to send a "spawn particle" command to the client, but this requires a lot of bandwidth if
+    //   you are rendering even modest amounts of particles.
+    // Instead, send a custom message to the client and spawn lots of particles in response to the single message
+    // (see mbe60 MessageHandlerOnClient for an example).
+    if (worldIn.isRemote) {  // is this on the client side?  should always be true...
+
       // first example:
       // spawn a vanilla particle of LAVA type (smoke from lava)
       //  The starting position is the [x,y,z] of the tip of the pole (i.e. at [0.5, 1.0, 0.5] relative to the block position)
@@ -90,12 +92,14 @@ public class BlockFlameEmitter extends Block
       double velocityZ = 0; // increase in z position every tick
       int [] extraInfo = new int[0];  // extra information if needed by the particle - in this case unused
 
-      worldIn.spawnParticle(EnumParticleTypes.LAVA, xpos, ypos, zpos, velocityX, velocityY, velocityZ, extraInfo);
+      final boolean IGNORE_RANGE_CHECK = false; // if true, always render particle regardless of how far away the player is
+      worldIn.addParticle(ParticleTypes.LAVA, IGNORE_RANGE_CHECK,
+              xpos, ypos, zpos, velocityX, velocityY, velocityZ);
 
       // second example:
       // spawn a custom Particle ("FlameParticle") with a texture we have added ourselves.
       // FlameParticle also has custom movement and collision logic - it moves in a straight line until it hits something.
-      // To make it more interesting, the stream of fireballs will target the nearest non-player entity within 16 block at
+      // To make it more interesting, the stream of fireballs will target the nearest non-player entity within 16 blocks at
       //   the height of the pole or above.
 
       // starting position = top of the pole
@@ -113,7 +117,8 @@ public class BlockFlameEmitter extends Block
         //  1) subtracting the start point from the end point
         //  2) normalising the vector (if you don't do this, then the fireball will fire faster if the mob is further away
 
-        fireballDirection = mobTarget.getPositionEyes(1.0F).subtract(xpos, ypos, zpos);  // NB this method only works on client side
+        final float PARTIAL_TICKS = 1.0F;
+        fireballDirection = mobTarget.getEyePosition(PARTIAL_TICKS).subtract(xpos, ypos, zpos);  // NB this method only works on client side
         fireballDirection = fireballDirection.normalize();
       }
 
@@ -127,9 +132,39 @@ public class BlockFlameEmitter extends Block
       velocityY = SPEED_IN_BLOCKS_PER_TICK * fireballDirection.y; // how much to increase the y position every tick
       velocityZ = SPEED_IN_BLOCKS_PER_TICK * fireballDirection.z; // how much to increase the z position every tick
 
-      FlameParticle newEffect = new FlameParticle(worldIn, xpos, ypos, zpos, velocityX, velocityY, velocityZ);
-      Minecraft.getInstance().effectRenderer.addEffect(newEffect);
+      Color tint = getTint(pos);
+      double diameter = getDiameter(pos);
+
+      FlameParticleData flameParticleData = new FlameParticleData(tint, diameter);
+      worldIn.addParticle(ParticleTypes.LAVA, IGNORE_RANGE_CHECK,
+              xpos, ypos, zpos, velocityX, velocityY, velocityZ);
     }
+  }
+
+  // choose a semi-random colour based on the block's position
+  private Color getTint(BlockPos blockPos) {
+    Color [] tints = {
+            new Color(1.0f, 1.0f, 1.0f),  // no tint (full white)
+            new Color(1.0f, 0.5f, 0.5f),  // redder
+            new Color(0.5f, 1.0f, 0.5f),  // greener
+            new Color(0.5f, 0.5f, 1.0f),  // bluer
+            new Color(1.0f, 1.0f, 0.5f),  // yellower
+            new Color(1.0f, 0.5f, 1.0f),  // purpler
+            new Color(0.5f, 1.0f, 1.0f),  // cyan-er
+    };
+
+    Random random = new Random(blockPos.hashCode());
+
+    int idx = random.nextInt(tints.length);
+    return tints[idx];
+  }
+
+  // choose a semi-random size based on the block's position
+  private double getDiameter(BlockPos blockPos) {
+    Random random = new Random(blockPos.hashCode());
+    final double MIN_DIAMETER = 0.05;
+    final double MAX_DIAMETER = 0.25;
+    return MIN_DIAMETER + (MAX_DIAMETER - MIN_DIAMETER) *random.nextDouble();
   }
 
   /**

@@ -20,7 +20,7 @@ public class StartupCommon
 {
   public static BlockFlameEmitter blockFlameEmitter;  // this holds the unique instance of your block
   public static BlockItem itemBlockFlameEmitter;  // the itemBlock corresponding to the block
-  public static ParticleType<ParticleDataFlame> flameParticleType;
+  public static ParticleType<FlameParticleData> flameParticleType;
 
 
   @SubscribeEvent
@@ -45,10 +45,10 @@ public class StartupCommon
 
   @SubscribeEvent
   public static void onIParticleTypeRegistration(RegistryEvent.Register<ParticleType<?>> iParticleTypeRegisterEvent) {
-    flameParticleType = new ParticleTypeFlame();
-    iParticleTypeRegisterEvent.getRegistry().r
+    flameParticleType = new FlameParticleType();
+    flameParticleType.setRegistryName("minecraftbyexample:mbe50_flame_particle_type_registry_name");
+    iParticleTypeRegisterEvent.getRegistry().register(flameParticleType);
   }
-
 
   @SubscribeEvent
   public static void onCommonSetupEvent(FMLCommonSetupEvent event) {

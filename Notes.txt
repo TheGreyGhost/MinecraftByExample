@@ -2,6 +2,8 @@ New stuff:
 RenderType: solid, cutout mipped, etc
 RenderTypeLookup manually sets the render type for each block now
 
+2. In other places of reference I've looked at, such as GirafiStudios' Waddles mod (https://github.com/GirafiStudios/Waddles/blob/master/src/main/java/com/girafi/waddles/client/model/PenguinModel.java) and McJty's examplemod (https://github.com/McJty/YouTubeModding14/blob/master/src/main/java/com/mcjty/mytutorial/entities/WeirdMobModel.java) for 1.14/1.15, they've all been using bodypart.addBox(). However, in my environment, the ModelRenderer.class doesn't even have the addBox method. When I try to use addBox Intellij says "cannot resolve addBox() in ModelRenderer" And I looked ModelRenderer up on the documentation and its totally there. What do I even do to get around this?
+
 
 
 If you need to send additional data only on spawn, then you need to just implement IEntityAdditionalSpawnData on your entity and encode any additional data.

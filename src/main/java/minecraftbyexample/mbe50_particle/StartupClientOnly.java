@@ -2,9 +2,12 @@ package minecraftbyexample.mbe50_particle;
 
 import minecraftbyexample.mbe01_block_simple.*;
 import minecraftbyexample.usefultools.RenderTypeMBE;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
@@ -20,6 +23,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
  */
 public class StartupClientOnly
 {
+//  public static ResourceLocation FLAME_TEXTURE_RL = new ResourceLocation("minecraftbyexample:entity/mbe50_flame_fx");
   /**
    * Tell the renderer this is a solid block (default is translucent)
    * @param event
@@ -29,34 +33,22 @@ public class StartupClientOnly
     RenderTypeLookup.setRenderLayer(StartupCommon.blockFlameEmitter, RenderTypeMBE.SOLID());
   }
 
-  // Stitch the cube texture into the block texture sheet so that we can use it later for rendering.
-  @SubscribeEvent
-  public static void onTextureStitchEvent(TextureStitchEvent.Pre event) {
-
-    // There are many different texture sheets; if this is not the right one, do nothing
-    AtlasTexture map = event.getMap();
-    if (!map.getTextureLocation().equals(AtlasTexture.LOCATION_PARTICLES_TEXTURE)) return;
-
-    event.addSprite(MBE21_CUBE_TEXTURE);
-  }
-
-  //  // Stitch the cube texture into the block texture sheet so that we can use it later for rendering.
-//  Not needed for this example
+//  // Stitch the cube texture into the block texture sheet so that we can use it later for rendering.
 //  @SubscribeEvent
 //  public static void onTextureStitchEvent(TextureStitchEvent.Pre event) {
 //
 //    // There are many different texture sheets; if this is not the right one, do nothing
 //    AtlasTexture map = event.getMap();
-//    if (!map.getTextureLocation().equals(LOCATION_BLOCKS_TEXTURE)) return;
-//
-//    event.addSprite(MBE21_CUBE_TEXTURE);
+//    if (!map.getTextureLocation().equals(AtlasTexture.LOCATION_PARTICLES_TEXTURE)) return;
+//    event.addSprite(FLAME_TEXTURE_RL);
 //  }
 
+  // Register the factory that will spawn our Particle from ParticleData
+  @SubscribeEvent
+  public static void onParticleFactoryRegistration(ParticleFactoryRegisterEvent event) {
+    Minecraft.getInstance().particles.registerFactory(StartupCommon.flameParticleType, new FlameParticleFactory());
+  }
 
-//  public static void preInitClientOnly()
-//  {
-//    // register the texture stitcher, which is used to insert the flame picture into the block texture sheet
-//    MinecraftForge.EVENT_BUS.register(new TextureStitcherBreathFX());
-//
-//  }
 }
+
+
