@@ -1,42 +1,38 @@
 # MBE50_PARTICLE
 
-This example shows you how to use some simple Particles (formerly called "EntityFX"). Vanilla examples are the love hearts when taming an animal; the smoke coming from a burning torch; the sparkles from a portal; see `EnumParticleTypes` for more examples.
+This example shows you how to use some simple Particles (formerly called "EntityFX"). Vanilla examples are the love hearts when taming an animal; the smoke coming from a burning torch; the sparkles from a portal; see `ParticleTypes` and `ParticleManager` for more examples.
 
 The example is a block (FlameEmitter) which, when you place it in the world:
 
 1. spits out random vanilla lava particles
-1. if any mobs are nearby--fires a string of fireballs at the mob's head. Otherwise, fires a string of fireballs straight upwards. The fireballs are created using a custom texture and have customised movement / aging.
+1. if any mobs are nearby--fires a string of fireballs at the mob's head. Otherwise, fires a string of fireballs straight upwards. The fireballs are created using a custom texture and have customised movement / aging.  The fireball size (diameter) and tint (colour) are varied depending on where the block is place.
 
 The pieces you need to understand are located in:
 
 * `StartupClientOnly`, `StartupCommon`
 * `BlockFlameEmitter`
-* `FlameFX`
-* `TextureStitcherBreathFX`
-* `resources\assets\minecraftbyexample\lang\en_US.lang` -- for the displayed name of the block
+* `FlameParticleType, FlameParticleData, FlameParticleFactory, FlameParticle (see Background Information below)
+* `resources\assets\minecraftbyexample\particles\mbe50_flame_particle_type_registry_name` -- points to texture files for the particle
+* `resources\assets\minecraftbyexample\textures\particle\mbe50_flame_fx.png` -- texture of the particle
 
 The example also uses the following files to define the appearance of the block, see mbe02 for more background information:
-
-* `resources\assets\minecraftbyexample\blockstates\mbe50_block_flame_emitter` -- for the blockstate definition
-* `resources\assets\minecraftbyexample\models\block\mbe50_block_flame_emitter` -- for the model used to render the block
+* `resources\assets\minecraftbyexample\blockstates\mbe50_block_flame_emitter_registry_name` -- for the blockstate definition
+* `resources\assets\minecraftbyexample\models\block\mbe50_block_flame_emitter_registry_name` -- for the model used to render the block
+* `resources\assets\minecraftbyexample\lang\en_US.lang` -- for the displayed name of the block
 
 The block will appear in the Blocks tab in the creative inventory.
 
 See also
-Lots of info on particles https://gist.github.com/williewillus/353c872bcf1a6ace9921189f6100d09a
-
-https://minecraft.gamepedia.com/Particles
-
-particle emitters
-various IParticleRenderTYpes
-terrain sheet, particle sheet opaque, particle sheet translucent, particle sheet lit
-ParticleManager::renderParticles
+* Lots of useful info on particles [here](https://gist.github.com/williewillus/353c872bcf1a6ace9921189f6100d09a)
+* Vanilla list of particles [here](https://minecraft.gamepedia.com/Particles)
 
 ## Common errors
 
 * spawning the Particle on the server side instead of client only.
 * messing up the coordinate settings and/or movement, so that the Particle is rendered out of the player's view
 * `NoClassDefFoundError` when you install your mod on a dedicated server:   you have accidentally used client-only code in a part of your code that is invoked on the dedicated server. See [http://greyminecraftcoder.blogspot.com.au/2013/11/how-forge-starts-up-your-code.html](http://greyminecraftcoder.blogspot.com.au/2013/11/how-forge-starts-up-your-code.html)
+* Infinite loop in the loading screen: Vanilla is throwing an exception while loading your particle / texture; see ParticleManager.loadTextureLists.  Might be caused by incorrect use of registerFactory method (see StartupClientOnly::onParticleFactoryRegistration) for more explanation
+* particles have the wrong appearance / render strangely - using the wrong RenderType 
 
 ## Background Information
 Taken from [WillieWillus primer](https://gist.github.com/williewillus/353c872bcf1a6ace9921189f6100d09a)
@@ -80,3 +76,6 @@ A couple notes on spawning particles. The World.addParticle methods only work cl
 Of course, if you're spawning tens to hundreds of particles, it would be prudent to send a single custom packet to the client and have the for loop 1 to 100 clientside, instead of looping server side and sending 100 particle packets, wasting bandwidth.
 
 Additionally note that after all this, your particle should be completely supported by the /particle vanilla command, provided you implemented the necessary method in your IParticleData Deserializer.
+
+###Miscellaneous notes
+Vanilla also has EmitterParticle which is a particle which is "attached" to a player and emits other particles.

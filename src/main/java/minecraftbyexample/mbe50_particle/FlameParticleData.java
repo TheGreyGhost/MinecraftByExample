@@ -35,6 +35,9 @@ public class FlameParticleData implements IParticleData {
     return tint;
   }
 
+  /**
+   * @return get diameter of particle in metres
+   */
   public double getDiameter() {
     return diameter;
   }
@@ -54,7 +57,7 @@ public class FlameParticleData implements IParticleData {
     buf.writeDouble(diameter);
   }
 
-  // used for debugging I think.
+  // used for debugging I think; prints the data in human-readable format
   @Nonnull
   @Override
   public String getParameters() {
@@ -71,6 +74,8 @@ public class FlameParticleData implements IParticleData {
 
   private Color tint;
   private double diameter;
+
+  // The DESERIALIZER is used to construct FlameParticleData from either command line parameters or from a network packet
 
   public static final IDeserializer<FlameParticleData> DESERIALIZER = new IDeserializer<FlameParticleData>() {
 

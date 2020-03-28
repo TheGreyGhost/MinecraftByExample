@@ -22,7 +22,6 @@ public class StartupCommon
   public static BlockItem itemBlockFlameEmitter;  // the itemBlock corresponding to the block
   public static ParticleType<FlameParticleData> flameParticleType;
 
-
   @SubscribeEvent
   public static void onBlocksRegistration(final RegistryEvent.Register<Block> blockRegisterEvent) {
     // each instance of your block should have a name that is unique within your mod.  use lower case.

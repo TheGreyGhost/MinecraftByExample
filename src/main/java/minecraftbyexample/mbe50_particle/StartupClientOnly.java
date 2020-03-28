@@ -23,7 +23,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
  */
 public class StartupClientOnly
 {
-//  public static ResourceLocation FLAME_TEXTURE_RL = new ResourceLocation("minecraftbyexample:entity/mbe50_flame_fx");
   /**
    * Tell the renderer this is a solid block (default is translucent)
    * @param event
@@ -33,22 +32,21 @@ public class StartupClientOnly
     RenderTypeLookup.setRenderLayer(StartupCommon.blockFlameEmitter, RenderTypeMBE.SOLID());
   }
 
-//  // Stitch the cube texture into the block texture sheet so that we can use it later for rendering.
-//  @SubscribeEvent
-//  public static void onTextureStitchEvent(TextureStitchEvent.Pre event) {
-//
-//    // There are many different texture sheets; if this is not the right one, do nothing
-//    AtlasTexture map = event.getMap();
-//    if (!map.getTextureLocation().equals(AtlasTexture.LOCATION_PARTICLES_TEXTURE)) return;
-//    event.addSprite(FLAME_TEXTURE_RL);
-//  }
-
   // Register the factory that will spawn our Particle from ParticleData
   @SubscribeEvent
   public static void onParticleFactoryRegistration(ParticleFactoryRegisterEvent event) {
-//    Minecraft.getInstance().particles.registerFactory(StartupCommon.flameParticleType, new FlameParticleFactory()); // here
-    int j = 1;
-    Minecraft.getInstance().particles.registerFactory(StartupCommon.flameParticleType, sprite -> new FlameParticleFactory(sprite)); // here
+
+    // beware - there are two registerFactory methods with different signatures.
+    // If you use the wrong one it will put Minecraft into an infinite loading loop with no console errors
+    Minecraft.getInstance().particles.registerFactory(StartupCommon.flameParticleType, sprite -> new FlameParticleFactory(sprite));
+    //  This lambda may not be obvious: its purpose is:
+    //  the registerFactory method creates an IAnimatedSprite, then passes it to the constructor of FlameParticleFactory
+
+    //  General rule of thumb:
+    // If you are creating a TextureParticle with a corresponding json to specify textures which will be stitched into the
+    //    particle texture sheet, then use the 1-parameter constructor method
+    // If you're supplying the render yourself, or using a texture from the block sheet, use the 0-parameter constructor method
+    //   (examples are MobAppearanceParticle, DiggingParticle).  See ParticleManager::registerFactories for more.
   }
 
 }

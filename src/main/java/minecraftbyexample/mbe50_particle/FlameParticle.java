@@ -29,7 +29,7 @@ public class FlameParticle extends SpriteTexturedParticle
   /**
    * Construct a new FlameParticle at the given [x,y,z] position, with the given initial velocity, the given color, and the
    *   given diameter.
-   *   We also supply sprites (although not needed for this example) so that you can change the sprite texture in the tick() method
+   *   We also supply sprites so that you can change the sprite texture in the tick() method (although not needed for this example)
    */
   public FlameParticle(World world, double x, double y, double z,
                        double velocityX, double velocityY, double velocityZ,
@@ -61,7 +61,7 @@ public class FlameParticle extends SpriteTexturedParticle
   // ---- methods used by TexturedParticle.renderParticle() method to find out how to render your particle
   //  the base method just renders a quad, rotated to directly face the player
 
-  // can be used to change the brightness of the rendered Particle.
+  // can be used to change the skylight+blocklight brightness of the rendered Particle.
   @Override
   protected int getBrightnessForRender(float partialTick)
   {
