@@ -172,8 +172,8 @@ public class BlockFlameEmitter extends Block
     Random random = new Random(blockPos.hashCode());
     random.nextDouble(); random.nextDouble();    // iterate a couple of times (the first nextDouble() isn't very random)
 
-    final double MIN_DIAMETER = 0.1;
-    final double MAX_DIAMETER = 0.25;
+    final double MIN_DIAMETER = 0.05;
+    final double MAX_DIAMETER = 0.35;
     return MIN_DIAMETER + (MAX_DIAMETER - MIN_DIAMETER) * random.nextDouble();
   }
 

@@ -28,7 +28,8 @@ public class FlameParticle extends SpriteTexturedParticle
 {
   /**
    * Construct a new FlameParticle at the given [x,y,z] position, with the given initial velocity, the given color, and the
-   *   given diameter
+   *   given diameter.
+   *   We also supply sprites (although not needed for this example) so that you can change the sprite texture in the tick() method
    */
   public FlameParticle(World world, double x, double y, double z,
                        double velocityX, double velocityY, double velocityZ,
