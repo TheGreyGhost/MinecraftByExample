@@ -20,7 +20,7 @@ If you want more information and explanatory text about the concepts, the follow
   - [Fabric Wiki][fabricwiki] (some of it is specific to the Fabric API, but a lot of useful general info too) 
   - [Forge modder support forum][Forge forum]
   - [McJty tutorials][McJty]
-
+  - [Mr Crayfish Furniture Mod (lots of examples)](https://github.com/MrCrayfish/MrCrayfishFurnitureMod)
 #### For earlier versions, see the relevant GitHub branch:
  - MBE for Forge 1.8: [1-8final][version1-8]
  - MBE for Forge 1.8.9: [1-8-9final][version1-8-9]
@@ -72,10 +72,10 @@ If you use IntelliJ, you might find these [xml mapping files][mapfiles] useful t
   - [MBE45][45] - custom commands
 
 ### Particles - particle effects
-  - X [MBE50][50] - shows how to use vanilla Particles; also how to generate your own custom Particles
+  - [MBE50][50] - shows how to use vanilla Particles; also how to generate your own custom Particles
 
 ### Network
-  - X [MBE60][60] - send network messages between client and server
+  - [MBE60][60] - send network messages between client and server
 
 ### Configuration GUI
   - X [MBE70][70] - configuration file linked to the "mod options" button GUI on the mods list screen

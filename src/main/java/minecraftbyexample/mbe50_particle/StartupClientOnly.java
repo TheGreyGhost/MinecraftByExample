@@ -46,7 +46,9 @@ public class StartupClientOnly
   // Register the factory that will spawn our Particle from ParticleData
   @SubscribeEvent
   public static void onParticleFactoryRegistration(ParticleFactoryRegisterEvent event) {
-    Minecraft.getInstance().particles.registerFactory(StartupCommon.flameParticleType, new FlameParticleFactory());
+//    Minecraft.getInstance().particles.registerFactory(StartupCommon.flameParticleType, new FlameParticleFactory()); // here
+    int j = 1;
+    Minecraft.getInstance().particles.registerFactory(StartupCommon.flameParticleType, sprite -> new FlameParticleFactory(sprite)); // here
   }
 
 }
