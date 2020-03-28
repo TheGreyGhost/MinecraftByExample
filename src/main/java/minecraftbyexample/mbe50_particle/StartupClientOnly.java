@@ -1,12 +1,15 @@
 package minecraftbyexample.mbe50_particle;
 
-import minecraftbyexample.mbe01_block_simple.*;
 import minecraftbyexample.usefultools.RenderTypeMBE;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.particles.IParticleData;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoader;
@@ -33,22 +36,48 @@ public class StartupClientOnly
     RenderTypeLookup.setRenderLayer(StartupCommon.blockFlameEmitter, RenderTypeMBE.SOLID());
   }
 
-//  // Stitch the cube texture into the block texture sheet so that we can use it later for rendering.
-//  @SubscribeEvent
-//  public static void onTextureStitchEvent(TextureStitchEvent.Pre event) {
-//
-//    // There are many different texture sheets; if this is not the right one, do nothing
-//    AtlasTexture map = event.getMap();
-//    if (!map.getTextureLocation().equals(AtlasTexture.LOCATION_PARTICLES_TEXTURE)) return;
-//    event.addSprite(FLAME_TEXTURE_RL);
-//  }
-
   // Register the factory that will spawn our Particle from ParticleData
   @SubscribeEvent
   public static void onParticleFactoryRegistration(ParticleFactoryRegisterEvent event) {
-//    Minecraft.getInstance().particles.registerFactory(StartupCommon.flameParticleType, new FlameParticleFactory()); // here
-    int j = 1;
-    Minecraft.getInstance().particles.registerFactory(StartupCommon.flameParticleType, sprite -> new FlameParticleFactory(sprite)); // here
+
+    final boolean TRIGGER_INFINITE_LOOP = true;
+    if (TRIGGER_INFINITE_LOOP) {
+      Minecraft.getInstance().particles.registerFactory(StartupCommon.flameParticleType, new FlameParticleFactory());
+
+      // invokes first ParticleManager register method signature:
+//      public <T extends IParticleData > void registerFactory(ParticleType<T> particleTypeIn, IParticleFactory<T> particleFactoryIn) {
+//        this.factories.put(Registry.PARTICLE_TYPE.getKey(particleTypeIn), particleFactoryIn);
+//      }
+//      This does not add an IAnimatedSprite to ParticleManager.sprites, which causes an exception to be thrown during texture loading:
+//      from mbe50_flame_particle_type_registry_name.json:
+//      {
+//        "textures": [
+//        "minecraftbyexample:mbe50_flame_fx"
+//        ]
+//      }
+//
+//      private void loadTextureLists(IResourceManager manager, ResourceLocation particleId, Map<ResourceLocation, List<ResourceLocation>> textures) {
+//        boolean flag = this.sprites.containsKey(particleId);
+//        if (list == null) {
+//          if (flag) {
+//            throw new IllegalStateException("Missing texture list for particle " + particleId);
+//          }
+//        } else {
+//          if (!flag) {
+//            throw new IllegalStateException("Redundant texture list for particle " + particleId);  // < ----- here
+//          }
+      } else {
+        Minecraft.getInstance().particles.registerFactory(StartupCommon.flameParticleType, sprite -> new FlameParticleFactory(sprite));
+
+//invokes second method signature in ParticleManager
+//      public <T extends IParticleData> void registerFactory(ParticleType<T> particleTypeIn, ParticleManager.IParticleMetaFactory<T> particleMetaFactoryIn) {
+//        ParticleManager.AnimatedSpriteImpl particlemanager$animatedspriteimpl = new ParticleManager.AnimatedSpriteImpl();
+//        this.sprites.put(Registry.PARTICLE_TYPE.getKey(particleTypeIn), particlemanager$animatedspriteimpl);
+//        this.factories.put(Registry.PARTICLE_TYPE.getKey(particleTypeIn), particleMetaFactoryIn.create(particlemanager$animatedspriteimpl));
+//      }
+//     which registers the sprite as expected by the loadTextureLists.
+
+    }
   }
 
 }

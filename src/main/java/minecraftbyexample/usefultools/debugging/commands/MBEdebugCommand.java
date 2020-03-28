@@ -6,8 +6,6 @@ import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import minecraftbyexample.mbe45_commands.MBEquoteCommand;
-import minecraftbyexample.mbe45_commands.MBEsayCommand;
 import minecraftbyexample.usefultools.debugging.DebugSettings;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;

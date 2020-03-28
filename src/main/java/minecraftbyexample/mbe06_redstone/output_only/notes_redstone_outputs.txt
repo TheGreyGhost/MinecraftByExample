@@ -1,6 +1,0 @@
-The two blocks in this package are redstone power sources; they provide power to other blocks.
-
-The three key methods they use are
-  public boolean canProvidePower()
-  public int getWeakPower(IBlockAccess worldIn, BlockPos pos, IBlockState state, EnumFacing side)
-  public int getStrongPower(IBlockAccess worldIn, BlockPos pos, IBlockState state, EnumFacing side)

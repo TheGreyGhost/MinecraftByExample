@@ -1,7 +1,6 @@
 package minecraftbyexample;
 
 import com.mojang.brigadier.CommandDispatcher;
-import minecraftbyexample.testingarea.MBEsayCommand;
 import minecraftbyexample.usefultools.debugging.ForgeLoggerTweaker;
 import net.minecraft.command.CommandSource;
 import net.minecraftforge.common.MinecraftForge;
@@ -63,12 +62,6 @@ public class MinecraftByExample {
   public static IEventBus MOD_EVENT_BUS;
 
   public MinecraftByExample() {
-    final boolean HIDE_CONSOLE_NOISE = true;  // get rid of all the noise from the console (after mod is constructed) to show warnings more clearly.
-    if (HIDE_CONSOLE_NOISE) {
-      ForgeLoggerTweaker.setMinimumLevel(Level.WARN);
-      ForgeLoggerTweaker.applyLoggerFilter();
-    }
-
     MOD_EVENT_BUS = FMLJavaModLoadingContext.get().getModEventBus();
 
     // The event bus register method will search these classes for methods which are interested in startup events
@@ -95,44 +88,8 @@ public class MinecraftByExample {
     // * Other ModLifecycleEvents such as InterModEnqueueEvent, InterModProcessEvent
     // Everything else: the MinecraftForge.EVENT_BUS
 
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe01_block_simple.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe01_block_simple.StartupCommon.class);
-
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe02_block_partial.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe02_block_partial.StartupCommon.class);
-
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe03_block_variants.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe03_block_variants.StartupCommon.class);
-
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe10_item_simple.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe10_item_simple.StartupCommon.class);
-
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe11_item_variants.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe11_item_variants.StartupCommon.class);
-
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe12_item_nbt_animate.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe12_item_nbt_animate.StartupCommon.class);
-
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe20_tileentity_data.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe20_tileentity_data.StartupCommon.class);
-
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe21_tileentityrenderer.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe21_tileentityrenderer.StartupCommon.class);
-
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe45_commands.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe45_commands.StartupCommon.class);
-
+    //----------------
     MOD_EVENT_BUS.register(minecraftbyexample.mbe50_particle.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe50_particle.StartupCommon.class);
-
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe60_network_messages.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe60_network_messages.StartupCommon.class);
-
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe80_model_renderer.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe80_model_renderer.StartupCommon.class);
-
-    //----------------
-    MOD_EVENT_BUS.register(minecraftbyexample.usefultools.debugging.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.usefultools.debugging.StartupCommon.class);
   }
 }

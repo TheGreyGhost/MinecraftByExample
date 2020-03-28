@@ -1,8 +1,6 @@
 package minecraftbyexample.usefultools.debugging;
 
 import com.mojang.brigadier.CommandDispatcher;
-import minecraftbyexample.mbe45_commands.MBEquoteCommand;
-import minecraftbyexample.mbe45_commands.MBEsayCommand;
 import minecraftbyexample.usefultools.debugging.commands.MBEdebugCommand;
 import net.minecraft.command.CommandSource;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

@@ -1,4 +1,0 @@
-BlockRedstoneColouredLamp is an example of a power consumer - similar to the vanilla redstone lamp.
-It illustrates how to read the power inputs from adjacent blocks.
-It also shows how to use a TileEntity to store power information for transmitting to the client side for rendering
-(An alternative method is to use metadata instead, if there are any available bits left).
