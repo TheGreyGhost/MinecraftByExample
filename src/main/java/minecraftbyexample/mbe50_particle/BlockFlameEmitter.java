@@ -84,17 +84,21 @@ public class BlockFlameEmitter extends Block
       //   Particle constructor.  This can be a nuisance if you don't want your Particle to have a random starting velocity!  See
       //  second example below for more information.
 
+      // starting position = top of the pole
       double xpos = pos.getX() + 0.5;
       double ypos = pos.getY() + 1.0;
       double zpos = pos.getZ() + 0.5;
       double velocityX = 0; // increase in x position every tick
       double velocityY = 0; // increase in y position every tick;
       double velocityZ = 0; // increase in z position every tick
-      int [] extraInfo = new int[0];  // extra information if needed by the particle - in this case unused
 
       final boolean IGNORE_RANGE_CHECK = false; // if true, always render particle regardless of how far away the player is
-      worldIn.addParticle(ParticleTypes.LAVA, IGNORE_RANGE_CHECK,
-              xpos, ypos, zpos, velocityX, velocityY, velocityZ);
+      final double PERCENT_CHANCE_OF_LAVA_SPAWN = 10;  // only spawn Lava particles occasionally (visually distracting if too many)
+
+      if (rand.nextDouble() < PERCENT_CHANCE_OF_LAVA_SPAWN / 100.0) {
+        worldIn.addParticle(ParticleTypes.LAVA, IGNORE_RANGE_CHECK,
+                xpos, ypos, zpos, velocityX, velocityY, velocityZ);
+      }
 
       // second example:
       // spawn a custom Particle ("FlameParticle") with a texture we have added ourselves.
@@ -106,6 +110,11 @@ public class BlockFlameEmitter extends Block
       xpos = pos.getX() + 0.5;
       ypos = pos.getY() + 1.0;
       zpos = pos.getZ() + 0.5;
+
+      // add a small amount of wobble to stop particles rendering directly on top of each other (z-fighting) which makes them look weird
+      final double POSITION_WOBBLE_AMOUNT = 0.01;
+      xpos += POSITION_WOBBLE_AMOUNT * (rand.nextDouble() - 0.5);
+      zpos += POSITION_WOBBLE_AMOUNT * (rand.nextDouble() - 0.5);
 
       MonsterEntity mobTarget = getNearestTargetableMob(worldIn, xpos, ypos, zpos);
       Vec3d fireballDirection;
@@ -136,25 +145,24 @@ public class BlockFlameEmitter extends Block
       double diameter = getDiameter(pos);
 
       FlameParticleData flameParticleData = new FlameParticleData(tint, diameter);
-      worldIn.addParticle(ParticleTypes.LAVA, IGNORE_RANGE_CHECK,
+      worldIn.addParticle(flameParticleData, IGNORE_RANGE_CHECK,
               xpos, ypos, zpos, velocityX, velocityY, velocityZ);
     }
   }
 
   // choose a semi-random colour based on the block's position
+  //  the texture has basically no blue in it so we don't bother varying that
   private Color getTint(BlockPos blockPos) {
     Color [] tints = {
-            new Color(1.0f, 1.0f, 1.0f),  // no tint (full white)
-            new Color(1.0f, 0.5f, 0.5f),  // redder
-            new Color(0.5f, 1.0f, 0.5f),  // greener
-            new Color(0.5f, 0.5f, 1.0f),  // bluer
-            new Color(1.0f, 1.0f, 0.5f),  // yellower
-            new Color(1.0f, 0.5f, 1.0f),  // purpler
-            new Color(0.5f, 1.0f, 1.0f),  // cyan-er
+            new Color(1.00f, 1.00f, 1.0f),  // no tint (full white)
+            new Color(1.00f, 0.75f, 1.0f),  // redder
+            new Color(1.00f, 0.50f, 1.0f),  // much redder
+            new Color(0.75f, 1.00f, 1.0f),  // greener
+            new Color(0.50f, 1.00f, 1.0f),  // much greener
     };
 
     Random random = new Random(blockPos.hashCode());
-
+    random.nextInt(); random.nextInt();  // iterate a couple of times (the first nextInt() isn't very random)
     int idx = random.nextInt(tints.length);
     return tints[idx];
   }
@@ -162,9 +170,11 @@ public class BlockFlameEmitter extends Block
   // choose a semi-random size based on the block's position
   private double getDiameter(BlockPos blockPos) {
     Random random = new Random(blockPos.hashCode());
-    final double MIN_DIAMETER = 0.05;
+    random.nextDouble(); random.nextDouble();    // iterate a couple of times (the first nextDouble() isn't very random)
+
+    final double MIN_DIAMETER = 0.1;
     final double MAX_DIAMETER = 0.25;
-    return MIN_DIAMETER + (MAX_DIAMETER - MIN_DIAMETER) *random.nextDouble();
+    return MIN_DIAMETER + (MAX_DIAMETER - MIN_DIAMETER) * random.nextDouble();
   }
 
   /**

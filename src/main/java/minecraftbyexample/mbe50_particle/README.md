@@ -25,6 +25,8 @@ The block will appear in the Blocks tab in the creative inventory.
 See also
 Lots of info on particles https://gist.github.com/williewillus/353c872bcf1a6ace9921189f6100d09a
 
+https://minecraft.gamepedia.com/Particles
+
 particle emitters
 various IParticleRenderTYpes
 terrain sheet, particle sheet opaque, particle sheet translucent, particle sheet lit

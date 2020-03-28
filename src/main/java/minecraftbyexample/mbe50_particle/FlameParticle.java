@@ -32,12 +32,17 @@ public class FlameParticle extends SpriteTexturedParticle
    */
   public FlameParticle(World world, double x, double y, double z,
                        double velocityX, double velocityY, double velocityZ,
-                       Color tint, double diameter)
+                       Color tint, double diameter,
+                       IAnimatedSprite sprites)
   {
     super(world, x, y, z, velocityX, velocityY, velocityZ);
+    this.sprites = sprites;
 
     setColor(tint.getRed()/255.0F, tint.getGreen()/255.0F, tint.getBlue()/255.0F);
-    this.setSize((float)diameter, (float)diameter);
+    setSize((float)diameter, (float)diameter);    // the size (width, height) of the collision box.
+
+    final float PARTICLE_SCALE_FOR_ONE_METRE = 0.5F; //  if the particleScale is 0.5, the texture will be rendered as 1 metre high
+    particleScale = PARTICLE_SCALE_FOR_ONE_METRE * (float)diameter; // sets the rendering size of the particle for a TexturedParticle.
 
     maxAge = 100;  // lifetime in ticks: 100 ticks = 5 seconds
 
@@ -48,10 +53,12 @@ public class FlameParticle extends SpriteTexturedParticle
     motionX = velocityX;
     motionY = velocityY;
     motionZ = velocityZ;
+
+    this.canCollide = true;  // the move() method will check for collisions with scenery
   }
 
   // ---- methods used by TexturedParticle.renderParticle() method to find out how to render your particle
-  //  the base method just renders a quad, rotated to directly face the player, with the texture coordinates you specify here
+  //  the base method just renders a quad, rotated to directly face the player
 
   // can be used to change the brightness of the rendered Particle.
   @Override
@@ -85,6 +92,9 @@ public class FlameParticle extends SpriteTexturedParticle
   @Override
   public void tick()
   {
+    // if you want to change the texture as the particle gets older, you can use
+    // selectSpriteWithAge(sprites);
+
     prevPosX = posX;
     prevPosY = posY;
     prevPosZ = posZ;
@@ -108,4 +118,7 @@ public class FlameParticle extends SpriteTexturedParticle
       this.setExpired();
     }
   }
+
+  private final IAnimatedSprite sprites;  // contains a list of textures; choose one using either
+  // newParticle.selectSpriteRandomly(sprites); or newParticle.selectSpriteWithAge(sprites);
 }
