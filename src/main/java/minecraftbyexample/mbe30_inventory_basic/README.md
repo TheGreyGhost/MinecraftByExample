@@ -1,3 +1,20 @@
+@SubscribeEvent
+	public static void registerContainers(RegistryEvent.Register<ContainerType<?>> evt) {
+		IForgeRegistry<ContainerType<?>> r = evt.getRegistry();
+
+		ContainerType<ContainerFlowerBag> bag = IForgeContainerType.create(ContainerFlowerBag::fromNetwork);
+		register(r, bag, flowerBag.getRegistryName());
+
+		ContainerType<ContainerBaubleBox> box = IForgeContainerType.create(ContainerBaubleBox::fromNetwork);
+		register(r, box, baubleBox.getRegistryName());
+
+		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+			ScreenManager.registerFactory(bag, GuiFlowerBag::new);
+			ScreenManager.registerFactory(box, GuiBaubleBox::new);
+		});
+	}
+
+
 # MBE30_INVENTORY_BASIC
 
 Code by Brandon3055

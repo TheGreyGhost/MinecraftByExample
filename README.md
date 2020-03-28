@@ -44,7 +44,7 @@ If you use IntelliJ, you might find these [xml mapping files][mapfiles] useful t
   - X [MBE04][04] - a camouflage ("secret door") block which dynamically changes its appearance to match adjacent blocks - uses IBlockModel.getQuads() and onModelBakeEvent() 
   - X [MBE05][05] - a 3D web which joins to neighbours in all six directions - uses IBlockModel.getQuads() and ICustomModelLoader
   - X [MBE06][06] - several different types of block which use redstone
-  - X [MBE08][08] - how to add a creative tab for organising your custom blocks / items
+  - [MBE08][08] - how to add a creative tab for organising your custom blocks / items
 
 ### Items
   - [MBE10][10] - a simple item
