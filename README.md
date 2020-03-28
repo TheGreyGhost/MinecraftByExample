@@ -1,6 +1,6 @@
 Demonstrates infinite looping bug when an IllegalStateException is thrown in ParticleManager::loadTextureLists
 
-   private void loadTextureLists(IResourceManager manager, ResourceLocation particleId, Map<ResourceLocation, List<ResourceLocation>> textures) {
+     private void loadTextureLists(IResourceManager manager, ResourceLocation particleId, Map<ResourceLocation, List<ResourceLocation>> textures) {
       ResourceLocation resourcelocation = new ResourceLocation(particleId.getNamespace(), "particles/" + particleId.getPath() + ".json");
 
       try (
