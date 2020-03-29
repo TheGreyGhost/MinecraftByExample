@@ -1,21 +1,11 @@
 package minecraftbyexample.mbe21_tileentityrenderer;
 
-import minecraftbyexample.mbe45_commands.ServerLifecycleEvents;
-import minecraftbyexample.usefultools.RenderTypeMBE;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-
-import static net.minecraft.inventory.container.PlayerContainer.LOCATION_BLOCKS_TEXTURE;
 
 /**
  * User: The Grey Ghost

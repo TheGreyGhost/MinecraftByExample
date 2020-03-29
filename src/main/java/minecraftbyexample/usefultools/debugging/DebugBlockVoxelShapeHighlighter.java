@@ -1,12 +1,8 @@
 package minecraftbyexample.usefultools.debugging;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import minecraftbyexample.usefultools.RenderTypeMBE;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -15,16 +11,11 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawHighlightEvent;
-import net.minecraftforge.client.event.RenderTooltipEvent;
-import net.minecraftforge.event.entity.living.LivingSpawnEvent;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import java.awt.*;
 import java.lang.reflect.Field;
-
-import static minecraftbyexample.usefultools.debugging.DebugSettings.getDebugParameter;
 
 /**
  * Created by TGG on 27/06/2019.
@@ -97,7 +88,7 @@ public class DebugBlockVoxelShapeHighlighter {
    */
   private static void drawSelectionBox(WorldRenderer worldRenderer, IRenderTypeBuffer renderTypeBuffers, MatrixStack matrixStack,
                                       BlockPos blockPos, ActiveRenderInfo activeRenderInfo, VoxelShape shape, Color color) {
-    RenderType renderType = RenderTypeMBE.LINES();
+    RenderType renderType = RenderType.getLines();
     IVertexBuilder vertexBuilder = renderTypeBuffers.getBuffer(renderType);
 
     double eyeX = activeRenderInfo.getProjectedView().getX();

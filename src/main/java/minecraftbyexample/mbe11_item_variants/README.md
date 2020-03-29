@@ -42,7 +42,7 @@ The pieces you need to understand are located in:
 * `resources\assets\minecraftbyexample\models\item\mbe11_item_variants_xxx` -- for the models used to render the item variants
 * `resources\assets\minecraftbyexample\textures\items\mbe11_item_variants_layerx_xxx.png` -- textures used for the item rendering in layer 0 and layer 1
 
-The item will appear in the Miscellaneous tab in the creative inventory.
+The item will appear in the Brewing tab in the creative inventory.
 
 For background information on:
 

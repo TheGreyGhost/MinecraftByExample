@@ -37,7 +37,7 @@ public class ItemVariants extends Item
   static private final int MAXIMUM_NUMBER_OF_BOTTLES = 1; // maximum stack size
 
   public ItemVariants() {
-    super(new Item.Properties().maxStackSize(MAXIMUM_NUMBER_OF_BOTTLES).group(ItemGroup.MISC));
+    super(new Item.Properties().maxStackSize(MAXIMUM_NUMBER_OF_BOTTLES).group(ItemGroup.BREWING));
     this.addPropertyOverride(new ResourceLocation("fullness"), ItemVariants::getFullnessPropertyOverride);
             // use lambda function to link the NBT fullness value to a suitable property override value
   }
@@ -111,11 +111,13 @@ public class ItemVariants extends Item
   @Override
   public void fillItemGroup(ItemGroup tab, NonNullList<ItemStack> subItems)
   {
-    for (EnumBottleFlavour flavour : EnumBottleFlavour.values()) {
-      ItemStack subItemStack = new ItemStack(this, 1);
-      setFlavour(subItemStack, flavour);
-      setFullness(subItemStack, EnumBottleFullness.FULL);
-      subItems.add(subItemStack);
+    if (this.isInGroup(tab)) {
+      for (EnumBottleFlavour flavour : EnumBottleFlavour.values()) {
+        ItemStack subItemStack = new ItemStack(this, 1);
+        setFlavour(subItemStack, flavour);
+        setFullness(subItemStack, EnumBottleFullness.FULL);
+        subItems.add(subItemStack);
+      }
     }
   }
 

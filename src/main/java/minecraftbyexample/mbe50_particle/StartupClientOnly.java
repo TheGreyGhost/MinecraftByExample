@@ -1,16 +1,9 @@
 package minecraftbyexample.mbe50_particle;
 
-import minecraftbyexample.mbe01_block_simple.*;
-import minecraftbyexample.usefultools.RenderTypeMBE;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
-import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
@@ -24,12 +17,12 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 public class StartupClientOnly
 {
   /**
-   * Tell the renderer this is a solid block (default is translucent)
+   * Tell the renderer this is a solid block
    * @param event
    */
   @SubscribeEvent
   public static void onClientSetupEvent(FMLClientSetupEvent event) {
-    RenderTypeLookup.setRenderLayer(StartupCommon.blockFlameEmitter, RenderTypeMBE.SOLID());
+    RenderTypeLookup.setRenderLayer(StartupCommon.blockFlameEmitter, RenderType.getSolid());
   }
 
   // Register the factory that will spawn our Particle from ParticleData

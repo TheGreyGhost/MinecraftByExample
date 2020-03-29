@@ -2,9 +2,7 @@ package minecraftbyexample.mbe21_tileentityrenderer;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import minecraftbyexample.usefultools.RenderTypeHelper;
 import minecraftbyexample.usefultools.UsefulFunctions;
-import minecraftbyexample.usefultools.debugging.DebugSettings;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -12,11 +10,8 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.ILightReader;
-import net.minecraft.world.World;
 import net.minecraftforge.client.model.data.EmptyModelData;
 
-import javax.annotation.Nullable;
 import java.awt.*;
 
 /**
@@ -146,14 +141,14 @@ public class RenderWavefrontObj {
 
     final double MIN_LEVITATE_HEIGHT = 0.0;
     final double MAX_LEVITATE_HEIGHT = 0.5;
-    double levitateHeight = UsefulFunctions.interpolate(playerDistance, DISTANCE_FOR_MIN_LEVITATE, DISTANCE_FOR_MAX_LEVITATE,
+    double levitateHeight = UsefulFunctions.interpolate_with_clipping(playerDistance, DISTANCE_FOR_MIN_LEVITATE, DISTANCE_FOR_MAX_LEVITATE,
             MIN_LEVITATE_HEIGHT, MAX_LEVITATE_HEIGHT);
 
     matrixStack.translate(0, levitateHeight, 0);
 
     final double MIN_REV_PER_SEC = 0.0;
     final double MAX_REV_PER_SEC = 0.5;
-    double revsPerSecond = UsefulFunctions.interpolate(playerDistance, DISTANCE_FOR_MIN_SPIN, DISTANCE_FOR_MAX_SPIN,
+    double revsPerSecond = UsefulFunctions.interpolate_with_clipping(playerDistance, DISTANCE_FOR_MIN_SPIN, DISTANCE_FOR_MAX_SPIN,
             MIN_REV_PER_SEC, MAX_REV_PER_SEC);
     double angularPositionInDegrees = tileEntityMBE21.getNextAngularPosition(revsPerSecond);
 
@@ -184,7 +179,7 @@ public class RenderWavefrontObj {
     final double DISTANCE_FOR_MAX_GLOW = 6.0;
     final double MIN_GLOW = 0.0;
     final double MAX_GLOW = 1.0;
-    double glowMultiplier = UsefulFunctions.interpolate(playerDistance, DISTANCE_FOR_MIN_GLOW, DISTANCE_FOR_MAX_GLOW,
+    double glowMultiplier = UsefulFunctions.interpolate_with_clipping(playerDistance, DISTANCE_FOR_MIN_GLOW, DISTANCE_FOR_MAX_GLOW,
             MIN_GLOW, MAX_GLOW);
 
     // change the "multitexturing" lighting value (default value is the brightness of the tile entity's block)

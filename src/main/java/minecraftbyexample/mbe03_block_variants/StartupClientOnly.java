@@ -1,6 +1,6 @@
 package minecraftbyexample.mbe03_block_variants;
 
-import minecraftbyexample.usefultools.RenderTypeMBE;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -15,9 +15,9 @@ public class StartupClientOnly
 {
   @SubscribeEvent
   public static void onClientSetupEvent(FMLClientSetupEvent event) {
-    RenderTypeLookup.setRenderLayer(StartupCommon.blockVariantsBlue, RenderTypeMBE.CUTOUT());
-    RenderTypeLookup.setRenderLayer(StartupCommon.blockVariantsRed, RenderTypeMBE.CUTOUT());
-    RenderTypeLookup.setRenderLayer(StartupCommon.blockVariantsGreen, RenderTypeMBE.CUTOUT());
-    RenderTypeLookup.setRenderLayer(StartupCommon.blockVariantsYellow, RenderTypeMBE.CUTOUT());
+    RenderTypeLookup.setRenderLayer(StartupCommon.blockVariantsBlue, RenderType.getCutout());
+    RenderTypeLookup.setRenderLayer(StartupCommon.blockVariantsRed, RenderType.getCutout());
+    RenderTypeLookup.setRenderLayer(StartupCommon.blockVariantsGreen, RenderType.getCutout());
+    RenderTypeLookup.setRenderLayer(StartupCommon.blockVariantsYellow, RenderType.getCutout());
   }
 }

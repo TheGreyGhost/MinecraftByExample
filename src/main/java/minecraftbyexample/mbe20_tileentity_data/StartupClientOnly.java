@@ -1,10 +1,7 @@
 package minecraftbyexample.mbe20_tileentity_data;
 
-import minecraftbyexample.mbe01_block_simple.*;
-import minecraftbyexample.usefultools.RenderTypeMBE;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
@@ -18,11 +15,11 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 public class StartupClientOnly
 {
   /**
-   * Tell the renderer this is a solid block (default is translucent)
+   * Tell the renderer this is a solid block
    * @param event
    */
   @SubscribeEvent
   public static void onClientSetupEvent(FMLClientSetupEvent event) {
-    RenderTypeLookup.setRenderLayer(StartupCommon.blockTileEntityData, RenderTypeMBE.SOLID());
+    RenderTypeLookup.setRenderLayer(StartupCommon.blockTileEntityData, RenderType.getSolid());
   }
 }

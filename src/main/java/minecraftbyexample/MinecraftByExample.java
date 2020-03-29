@@ -1,14 +1,8 @@
 package minecraftbyexample;
 
-import com.mojang.brigadier.CommandDispatcher;
-import minecraftbyexample.testingarea.MBEsayCommand;
 import minecraftbyexample.usefultools.debugging.ForgeLoggerTweaker;
-import net.minecraft.command.CommandSource;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.Level;
 
@@ -50,14 +44,11 @@ import org.apache.logging.log4j.Level;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(MinecraftByExample.MODID)
-//@Mod(modid = )  //delete guiFactory if MBE70 not present and you don't have a configuration GUI
 public class MinecraftByExample {
   // you also need to update the modid in two other places as well:
   //  build.gradle file (the version, group, and archivesBaseName parameters)
   //  resources/META-INF/mods.toml (the name, description, and version parameters)
   public static final String MODID = "minecraftbyexample";
-//    public static final String GUIFACTORY = "minecraftbyexample.mbe70_configuration.MBEGuiFactory"; //delete if MBE70 not present
-
 
   // get a reference to the event bus for this mod;  Registration events are fired on this bus.
   public static IEventBus MOD_EVENT_BUS;
@@ -74,7 +65,7 @@ public class MinecraftByExample {
     // The event bus register method will search these classes for methods which are interested in startup events
     //    (i.e. methods that are decorated with the @SubscribeEvent annotation)
 
-    // Beware - there are two event busses: the MinecraftForge.EVENT_BUS and your own ModEventBus.
+    // Beware - there are two event busses: the MinecraftForge.EVENT_BUS, and your own ModEventBus.
     //  If you subscribe your event to the wrong bus, it will never get called.
     // likewise, beware of the difference between static and non-static methods, i.e.
     //  If you register a class, but the @SubscribeEvent is on a non-static method, it won't be called.  e.g.
@@ -106,6 +97,9 @@ public class MinecraftByExample {
 
     MOD_EVENT_BUS.register(minecraftbyexample.mbe10_item_simple.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe10_item_simple.StartupCommon.class);
+
+    MOD_EVENT_BUS.register(minecraftbyexample.mbe08_itemgroup.StartupClientOnly.class);
+    MOD_EVENT_BUS.register(minecraftbyexample.mbe08_itemgroup.StartupCommon.class);
 
     MOD_EVENT_BUS.register(minecraftbyexample.mbe11_item_variants.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe11_item_variants.StartupCommon.class);

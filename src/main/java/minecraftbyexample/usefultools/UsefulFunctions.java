@@ -19,7 +19,7 @@ public class UsefulFunctions
    * @param y2
    * @return linearly interpolated value.  If x is outside the range, clip it to the nearest end
    */
-  public static double interpolate(double x, double x1, double x2, double y1, double y2)
+  public static double interpolate_with_clipping(double x, double x1, double x2, double y1, double y2)
   {
     if (x1 > x2) {
       double temp = x1; x1 = x2; x2 = temp;
