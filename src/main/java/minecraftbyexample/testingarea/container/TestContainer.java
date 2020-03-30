@@ -33,6 +33,4 @@ public class TestContainer extends Container {
   public boolean canInteractWith(PlayerEntity playerIn) {
     return true;
   }
-
-
 }

@@ -14,6 +14,8 @@
 		});
 	}
 
+For a start, do not use IInventory, it is legacy vanilla code. Use IItemHandler.
+      assertInventorySize(p_i50092_4_, rows * 9);
 
 # MBE30_INVENTORY_BASIC
 

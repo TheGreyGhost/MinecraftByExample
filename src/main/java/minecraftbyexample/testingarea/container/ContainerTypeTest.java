@@ -35,8 +35,7 @@ import net.minecraftforge.registries.ObjectHolder;
 
 public class ContainerTypeTest
 {
-  @ObjectHolder("containertypetest:container")
-  public static final ContainerType<TestContainer> TYPE = null;
+  public static ContainerType<TestContainer> TYPE = null;
 
   public ContainerTypeTest()
   {
@@ -47,7 +46,9 @@ public class ContainerTypeTest
 
   private void registerContainers(final RegistryEvent.Register<ContainerType<?>> event)
   {
-    event.getRegistry().register(IForgeContainerType.create(TestContainer::new).setRegistryName("container"));
+    TYPE = IForgeContainerType.create(TestContainer::new);
+    TYPE.setRegistryName("test_container_registry_name");
+    event.getRegistry().register(TYPE);
   }
 
   private void setup(FMLClientSetupEvent event)
