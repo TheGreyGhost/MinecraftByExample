@@ -19,7 +19,8 @@ For a start, do not use IInventory, it is legacy vanilla code. Use IItemHandler.
 
 # MBE30_INVENTORY_BASIC
 
-Code by Brandon3055
+Code by Brandon3055, with excerpts from Botania mod https://github.com/Vazkii/Botania
+Also contains examples of using an item (eg ItemFlowerBag) to store multiple items within itself
 
 This example shows how to make an inventory block similar to a chest, with less storage space (a Footlocker)
 
