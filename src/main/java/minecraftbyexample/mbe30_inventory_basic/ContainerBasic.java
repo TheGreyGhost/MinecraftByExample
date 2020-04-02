@@ -8,6 +8,12 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.items.SlotItemHandler;
+import net.minecraftforge.items.wrapper.PlayerInvWrapper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * User: brandon3055
@@ -45,6 +51,8 @@ public class ContainerBasic extends Container {
       throw new IllegalStateException("Must initialise containerBasicContainerType before constructing a ContainerBasic!");
 
 		this.tileEntityInventoryBasic = tileEntityInventoryBasic;
+    PlayerInvWrapper playerInventory = new PlayerInvWrapper(invPlayer);
+    ItemStackHandler chestInventory = tileEntityInventoryBasic.getItemStackHandler();
 
 		final int SLOT_X_SPACING = 18;
     final int SLOT_Y_SPACING = 18;
@@ -53,7 +61,7 @@ public class ContainerBasic extends Container {
 		// Add the players hotbar to the gui - the [xpos, ypos] location of each item
 		for (int x = 0; x < HOTBAR_SLOT_COUNT; x++) {
 			int slotNumber = x;
-			addSlot(new Slot(invPlayer, slotNumber, HOTBAR_XPOS + SLOT_X_SPACING * x, HOTBAR_YPOS));
+			addSlot(new SlotItemHandler(playerInventory, slotNumber, HOTBAR_XPOS + SLOT_X_SPACING * x, HOTBAR_YPOS));
 		}
 
 		final int PLAYER_INVENTORY_XPOS = 8;
@@ -64,20 +72,21 @@ public class ContainerBasic extends Container {
 				int slotNumber = HOTBAR_SLOT_COUNT + y * PLAYER_INVENTORY_COLUMN_COUNT + x;
 				int xpos = PLAYER_INVENTORY_XPOS + x * SLOT_X_SPACING;
 				int ypos = PLAYER_INVENTORY_YPOS + y * SLOT_Y_SPACING;
-				addSlot(new Slot(invPlayer, slotNumber,  xpos, ypos));
+				addSlot(new SlotItemHandler(playerInventory, slotNumber,  xpos, ypos));
 			}
 		}
 
-		if (TE_INVENTORY_SLOT_COUNT != tileEntityInventoryBasic.getSizeInventory()) {
-			System.err.println("Mismatched slot count in ContainerBasic(" + TE_INVENTORY_SLOT_COUNT
-												  + ") and TileInventory (" + tileEntityInventoryBasic.getSizeInventory()+")");
+		if (TE_INVENTORY_SLOT_COUNT != chestInventory.getSlots()) {
+			LOGGER.warn("Mismatched slot count in ContainerBasic(" + TE_INVENTORY_SLOT_COUNT
+												  + ") and TileInventory (" + chestInventory.getSlots()+")");
 		}
 		final int TILE_INVENTORY_XPOS = 8;
 		final int TILE_INVENTORY_YPOS = 20;
 		// Add the tile inventory container to the gui
 		for (int x = 0; x < TE_INVENTORY_SLOT_COUNT; x++) {
 			int slotNumber = x;
-			addSlot(new Slot(tileEntityInventoryBasic, slotNumber, TILE_INVENTORY_XPOS + SLOT_X_SPACING * x, TILE_INVENTORY_YPOS));
+			addSlot(new SlotItemHandler(chestInventory,
+                                  slotNumber, TILE_INVENTORY_XPOS + SLOT_X_SPACING * x, TILE_INVENTORY_YPOS));
 		}
 	}
 
@@ -85,20 +94,20 @@ public class ContainerBasic extends Container {
 	@Override
 	public boolean canInteractWith(PlayerEntity player)
 	{
-		return tileEntityInventoryBasic.isUsableByPlayer(player);
+		return tileEntityInventoryBasic.canPlayerAccessInventory(player);
 	}
 
 	// This is where you specify what happens when a player shift clicks a slot in the gui
 	//  (when you shift click a slot in the TileEntity Inventory, it moves it to the first available position in the hotbar and/or
 	//    player inventory.  When you you shift-click a hotbar or player inventory item, it moves it to the first available
 	//    position in the TileEntity inventory)
-	// At the very least you must override this and return EMPTY_ITEM or the game will crash when the player shift clicks a slot
-	// returns EMPTY_ITEM if the source slot is empty, or if none of the the source slot item could be moved
+	// At the very least you must override this and return ItemStack.EMPTY or the game will crash when the player shift clicks a slot
+	// returns ItemStack.EMPTY if the source slot is empty, or if none of the the source slot item could be moved
 	//   otherwise, returns a copy of the source stack
 	@Override
 	public ItemStack transferStackInSlot(PlayerEntity player, int sourceSlotIndex)
 	{
-		Slot sourceSlot = (Slot)inventorySlots.get(sourceSlotIndex);
+		Slot sourceSlot = inventorySlots.get(sourceSlotIndex);
 		if (sourceSlot == null || !sourceSlot.getHasStack()) return ItemStack.EMPTY;  //EMPTY_ITEM
 		ItemStack sourceStack = sourceSlot.getStack();
 		ItemStack copyOfSourceStack = sourceStack.copy();
@@ -115,7 +124,7 @@ public class ContainerBasic extends Container {
 				return ItemStack.EMPTY;   // EMPTY_ITEM
 			}
 		} else {
-			System.err.print("Invalid slotIndex:" + sourceSlotIndex);
+			LOGGER.warn("Invalid slotIndex:" + sourceSlotIndex);
 			return ItemStack.EMPTY;   // EMPTY_ITEM
 		}
 
@@ -136,13 +145,10 @@ public class ContainerBasic extends Container {
 	public void onContainerClosed(PlayerEntity playerIn)
 	{
 		super.onContainerClosed(playerIn);
-		this.tileEntityInventoryBasic.closeInventory(playerIn);
+		// if necessary, call the tile entity closeInventory here
+    //  (eg tells the chest to close its lid if there are no more players rummaging through it
+//		this.tileEntityInventoryBasic.closeInventory(playerIn);
 	}
 
-  public static ContainerBasic fromNetworkPacket(int windowId, PlayerInventory inv, PacketBuffer buf) {
-
-    return new ContainerBasic(windowId, inv, );
-  }
-
-
+  private static final Logger LOGGER = LogManager.getLogger();
 }

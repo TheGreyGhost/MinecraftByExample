@@ -3,10 +3,13 @@ package minecraftbyexample.mbe30_inventory_basic;
 import minecraftbyexample.GuiHandlerRegistry;
 import minecraftbyexample.MinecraftByExample;
 import minecraftbyexample.mbe20_tileentity_data.TileEntityData;
+import minecraftbyexample.testingarea.container.TestContainer;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraftforge.common.extensions.IForgeContainerType;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -69,4 +72,12 @@ public class StartupCommon
 	public static void postInitCommon()
 	{
 	}
+
+  private void registerContainers(final RegistryEvent.Register<ContainerType<?>> event)
+  {
+    TYPE = IForgeContainerType.create(TestContainer::new);
+    TYPE.setRegistryName("test_container_registry_name");
+    event.getRegistry().register(TYPE);
+  }
+
 }
