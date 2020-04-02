@@ -22,7 +22,7 @@ import java.util.Arrays;
  *
  * This is a simple tile entity implementing IInventory that can store 9 item stacks
  */
-public class TileEntityInventoryBasic extends TileEntity implements IItemHandler {
+public class TileEntityInventoryBasic extends TileEntity implements IInventory {
 	// Create and initialize the item variable that will store store the item
 	private final int NUMBER_OF_SLOTS = 9;
 //	private ItemStack[] itemStacks;
@@ -40,54 +40,26 @@ public class TileEntityInventoryBasic extends TileEntity implements IItemHandler
 	// Gets the number of slots in the inventory
 	@Override
 	public int getSizeInventory() {
-		return itemStacks.length;
+		return itemStackHandler.getSlots();
 	}
 
   // returns true if all of the slots in the inventory are empty
 	@Override
 	public boolean isEmpty()
   {
-    for (ItemStack itemstack : itemStacks) {
-      if (!itemstack.isEmpty()) {  // isEmpty()
+    for (int i = 0; i < itemStackHandler.getSlots(); ++i) {
+      if (!itemStackHandler.getStackInSlot(i).isEmpty()) {  // isEmpty()
         return false;
       }
     }
-
     return true;
-  }
-
-  @Override
-  public int getSlots() {
-    return 0;
   }
 
   // Gets the stack in the given slot
 	@Override
 	public ItemStack getStackInSlot(int slotIndex) {
-		return itemStacks[slotIndex];
+		return itemStackHandler.getStackInSlot(slotIndex);
 	}
-
-  @Nonnull
-  @Override
-  public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-    return null;
-  }
-
-  @Nonnull
-  @Override
-  public ItemStack extractItem(int slot, int amount, boolean simulate) {
-    return null;
-  }
-
-  @Override
-  public int getSlotLimit(int slot) {
-    return 0;
-  }
-
-  @Override
-  public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-    return false;
-  }
 
   /**
 	 * Removes some of the units from itemstack in the given slot, and returns as a separate itemstack
@@ -97,21 +69,25 @@ public class TileEntityInventoryBasic extends TileEntity implements IItemHandler
 	 */
 	@Override
 	public ItemStack decrStackSize(int slotIndex, int count) {
-		ItemStack itemStackInSlot = getStackInSlot(slotIndex);
-		if (itemStackInSlot.isEmpty()) return ItemStack.EMPTY;  // isEmpt();   EMPTY_ITEM
-
-		ItemStack itemStackRemoved;
-		if (itemStackInSlot.getCount() <= count) {  // getStackSize()
-			itemStackRemoved = itemStackInSlot;
-			setInventorySlotContents(slotIndex, ItemStack.EMPTY);   // EMPTY_ITEM
-		} else {
-			itemStackRemoved = itemStackInSlot.splitStack(count);
-			if (itemStackInSlot.getCount() == 0) { // getStackSize
-				setInventorySlotContents(slotIndex, ItemStack.EMPTY);   // EMPTY_ITEM
-			}
-		}
-	  markDirty();
-		return itemStackRemoved;
+    ItemStack extractedItemStack = itemStackHandler.extractItem(slotIndex, count, false);
+		if (!extractedItemStack.isEmpty()) {
+      markDirty();
+    }
+//    ItemStack itemStackInSlot = getStackInSlot(slotIndex);
+//		if (itemStackInSlot.isEmpty()) return ItemStack.EMPTY;  // isEmpt();   EMPTY_ITEM
+//
+//		ItemStack itemStackRemoved;
+//		if (itemStackInSlot.getCount() <= count) {  // getStackSize()
+//			itemStackRemoved = itemStackInSlot;
+//			setInventorySlotContents(slotIndex, ItemStack.EMPTY);   // EMPTY_ITEM
+//		} else {
+//			itemStackRemoved = itemStackInSlot.splitStack(count);
+//			if (itemStackInSlot.getCount() == 0) { // getStackSize
+//				setInventorySlotContents(slotIndex, ItemStack.EMPTY);   // EMPTY_ITEM
+//			}
+//		}
+//	  markDirty();
+		return extractedItemStack;
 	}
 
 	// overwrites the stack in the given slotIndex with the given stack

@@ -53,7 +53,7 @@ public class ContainerBasic extends Container {
 		// Add the players hotbar to the gui - the [xpos, ypos] location of each item
 		for (int x = 0; x < HOTBAR_SLOT_COUNT; x++) {
 			int slotNumber = x;
-			addSlotToContainer(new Slot(invPlayer, slotNumber, HOTBAR_XPOS + SLOT_X_SPACING * x, HOTBAR_YPOS));
+			addSlot(new Slot(invPlayer, slotNumber, HOTBAR_XPOS + SLOT_X_SPACING * x, HOTBAR_YPOS));
 		}
 
 		final int PLAYER_INVENTORY_XPOS = 8;
@@ -64,7 +64,7 @@ public class ContainerBasic extends Container {
 				int slotNumber = HOTBAR_SLOT_COUNT + y * PLAYER_INVENTORY_COLUMN_COUNT + x;
 				int xpos = PLAYER_INVENTORY_XPOS + x * SLOT_X_SPACING;
 				int ypos = PLAYER_INVENTORY_YPOS + y * SLOT_Y_SPACING;
-				addSlotToContainer(new Slot(invPlayer, slotNumber,  xpos, ypos));
+				addSlot(new Slot(invPlayer, slotNumber,  xpos, ypos));
 			}
 		}
 
@@ -77,7 +77,7 @@ public class ContainerBasic extends Container {
 		// Add the tile inventory container to the gui
 		for (int x = 0; x < TE_INVENTORY_SLOT_COUNT; x++) {
 			int slotNumber = x;
-			addSlotToContainer(new Slot(tileEntityInventoryBasic, slotNumber, TILE_INVENTORY_XPOS + SLOT_X_SPACING * x, TILE_INVENTORY_YPOS));
+			addSlot(new Slot(tileEntityInventoryBasic, slotNumber, TILE_INVENTORY_XPOS + SLOT_X_SPACING * x, TILE_INVENTORY_YPOS));
 		}
 	}
 
