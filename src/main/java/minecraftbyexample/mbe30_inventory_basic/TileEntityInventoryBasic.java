@@ -1,7 +1,9 @@
 package minecraftbyexample.mbe30_inventory_basic;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -15,13 +17,14 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 
 /**
  * User: brandon3055
  * Date: 06/01/2015
  *
- * This is a simple tile entity implementing IInventory that can store 9 item stacks
+ * This is a simple tile entity  that can store 9 item stacks
  */
 public class TileEntityInventoryBasic extends TileEntity implements INamedContainerProvider {
 	// Create and initialize the item variable that will store store the item
@@ -74,16 +77,36 @@ public class TileEntityInventoryBasic extends TileEntity implements INamedContai
       throw new IllegalArgumentException("Corrupted NBT: Number of inventory slots did not match expected.");
 	}
 
-	// will add a key for this container to the lang file so we can name it in the GUI
-	@Override
-	public String getName() {
-		return "container.mbe30_inventory_basic.name";
-	}
+//	// will add a key for this container to the lang file so we can name it in the GUI
+//	@Override
+//	public String getName() {
+//		return "container.mbe30_inventory_basic.name";
+//	}
+//
+//
+
+	// -------------  The following two methods are used to make the TileEntity perform as a NamedContainerProvider, i.e.
+  //  1) Provide a name used when displaying the container, and
+  //  2) Creating an instance of container on the server, and linking it to the inventory items stored within the TileEntity
 
 	// standard code to look up what the human-readable name is
 	@Override
 	public ITextComponent getDisplayName() {
-		return this.hasCustomName() ? new StringTextComponent(this.getName()) : new TranslationTextComponent(this.getName());
+    return new TranslationTextComponent("container.mbe30_inventory_basic");
+
+	  //		return this.hasCustomName() ? new StringTextComponent(this.getName()) : new TranslationTextComponent(this.getName());
 	}
 
+  /**
+   * The name is misleading; createMenu has nothing to do with creating a Screen, it is used to create the Container on the server only
+   * @param p_createMenu_1_
+   * @param p_createMenu_2_
+   * @param p_createMenu_3_
+   * @return
+   */
+  @Nullable
+  @Override
+  public Container createMenu(int p_createMenu_1_, PlayerInventory p_createMenu_2_, PlayerEntity p_createMenu_3_) {
+    return new
+  }
 }

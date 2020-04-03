@@ -70,22 +70,23 @@ public class BlockInventoryBasic extends ContainerBlock
 	// Called when the block is right clicked
 	// In this block it is used to open the block gui when right clicked by a player
 	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, BlockState state, PlayerEntity playerIn, Hand hand,
+	public boolean onBlockActivated(World worldIn, BlockPos blockPos, BlockState state, PlayerEntity player, Hand hand,
 																	Direction side, float hitX, float hitY, float hitZ) {
 		// Uses the gui handler registered to your mod to open the gui for the given gui id
 		// open on the server side only  (not sure why you shouldn't open client side too... vanilla doesn't, so we better not either)
 		if (worldIn.isRemote) return true;
 
-		playerIn.openGui(MinecraftByExample.instance, GuiHandlerMBE30.getGuiID(), worldIn, pos.getX(), pos.getY(), pos.getZ());
-		return true;
-    NetworkHooks.openGui((ServerPlayerEntity) event.getPlayer(), new MyINamedContainerProvider(text), extraData -> {
+		// by default, getContainer returns the tileEntity for this block, at the given blockPos.
+		INamedContainerProvider namedContainerProvider = getContainer(state, worldIn, blockPos);
+
+    NetworkHooks.openGui(player, namedContainerProvider, extraData -> {
       extraData.writeString(text);
     });
 
     if (worldIn.isRemote) {
       return true;
     } else {
-      INamedContainerProvider inamedcontainerprovider = this.getContainer(state, worldIn, pos);
+      INamedContainerProvider inamedcontainerprovider = this.getContainer(state, worldIn, blockPos);
       if (inamedcontainerprovider != null) {
         player.openContainer(inamedcontainerprovider);
         player.addStat(this.getOpenStat());

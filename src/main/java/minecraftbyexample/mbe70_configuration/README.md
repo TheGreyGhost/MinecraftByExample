@@ -1,5 +1,8 @@
 # MBE70_CONFIGURATION
 
+
+https://github.com/TheElectronWill/night-config
+
 Code by twrightsman (greekphysique)
 
 This example shows how to implement simple configuration scheme, specifically:

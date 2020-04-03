@@ -1,5 +1,6 @@
 package minecraftbyexample.mbe30_inventory_basic;
 
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -8,6 +9,7 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
@@ -94,7 +96,7 @@ public class ContainerBasic extends Container {
 	@Override
 	public boolean canInteractWith(PlayerEntity player)
 	{
-		return tileEntityInventoryBasic.canPlayerAccessInventory(player);
+    return tileEntityInventoryBasic.canPlayerAccessInventory(player);
 	}
 
 	// This is where you specify what happens when a player shift clicks a slot in the gui
