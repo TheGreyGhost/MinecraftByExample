@@ -28,7 +28,7 @@ import java.util.Arrays;
  */
 public class TileEntityInventoryBasic extends TileEntity implements INamedContainerProvider {
 	// Create and initialize the item variable that will store store the item
-	private final int NUMBER_OF_SLOTS = 9;
+	public static final int NUMBER_OF_SLOTS = 9;
 //	private ItemStack[] itemStacks;
 
   private final ItemStackHandler itemStackHandler = new ItemStackHandler(NUMBER_OF_SLOTS);
