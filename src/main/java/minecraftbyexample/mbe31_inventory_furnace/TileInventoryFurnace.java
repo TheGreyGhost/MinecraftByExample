@@ -31,7 +31,7 @@ import java.util.Arrays;
  * The fuel slots are used in parallel.  The more slots burning in parallel, the faster the cook time.
  * The code is heavily based on TileEntityFurnace.
  */
-public class TileInventoryFurnace extends TileEntity implements IInventory, ITickable {
+public class TileInventoryFurnace extends TileEntity implements ITickable {
 	// Create and initialize the itemStacks variable that will store store the itemStacks
 	public static final int FUEL_SLOTS_COUNT = 4;
 	public static final int INPUT_SLOTS_COUNT = 5;
@@ -48,6 +48,8 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 	private int cachedNumberOfBurningSlots = -1;
 
 	private ItemStack[] itemStacks;
+
+  private final FurnaceStateData furnaceStateData = new FurnaceStateData();
 
 	public TileInventoryFurnace()
 	{
@@ -146,7 +148,7 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 	}
 
 	/**
-	 * 	for each fuel slot: decreases the burn time, checks if burnTimeRemaining = 0 and tries to consume a new piece of fuel if one is available
+	 * 	for each fuel slot: decreases the burn time, checks if burnTimeRemainings = 0 and tries to consume a new piece of fuel if one is available
 	 * @return the number of fuel slots which are burning
 	 */
 	private int burnFuel() {
@@ -161,7 +163,7 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 			}
 			if (burnTimeRemaining[i] == 0) {
 				if (!itemStacks[fuelSlotNumber].isEmpty() && getItemBurnTime(itemStacks[fuelSlotNumber]) > 0) {  // isEmpty()
-					// If the stack in this slot is not null and is fuel, set burnTimeRemaining & burnTimeInitialValue to the
+					// If the stack in this slot is not null and is fuel, set burnTimeRemainings & burnTimeInitialValues to the
 					// item's burn time and decrease the stack size
 					burnTimeRemaining[i] = burnTimeInitialValue[i] = getItemBurnTime(itemStacks[fuelSlotNumber]);
 					itemStacks[fuelSlotNumber].shrink(1);  // decreaseStackSize()
@@ -369,7 +371,9 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 	@Override
 	public CompoundNBT writeToNBT(CompoundNBT parentNBTTagCompound)
 	{
-		super.writeToNBT(parentNBTTagCompound); // The super call is required to save and load the tiles location
+		super.write(parentNBTTagCompound); // The super call is required to save and load the tiles location
+
+    furnaceStateData.putIntoNBT(parentNBTTagCompound);
 
 //		// Save the stored item stacks
 
@@ -386,13 +390,6 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 				dataForAllSlots.appendTag(dataForThisSlot);
 			}
 		}
-		// the array of hashmaps is then inserted into the parent hashmap for the container
-		parentNBTTagCompound.setTag("Items", dataForAllSlots);
-
-		// Save everything else
-		parentNBTTagCompound.setShort("CookTime", cookTime);
-	  parentNBTTagCompound.setTag("burnTimeRemaining", new IntArrayNBT(burnTimeRemaining));
-		parentNBTTagCompound.setTag("burnTimeInitial", new IntArrayNBT(burnTimeInitialValue));
     return parentNBTTagCompound;
 	}
 
@@ -400,8 +397,11 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 	@Override
 	public void readFromNBT(CompoundNBT nbtTagCompound)
 	{
-		super.readFromNBT(nbtTagCompound); // The super call is required to save and load the tiles location
-		final byte NBT_TYPE_COMPOUND = 10;       // See NBTBase.createNewByType() for a listing
+		super.read(nbtTagCompound); // The super call is required to save and load the tiles location
+
+    furnaceStateData.readFromNBT(nbtTagCompound);
+
+    final byte NBT_TYPE_COMPOUND = 10;       // See NBTBase.createNewByType() for a listing
 		ListNBT dataForAllSlots = nbtTagCompound.getTagList("Items", NBT_TYPE_COMPOUND);
 
 		Arrays.fill(itemStacks, ItemStack.EMPTY);           // set all slots to empty EMPTY_ITEM
@@ -415,7 +415,7 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 
 		// Load everything else.  Trim the arrays (or pad with 0) to make sure they have the correct number of elements
 		cookTime = nbtTagCompound.getShort("CookTime");
-		burnTimeRemaining = Arrays.copyOf(nbtTagCompound.getIntArray("burnTimeRemaining"), FUEL_SLOTS_COUNT);
+		burnTimeRemaining = Arrays.copyOf(nbtTagCompound.getIntArray("burnTimeRemainings"), FUEL_SLOTS_COUNT);
 		burnTimeInitialValue = Arrays.copyOf(nbtTagCompound.getIntArray("burnTimeInitial"), FUEL_SLOTS_COUNT);
 		cachedNumberOfBurningSlots = -1;
 	}
@@ -563,11 +563,6 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
    * ContainerLink is used by the server container to read and write the furnace state data in the TileEntity and to
    *   synchronise it to the client container
    *
-   * They are mapped (internally) as:
-   * 0 = cookTime
-   * 1 .. FUEL_SLOTS_COUNT = burnTimeInitialValue[]
-   * FUEL_SLOTS_COUNT + 1 .. 2*FUEL_SLOTS_COUNT = burnTimeRemaining[]
-   *
    */
   static class ContainerLink implements IIntArray {
 
@@ -588,17 +583,6 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
     public int size() {
       return ;
     }
-    private final int COOKTIME_INDEX = 0;
-    private final int BURNTIME_INITIAL_VALUE_INDEX = 1;
-    private final int BURNTIME_REMAINING_INDEX = FUEL_SLOTS_COUNT;
-
-    /**The number of ticks the current item has been cooking*/
-    public int cookTime;
-    /** The initial fuel value of the currently burning fuel (in ticks of burn duration) */
-    public int [] burnTimeInitialValue = new int[FUEL_SLOTS_COUNT];
-    /** The number of burn ticks remaining on the current piece of fuel */
-    public int [] burnTimeRemaining = new int[FUEL_SLOTS_COUNT];
-
   }
 
 
