@@ -23,7 +23,7 @@ import java.awt.*;
  * Foreground layer - typically text labels
  *
  */
-public class ContainerScreenBasic extends ContainerScreen {
+public class ContainerScreenBasic extends ContainerScreen<ContainerBasic> {
 
   public ContainerScreenBasic(ContainerBasic containerBasic, PlayerInventory playerInventory, ITextComponent title) {
     super(containerBasic, playerInventory, title);
@@ -45,7 +45,7 @@ public class ContainerScreenBasic extends ContainerScreen {
    */
   protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 		final float LABEL_XPOS = 5;
-		final float FONT_Y_SPACING = 15;
+		final float FONT_Y_SPACING = 12;
 		final float CHEST_LABEL_YPOS = ContainerBasic.TILE_INVENTORY_YPOS - FONT_Y_SPACING;
     this.font.drawString(this.title.getFormattedText(), LABEL_XPOS, CHEST_LABEL_YPOS, Color.darkGray.getRGB());
     

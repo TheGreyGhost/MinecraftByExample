@@ -6,6 +6,8 @@ import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -21,7 +23,6 @@ import javax.annotation.Nullable;
  * This is a simple tile entity that can store 9 ItemStacks
  */
 public class TileEntityInventoryBasic extends TileEntity implements INamedContainerProvider {
-	// Create and initialize the item variable that will store store the item
 	public static final int NUMBER_OF_SLOTS = 9;
 
 	public TileEntityInventoryBasic()
@@ -67,6 +68,47 @@ public class TileEntityInventoryBasic extends TileEntity implements INamedContai
       throw new IllegalArgumentException("Corrupted NBT: Number of inventory slots did not match expected.");
 	}
 
+  // When the world loads from disk, the server needs to send the TileEntity information to the client
+  //  it uses getUpdatePacket(), getUpdateTag(), onDataPacket(), and handleUpdateTag() to do this:
+  //  getUpdatePacket() and onDataPacket() are used for one-at-a-time TileEntity updates
+  //  getUpdateTag() and handleUpdateTag() are used by vanilla to collate together into a single chunk update packet
+  //  Your container may still appear to work even if you forget to implement these methods, because when you open the
+  //    container using the GUI it takes the information from the server, but anything on the client
+  //   side that looks inside the tileEntity (for example: to change the rendering) won't see anything.
+  @Override
+  @Nullable
+  public SUpdateTileEntityPacket getUpdatePacket()
+  {
+    CompoundNBT nbtTagCompound = new CompoundNBT();
+    write(nbtTagCompound);
+    int tileEntityType = 42;  // arbitrary number; only used for vanilla TileEntities.  You can use it, or not, as you want.
+    return new SUpdateTileEntityPacket(this.pos, tileEntityType, nbtTagCompound);
+  }
+
+  @Override
+  public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+    read(pkt.getNbtCompound());
+  }
+
+  /* Creates a tag containing all of the TileEntity information, used by vanilla to transmit from server to client
+   */
+  @Override
+  public CompoundNBT getUpdateTag()
+  {
+    CompoundNBT nbtTagCompound = new CompoundNBT();
+    write(nbtTagCompound);
+    return nbtTagCompound;
+  }
+
+  /* Populates this TileEntity with information from the tag, used by vanilla to transmit from server to client
+  *  The vanilla default is suitable for this example but I've included an explicit definition anyway.
+   */
+  @Override
+  public void handleUpdateTag(CompoundNBT tag)
+  {
+    this.read(tag);
+  }
+
   /**
    * When this tile entity is destroyed, drop all of its contents into the world
    * @param world
@@ -86,7 +128,7 @@ public class TileEntityInventoryBasic extends TileEntity implements INamedContai
     */
 	@Override
 	public ITextComponent getDisplayName() {
-    return new TranslationTextComponent("container.mbe30_inventory_basic");
+    return new TranslationTextComponent("container.minecraftbyexample.mbe30_container_registry_name");
 	}
 
   /**

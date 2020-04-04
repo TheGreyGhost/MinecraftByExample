@@ -20,6 +20,9 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -35,11 +38,6 @@ import javax.annotation.Nullable;
  * inventory's contents when harvested. The actual storage is handled by the tile entity.
  */
 
-//Note that in 1.10.*, extending BlockContainer can cause rendering problems if you don't extend getRenderType()
-// If you don't want to extend BlockContainer, make sure to add the tile entity manually,
-//   using hasTileEntity() and createTileEntity().  See BlockContainer for a couple of other important methods you may
-//  need to implement.
-
 public class BlockInventoryBasic extends ContainerBlock
 {
 	public BlockInventoryBasic()
@@ -50,9 +48,7 @@ public class BlockInventoryBasic extends ContainerBlock
 
   /**
    * Create the Tile Entity for this block.
-   * If your block doesn't extend BlockContainer, use createTileEntity(World worldIn, IBlockState state) instead
-   * Not needed if your block implements ITileEntityProvider (in this case implemented by BlockContainer), but it
-   *   doesn't hurt to include it anyway...
+   * Forge has a default but I've included it anyway for clarity
    * @return
    */
   @Override
@@ -62,7 +58,7 @@ public class BlockInventoryBasic extends ContainerBlock
   @Nullable
   @Override
   public TileEntity createNewTileEntity(IBlockReader worldIn) {
-    return null;
+    return new TileEntityInventoryBasic();
   }
 
   // not needed if your block implements ITileEntityProvider (in this case implemented by BlockContainer), but it
@@ -85,6 +81,7 @@ public class BlockInventoryBasic extends ContainerBlock
       if (!(player instanceof ServerPlayerEntity)) return ActionResultType.FAIL;  // should always be true, but just in case...
       ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity)player;
       NetworkHooks.openGui(serverPlayerEntity, namedContainerProvider, (packetBuffer)->{});
+            // (packetBuffer)->{} is just a do-nothing because we have no extra data to send
     }
     return ActionResultType.SUCCESS;
 	}
@@ -111,4 +108,20 @@ public class BlockInventoryBasic extends ContainerBlock
   public BlockRenderType getRenderType(BlockState iBlockState) {
     return BlockRenderType.MODEL;
   }
-}
+
+  // returns the shape of the block:
+  //  The image that you see on the screen (when a block is rendered) is determined by the block model (i.e. the model json file).
+  //  But Minecraft also uses a number of other "shapes" to control the interaction of the block with its environment and with the player.
+  // See  https://greyminecraftcoder.blogspot.com/2020/02/block-shapes-voxelshapes-1144.html
+  @Override
+  public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+    return CHEST_SHAPE;
+  }
+
+  private static final Vec3d CHEST_MIN_CORNER = new Vec3d(1.0, 0.0, 1.0);
+  private static final Vec3d CHEST_MAX_CORNER = new Vec3d(15.0, 8.0, 15.0);
+  private static final VoxelShape CHEST_SHAPE = Block.makeCuboidShape(
+          CHEST_MIN_CORNER.getX(), CHEST_MIN_CORNER.getY(), CHEST_MIN_CORNER.getZ(),
+          CHEST_MAX_CORNER.getX(), CHEST_MAX_CORNER.getY(), CHEST_MAX_CORNER.getZ());
+
+  }

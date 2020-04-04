@@ -6,7 +6,6 @@ Note - this currently uses "latest" Forge version instead of "recommended" Forge
 `      mappings channel: 'snapshot', version: '20200225-1.15.1`<br>
 `      minecraft 'net.minecraftforge:forge:1.15.2-31.1.18`<br>
 
-
 The purpose of MinecraftByExample is to give simple working examples of the important concepts in Minecraft and Forge. If you're anything like me, a good code example is worth several screens of waffling explanation, and can very quickly explain the key concepts.  I also find it much easier to adapt and debug something that already works, than to have to synthesize something from scratch and spend hours trying to discover the missing bit of information I didn't know about.
 
 I've tried to keep the code simple and obvious and to resist the urge to be clever. The examples might not be the most efficient or succinct implementation, I've deliberately left the optimization to you.
@@ -59,7 +58,7 @@ If you use IntelliJ, you might find these [xml mapping files][mapfiles] useful t
   - [MBE21][21] - using the TileEntityRenderer to render unusual shapes or animations
 
 ### Containers (Inventories)
-  - X [MBE30][30] - a simple container for storing items in the world - similar to a Chest
+  - [MBE30][30] - a simple container for storing items in the world - similar to a Chest
   - X [MBE31][31] - a functional container such as a Furnace or Crafting Table
 
 ### Recipes (Crafting/Furnace)
