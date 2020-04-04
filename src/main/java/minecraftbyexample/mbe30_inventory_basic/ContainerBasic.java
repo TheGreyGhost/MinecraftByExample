@@ -5,13 +5,10 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.function.Predicate;
 
 /**
  * User: brandon3055
@@ -30,23 +27,21 @@ import java.util.function.Predicate;
  */
 public class ContainerBasic extends Container {
 
-  public static ContainerBasic createContainerServerSide(int windowID, PlayerInventory playerInventory, TileEntityInventoryBasic tileEntityInventoryBasic) {
-    return new ContainerBasic(windowID, playerInventory, tileEntityInventoryBasic.getItemStackHandler(),
-                              tileEntityInventoryBasic::canPlayerAccessInventory,
-                              tileEntityInventoryBasic::markDirty);
+  public static ContainerBasic createContainerServerSide(int windowID, PlayerInventory playerInventory, ChestContents chestContents) {
+    return new ContainerBasic(windowID, playerInventory, chestContents);
   }
 
   public static ContainerBasic createContainerClientSide(int windowID, PlayerInventory playerInventory, net.minecraft.network.PacketBuffer extraData) {
     //  don't need extraData for this example; if you want you can use it to provide extra information from the server, that you can use
     //  when creating the client container
     //  eg String detailedDescription = extraData.readString(128);
-    ItemStackHandler temporaryChestInventory = new ItemStackHandler(TileEntityInventoryBasic.NUMBER_OF_SLOTS);
-    // on the client side there is no parent TileEntity to communicate with, so
+    ChestContents chestContents = ChestContents.createForClientSideContainer(TileEntityInventoryBasic.NUMBER_OF_SLOTS);
+
+    // on the client side there is no parent TileEntity to communicate with, so we:
     // 1) use a dummy inventory
     // 2) use "do nothing" lambda functions for canPlayerAccessInventory and markDirty
-    return new ContainerBasic(windowID, playerInventory, temporaryChestInventory, x -> true, () -> {});
+    return new ContainerBasic(windowID, playerInventory, chestContents);
   }
-
 
 	// must assign a slot number to each of the slots used by the GUI.
 	// For this container, we can see both the tile inventory's slots as well as the player inventory slots and the hotbar.
@@ -55,36 +50,33 @@ public class ContainerBasic extends Container {
 	//  9 - 35 = player inventory slots (which map to the InventoryPlayer slot numbers 9 - 35)
 	//  36 - 44 = TileInventory slots, which map to our TileEntity slot numbers 0 - 8)
 
-	private final int HOTBAR_SLOT_COUNT = 9;
-	private final int PLAYER_INVENTORY_ROW_COUNT = 3;
-	private final int PLAYER_INVENTORY_COLUMN_COUNT = 9;
-	private final int PLAYER_INVENTORY_SLOT_COUNT = PLAYER_INVENTORY_COLUMN_COUNT * PLAYER_INVENTORY_ROW_COUNT;
-	private final int VANILLA_SLOT_COUNT = HOTBAR_SLOT_COUNT + PLAYER_INVENTORY_SLOT_COUNT;
+	private static final int HOTBAR_SLOT_COUNT = 9;
+	private static final int PLAYER_INVENTORY_ROW_COUNT = 3;
+	private static final int PLAYER_INVENTORY_COLUMN_COUNT = 9;
+	private static final int PLAYER_INVENTORY_SLOT_COUNT = PLAYER_INVENTORY_COLUMN_COUNT * PLAYER_INVENTORY_ROW_COUNT;
+	private static final int VANILLA_SLOT_COUNT = HOTBAR_SLOT_COUNT + PLAYER_INVENTORY_SLOT_COUNT;
 
-	private final int VANILLA_FIRST_SLOT_INDEX = 0;
-	private final int TE_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT;
-	private final int TE_INVENTORY_SLOT_COUNT = TileEntityInventoryBasic.NUMBER_OF_SLOTS;  // must match TileEntityInventoryBasic.NUMBER_OF_SLOTS
+	private static final int VANILLA_FIRST_SLOT_INDEX = 0;
+	private static final int TE_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT;
+	private static final int TE_INVENTORY_SLOT_COUNT = TileEntityInventoryBasic.NUMBER_OF_SLOTS;  // must match TileEntityInventoryBasic.NUMBER_OF_SLOTS
+
+  public static final int TILE_INVENTORY_YPOS = 20;  // the ContainerScreenBasic needs to know these so it can tell where to draw the Titles
+  public static final int PLAYER_INVENTORY_YPOS = 51;
 
   /**
    * Creates a container suitable for server side or client side
    * @param windowID ID of the container
    * @param playerInventory the inventory of the player
-   * @param chestInventory the inventory stored in the chest
-   * @param canPlayerAccessInventoryLambda the function that the container should call in order to decide if the given player
-   *                                       can access the container's Inventory or not.  Only used on the server side
+   * @param chestContents the inventory stored in the chest
    */
-	private ContainerBasic(int windowID, PlayerInventory playerInventory, ItemStackHandler chestInventory,
-                         Predicate<PlayerEntity> canPlayerAccessInventoryLambda,
-                         Notify markDirtyNotificationLambda) {
-	  super(StartupCommon.containerBasicContainerType, windowID);
-    if (StartupCommon.containerBasicContainerType == null)
+	private ContainerBasic(int windowID, PlayerInventory playerInventory, ChestContents chestContents) {
+	  super(StartupCommon.containerTypeContainerBasic, windowID);
+    if (StartupCommon.containerTypeContainerBasic == null)
       throw new IllegalStateException("Must initialise containerBasicContainerType before constructing a ContainerBasic!");
 
     PlayerInvWrapper playerInventoryForge = new PlayerInvWrapper(playerInventory);  // wrap the IInventory in a Forge IItemHandler.
             // Not actually necessary - can use Slot(playerInventory) instead of SlotItemHandler(playerInventoryForge)
-    this.chestInventory = chestInventory;
-    this.canPlayerAccessInventoryLambda = canPlayerAccessInventoryLambda;
-    this.markDirtyNotificationLambda = markDirtyNotificationLambda;
+    this.chestContents = chestContents;
 
 		final int SLOT_X_SPACING = 18;
     final int SLOT_Y_SPACING = 18;
@@ -97,8 +89,7 @@ public class ContainerBasic extends Container {
 		}
 
 		final int PLAYER_INVENTORY_XPOS = 8;
-		final int PLAYER_INVENTORY_YPOS = 51;
-		// Add the rest of the players inventory to the gui
+		// Add the rest of the player's inventory to the gui
 		for (int y = 0; y < PLAYER_INVENTORY_ROW_COUNT; y++) {
 			for (int x = 0; x < PLAYER_INVENTORY_COLUMN_COUNT; x++) {
 				int slotNumber = HOTBAR_SLOT_COUNT + y * PLAYER_INVENTORY_COLUMN_COUNT + x;
@@ -108,17 +99,15 @@ public class ContainerBasic extends Container {
 			}
 		}
 
-		if (TE_INVENTORY_SLOT_COUNT != chestInventory.getSlots()) {
+		if (TE_INVENTORY_SLOT_COUNT != chestContents.getSizeInventory()) {
 			LOGGER.warn("Mismatched slot count in ContainerBasic(" + TE_INVENTORY_SLOT_COUNT
-												  + ") and TileInventory (" + chestInventory.getSlots()+")");
+												  + ") and TileInventory (" + chestContents.getSizeInventory()+")");
 		}
 		final int TILE_INVENTORY_XPOS = 8;
-		final int TILE_INVENTORY_YPOS = 20;
 		// Add the tile inventory container to the gui
 		for (int x = 0; x < TE_INVENTORY_SLOT_COUNT; x++) {
 			int slotNumber = x;
-			addSlot(new SlotItemHandler(chestInventory,
-                                  slotNumber, TILE_INVENTORY_XPOS + SLOT_X_SPACING * x, TILE_INVENTORY_YPOS));
+			addSlot(new Slot(chestContents, slotNumber, TILE_INVENTORY_XPOS + SLOT_X_SPACING * x, TILE_INVENTORY_YPOS));
 		}
 	}
 
@@ -136,7 +125,7 @@ public class ContainerBasic extends Container {
     // return this.furnaceInventory.isUsableByPlayer(playerEntity);
     // Sometimes it perform an additional check (eg for EnderChests - the player owns the chest)
 
-    return canPlayerAccessInventoryLambda.test(playerEntity);
+    return chestContents.isUsableByPlayer(playerEntity);
 	}
 
 	// This is where you specify what happens when a player shift clicks a slot in the gui
@@ -187,20 +176,8 @@ public class ContainerBasic extends Container {
 	public void onContainerClosed(PlayerEntity playerIn)
 	{
 		super.onContainerClosed(playerIn);
-		// if necessary, call the tile entity closeInventory here
-    //  (eg tells the chest to close its lid if there are no more players rummaging through it
-//		this.closeContainerLambda.closeInventory(playerIn);
 	}
 
-  @FunctionalInterface
-  public interface Notify {
-    void invoke();
-  }
-
-  private ItemStackHandler chestInventory; // the items stored by the parent chest (on server: TileEntityInventoryBasic.  On client: dummy storage)
-  private Predicate<PlayerEntity> canPlayerAccessInventoryLambda;  // the function that the container should call in order to decide if the
-          //given player can access the container's Inventory or not.  Only valid server side
-  private Notify markDirtyNotificationLambda; // the function that the container should call in order to tell the parent TileInventory that the
-          // contents of its inventory have been changed
+	private ChestContents chestContents;
   private static final Logger LOGGER = LogManager.getLogger();
 }
