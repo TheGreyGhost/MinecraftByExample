@@ -36,6 +36,8 @@ public class ChestContents implements IInventory {
    * Use this constructor to create a ChestContents which is linked to its parent TileEntity.
    * On the server, this link will be used by the Container to request information and provide notifications to the parent
    * On the client, the link will be unused.
+   * There are additional notificationLambdas available; these two are explicitly specified because your TileEntity will
+   *   nearly always need to implement at least these two
    * @param size  the max number of ItemStacks in the inventory
    * @param canPlayerAccessInventoryLambda the function that the container should call in order to decide if the given player
    *                                       can access the container's contents not.  Usually, this is a check to see
