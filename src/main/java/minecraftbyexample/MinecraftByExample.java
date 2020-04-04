@@ -1,5 +1,6 @@
 package minecraftbyexample;
 
+import minecraftbyexample.testingarea.container.ContainerTypeTest;
 import minecraftbyexample.usefultools.debugging.ForgeLoggerTweaker;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -113,6 +114,9 @@ public class MinecraftByExample {
     MOD_EVENT_BUS.register(minecraftbyexample.mbe21_tileentityrenderer.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe21_tileentityrenderer.StartupCommon.class);
 
+    MOD_EVENT_BUS.register(minecraftbyexample.mbe30_inventory_basic.StartupClientOnly.class);
+    MOD_EVENT_BUS.register(minecraftbyexample.mbe30_inventory_basic.StartupCommon.class);
+
     MOD_EVENT_BUS.register(minecraftbyexample.mbe45_commands.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe45_commands.StartupCommon.class);
 
@@ -128,5 +132,9 @@ public class MinecraftByExample {
     //----------------
     MOD_EVENT_BUS.register(minecraftbyexample.usefultools.debugging.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.usefultools.debugging.StartupCommon.class);
+
+    containerTypeTest = new ContainerTypeTest(); //todo remove
   }
+
+  static private ContainerTypeTest containerTypeTest;
 }

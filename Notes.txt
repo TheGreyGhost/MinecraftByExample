@@ -1,3 +1,6 @@
+Capabilities
+https://www.minecraftforge.net/forum/topic/82977-115-best-way-to-store-custom-data/
+
 New stuff:
 RenderType: solid, cutout mipped, etc
 RenderTypeLookup manually sets the render type for each block now

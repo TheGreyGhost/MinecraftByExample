@@ -1,66 +1,68 @@
-//package minecraftbyexample.mbe30_inventory_basic;
-//
-//import minecraftbyexample.GuiHandlerRegistry;
-//import minecraftbyexample.MinecraftByExample;
-//import net.minecraft.block.Block;
-//import net.minecraft.item.BlockItem;
-//import net.minecraftforge.fml.common.network.NetworkRegistry;
-//import net.minecraftforge.fml.common.registry.ForgeRegistries;
-//import net.minecraftforge.fml.common.registry.GameRegistry;
-//
-///**
-// * User: brandon3055
-// * Date: 06/01/2015
-// *
-// * The Startup classes for this example are called during startup, in the following order:
-// *  preInitCommon
-// *  preInitClientOnly
-// *  initCommon
-// *  initClientOnly
-// *  postInitCommon
-// *  postInitClientOnly
-// *  See MinecraftByExample class for more information
-// */
-//public class StartupCommon
-//{
-//	public static Block blockInventoryBasic;  // this holds the unique instance of your block
-//	public static BlockItem itemBlockInventoryBasic; // and the corresponding item form that block
-//
-//	public static void preInitCommon()
-//	{
-//		// each instance of your block should have a name that is unique within your mod.  use lower case.
-//		/* it is a good practise to use a consistent registry name and obtain the unlocalised name from the registry name,
-//		 *  this will avoid breaking old worlds if something changes. This would look like
-//		 *  		blockInventoryBasic.getRegistryName().toString();
-//		 *  and would require changing the lang file as the block's name would be now
-//		 *          tile.minecraftbyexample:mbe_30_inventory_basic.name
-//		 */
-//		blockInventoryBasic = (BlockInventoryBasic)(new BlockInventoryBasic().setRegistryName("mbe30_inventory_basic"));
-//		blockInventoryBasic.setUnlocalizedName("mbe30_inventory_basic");
-//		ForgeRegistries.BLOCKS.register(blockInventoryBasic);
-//
-//		// same but for the associated item
-//		itemBlockInventoryBasic = new BlockItem(blockInventoryBasic);
-//		itemBlockInventoryBasic.setRegistryName(blockInventoryBasic.getRegistryName());
-//    ForgeRegistries.ITEMS.register(itemBlockInventoryBasic);
-//
-//		// register the tile entity associated with the inventory block
-//		GameRegistry.registerTileEntity(TileEntityInventoryBasic.class, "minecraftbyexample:mbe30_tile_inventory_basic");
-//
-//		// You need to register a GUIHandler for the container.  However there can be only one handler per mod, so for the purposes
-//		//   of this project, we create a single GuiHandlerRegistry for all examples.
-//		// We register this GuiHandlerRegistry with the NetworkRegistry, and then tell the GuiHandlerRegistry about
-//		//   each example's GuiHandler, in this case GuiHandlerMBE30, so that when it gets a request from NetworkRegistry,
-//		//   it passes the request on to the correct example's GuiHandler.
-//		NetworkRegistry.INSTANCE.registerGuiHandler(MinecraftByExample.instance, GuiHandlerRegistry.getInstance());
-//		GuiHandlerRegistry.getInstance().registerGuiHandler(new GuiHandlerMBE30(), GuiHandlerMBE30.getGuiID());
-//	}
-//
-//	public static void initCommon()
-//	{
-//	}
-//
-//	public static void postInitCommon()
-//	{
-//	}
-//}
+package minecraftbyexample.mbe30_inventory_basic;
+
+import net.minecraft.block.Block;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraftforge.common.extensions.IForgeContainerType;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+
+/**
+ * User: brandon3055
+ * Date: 06/01/2015
+ *
+ * The Startup classes for this example are called during startup in the following order
+ *  * Register<Block>
+ *  * Register<Item>
+ *  * Register<TileEntityType<?>>
+ *  * Register<ContainerType<?>>
+ *  See MinecraftByExample class for more information
+ */
+public class StartupCommon
+{
+	public static Block blockInventoryBasic;  // this holds the unique instance of your block
+	public static BlockItem itemBlockInventoryBasic; // and the corresponding item form that block
+
+  public static TileEntityType<TileEntityInventoryBasic> tileEntityTypeMBE30;  // Holds the type of our tile entity; needed for the TileEntityData constructor
+  public static ContainerType<ContainerBasic> containerTypeContainerBasic;
+
+  @SubscribeEvent
+  public static void onBlocksRegistration(final RegistryEvent.Register<Block> blockRegisterEvent) {
+    blockInventoryBasic = new BlockInventoryBasic().setRegistryName("mbe30_block_registry_name");
+    blockRegisterEvent.getRegistry().register(blockInventoryBasic);
+  }
+
+  @SubscribeEvent
+  public static void onItemsRegistration(final RegistryEvent.Register<Item> itemRegisterEvent) {
+    // We need to create a BlockItem so the player can carry this block in their hand and it can appear in the inventory
+    final int MAXIMUM_STACK_SIZE = 1;  // player can only hold 1 of this block in their hand at once
+
+    Item.Properties itemSimpleProperties = new Item.Properties()
+            .maxStackSize(MAXIMUM_STACK_SIZE)
+            .group(ItemGroup.BUILDING_BLOCKS);  // which inventory tab?
+    itemBlockInventoryBasic = new BlockItem(blockInventoryBasic, itemSimpleProperties);
+    itemBlockInventoryBasic.setRegistryName(blockInventoryBasic.getRegistryName());
+    itemRegisterEvent.getRegistry().register(itemBlockInventoryBasic);
+  }
+
+  @SubscribeEvent
+  public static void onTileEntityTypeRegistration(final RegistryEvent.Register<TileEntityType<?>> event) {
+    tileEntityTypeMBE30 = TileEntityType.Builder.create(TileEntityInventoryBasic::new, blockInventoryBasic)
+                                                .build(null);
+                        // you probably don't need a datafixer --> null should be fine
+    tileEntityTypeMBE30.setRegistryName("minecraftbyexample:mbe30_tile_entity_type_registry_name");
+    event.getRegistry().register(tileEntityTypeMBE30);
+  }
+
+  @SubscribeEvent
+  public static void registerContainers(final RegistryEvent.Register<ContainerType<?>> event)
+  {
+    containerTypeContainerBasic = IForgeContainerType.create(ContainerBasic::createContainerClientSide);
+    containerTypeContainerBasic.setRegistryName("mbe30_container_registry_name");
+    event.getRegistry().register(containerTypeContainerBasic);
+  }
+
+}
