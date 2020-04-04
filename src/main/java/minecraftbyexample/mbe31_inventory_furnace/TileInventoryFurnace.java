@@ -11,6 +11,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.FurnaceTileEntity;
+import net.minecraft.util.IIntArray;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -41,13 +42,6 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 	public static final int FIRST_INPUT_SLOT = FIRST_FUEL_SLOT + FUEL_SLOTS_COUNT;
 	public static final int FIRST_OUTPUT_SLOT = FIRST_INPUT_SLOT + INPUT_SLOTS_COUNT;
 
-	/** The number of burn ticks remaining on the current piece of fuel */
-	private int [] burnTimeRemaining = new int[FUEL_SLOTS_COUNT];
-	/** The initial fuel value of the currently burning fuel (in ticks of burn duration) */
-	private int [] burnTimeInitialValue = new int[FUEL_SLOTS_COUNT];
-
-	/**The number of ticks the current item has been cooking*/
-	private short cookTime;
 	/**The number of ticks required to cook an item*/
 	private static final short COOK_TIME_FOR_COMPLETION = 200;  // vanilla value is 200 = 10 seconds
 
@@ -559,5 +553,60 @@ public class TileInventoryFurnace extends TileEntity implements IInventory, ITic
 
 	@Override
 	public void closeInventory(PlayerEntity player) {}
+
+
+
+
+
+
+  /**
+   * ContainerLink is used by the server container to read and write the furnace state data in the TileEntity and to
+   *   synchronise it to the client container
+   *
+   * They are mapped (internally) as:
+   * 0 = cookTime
+   * 1 .. FUEL_SLOTS_COUNT = burnTimeInitialValue[]
+   * FUEL_SLOTS_COUNT + 1 .. 2*FUEL_SLOTS_COUNT = burnTimeRemaining[]
+   *
+   */
+  static class ContainerLink implements IIntArray {
+
+    get
+
+    @Override
+    public int get(int index) {
+      if (index <)
+      return allValues[index];
+    }
+
+    @Override
+    public void set(int index, int value) {
+      allValues[index] = value;
+    }
+
+    @Override
+    public int size() {
+      return ;
+    }
+    private final int COOKTIME_INDEX = 0;
+    private final int BURNTIME_INITIAL_VALUE_INDEX = 1;
+    private final int BURNTIME_REMAINING_INDEX = FUEL_SLOTS_COUNT;
+
+    /**The number of ticks the current item has been cooking*/
+    public int cookTime;
+    /** The initial fuel value of the currently burning fuel (in ticks of burn duration) */
+    public int [] burnTimeInitialValue = new int[FUEL_SLOTS_COUNT];
+    /** The number of burn ticks remaining on the current piece of fuel */
+    public int [] burnTimeRemaining = new int[FUEL_SLOTS_COUNT];
+
+  }
+
+
+
+//  private int burnTime;
+//  private int recipesUsed;
+//  private int cookTime;
+//  private int cookTimeTotal;
+
 
 }
