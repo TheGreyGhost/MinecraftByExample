@@ -64,5 +64,4 @@ public class StartupCommon
     containerTypeContainerBasic.setRegistryName("mbe30_container_registry_name");
     event.getRegistry().register(containerTypeContainerBasic);
   }
-
 }

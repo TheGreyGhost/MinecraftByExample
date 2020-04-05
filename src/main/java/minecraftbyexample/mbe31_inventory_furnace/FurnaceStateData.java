@@ -14,14 +14,14 @@ import java.util.Arrays;
  *    b) synchronise the data to the client container using the IIntArray interface (via Container::trackIntArray)
  * 3) The client container uses it to store a temporary copy of the data, for rendering / GUI purposes
  * The TileEntity and the client container both use it by poking directly into its member variables.  That's not good
- *   practice but it's easier to understand that the vanilla method which uses an anonymous class/lambda functions
+ *   practice but it's easier to understand than the vanilla method which uses an anonymous class/lambda functions
  *
  *  The IIntArray interface collates all the separate member variables into a single array for the purposes of transmitting
- *     from server to cient.
+ *     from server to client (handled by Vanilla)
  */
 public class FurnaceStateData implements IIntArray {
 
-  public final int FUEL_SLOTS_COUNT = TileInventoryFurnace.FUEL_SLOTS_COUNT;
+  public static final int FUEL_SLOTS_COUNT = TileEntityFurnace.FUEL_SLOTS_COUNT;
 
   /**The number of ticks the current item has been cooking*/
   public int cookTime;
@@ -62,9 +62,9 @@ public class FurnaceStateData implements IIntArray {
     if (index < BURNTIME_INITIAL_VALUE_INDEX) {
       return cookTime;
     } else if (index < BURNTIME_REMAINING_INDEX) {
-      return  burnTimeInitialValues[index - BURNTIME_INITIAL_VALUE_INDEX];
+      return burnTimeInitialValues[index - BURNTIME_INITIAL_VALUE_INDEX];
     } else {
-      return  burnTimeRemainings[index - BURNTIME_REMAINING_INDEX];
+      return burnTimeRemainings[index - BURNTIME_REMAINING_INDEX];
     }
   }
 
@@ -90,5 +90,4 @@ public class FurnaceStateData implements IIntArray {
       throw new IndexOutOfBoundsException("Index out of bounds:"+index);
     }
   }
-
 }

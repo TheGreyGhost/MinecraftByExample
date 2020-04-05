@@ -4,6 +4,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.IntArrayNBT;
 import net.minecraft.nbt.ListNBT;
@@ -31,7 +32,7 @@ import java.util.Arrays;
  * The fuel slots are used in parallel.  The more slots burning in parallel, the faster the cook time.
  * The code is heavily based on TileEntityFurnace.
  */
-public class TileInventoryFurnace extends TileEntity implements ITickable {
+public class TileEntityFurnace extends TileEntity implements ITickable {
 	// Create and initialize the itemStacks variable that will store store the itemStacks
 	public static final int FUEL_SLOTS_COUNT = 4;
 	public static final int INPUT_SLOTS_COUNT = 5;
@@ -51,7 +52,7 @@ public class TileInventoryFurnace extends TileEntity implements ITickable {
 
   private final FurnaceStateData furnaceStateData = new FurnaceStateData();
 
-	public TileInventoryFurnace()
+	public TileEntityFurnace()
 	{
 		itemStacks = new ItemStack[TOTAL_SLOTS_COUNT];
 		clear();
@@ -254,11 +255,13 @@ public class TileInventoryFurnace extends TileEntity implements ITickable {
 
 	// returns the smelting result for the given stack. Returns null if the given stack can not be smelted
 	public static ItemStack getSmeltingResultForItem(ItemStack stack) { return FurnaceRecipes.instance().getSmeltingResult(stack); }
+      return this.world.getRecipeManager().getRecipe((IRecipeType)this.recipeType, new Inventory(p_217057_1_), this.world).isPresent();
 
 	// returns the number of ticks the given item will burn. Returns 0 if the given item is not a valid fuel
 	public static short getItemBurnTime(ItemStack stack)
 	{
 		int burntime = FurnaceTileEntity.getItemBurnTime(stack);  // just use the vanilla values
+    int burntime = net.minecraftforge.common.ForgeHooks.getBurnTime(p_213991_0_) > 0;
 		return (short)MathHelper.clamp(burntime, 0, Short.MAX_VALUE);
 	}
 
@@ -553,38 +556,6 @@ public class TileInventoryFurnace extends TileEntity implements ITickable {
 
 	@Override
 	public void closeInventory(PlayerEntity player) {}
-
-
-
-
-
-
-  /**
-   * ContainerLink is used by the server container to read and write the furnace state data in the TileEntity and to
-   *   synchronise it to the client container
-   *
-   */
-  static class ContainerLink implements IIntArray {
-
-    get
-
-    @Override
-    public int get(int index) {
-      if (index <)
-      return allValues[index];
-    }
-
-    @Override
-    public void set(int index, int value) {
-      allValues[index] = value;
-    }
-
-    @Override
-    public int size() {
-      return ;
-    }
-  }
-
 
 
 //  private int burnTime;

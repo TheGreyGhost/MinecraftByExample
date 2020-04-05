@@ -11,29 +11,24 @@ import java.util.function.Predicate;
 /**
  * Created by TGG on 4/04/2020.
  *
- * This class is used to encapsulate the contents of the furnace and provide the link between the parent TileEntity and
- *    the container.
+ * This class is used to encapsulate the contents of the one of the zones of the furnace (eg input zone, output zone,
+ *    and fuel zone) and provide the link between the parent TileEntity and the container.
  * 1) stores information about the items in the furnace: allows the container to manipulate the data stored in the tile entity
  * 2) provides a way for the container to ask if certain actions are permitted (eg isUsableByPlayer, isItemValidForSlot)
  * 3) provides a way for the container to notify the TileEntity that the container has changed (eg markDirty, openInventory)
  *
- * Some of the logic for smelting is also in this class:
- * 1) calculating how much burn time is in etsets
- *
- *
- * Typical usage for a TileEntity which needs to store ItemStacks:
- * 1) When constructing the TileEntity, create and store a furnaceContents using createForTileEntity()
- * 2) In your ContainerType<MyContainer>, create a furnaceContents using createForClientSideContainer() and pass it to
+ * Typical usage for a TileEntity which needs to store Items:
+ * 1) When constructing the TileEntity, create and store a ChestContents using createForTileEntity()
+ * 2) In your ContainerType<MyContainer>, create a ChestContents using createForClientSideContainer() and pass it to
  *    the constructor of your client-side container.
  * 3) In your TileEntity write() and read() methods, call the serializeNBT() and deserializeNBT() methods
  * Vanilla and the container code will take care of everything else.
- *
  */
 
-public class FurnaceContents implements IInventory {
+public class FurnaceZoneContents implements IInventory {
 
   /**
-   * Use this constructor to create a furnaceContents which is linked to its parent TileEntity.
+   * Use this constructor to create a FurnaceContents which is linked to its parent TileEntity.
    * On the server, this link will be used by the Container to request information and provide notifications to the parent
    * On the client, the link will be unused.
    * There are additional notificationLambdas available; these two are explicitly specified because your TileEntity will
@@ -45,30 +40,25 @@ public class FurnaceContents implements IInventory {
    * @param markDirtyNotificationLambda  the function that the container should call in order to tell the parent TileEntity
    *                                     that the contents of its inventory have been changed and need to be saved.  Usually,
    *                                     this is TileEntity::markDirty
-   * @return the new furnaceContents.
+   * @return the new ChestContents.
    */
-  public static FurnaceContents createForTileEntity(int size,
-                                                     Predicate<PlayerEntity> canPlayerAccessInventoryLambda,
-                                                     Notify markDirtyNotificationLambda) {
-     return new FurnaceContents(size, canPlayerAccessInventoryLambda, markDirtyNotificationLambda);
+  public static FurnaceZoneContents createForTileEntity(int size,
+                                                        Predicate<PlayerEntity> canPlayerAccessInventoryLambda,
+                                                        Notify markDirtyNotificationLambda) {
+     return new FurnaceZoneContents(size, canPlayerAccessInventoryLambda, markDirtyNotificationLambda);
   }
 
   /**
-   * Use this constructor to create a furnaceContents which is not linked to any parent TileEntity; i.e. is used by
+   * Use this constructor to create a FurnaceContents which is not linked to any parent TileEntity; i.e. is used by
    *   the client side container:
    *   * does not permanently store items
    *   * cannot ask questions/provide notifications to a parent TileEntity
    * @param size  the max number of ItemStacks in the inventory
-   * @return the new furnaceContents
+   * @return the new ChestContents
    */
-  public static FurnaceContents createForClientSideContainer(int size) {
-    return new FurnaceContents(size);
+  public static FurnaceZoneContents createForClientSideContainer(int size) {
+    return new FurnaceZoneContents(size);
   }
-
-  public ItemStackHandler getFuelSlotContents() {
-
-  }
-
 
   // ----Methods used to load / save the contents to NBT
 
@@ -77,7 +67,7 @@ public class FurnaceContents implements IInventory {
    * @return the tag containing the contents
    */
   public CompoundNBT serializeNBT()  {
-    return furnaceContents.serializeNBT();
+    return furnaceComponentContents.serializeNBT();
   }
 
   /**
@@ -85,7 +75,7 @@ public class FurnaceContents implements IInventory {
    * @param nbt
    */
   public void deserializeNBT(CompoundNBT nbt)   {
-    furnaceContents.deserializeNBT(nbt);
+    furnaceComponentContents.deserializeNBT(nbt);
   }
 
   //  ------------- linking methods  -------------
@@ -97,7 +87,7 @@ public class FurnaceContents implements IInventory {
   //    different ways at the same time: via the tileEntity server->client packets and via the container directly poking
   //    around in the inventory contents.
   //  I've used lambdas to make the decoupling more explicit.  You could instead
-  //  * provide an Optional TileEntity to the furnaceContents constructor (and ignore the markDirty() etc calls), or
+  //  * provide an Optional TileEntity to the ChestContents constructor (and ignore the markDirty() etc calls), or
   //  * implement IInventory directly in your TileEntity, and construct your client-side container using an Inventory
   //    instead of passing it a TileEntity.  (This is how vanilla does it)
   //
@@ -142,7 +132,7 @@ public class FurnaceContents implements IInventory {
 
   @Override
   public boolean isItemValidForSlot(int index, ItemStack stack) {
-    return furnaceContents.isItemValid(index, stack);
+    return furnaceComponentContents.isItemValid(index, stack);
   }
 
   // ----- Methods used to inform the parent tile entity that something has happened to the contents
@@ -173,60 +163,56 @@ public class FurnaceContents implements IInventory {
 
   @Override
   public int getSizeInventory() {
-    return furnaceContents.getSlots();
+    return furnaceComponentContents.getSlots();
   }
 
   @Override
   public boolean isEmpty() {
-    for (int i = 0; i < furnaceContents.getSlots(); ++i) {
-      if (!furnaceContents.getStackInSlot(i).isEmpty()) return false;
+    for (int i = 0; i < furnaceComponentContents.getSlots(); ++i) {
+      if (!furnaceComponentContents.getStackInSlot(i).isEmpty()) return false;
     }
     return true;
   }
 
   @Override
   public ItemStack getStackInSlot(int index) {
-    return furnaceContents.getStackInSlot(index);
+    return furnaceComponentContents.getStackInSlot(index);
   }
 
   @Override
   public ItemStack decrStackSize(int index, int count) {
-    return furnaceContents.extractItem(index, count, false);
+    return furnaceComponentContents.extractItem(index, count, false);
   }
 
   @Override
   public ItemStack removeStackFromSlot(int index) {
-    int maxPossibleItemStackSize = furnaceContents.getSlotLimit(index);
-    return furnaceContents.extractItem(index, maxPossibleItemStackSize, false);
+    int maxPossibleItemStackSize = furnaceComponentContents.getSlotLimit(index);
+    return furnaceComponentContents.extractItem(index, maxPossibleItemStackSize, false);
   }
 
   @Override
   public void setInventorySlotContents(int index, ItemStack stack) {
-    furnaceContents.setStackInSlot(index, stack);
+    furnaceComponentContents.setStackInSlot(index, stack);
   }
 
   @Override
   public void clear() {
-    for (int i = 0; i < furnaceContents.getSlots(); ++i) {
-      furnaceContents.setStackInSlot(i, ItemStack.EMPTY);
+    for (int i = 0; i < furnaceComponentContents.getSlots(); ++i) {
+      furnaceComponentContents.setStackInSlot(i, ItemStack.EMPTY);
     }
-  }
-
-  private getItemStackHandler(int index) {
-
   }
 
   // ---------
 
-  private FurnaceContents() {
+  private FurnaceZoneContents(int size) {
+    this.furnaceComponentContents = new ItemStackHandler(size);
   }
 
-  private FurnaceContents(Predicate<PlayerEntity> canPlayerAccessInventoryLambda, Notify markDirtyNotificationLambda) {
-    this.furnaceContents = new ItemStackHandler(size);
+  private FurnaceZoneContents(int size, Predicate<PlayerEntity> canPlayerAccessInventoryLambda, Notify markDirtyNotificationLambda) {
+    this.furnaceComponentContents = new ItemStackHandler(size);
     this.canPlayerAccessInventoryLambda = canPlayerAccessInventoryLambda;
     this.markDirtyNotificationLambda = markDirtyNotificationLambda;
   }
-
 
   // the function that the container should call in order to decide if the
   // given player can access the container's Inventory or not.  Only valid server side
@@ -248,11 +234,5 @@ public class FurnaceContents implements IInventory {
   // default is "do nothing"
   private Notify closeInventoryNotificationLambda = ()->{};
 
-  public static final int FUEL_SLOTS_COUNT = 4;
-  public static final int INPUT_SLOTS_COUNT = 5;
-  public static final int OUTPUT_SLOTS_COUNT = 5;
-
-  private final ItemStackHandler fuelSlotContents = new ItemStackHandler(FUEL_SLOTS_COUNT);
-  private final ItemStackHandler inputSlotContents = new ItemStackHandler(INPUT_SLOTS_COUNT);
-  private final ItemStackHandler outputSlotContents = new ItemStackHandler(OUTPUT_SLOTS_COUNT);
+  private final ItemStackHandler furnaceComponentContents;
 }
