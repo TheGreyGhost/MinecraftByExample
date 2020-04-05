@@ -181,6 +181,7 @@ public class FurnaceZoneContents implements IInventory {
 
   @Override
   public ItemStack decrStackSize(int index, int count) {
+    if (count < 0) throw new IllegalArgumentException("count should be >= 0:" + count);
     return furnaceComponentContents.extractItem(index, count, false);
   }
 
@@ -200,6 +201,32 @@ public class FurnaceZoneContents implements IInventory {
     for (int i = 0; i < furnaceComponentContents.getSlots(); ++i) {
       furnaceComponentContents.setStackInSlot(i, ItemStack.EMPTY);
     }
+  }
+
+  //--------- useful functions that aren't in IInventory but are useful anyway
+
+  /**
+   *  Tries to insert the given ItemStack into the given slot.
+   * @param index the slot to insert into
+   * @param itemStackToInsert the itemStack to insert.  Is not mutated by the function.
+   * @return if successful insertion: ItemStack.EMPTY.  Otherwise, the leftover itemstack
+   *         (eg if ItemStack has a size of 23, and only 12 will fit, then ItemStack with a size of 11 is returned
+   */
+  public ItemStack increaseStackSize(int index, ItemStack itemStackToInsert) {
+    ItemStack leftoverItemStack = furnaceComponentContents.insertItem(index, itemStackToInsert, false);
+    return leftoverItemStack;
+  }
+
+  /**
+   *  Checks if the given slot will accept all of the given itemStack
+   * @param index the slot to insert into
+   * @param itemStackToInsert the itemStack to insert
+   * @return if successful insertion: ItemStack.EMPTY.  Otherwise, the leftover itemstack
+   *         (eg if ItemStack has a size of 23, and only 12 will fit, then ItemStack with a size of 11 is returned
+   */
+  public boolean doesItemStackFit(int index, ItemStack itemStackToInsert) {
+    ItemStack leftoverItemStack = furnaceComponentContents.insertItem(index, itemStackToInsert, true);
+    return leftoverItemStack.isEmpty();
   }
 
   // ---------

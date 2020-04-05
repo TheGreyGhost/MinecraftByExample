@@ -23,11 +23,11 @@ public class FurnaceStateData implements IIntArray {
 
   public static final int FUEL_SLOTS_COUNT = TileEntityFurnace.FUEL_SLOTS_COUNT;
 
-  /**The number of ticks the current item has been cooking*/
+  /**The number of ticks that the current item has been cooking*/
   public int cookTime;
-  /** The initial fuel value of the currently burning fuel (in ticks of burn duration) */
+  /** The initial fuel value of the currently burning fuel in each slot (in ticks of burn duration) */
   public int [] burnTimeInitialValues = new int[FUEL_SLOTS_COUNT];
-  /** The number of burn ticks remaining on the current piece of fuel */
+  /** The number of burn ticks remaining on the current piece of fuel in each slot */
   public int [] burnTimeRemainings = new int[FUEL_SLOTS_COUNT];
 
   // --------- read/write to NBT for permanent storage (on disk, or packet transmission) - used by the TileEntity only

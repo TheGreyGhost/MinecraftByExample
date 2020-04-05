@@ -7,6 +7,7 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -84,6 +85,10 @@ public class ContainerFurnace extends Container {
     super(StartupCommon.containerTypeContainerFurnace, windowID);
     if (StartupCommon.containerTypeContainerFurnace == null)
       throw new IllegalStateException("Must initialise containerTypeContainerFurnace before constructing a ContainerFurnace!");
+    this.inputZoneContents = inputZoneContents;
+    this.outputZoneContents = outputZoneContents;
+    this.fuelZoneContents = fuelZoneContents;
+    this.world = invPlayer.player.world;
 
 		final int SLOT_X_SPACING = 18;
 		final int SLOT_Y_SPACING = 18;
@@ -147,190 +152,251 @@ public class ContainerFurnace extends Container {
 	// At the very least you must override this and return ItemStack.EMPTY or the game will crash when the player shift clicks a slot.
 	// returns ItemStack.EMPTY if the source slot is empty, or if none of the source slot item could be moved.
 	//   otherwise, returns a copy of the source stack
-  //  copied from vanilla furnace AbstractFurnaceContainer
+  //  Code copied & refactored from vanilla furnace AbstractFurnaceContainer
 	@Override
 	public ItemStack transferStackInSlot(PlayerEntity player, int sourceSlotIndex)
 	{
 		Slot sourceSlot = inventorySlots.get(sourceSlotIndex);
 		if (sourceSlot == null || !sourceSlot.getHasStack()) return ItemStack.EMPTY;
-    ItemStack sourceStack = sourceSlot.getStack();
-    ItemStack sourceStackBeforeMerge = sourceStack.copy();
+    ItemStack sourceItemStack = sourceSlot.getStack();
+    ItemStack sourceStackBeforeMerge = sourceItemStack.copy();
     boolean successfulTransfer = false;
 
-		// Check which slot the item is being transferred out of: player inventory or furnace contents
-		if (sourceSlotIndex >= VANILLA_FIRST_SLOT_INDEX && sourceSlotIndex < VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT) {
-      successfulTransfer = transferFromPlayerInventoryToFurnace(sourceStack);
-		} else if (sourceSlotIndex >= FIRST_FUEL_SLOT_INDEX && sourceSlotIndex < FIRST_FUEL_SLOT_INDEX + FURNACE_SLOTS_COUNT) {
-      successfulTransfer = transferFromFurnaceToPlayerInventory(sourceSlotIndex, sourceSlot, sourceStack);
-		} else {
-			LOGGER.warn("Invalid sourceSlotIndex:" + sourceSlotIndex);
-			return ItemStack.EMPTY;
-		}
+    SlotZone sourceZone = SlotZone.getZoneFromIndex(sourceSlotIndex);
+
+    switch (sourceZone) {
+      case OUTPUT_ZONE: // taking out of the output zone - try the hotbar first, then main inventory.  fill from the end.
+        successfulTransfer = mergeInto(SlotZone.PLAYER_HOTBAR, sourceItemStack, true);
+        if (!successfulTransfer) {
+          successfulTransfer = mergeInto(SlotZone.PLAYER_MAIN_INVENTORY, sourceItemStack, true);
+        }
+        if (successfulTransfer) {  // removing from output means we have just crafted an item -> need to inform
+          sourceSlot.onSlotChange(sourceItemStack, sourceStackBeforeMerge);
+        }
+        break;
+
+      case INPUT_ZONE:
+      case FUEL_ZONE: // taking out of input zone or fuel zone - try player main inv first, then hotbar.  fill from the start
+        successfulTransfer = mergeInto(SlotZone.PLAYER_MAIN_INVENTORY, sourceItemStack, false);
+        if (!successfulTransfer) {
+          successfulTransfer = mergeInto(SlotZone.PLAYER_HOTBAR, sourceItemStack, false);
+        }
+        break;
+
+      case PLAYER_HOTBAR:
+      case PLAYER_MAIN_INVENTORY: // taking out of inventory - find the appropriate furnace zone
+        if (!TileEntityFurnace.getSmeltingResultForItem(world, sourceItemStack).isEmpty()) { // smeltable -> add to input
+          successfulTransfer = mergeInto(SlotZone.INPUT_ZONE, sourceItemStack, false);
+        }
+        if (!successfulTransfer && TileEntityFurnace.getItemBurnTime(world, sourceItemStack) > 0) { //burnable -> add to fuel from the bottom slot first
+          successfulTransfer = mergeInto(SlotZone.FUEL_ZONE, sourceItemStack, true);
+        }
+        if (!successfulTransfer) {  // didn't fit into furnace; try player main inventory or hotbar
+          if (sourceZone == SlotZone.PLAYER_HOTBAR) { // main inventory
+            successfulTransfer = mergeInto(SlotZone.PLAYER_MAIN_INVENTORY, sourceItemStack, false);
+          } else {
+            successfulTransfer = mergeInto(SlotZone.PLAYER_HOTBAR, sourceItemStack, false);
+          }
+        }
+        break;
+
+      default:
+        throw new IllegalArgumentException("unexpected sourceZone:" + sourceZone);
+    }
     if (!successfulTransfer) return ItemStack.EMPTY;
 
 		// If source stack is empty (the entire stack was moved) set slot contents to empty
-		if (sourceStack.isEmpty()) {
+		if (sourceItemStack.isEmpty()) {
 			sourceSlot.putStack(ItemStack.EMPTY);
 		} else {
 			sourceSlot.onSlotChanged();
 		}
 
-		// if source stack is still the same as before the merge, the transfer failed
-    if (sourceStack.getCount() == sourceStackBeforeMerge.getCount()) {
+		// if source stack is still the same as before the merge, the transfer failed somehow?  not expected.
+    if (sourceItemStack.getCount() == sourceStackBeforeMerge.getCount()) {
       return ItemStack.EMPTY;
     }
-		sourceSlot.onTake(player, sourceStack);
-		return sourceStackBeforeMerge;            // don't ask me why it returns the original
+		sourceSlot.onTake(player, sourceItemStack);
+    return sourceStackBeforeMerge;
 	}
 
   /**
-   * Attempt to transfer items out of the given ItemStack into the player's inventory.
-   * Try the hotbar first and then the main inventory.
-   * @param sourceSlotIndex the index of the slot where the item is coming from
-   * @param sourceSlot the slot that the item is coming from
-   * @param sourceItemStack the ItemStack to transfer out of.  Gets modified if successful.
+   * Try to merge from the given source ItemStack into the given SlotZone.
+   * @param destinationZone the zone to merge into
+   * @param sourceItemStack the itemstack to merge from
+   * @param fillFromEnd if true: try to merge from the end of the zone instead of from the start
    * @return true if a successful transfer occurred
    */
-	private boolean transferFromFurnaceToPlayerInventory(int sourceSlotIndex, Slot sourceSlot,   ItemStack sourceItemStack) {
-    ItemStack sourceStackBeforeMerge = sourceItemStack.copy();
-    if (!mergeItemStack(sourceItemStack, HOTBAR_FIRST_SLOT_INDEX, HOTBAR_FIRST_SLOT_INDEX + HOTBAR_SLOT_COUNT, false)) {
-      return false;
-    }
-
-    if (!mergeItemStack(sourceItemStack, PLAYER_INVENTORY_FIRST_SLOT_INDEX, PLAYER_INVENTORY_FIRST_SLOT_INDEX + PLAYER_INVENTORY_SLOT_COUNT, false)) {
-      return false;
-    }
-    // if we are removing the item from the output zone of the furnace, need to call onSlotChange because we have just smelted the item
-    //   and this triggers achievements
-    if (sourceSlotIndex >= FIRST_FUEL_SLOT_INDEX && sourceSlotIndex < FIRST_FUEL_SLOT_INDEX + FUEL_SLOTS_COUNT) {
-      sourceSlot.onSlotChange(sourceItemStack, sourceStackBeforeMerge);
-    }
-    return true;
+	private boolean mergeInto(SlotZone destinationZone, ItemStack sourceItemStack, boolean fillFromEnd) {
+	  return mergeItemStack(sourceItemStack, destinationZone.firstIndex, destinationZone.lastIndexPlus1, fillFromEnd);
   }
 
-  /**
-   * Attempt to transfer items out of the given sourceItemStack into an appropriate place in the furnace
-   * @param sourceItemStack the ItemStack to transfer out of.  Gets modified if successful.
-   * @return true if a successful transfer occurred
-   */
-  private boolean transferFromPlayerInventoryToFurnace(ItemStack sourceItemStack) {
+//  /**
+//   * Attempt to transfer items out of the given ItemStack into the player's main inventory or hotbar.
+//   * @param sourceSlotIndex the index of the slot where the item is coming from
+//   * @param sourceSlot the slot that the item is coming from
+//   * @param sourceItemStack the ItemStack to transfer out of.  Gets modified if successful.
+//   * @return true if a successful transfer occurred
+//   */
+//	private boolean transferOutOfFurnace(int sourceSlotIndex, Slot sourceSlot, ItemStack sourceItemStack) {
+//    ItemStack sourceStackBeforeMerge = sourceItemStack.copy();
+//
+//    // vanilla furnace treats output zone differently from input or fuel:
+//    // items taken from output zone are added to the end of the hotbar, or to the end of the inventory if hotbar is full.
+//    // items taken from input or fuel are added to the start of the inventory, or start of hotbar if inventory is full
+//    boolean sourceSlotIsOutputZone = (sourceSlotIndex >= FIRST_OUTPUT_SLOT_INDEX && sourceSlotIndex < FIRST_OUTPUT_SLOT_INDEX + OUTPUT_SLOTS_COUNT);
+//    boolean mergeFromEnd = sourceSlotIsOutputZone;
+//    int hotbarPassNumber = sourceSlotIsOutputZone ? 1 : 2;  // do we try the hotbar first or second?
+//    boolean successfulTransfer = false;
+//
+//    for (int passNumber = 1; passNumber <= 2 && !successfulTransfer; ++passNumber) {
+//      if (passNumber == hotbarPassNumber) {
+//        successfulTransfer = mergeItemStack(sourceItemStack,
+//                HOTBAR_FIRST_SLOT_INDEX, HOTBAR_FIRST_SLOT_INDEX + HOTBAR_SLOT_COUNT, mergeFromEnd);
+//      } else {
+//        successfulTransfer = mergeItemStack(sourceItemStack,
+//                PLAYER_INVENTORY_FIRST_SLOT_INDEX, PLAYER_INVENTORY_FIRST_SLOT_INDEX + PLAYER_INVENTORY_SLOT_COUNT, mergeFromEnd);
+//      }
+//    }
+//    if (!successfulTransfer) return false;
+//
+//    // if we are removing the item from the output zone of the furnace, need to call onSlotChange because we have just smelted the item
+//    //   and this triggers achievements
+//    if (sourceSlotIsOutputZone) {
+//      sourceSlot.onSlotChange(sourceItemStack, sourceStackBeforeMerge);
+//    }
+//    return true;
+//  }
+//
+//  /**
+//   * Attempt to transfer items out of the given sourceItemStack into an appropriate place in the furnace, or failing that
+//   *    into the hotbar or main inventory;
+//   * @param sourceItemStack the ItemStack to transfer out of.  Gets modified if successful.
+//   * @return true if a successful transfer occurred
+//   */
+//  private boolean transferOutOfPlayerInventory(int sourceSlotIndex, ItemStack sourceItemStack) {
+//
+//    // The source is a vanilla container slot so merge the stack into one of the furnace zone slots:
+//    // 1) if smeltable: try the input slots
+//    // 2) if burnable: try the fuel slots
+//    // If that fails: try to swap from the hotbar to the main inventory or vica versa
+//
+//    boolean successfulTransfer = false;
+//    if (!TileEntityFurnace.getSmeltingResultForItem(sourceItemStack).isEmpty()){
+//      successfulTransfer = mergeItemStack(sourceItemStack, FIRST_INPUT_SLOT_INDEX, FIRST_INPUT_SLOT_INDEX + INPUT_SLOTS_COUNT, false);
+//    }	else if (TileEntityFurnace.getItemBurnTime(sourceItemStack) > 0) {
+//      // Setting the reverseDirection to true places the stack in the bottom slot first
+//      successfulTransfer = mergeItemStack(sourceItemStack, FIRST_FUEL_SLOT_INDEX, FIRST_FUEL_SLOT_INDEX + FUEL_SLOTS_COUNT, true);
+//    } else if (sourceSlotIndex >= HOTBAR_FIRST_SLOT_INDEX && sourceSlotIndex < HOTBAR_FIRST_SLOT_INDEX + HOTBAR_SLOT_COUNT) {
+//      successfulTransfer = mergeItemStack(sourceItemStack,
+//              PLAYER_INVENTORY_FIRST_SLOT_INDEX, PLAYER_INVENTORY_FIRST_SLOT_INDEX + PLAYER_INVENTORY_SLOT_COUNT, false);
+//    } else if (sourceSlotIndex >= PLAYER_INVENTORY_FIRST_SLOT_INDEX && sourceSlotIndex < PLAYER_INVENTORY_FIRST_SLOT_INDEX + PLAYER_INVENTORY_SLOT_COUNT) {
+//      successfulTransfer = mergeItemStack(sourceItemStack,
+//              HOTBAR_FIRST_SLOT_INDEX, HOTBAR_FIRST_SLOT_INDEX + HOTBAR_SLOT_COUNT, false);
+//    }
+//    return successfulTransfer;
+//  }
 
-    // This is a vanilla container slot so merge the stack into one of the furnace zone slots:
-    // 1) if smeltable: try the input slots
-    // 2) if burnable: try the fuel slots
 
-    if (!TileEntityFurnace.getSmeltingResultForItem(sourceItemStack).isEmpty()){
-      if (mergeItemStack(sourceItemStack, FIRST_INPUT_SLOT_INDEX, FIRST_INPUT_SLOT_INDEX + INPUT_SLOTS_COUNT, false)){
-        return true;
-      }
-    }	else if (TileEntityFurnace.getItemBurnTime(sourceItemStack) > 0) {
-      // Setting the reverseDirection boolean to true places the stack in the bottom slot first
-      if (mergeItemStack(sourceItemStack, FIRST_FUEL_SLOT_INDEX, FIRST_FUEL_SLOT_INDEX + FUEL_SLOTS_COUNT, true)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  public ItemStack transferStackInSlot(PlayerEntity playerIn, Slot sourceSlot, ItemStack sourceItemStack, int index) {
-    ItemStack initialStack = ItemStack.EMPTY;
-    Slot slot = this.inventorySlots.get(index);
-    if (slot == null || !slot.getHasStack()) {
-      return ItemStack.EMPTY;
-    }
-
-    ItemStack sourceStack = slot.getStack();
-    initialStack = sourceStack.copy();
-    if (index == 2) { // output
-      if (!this.mergeItemStack(sourceStack, 3, 39, true)) {
-        return ItemStack.EMPTY;
-      }
-      slot.onSlotChange(sourceStack, initialStack);
-    } else if (index == 1 || index == 0) {  // fuel, input
-      if (!this.mergeItemStack(sourceStack, 3, 39, false)) {
-        return ItemStack.EMPTY;
-      }
-    } else {
-      if (this.func_217057_a(sourceStack)) {
-        if (!this.mergeItemStack(sourceStack, 0, 1, false)) {
-          return ItemStack.EMPTY;
-        }
-      } else if (this.isFuel(sourceStack)) {
-        if (!this.mergeItemStack(sourceStack, 1, 2, false)) {
-          return ItemStack.EMPTY;
-        }
-      } else if (index >= 3 && index < 30) {
-        if (!this.mergeItemStack(sourceStack, 30, 39, false)) {
-          return ItemStack.EMPTY;
-        }
-      } else if (index >= 30 && index < 39 && !this.mergeItemStack(sourceStack, 3, 30, false)) {
-        return ItemStack.EMPTY;
-      }
-    }
-
-    if (sourceStack.isEmpty()) {
-      slot.putStack(ItemStack.EMPTY);
-    } else {
-      slot.onSlotChanged();
-    }
-
-    if (sourceStack.getCount() == initialStack.getCount()) {
-      return ItemStack.EMPTY;
-    }
-
-    slot.onTake(playerIn, sourceStack);
-
-    return initialStack;
-  }
+//  public ItemStack transferStackInSlot(PlayerEntity playerIn, Slot sourceSlot, ItemStack sourceItemStack, int index) {
+//    ItemStack initialStack = ItemStack.EMPTY;
+//    Slot slot = this.inventorySlots.get(index);
+//    if (slot == null || !slot.getHasStack()) {
+//      return ItemStack.EMPTY;
+//    }
+//
+//    ItemStack sourceStack = slot.getStack();
+//    initialStack = sourceStack.copy();
+//    if (index == 2) { // output
+//      if (!this.mergeItemStack(sourceStack, 3, 39, true)) {
+//        return ItemStack.EMPTY;
+//      }
+//      slot.onSlotChange(sourceStack, initialStack);
+//    } else if (index == 1 || index == 0) {  // fuel, input
+//      if (!this.mergeItemStack(sourceStack, 3, 39, false)) {
+//        return ItemStack.EMPTY;
+//      }
+//    } else {
+//      if (this.func_217057_a(sourceStack)) {
+//        if (!this.mergeItemStack(sourceStack, 0, 1, false)) {
+//          return ItemStack.EMPTY;
+//        }
+//      } else if (this.isFuel(sourceStack)) {
+//        if (!this.mergeItemStack(sourceStack, 1, 2, false)) {
+//          return ItemStack.EMPTY;
+//        }
+//      } else if (index >= 3 && index < 30) {
+//        if (!this.mergeItemStack(sourceStack, 30, 39, false)) {
+//          return ItemStack.EMPTY;
+//        }
+//      } else if (index >= 30 && index < 39 && !this.mergeItemStack(sourceStack, 3, 30, false)) {
+//        return ItemStack.EMPTY;
+//      }
+//    }
+//
+//    if (sourceStack.isEmpty()) {
+//      slot.putStack(ItemStack.EMPTY);
+//    } else {
+//      slot.onSlotChanged();
+//    }
+//
+//    if (sourceStack.getCount() == initialStack.getCount()) {
+//      return ItemStack.EMPTY;
+//    }
+//
+//    slot.onTake(playerIn, sourceStack);
+//
+//    return initialStack;
+//  }
 
 
 	/* Client Synchronization */
 
-	// This is where you check if any values have changed and if so send an update to any clients accessing this container
-	// The container itemstacks are tested in Container.detectAndSendChanges, so we don't need to do that
-	// We iterate through all of the TileEntity Fields to find any which have changed, and send them.
-	// You don't have to use fields if you don't wish to; just manually match the ID in sendWindowProperty with the value in
-	//   updateProgressBar()
-	// The progress bar values are restricted to shorts.  If you have a larger value (eg int), it's not a good idea to try and split it
-	//   up into two shorts because the progress bar values are sent independently, and unless you add synchronisation logic at the
-	//   receiving side, your int value will be wrong until the second short arrives.  Use a custom packet instead.
-	@Override
-	public void detectAndSendChanges() {
-		super.detectAndSendChanges();
+//	// This is where you check if any values have changed and if so send an update to any clients accessing this container
+//	// The container itemstacks are tested in Container.detectAndSendChanges, so we don't need to do that
+//	// We iterate through all of the TileEntity Fields to find any which have changed, and send them.
+//	// You don't have to use fields if you don't wish to; just manually match the ID in sendWindowProperty with the value in
+//	//   updateProgressBar()
+//	// The progress bar values are restricted to shorts.  If you have a larger value (eg int), it's not a good idea to try and split it
+//	//   up into two shorts because the progress bar values are sent independently, and unless you add synchronisation logic at the
+//	//   receiving side, your int value will be wrong until the second short arrives.  Use a custom packet instead.
+//	@Override
+//	public void detectAndSendChanges() {
+//		super.detectAndSendChanges();
+//
+//		boolean allFieldsHaveChanged = false;
+//		boolean fieldHasChanged [] = new boolean[tileInventoryFurnace.getFieldCount()];
+//		if (cachedFields == null) {
+//			cachedFields = new int[tileInventoryFurnace.getFieldCount()];
+//			allFieldsHaveChanged = true;
+//		}
+//		for (int i = 0; i < cachedFields.length; ++i) {
+//			if (allFieldsHaveChanged || cachedFields[i] != tileInventoryFurnace.getField(i)) {
+//				cachedFields[i] = tileInventoryFurnace.getField(i);
+//				fieldHasChanged[i] = true;
+//			}
+//		}
+//
+//		// go through the list of listeners (players using this container) and update them if necessary
+//    for (IContainerListener listener : this.listeners) {
+//			for (int fieldID = 0; fieldID < tileInventoryFurnace.getFieldCount(); ++fieldID) {
+//				if (fieldHasChanged[fieldID]) {
+//					// Note that although sendWindowProperty takes 2 ints on a server these are truncated to shorts
+//          listener.sendWindowProperty(this, fieldID, cachedFields[fieldID]);
+//        }
+//			}
+//		}
+//	}
 
-		boolean allFieldsHaveChanged = false;
-		boolean fieldHasChanged [] = new boolean[tileInventoryFurnace.getFieldCount()];
-		if (cachedFields == null) {
-			cachedFields = new int[tileInventoryFurnace.getFieldCount()];
-			allFieldsHaveChanged = true;
-		}
-		for (int i = 0; i < cachedFields.length; ++i) {
-			if (allFieldsHaveChanged || cachedFields[i] != tileInventoryFurnace.getField(i)) {
-				cachedFields[i] = tileInventoryFurnace.getField(i);
-				fieldHasChanged[i] = true;
-			}
-		}
+//	// Called when a progress bar update is received from the server. The two values (id and data) are the same two
+//	// values given to sendWindowProperty.  In this case we are using fields so we just pass them to the tileEntity.
+//	@OnlyIn(Dist.CLIENT)
+//	@Override
+//	public void updateProgressBar(int id, int data) {
+//		tileInventoryFurnace.setField(id, data);
+//	}
 
-		// go through the list of listeners (players using this container) and update them if necessary
-    for (IContainerListener listener : this.listeners) {
-			for (int fieldID = 0; fieldID < tileInventoryFurnace.getFieldCount(); ++fieldID) {
-				if (fieldHasChanged[fieldID]) {
-					// Note that although sendWindowProperty takes 2 ints on a server these are truncated to shorts
-          listener.sendWindowProperty(this, fieldID, cachedFields[fieldID]);
-        }
-			}
-		}
-	}
-
-	// Called when a progress bar update is received from the server. The two values (id and data) are the same two
-	// values given to sendWindowProperty.  In this case we are using fields so we just pass them to the tileEntity.
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public void updateProgressBar(int id, int data) {
-		tileInventoryFurnace.setField(id, data);
-	}
-
-	// SlotFuel is a slot for fuel item
+	// SlotFuel is a slot for fuel items
 	public class SlotFuel extends Slot {
 		public SlotFuel(IInventory inventoryIn, int index, int xPosition, int yPosition) {
 			super(inventoryIn, index, xPosition, yPosition);
@@ -372,6 +438,35 @@ public class ContainerFurnace extends Container {
   private FurnaceZoneContents inputZoneContents;
   private FurnaceZoneContents outputZoneContents;
   private FurnaceZoneContents fuelZoneContents;
+
+  private World world; //needed for some helper methods
   private static final Logger LOGGER = LogManager.getLogger();
 
+  /**
+   * Helper enum to make the code more readable
+   */
+  private enum SlotZone {
+    FUEL_ZONE(FIRST_FUEL_SLOT_INDEX, FUEL_SLOTS_COUNT),
+    INPUT_ZONE(FIRST_INPUT_SLOT_INDEX, INPUT_SLOTS_COUNT),
+    OUTPUT_ZONE(FIRST_OUTPUT_SLOT_INDEX, OUTPUT_SLOTS_COUNT),
+    PLAYER_MAIN_INVENTORY(PLAYER_INVENTORY_FIRST_SLOT_INDEX, PLAYER_INVENTORY_SLOT_COUNT),
+    PLAYER_HOTBAR(HOTBAR_FIRST_SLOT_INDEX, HOTBAR_SLOT_COUNT);
+
+    SlotZone(int firstIndex, int numberOfSlots) {
+      this.firstIndex = firstIndex;
+      this.slotCount = numberOfSlots;
+      this.lastIndexPlus1 = firstIndex + numberOfSlots;
+    }
+
+    public final int firstIndex;
+    public final int slotCount;
+    public final int lastIndexPlus1;
+
+    public static SlotZone getZoneFromIndex(int slotIndex) {
+      for (SlotZone slotZone : SlotZone.values()) {
+        if (slotIndex >= slotZone.firstIndex && slotIndex < slotZone.lastIndexPlus1) return slotZone;
+      }
+      throw new IndexOutOfBoundsException("Unexpected slotIndex");
+    }
+  }
 }

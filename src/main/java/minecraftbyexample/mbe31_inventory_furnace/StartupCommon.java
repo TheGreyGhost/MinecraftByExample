@@ -1,6 +1,5 @@
 package minecraftbyexample.mbe31_inventory_furnace;
 
-import minecraftbyexample.GuiHandlerRegistry;
 import minecraftbyexample.MinecraftByExample;
 import minecraftbyexample.mbe30_inventory_basic.BlockInventoryBasic;
 import minecraftbyexample.mbe30_inventory_basic.ContainerBasic;
@@ -14,21 +13,12 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
  * User: brandon3055
  * Date: 06/01/2015
  *
- * The Startup class for this example is called during startup, in the following order:
- *  preInitCommon
- *  preInitClientOnly
- *  initCommon
- *  initClientOnly
- *  postInitCommon
- *  postInitClientOnly
+ * The Startup class for this example is called during startup
  *  See MinecraftByExample class for more information
  */
 public class StartupCommon
