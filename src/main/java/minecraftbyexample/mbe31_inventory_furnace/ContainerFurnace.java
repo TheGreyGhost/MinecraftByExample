@@ -52,7 +52,7 @@ public class ContainerFurnace extends Container {
                                 inputZoneContents, outputZoneContents, fuelZoneContents, furnaceStateData);
   }
 
-  // must assign a slot index to each of the slots used by the GUI.
+    // must assign a slot index to each of the slots used by the GUI.
 	// For this container, we can see the furnace fuel, input, and output slots as well as the player inventory slots and the hotbar.
 	// Each time we add a Slot to the container using addSlotToContainer(), it automatically increases the slotIndex, which means
 	//  0 - 8 = hotbar slots (which will map to the InventoryPlayer slot numbers 0 - 8)
@@ -250,7 +250,7 @@ public class ContainerFurnace extends Container {
    */
   public double fractionOfFuelRemaining(int fuelSlot) {
     if (furnaceStateData.burnTimeInitialValues[fuelSlot] <= 0 ) return 0;
-    double fraction = furnaceStateData.burnTimeRemainings[fuelSlot] / furnaceStateData.burnTimeInitialValues[fuelSlot];
+    double fraction = furnaceStateData.burnTimeRemainings[fuelSlot] / (double)furnaceStateData.burnTimeInitialValues[fuelSlot];
     return MathHelper.clamp(fraction, 0.0, 1.0);
   }
 

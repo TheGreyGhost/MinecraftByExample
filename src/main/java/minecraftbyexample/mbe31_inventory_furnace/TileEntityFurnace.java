@@ -21,6 +21,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -47,7 +48,7 @@ import java.util.Optional;
  * The fuel slots are used in parallel.  The more slots burning in parallel, the faster the cook time.
  * The code is heavily based on TileEntityFurnace.
  */
-public class TileEntityFurnace extends TileEntity implements INamedContainerProvider, ITickable {
+public class TileEntityFurnace extends TileEntity implements INamedContainerProvider, ITickableTileEntity {
 	// Create and initialize the itemStacks variable that will store store the itemStacks
 	public static final int FUEL_SLOTS_COUNT = 4;
 	public static final int INPUT_SLOTS_COUNT = 5;
@@ -71,9 +72,9 @@ public class TileEntityFurnace extends TileEntity implements INamedContainerProv
 	  super(StartupCommon.tileEntityTypeMBE31);
 	  fuelZoneContents = FurnaceZoneContents.createForTileEntity(FUEL_SLOTS_COUNT,
             this::canPlayerAccessInventory, this::markDirty);
-   inputZoneContents = FurnaceZoneContents.createForTileEntity(FUEL_SLOTS_COUNT,
+   inputZoneContents = FurnaceZoneContents.createForTileEntity(INPUT_SLOTS_COUNT,
             this::canPlayerAccessInventory, this::markDirty);
-    outputZoneContents = FurnaceZoneContents.createForTileEntity(FUEL_SLOTS_COUNT,
+    outputZoneContents = FurnaceZoneContents.createForTileEntity(OUTPUT_SLOTS_COUNT,
             this::canPlayerAccessInventory, this::markDirty);
 	}
 
@@ -113,10 +114,10 @@ public class TileEntityFurnace extends TileEntity implements INamedContainerProv
     ItemStack currentlySmeltingItem = getCurrentlySmeltingInputItem();
 
     // if user has changed the input slots, reset the smelting time
-    if (currentlySmeltingItem != currentlySmeltingItemLastTick) {
+    if (!ItemStack.areItemsEqual(currentlySmeltingItem, currentlySmeltingItemLastTick)) {  // == and != don't work!
       furnaceStateData.cookTimeElapsed = 0;
     }
-    currentlySmeltingItemLastTick = currentlySmeltingItem;
+    currentlySmeltingItemLastTick = currentlySmeltingItem.copy();
 
 		if (!currentlySmeltingItem.isEmpty()) {
 			int numberOfFuelBurning = burnFuel();
@@ -222,7 +223,7 @@ public class TileEntityFurnace extends TileEntity implements INamedContainerProv
 		// finds the first input slot which is smeltable and whose result fits into an output slot (stacking if possible)
 		for (int inputIndex = 0; inputIndex < INPUT_SLOTS_COUNT; inputIndex++)	{
       ItemStack itemStackToSmelt = inputZoneContents.getStackInSlot(inputIndex);
-      if (itemStackToSmelt.isEmpty()) {
+      if (!itemStackToSmelt.isEmpty()) {
 				result = getSmeltingResultForItem(this.world, itemStackToSmelt);
   			if (!result.isEmpty()) {
 					// find the first suitable output slot- either empty, or with identical item that has enough space
@@ -245,7 +246,7 @@ public class TileEntityFurnace extends TileEntity implements INamedContainerProv
 
 		// alter input and output
     inputZoneContents.decrStackSize(firstSuitableInputSlot, 1);
-    inputZoneContents.increaseStackSize(firstSuitableOutputSlot, result);
+    outputZoneContents.increaseStackSize(firstSuitableOutputSlot, result);
 
 		markDirty();
 		return returnvalue;
@@ -270,7 +271,7 @@ public class TileEntityFurnace extends TileEntity implements INamedContainerProv
     }
 
     int sizeAfterMerge = itemStackDestination.getCount() + itemStackOrigin.getCount();
-    if (sizeAfterMerge <= furnaceZoneContents.getSizeInventory() && sizeAfterMerge <= itemStackDestination.getMaxStackSize()) {
+    if (sizeAfterMerge <= furnaceZoneContents.getInventoryStackLimit() && sizeAfterMerge <= itemStackDestination.getMaxStackSize()) {
       return true;
     }
     return false;
@@ -280,7 +281,7 @@ public class TileEntityFurnace extends TileEntity implements INamedContainerProv
 	public static ItemStack getSmeltingResultForItem(World world, ItemStack itemStack) {
 	  Optional<FurnaceRecipe> matchingRecipe = getMatchingRecipeForInput(world, itemStack);
     if (!matchingRecipe.isPresent()) return ItemStack.EMPTY;
-    return matchingRecipe.get().getRecipeOutput();
+    return matchingRecipe.get().getRecipeOutput().copy();  // beware! You must deep copy otherwise you will alter the recipe itself
 	}
 
 	// returns the number of ticks the given item will burn. Returns 0 if the given item is not a valid fuel

@@ -6,7 +6,7 @@
         "east": "block/furnace_front_on",
         "west": "block/furnace_front_on",
         "north": "block/furnace_front_on",
-        "south": "block/furnace_front_off",
+        "south": "block/furnace_front",
         "particle": "block/furnace_top"
     }
 }

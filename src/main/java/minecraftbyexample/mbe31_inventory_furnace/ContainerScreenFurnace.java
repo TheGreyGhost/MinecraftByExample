@@ -68,7 +68,7 @@ public class ContainerScreenFurnace extends ContainerScreen<ContainerFurnace> {
     List<String> hoveringText = new ArrayList<String>();
 
     // If the mouse is over the progress bar add the progress bar hovering text
-    if (isInRect(COOK_BAR_XPOS, COOK_BAR_YPOS, COOK_BAR_WIDTH, COOK_BAR_HEIGHT, mouseX, mouseY)){
+    if (isInRect(guiLeft + COOK_BAR_XPOS, guiTop + COOK_BAR_YPOS, COOK_BAR_WIDTH, COOK_BAR_HEIGHT, mouseX, mouseY)){
       hoveringText.add("Progress:");
       int cookPercentage =(int)(containerFurnace.fractionOfCookTimeComplete() * 100);
       hoveringText.add(cookPercentage + "%");
@@ -128,14 +128,14 @@ public class ContainerScreenFurnace extends ContainerScreen<ContainerFurnace> {
 
     // draw the cook progress bar
 		double cookProgress = containerFurnace.fractionOfCookTimeComplete();
-		blit(COOK_BAR_XPOS, COOK_BAR_YPOS, COOK_BAR_ICON_U, COOK_BAR_ICON_V,
+		blit(guiLeft + COOK_BAR_XPOS, guiTop + COOK_BAR_YPOS, COOK_BAR_ICON_U, COOK_BAR_ICON_V,
          (int)(cookProgress * COOK_BAR_WIDTH), COOK_BAR_HEIGHT);
 
 		// draw the fuel remaining bar for each fuel slot flame
 		for (int i = 0; i < containerFurnace.FUEL_SLOTS_COUNT; ++i) {
 			double burnRemaining = containerFurnace.fractionOfFuelRemaining(i);
 			int yOffset = (int)((1.0 - burnRemaining) * FLAME_HEIGHT);
-			blit(FLAME_XPOS + FLAME_X_SPACING * i, FLAME_YPOS + yOffset,
+			blit(guiLeft + FLAME_XPOS + FLAME_X_SPACING * i, guiTop + FLAME_YPOS + yOffset,
               FLAME_ICON_U, FLAME_ICON_V + yOffset, FLAME_WIDTH, FLAME_HEIGHT - yOffset);
 		}
 	}
