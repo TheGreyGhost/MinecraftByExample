@@ -47,7 +47,7 @@ public class ContainerScreenBasic extends ContainerScreen<ContainerBasic> {
 		final float LABEL_XPOS = 5;
 		final float FONT_Y_SPACING = 12;
 		final float CHEST_LABEL_YPOS = ContainerBasic.TILE_INVENTORY_YPOS - FONT_Y_SPACING;
-    this.font.drawString(this.title.getFormattedText(), LABEL_XPOS, CHEST_LABEL_YPOS, Color.darkGray.getRGB());
+    font.drawString(this.title.getFormattedText(), LABEL_XPOS, CHEST_LABEL_YPOS, Color.darkGray.getRGB());
     
     final float PLAYER_INV_LABEL_YPOS = ContainerBasic.PLAYER_INVENTORY_YPOS - FONT_Y_SPACING;
     this.font.drawString(this.playerInventory.getDisplayName().getFormattedText(), 

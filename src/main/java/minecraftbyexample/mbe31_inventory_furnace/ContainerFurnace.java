@@ -7,6 +7,7 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,9 +16,12 @@ import org.apache.logging.log4j.Logger;
  * User: brandon3055
  * Date: 06/01/2015
  *
- * ContainerSmelting is used to link the client side gui to the server side inventory and it is where
+ * ContainerFurnace is used to link the client side gui to the server side inventory and it is where
  * you add the slots holding item. It is also used to send server side data such as progress bars to the client
  * for use in guis
+ *
+ * Vanilla automatically detects changes in the server side Container (the Slots and the trackedInts) and
+ * sends them to the client container.
  *
  * Check out RecipeBookContainer
  */
@@ -26,9 +30,10 @@ public class ContainerFurnace extends Container {
   public static ContainerFurnace createContainerServerSide(int windowID, PlayerInventory playerInventory,
                                                            FurnaceZoneContents inputZoneContents,
                                                            FurnaceZoneContents outputZoneContents,
-                                                           FurnaceZoneContents fuelZoneContents) {
+                                                           FurnaceZoneContents fuelZoneContents,
+                                                           FurnaceStateData furnaceStateData) {
     return new ContainerFurnace(windowID, playerInventory,
-            inputZoneContents, outputZoneContents, fuelZoneContents);
+            inputZoneContents, outputZoneContents, fuelZoneContents, furnaceStateData);
   }
 
   public static ContainerFurnace createContainerClientSide(int windowID, PlayerInventory playerInventory, net.minecraft.network.PacketBuffer extraData) {
@@ -38,12 +43,13 @@ public class ContainerFurnace extends Container {
     FurnaceZoneContents inputZoneContents = FurnaceZoneContents.createForClientSideContainer(INPUT_SLOTS_COUNT);
     FurnaceZoneContents outputZoneContents = FurnaceZoneContents.createForClientSideContainer(OUTPUT_SLOTS_COUNT);
     FurnaceZoneContents fuelZoneContents = FurnaceZoneContents.createForClientSideContainer(FUEL_SLOTS_COUNT);
+    FurnaceStateData furnaceStateData = new FurnaceStateData();
 
     // on the client side there is no parent TileEntity to communicate with, so we:
-    // 1) use dummy inventories
+    // 1) use dummy inventories and furnace state data (tracked ints)
     // 2) use "do nothing" lambda functions for canPlayerAccessInventory and markDirty
     return new ContainerFurnace(windowID, playerInventory,
-                                inputZoneContents, outputZoneContents, fuelZoneContents);
+                                inputZoneContents, outputZoneContents, fuelZoneContents, furnaceStateData);
   }
 
   // must assign a slot index to each of the slots used by the GUI.
@@ -81,14 +87,18 @@ public class ContainerFurnace extends Container {
 	public ContainerFurnace(int windowID, PlayerInventory invPlayer,
             FurnaceZoneContents inputZoneContents,
             FurnaceZoneContents outputZoneContents,
-            FurnaceZoneContents fuelZoneContents) {
+            FurnaceZoneContents fuelZoneContents,
+            FurnaceStateData furnaceStateData) {
     super(StartupCommon.containerTypeContainerFurnace, windowID);
     if (StartupCommon.containerTypeContainerFurnace == null)
       throw new IllegalStateException("Must initialise containerTypeContainerFurnace before constructing a ContainerFurnace!");
     this.inputZoneContents = inputZoneContents;
     this.outputZoneContents = outputZoneContents;
     this.fuelZoneContents = fuelZoneContents;
+    this.furnaceStateData = furnaceStateData;
     this.world = invPlayer.player.world;
+
+    trackIntArray(furnaceStateData);    // tell vanilla to keep the furnaceStateData synchronised between client and server Containers
 
 		final int SLOT_X_SPACING = 18;
 		final int SLOT_Y_SPACING = 18;
@@ -229,6 +239,39 @@ public class ContainerFurnace extends Container {
    */
 	private boolean mergeInto(SlotZone destinationZone, ItemStack sourceItemStack, boolean fillFromEnd) {
 	  return mergeItemStack(sourceItemStack, destinationZone.firstIndex, destinationZone.lastIndexPlus1, fillFromEnd);
+  }
+
+  // -------- methods used by the ContainerScreen to render parts of the display
+
+  /**
+   * Returns the amount of fuel remaining on the currently burning item in the given fuel slot.
+   * @fuelSlot the number of the fuel slot (0..3)
+   * @return fraction remaining, between 0.0 - 1.0
+   */
+  public double fractionOfFuelRemaining(int fuelSlot) {
+    if (furnaceStateData.burnTimeInitialValues[fuelSlot] <= 0 ) return 0;
+    double fraction = furnaceStateData.burnTimeRemainings[fuelSlot] / furnaceStateData.burnTimeInitialValues[fuelSlot];
+    return MathHelper.clamp(fraction, 0.0, 1.0);
+  }
+
+  /**
+   * return the remaining burn time of the fuel in the given slot
+   * @param fuelSlot the number of the fuel slot (0..3)
+   * @return seconds remaining
+   */
+  public int secondsOfFuelRemaining(int fuelSlot)	{
+    if (furnaceStateData.burnTimeRemainings[fuelSlot] <= 0 ) return 0;
+    return furnaceStateData.burnTimeRemainings[fuelSlot] / 20; // 20 ticks per second
+  }
+
+  /**
+   * Returns the amount of cook time completed on the currently cooking item.
+   * @return fraction remaining, between 0 - 1
+   */
+  public double fractionOfCookTimeComplete() {
+    if (furnaceStateData.cookTimeForCompletion == 0) return 0;
+    double fraction = furnaceStateData.cookTimeElapsed / (double)furnaceStateData.cookTimeForCompletion;
+    return MathHelper.clamp(fraction, 0.0, 1.0);
   }
 
 //  /**
@@ -438,6 +481,7 @@ public class ContainerFurnace extends Container {
   private FurnaceZoneContents inputZoneContents;
   private FurnaceZoneContents outputZoneContents;
   private FurnaceZoneContents fuelZoneContents;
+  private FurnaceStateData furnaceStateData;
 
   private World world; //needed for some helper methods
   private static final Logger LOGGER = LogManager.getLogger();

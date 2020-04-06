@@ -1,6 +1,8 @@
 package minecraftbyexample.mbe31_inventory_furnace;
 
 import minecraftbyexample.mbe30_inventory_basic.ContainerBasic;
+import minecraftbyexample.usefultools.SetBlockStateFlag;
+import net.minecraft.block.AbstractFurnaceBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.texture.ITickable;
 import net.minecraft.entity.player.PlayerEntity;
@@ -59,8 +61,6 @@ public class TileEntityFurnace extends TileEntity implements INamedContainerProv
 	/**The number of ticks required to cook an item*/
 	private static final short COOK_TIME_FOR_COMPLETION = 200;  // vanilla value is 200 = 10 seconds
 
-	private int cachedNumberOfBurningSlots = -1;
-
 	private FurnaceZoneContents fuelZoneContents;
   private FurnaceZoneContents inputZoneContents;
   private FurnaceZoneContents outputZoneContents;
@@ -89,26 +89,6 @@ public class TileEntityFurnace extends TileEntity implements INamedContainerProv
     return player.getDistanceSq(pos.getX() + X_CENTRE_OFFSET, pos.getY() + Y_CENTRE_OFFSET, pos.getZ() + Z_CENTRE_OFFSET) < MAXIMUM_DISTANCE_SQ;
   }
 
-  /**
-	 * Returns the amount of fuel remaining on the currently burning item in the given fuel slot.
-	 * @fuelSlot the number of the fuel slot (0..3)
-	 * @return fraction remaining, between 0.0 - 1.0
-	 */
-	public double fractionOfFuelRemaining(int fuelSlot) {
-		if (furnaceStateData.burnTimeInitialValues[fuelSlot] <= 0 ) return 0;
-		double fraction = furnaceStateData.burnTimeRemainings[fuelSlot] / furnaceStateData.burnTimeInitialValues[fuelSlot];
-		return MathHelper.clamp(fraction, 0.0, 1.0);
-	}
-
-	/**
-	 * return the remaining burn time of the fuel in the given slot
-	 * @param fuelSlot the number of the fuel slot (0..3)
-	 * @return seconds remaining
-	 */
-	public int secondsOfFuelRemaining(int fuelSlot)	{
-		if (furnaceStateData.burnTimeRemainings[fuelSlot] <= 0 ) return 0;
-		return furnaceStateData.burnTimeRemainings[fuelSlot] / 20; // 20 ticks per second
-	}
 
 	/**
 	 * Get the number of slots which have fuel burning in them.
@@ -122,27 +102,19 @@ public class TileEntityFurnace extends TileEntity implements INamedContainerProv
 		return burningCount;
 	}
 
-	/**
-	 * Returns the amount of cook time completed on the currently cooking item.
-	 * @return fraction remaining, between 0 - 1
-	 */
-	public double fractionOfCookTimeComplete() {
-		double fraction = furnaceStateData.cookTime / (double)COOK_TIME_FOR_COMPLETION;
-		return MathHelper.clamp(fraction, 0.0, 1.0);
-	}
-
 	// This method is called every tick to update the tile entity, i.e.
 	// - see if the fuel has run out, and if so turn the furnace "off" and slowly uncook the current item (if any)
 	// - see if the current smelting input item has finished smelting; if so, convert it to output
   // - burn fuel slots
-	// It runs both on the server and the client (for animation purposes)
+	// It runs both on the server and the client but we only need to do updates on the server side.
 	@Override
 	public void tick() {
+	  if (world.isRemote) return; // do nothing on client.
     ItemStack currentlySmeltingItem = getCurrentlySmeltingInputItem();
 
     // if user has changed the input slots, reset the smelting time
     if (currentlySmeltingItem != currentlySmeltingItemLastTick) {
-      furnaceStateData.cookTime = 0;
+      furnaceStateData.cookTimeElapsed = 0;
     }
     currentlySmeltingItemLastTick = currentlySmeltingItem;
 
@@ -151,20 +123,21 @@ public class TileEntityFurnace extends TileEntity implements INamedContainerProv
 
 			// If fuel is available, keep cooking the item, otherwise start "uncooking" it at double speed
 			if (numberOfFuelBurning > 0) {
-        furnaceStateData.cookTime += numberOfFuelBurning;
+        furnaceStateData.cookTimeElapsed += numberOfFuelBurning;
 			}	else {
-        furnaceStateData.cookTime -= 2;
+        furnaceStateData.cookTimeElapsed -= 2;
 			}
-			if (furnaceStateData.cookTime < 0) furnaceStateData.cookTime = 0;
+			if (furnaceStateData.cookTimeElapsed < 0) furnaceStateData.cookTimeElapsed = 0;
 
 			int cookTimeForCurrentItem = getCookTime(this.world, currentlySmeltingItem);
+			furnaceStateData.cookTimeForCompletion = cookTimeForCurrentItem;
 			// If cookTime has reached maxCookTime smelt the item and reset cookTime
-			if (furnaceStateData.cookTime >= cookTimeForCurrentItem) {
+			if (furnaceStateData.cookTimeElapsed >= cookTimeForCurrentItem) {
 				smeltFirstSuitableInputItem();
-        furnaceStateData.cookTime = 0;
+        furnaceStateData.cookTimeElapsed = 0;
 			}
 		}	else {
-      furnaceStateData.cookTime = 0;
+      furnaceStateData.cookTimeElapsed = 0;
 		}
 
 		// when the number of burning slots changes, we need to force the block to re-render, otherwise the change in
@@ -172,16 +145,14 @@ public class TileEntityFurnace extends TileEntity implements INamedContainerProv
 		// The block update (for renderer) is only required on client side, but the lighting is required on both, since
 		//    the client needs it for rendering and the server needs it for crop growth etc
 		int numberBurning = numberOfBurningFuelSlots();
-		if (cachedNumberOfBurningSlots != numberBurning) {
-			cachedNumberOfBurningSlots = numberBurning;
-			if (world.isRemote) {
-        BlockState iblockstate = this.world.getBlockState(pos);
-        final int FLAGS = 3;  // I'm not sure what these flags do, exactly, but 3 seems to be the most common / works ok
-        world.notifyBlockUpdate(pos, iblockstate, iblockstate, FLAGS);
-			}
-      world.getChunkProvider().getLightManager().checkBlock(pos);
+		BlockState currentBlockState = world.getBlockState(this.pos);
+    BlockState newBlockState = currentBlockState.with(BlockInventoryFurnace.BURNING_SIDES_COUNT, numberBurning);
+    if (!newBlockState.equals(currentBlockState)) {
+			final int FLAGS = SetBlockStateFlag.get(SetBlockStateFlag.BLOCK_UPDATE, SetBlockStateFlag.SEND_TO_CLIENTS);
+      world.setBlockState(this.pos, newBlockState, FLAGS);
+      markDirty();
 		}
-	}
+  }
 
 	/**
 	 * 	for each fuel slot: decreases the burn time, checks if burnTimeRemainings = 0 and tries to consume a new piece of fuel if one is available
@@ -481,8 +452,6 @@ public class TileEntityFurnace extends TileEntity implements INamedContainerProv
         || outputZoneContents.getSizeInventory() != OUTPUT_SLOTS_COUNT
         )
       throw new IllegalArgumentException("Corrupted NBT: Number of inventory slots did not match expected.");
-
-		cachedNumberOfBurningSlots = -1;
 	}
 
 //	// When the world loads from disk, the server needs to send the TileEntity information to the client
@@ -562,7 +531,7 @@ public class TileEntityFurnace extends TileEntity implements INamedContainerProv
   @Override
   public Container createMenu(int windowID, PlayerInventory playerInventory, PlayerEntity playerEntity) {
     return ContainerFurnace.createContainerServerSide(windowID, playerInventory,
-                                  inputZoneContents, outputZoneContents, fuelZoneContents);
+                                  inputZoneContents, outputZoneContents, fuelZoneContents, furnaceStateData);
   }
 
 //	// Fields are used to send non-inventory information from the server to interested clients

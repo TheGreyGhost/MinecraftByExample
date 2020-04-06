@@ -31,7 +31,7 @@ public class StartupCommon
 
   @SubscribeEvent
   public static void onBlocksRegistration(final RegistryEvent.Register<Block> blockRegisterEvent) {
-    blockFurnace = new BlockInventoryBasic().setRegistryName("mbe31_block_inventory_furnace_registry_name");
+    blockFurnace = new BlockInventoryFurnace().setRegistryName("mbe31_block_inventory_furnace_registry_name");
     blockRegisterEvent.getRegistry().register(blockFurnace);
   }
 

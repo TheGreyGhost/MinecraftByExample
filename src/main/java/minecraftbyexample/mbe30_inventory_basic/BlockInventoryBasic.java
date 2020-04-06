@@ -55,6 +55,7 @@ public class BlockInventoryBasic extends ContainerBlock
   public TileEntity createTileEntity(BlockState state, IBlockReader world) {
     return createNewTileEntity(world);
   }
+
   @Nullable
   @Override
   public TileEntity createNewTileEntity(IBlockReader worldIn) {

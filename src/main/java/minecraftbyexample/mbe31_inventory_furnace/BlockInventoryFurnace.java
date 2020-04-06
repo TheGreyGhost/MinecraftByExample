@@ -1,122 +1,147 @@
-//package minecraftbyexample.mbe31_inventory_furnace;
-//
-//import minecraftbyexample.MinecraftByExample;
-//import net.minecraft.block.BlockRenderType;
-//import net.minecraft.block.ContainerBlock;
-//import net.minecraft.block.material.Material;
-//import net.minecraft.block.properties.IProperty;
-//import net.minecraft.block.properties.PropertyInteger;
-//import net.minecraft.block.state.BlockStateContainer;
-//import net.minecraft.block.BlockState;
-//import net.minecraft.item.ItemGroup;
-//import net.minecraft.entity.player.PlayerEntity;
-//import net.minecraft.inventory.IInventory;
-//import net.minecraft.inventory.InventoryHelper;
-//import net.minecraft.tileentity.TileEntity;
-//import net.minecraft.util.BlockRenderLayer;
-//import net.minecraft.util.Direction;
-//import net.minecraft.util.Hand;
-//import net.minecraft.util.math.BlockPos;
-//import net.minecraft.util.math.MathHelper;
-//import net.minecraft.world.IBlockAccess;
-//import net.minecraft.world.World;
-//import net.minecraftforge.fml.relauncher.Side;
-//import net.minecraftforge.fml.relauncher.SideOnly;
-//
-//
-///**
-// * User: brandon3055
-// * Date: 06/01/2015
-// *
-// * BlockInventoryAdvanced is an advanced furnace with 5 input, 4 output and 4 fuel slots that smelts at twice the speed
-// * of a regular furnace. The block itself doesn't do much more then any regular block except create a tile entity when
-// * placed, open a gui when right clicked and drop tne inventory's contents when harvested. Everything else is handled
-// * by the tile entity.
-// *
-// * The block model will change appearance depending on how many fuel slots are burning.
-// * The amount of "block light" produced by the furnace will also depending on how many fuel slots are burning.
-// *
-// * //Note that in 1.10.*, extending BlockContainer can cause rendering problems if you don't extend getRenderType()
-// // If you don't want to extend BlockContainer, make sure to add the tile entity manually,
-// //   using hasTileEntity() and createTileEntity().  See BlockContainer for a couple of other important methods you may
-// //  need to implement.
-// */
-//public class BlockInventoryFurnace extends ContainerBlock
-//{
-//	public BlockInventoryFurnace()
-//	{
-//		super(Material.ROCK);
-//		this.setCreativeTab(ItemGroup.DECORATIONS);
-//	}
-//
-//	// Called when the block is placed or loaded client side to get the tile entity for the block
-//	// Should return a new instance of the tile entity for the block
-//	@Override
-//	public TileEntity createNewTileEntity(World worldIn, int meta) {
-//		return new TileInventoryFurnace();
-//	}
-//
-//	// Called when the block is right clicked
-//	// In this block it is used to open the block gui when right clicked by a player
-//	@Override
-//	public boolean onBlockActivated(World worldIn, BlockPos pos, BlockState state, PlayerEntity playerIn, Hand hand,
-//																	Direction side, float hitX, float hitY, float hitZ) {
-//		// Uses the gui handler registered to your mod to open the gui for the given gui id
-//		// open on the server side only  (not sure why you shouldn't open client side too... vanilla doesn't, so we better not either)
-//		if (worldIn.isRemote) return true;
-//
-//		playerIn.openGui(MinecraftByExample.instance, GuiHandlerMBE31.getGuiID(), worldIn, pos.getX(), pos.getY(), pos.getZ());
-//		return true;
-//	}
-//
-//	// This is where you can do something when the block is broken. In this case drop the inventory's contents
-//	@Override
-//	public void breakBlock(World worldIn, BlockPos pos, BlockState state) {
-//		TileEntity tileEntity = worldIn.getTileEntity(pos);
-//		if (tileEntity instanceof IInventory) {
-//			InventoryHelper.dropInventoryItems(worldIn, pos, (IInventory)tileEntity);
-//		}
-//
-////		if (inventory != null){
-////			// For each slot in the inventory
-////			for (int i = 0; i < inventory.getSizeInventory(); i++){
-////				// If the slot is not empty
-////				if (inventory.getStackInSlot(i) != null)
-////				{
-////					// Create a new entity item with the item stack in the slot
-////					EntityItem item = new EntityItem(worldIn, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, inventory.getStackInSlot(i));
-////
-////					// Apply some random motion to the item
-////					float multiplier = 0.1f;
-////					float motionX = worldIn.rand.nextFloat() - 0.5f;
-////					float motionY = worldIn.rand.nextFloat() - 0.5f;
-////					float motionZ = worldIn.rand.nextFloat() - 0.5f;
-////
-////					item.motionX = motionX * multiplier;
-////					item.motionY = motionY * multiplier;
-////					item.motionZ = motionZ * multiplier;
-////
-////					// Spawn the item in the world
-////					worldIn.spawnEntityInWorld(item);
-////				}
-////			}
-////
-////			// Clear the inventory so nothing else (such as another mod) can do anything with the item
-////			inventory.clear();
-////		}
-//
-//		// Super MUST be called last because it removes the tile entity
-//		super.breakBlock(worldIn, pos, state);
-//	}
-//
-//	//------------------------------------------------------------
-//	//  The code below isn't necessary for illustrating the Inventory Furnace concepts, it's just used for rendering.
-//	//  For more background information see MBE03
-//
-//	// we will give our Block a property which tracks the number of burning sides, 0 - 4.
-//	// This will affect the appearance of the block model, but does not need to be stored in metadata (it's stored in
-//	//  the tileEntity) so we only need to implement getActualState.  getStateFromMeta, getMetaFromState aren't required
-//	//   but we give defaults anyway because the base class getMetaFromState gives an error if we don't
+package minecraftbyexample.mbe31_inventory_furnace;
+
+import net.minecraft.block.*;
+import net.minecraft.block.material.Material;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.state.IntegerProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
+
+import javax.annotation.Nullable;
+
+
+/**
+ * User: brandon3055
+ * Date: 06/01/2015
+ *
+ * BlockInventoryAdvanced is an advanced furnace with 5 input, 4 output and 4 fuel slots that smelts at up to four times the
+ * speed of a regular furnace. The block itself doesn't do much more then any regular block except create a tile entity when
+ * placed, open a gui when right clicked and drop the inventory's contents when harvested. Everything else is handled
+ * by the tile entity.
+ *
+ * The block model will change appearance depending on how many fuel slots are burning.
+ * The amount of "block light" produced by the furnace will also depending on how many fuel slots are burning.
+ *
+ */
+public class BlockInventoryFurnace extends ContainerBlock
+{
+	public BlockInventoryFurnace()
+  {
+    super(Block.Properties.create(Material.ROCK)
+    );
+    BlockState defaultBlockState = this.stateContainer.getBaseState().with(BURNING_SIDES_COUNT, 0);
+    this.setDefaultState(defaultBlockState);
+  }
+
+  // --- The block changes its appearance depending on how many of the furnace slots have burning fuel in them
+  //  In order to do that, we add a blockstate for each state (0 -> 4).  We also change the blockLight emitted
+
+  final static int MAX_NUMBER_OF_BURNING_SIDES = 4;
+  public static final IntegerProperty BURNING_SIDES_COUNT =
+          IntegerProperty.create("burning_sides_count",0, MAX_NUMBER_OF_BURNING_SIDES);
+
+  protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    builder.add(BURNING_SIDES_COUNT);
+  }
+
+  // change the furnace emitted light ("block light") depending on how many slots are burning
+  private static final int ALL_SIDES_LIGHT_VALUE = 15; // light value for four sides burning
+  private static final int ONE_SIDE_LIGHT_VALUE = 8;  // light value for a single side burning
+
+  /**
+   * Amount of block light emitted by the furnace
+   */
+  public int getLightValue(BlockState state) {
+    int lightValue = 0;
+    Integer burningSidesCount = state.get(BURNING_SIDES_COUNT);
+
+    if (burningSidesCount == 0) {
+      lightValue = 0;
+    } else {
+      // linearly interpolate the light value depending on how many slots are burning
+      lightValue = ONE_SIDE_LIGHT_VALUE +
+              (ALL_SIDES_LIGHT_VALUE - ONE_SIDE_LIGHT_VALUE) * burningSidesCount / (MAX_NUMBER_OF_BURNING_SIDES - 1);
+    }
+    lightValue = MathHelper.clamp(lightValue, 0, ALL_SIDES_LIGHT_VALUE);
+    return lightValue;
+  }
+
+
+  // ---------------------
+
+  /**
+   * Create the Tile Entity for this block.
+   * Forge has a default but I've included it anyway for clarity
+   * @return
+   */
+  @Override
+  public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+    return createNewTileEntity(world);
+  }
+
+  @Nullable
+  @Override
+  public TileEntity createNewTileEntity(IBlockReader worldIn) {
+    return new TileEntityFurnace();
+  }
+
+  // not needed if your block implements ITileEntityProvider (in this case implemented by BlockContainer), but it
+  //  doesn't hurt to include it anyway...
+  @Override
+  public boolean hasTileEntity(BlockState state)
+  {
+    return true;
+  }
+
+
+  // Called when the block is right clicked
+	// In this block it is used to open the block gui when right clicked by a player
+	@Override
+  public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
+    if (worldIn.isRemote) return ActionResultType.SUCCESS; // on client side, don't do anything
+
+    INamedContainerProvider namedContainerProvider = this.getContainer(state, worldIn, pos);
+    if (namedContainerProvider != null) {
+      if (!(player instanceof ServerPlayerEntity)) return ActionResultType.FAIL;  // should always be true, but just in case...
+      ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity)player;
+      NetworkHooks.openGui(serverPlayerEntity, namedContainerProvider, (packetBuffer)->{});
+      // (packetBuffer)->{} is just a do-nothing because we have no extra data to send
+    }
+    return ActionResultType.SUCCESS;
+	}
+
+	// This is where you can do something when the block is broken. In this case drop the inventory's contents
+  // Code is copied directly from vanilla eg ChestBlock, CampfireBlock
+	@Override
+  public void onReplaced(BlockState state, World world, BlockPos blockPos, BlockState newState, boolean isMoving) {
+    if (state.getBlock() != newState.getBlock()) {
+      TileEntity tileentity = world.getTileEntity(blockPos);
+      if (tileentity instanceof TileEntityFurnace) {
+        TileEntityFurnace tileEntityFurnace = (TileEntityFurnace)tileentity;
+        tileEntityFurnace.dropAllContents(world, blockPos);
+      }
+//      worldIn.updateComparatorOutputLevel(pos, this);  if the inventory is used to set redstone power for comparators
+      super.onReplaced(state, world, blockPos, newState, isMoving);  // call it last, because it removes the TileEntity
+    }
+  }
+
+  //------------------------------------------------------------
+	//  The code below isn't necessary for illustrating the Inventory Furnace concepts, it's just used for rendering.
+	//  For more background information see MBE03
+
+	// we will give our Block a property which tracks the number of burning sides, 0 - 4.
+	// This will affect the appearance of the block model, but does not need to be stored in metadata (it's stored in
+	//  the tileEntity) so we only need to implement getActualState.  getStateFromMeta, getMetaFromState aren't required
+	//   but we give defaults anyway because the base class getMetaFromState gives an error if we don't
 //
 //	// update the block state depending on the number of slots which contain burning fuel
 //	@Override
@@ -130,7 +155,9 @@
 //			return getDefaultState().withProperty(BURNING_SIDES_COUNT, burningSlots);
 //		}
 //		return state;
-//	}
+//    worldIn.setBlockState(pos, newState, flags & 0xffffffdf);
+//
+//  }
 //
 //	@Override
 //	public BlockState getStateFromMeta(int meta)
@@ -156,32 +183,13 @@
 //
 //	public static final PropertyInteger BURNING_SIDES_COUNT = PropertyInteger.create("burning_sides_count", 0, 4);
 //
-//					// change the furnace emitted light ("block light") depending on how many slots are burning
-//	private static final int FOUR_SIDE_LIGHT_VALUE = 15; // light value for four sides burning
-//	private static final int ONE_SIDE_LIGHT_VALUE = 8;  // light value for a single side burning
 //
-//  @Override
-//	public int getLightValue(BlockState state, IBlockAccess world, BlockPos pos) {
-//		int lightValue = 0;
-//		BlockState blockState = getActualState(getDefaultState(), world, pos);
-//		int burningSides = (Integer)blockState.getValue(BURNING_SIDES_COUNT);
-//
-//   	if (burningSides == 0) {
-//			lightValue = 0;
-//		} else {
-//			// linearly interpolate the light value depending on how many slots are burning
-//			lightValue = ONE_SIDE_LIGHT_VALUE + (int)((FOUR_SIDE_LIGHT_VALUE - ONE_SIDE_LIGHT_VALUE) / (4.0 - 1.0) * burningSides);
-//		}
-//		lightValue = MathHelper.clamp(lightValue, 0, FOUR_SIDE_LIGHT_VALUE);
-//		return lightValue;
-//	}
-//
-//	// the block will render in the SOLID layer.  See http://greyminecraftcoder.blogspot.co.at/2014/12/block-rendering-18.html for more information.
-//	@OnlyIn(Dist.CLIENT)
-//	public BlockRenderLayer getBlockLayer()
-//	{
-//		return BlockRenderLayer.SOLID;
-//	}
+////	// the block will render in the SOLID layer.  See http://greyminecraftcoder.blogspot.co.at/2014/12/block-rendering-18.html for more information.
+////	@OnlyIn(Dist.CLIENT)
+////	public BlockRenderLayer getBlockLayer()
+////	{
+////		return BlockRenderLayer.SOLID;
+////	}
 //
 //	// used by the renderer to control lighting and visibility of other block.
 //	// set to false because this block doesn't fill the entire 1x1x1 space
@@ -197,11 +205,11 @@
 //	public boolean isFullCube(BlockState iBlockState) {
 //		return false;
 //	}
-//
-//	// render using a BakedModel
-//  // required because the default (super method) is INVISIBLE for BlockContainers.
-//	@Override
-//	public BlockRenderType getRenderType(BlockState iBlockState) {
-//		return BlockRenderType.MODEL;
-//	}
-//}
+
+	// render using a BakedModel
+  // required because the default (super method) is INVISIBLE for BlockContainers.
+	@Override
+	public BlockRenderType getRenderType(BlockState iBlockState) {
+		return BlockRenderType.MODEL;
+	}
+}
