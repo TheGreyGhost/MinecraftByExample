@@ -46,21 +46,14 @@ import java.util.Optional;
  * 4 fuel slots and cooks at up to four times the speed.
  * The input slots are used sequentially rather than in parallel, i.e. the first slot cooks, then the second, then the third, etc
  * The fuel slots are used in parallel.  The more slots burning in parallel, the faster the cook time.
- * The code is heavily based on TileEntityFurnace.
+ * The code is heavily based on AbstractFurnaceTileEntity.
  */
 public class TileEntityFurnace extends TileEntity implements INamedContainerProvider, ITickableTileEntity {
-	// Create and initialize the itemStacks variable that will store store the itemStacks
+
 	public static final int FUEL_SLOTS_COUNT = 4;
 	public static final int INPUT_SLOTS_COUNT = 5;
 	public static final int OUTPUT_SLOTS_COUNT = 5;
 	public static final int TOTAL_SLOTS_COUNT = FUEL_SLOTS_COUNT + INPUT_SLOTS_COUNT + OUTPUT_SLOTS_COUNT;
-
-	public static final int FIRST_FUEL_SLOT = 0;
-	public static final int FIRST_INPUT_SLOT = FIRST_FUEL_SLOT + FUEL_SLOTS_COUNT;
-	public static final int FIRST_OUTPUT_SLOT = FIRST_INPUT_SLOT + INPUT_SLOTS_COUNT;
-
-	/**The number of ticks required to cook an item*/
-	private static final short COOK_TIME_FOR_COMPLETION = 200;  // vanilla value is 200 = 10 seconds
 
 	private FurnaceZoneContents fuelZoneContents;
   private FurnaceZoneContents inputZoneContents;
@@ -89,7 +82,6 @@ public class TileEntityFurnace extends TileEntity implements INamedContainerProv
     final double MAXIMUM_DISTANCE_SQ = 8.0 * 8.0;
     return player.getDistanceSq(pos.getX() + X_CENTRE_OFFSET, pos.getY() + Y_CENTRE_OFFSET, pos.getZ() + Z_CENTRE_OFFSET) < MAXIMUM_DISTANCE_SQ;
   }
-
 
 	/**
 	 * Get the number of slots which have fuel burning in them.
@@ -311,87 +303,6 @@ public class TileEntityFurnace extends TileEntity implements INamedContainerProv
     return matchingRecipe.get().getCookTime();
   }
 
-//	// Gets the number of slots in the inventory
-//	@Override
-//	public int getSizeInventory() {
-//		return itemStacks.length;
-//	}
-//
-//	// returns true if all of the slots in the inventory are empty
-//	@Override
-//	public boolean isEmpty()
-//	{
-//		for (ItemStack itemstack : itemStacks) {
-//			if (!itemstack.isEmpty()) {  // isEmpty()
-//				return false;
-//			}
-//		}
-//
-//		return true;
-//	}
-
-//	// Gets the stack in the given slot
-//	@Override
-//	public ItemStack getStackInSlot(int i) {
-//		return itemStacks[i];
-//	}
-
-//	/**
-//	 * Removes some of the units from itemstack in the given slot, and returns as a separate itemstack
-//	 * @param slotIndex the slot number to remove the item from
-//	 * @param count the number of units to remove
-//	 * @return a new itemstack containing the units removed from the slot
-//	 */
-//	@Override
-//	public ItemStack decrStackSize(int slotIndex, int count) {
-//		ItemStack itemStackInSlot = getStackInSlot(slotIndex);
-//		if (itemStackInSlot.isEmpty()) return ItemStack.EMPTY;  //isEmpty(), EMPTY_ITEM
-//
-//		ItemStack itemStackRemoved;
-//		if (itemStackInSlot.getCount() <= count) { //getStackSize
-//			itemStackRemoved = itemStackInSlot;
-//			setInventorySlotContents(slotIndex, ItemStack.EMPTY); // EMPTY_ITEM
-//		} else {
-//			itemStackRemoved = itemStackInSlot.splitStack(count);
-//			if (itemStackInSlot.getCount() == 0) { //getStackSize
-//				setInventorySlotContents(slotIndex, ItemStack.EMPTY); //EMPTY_ITEM
-//			}
-//		}
-//		markDirty();
-//		return itemStackRemoved;
-//	}
-//
-//	// overwrites the stack in the given slotIndex with the given stack
-//	@Override
-//	public void setInventorySlotContents(int slotIndex, ItemStack itemstack) {
-//		itemStacks[slotIndex] = itemstack;
-//		if (!itemstack.isEmpty() && itemstack.getCount() > getInventoryStackLimit()) {  // isEmpty();  getStackSize()
-//			itemstack.setCount(getInventoryStackLimit());  //setStackSize()
-//		}
-//		markDirty();
-//	}
-
-//	// This is the maximum number if item allowed in each slot
-//	// This only affects things such as hoppers trying to insert item you need to use the container to enforce this for players
-//	// inserting item via the gui
-//	@Override
-//	public int getInventoryStackLimit() {
-//		return 64;
-//	}
-
-//	// Return true if the given player is able to use this block. In this case it checks that
-//	// 1) the world tileentity hasn't been replaced in the meantime, and
-//	// 2) the player isn't too far away from the centre of the block
-//	@Override
-//	public boolean isUsableByPlayer(PlayerEntity player) {
-//		if (this.world.getTileEntity(this.pos) != this) return false;
-//		final double X_CENTRE_OFFSET = 0.5;
-//		final double Y_CENTRE_OFFSET = 0.5;
-//		final double Z_CENTRE_OFFSET = 0.5;
-//		final double MAXIMUM_DISTANCE_SQ = 8.0 * 8.0;
-//		return player.getDistanceSq(pos.getX() + X_CENTRE_OFFSET, pos.getY() + Y_CENTRE_OFFSET, pos.getZ() + Z_CENTRE_OFFSET) < MAXIMUM_DISTANCE_SQ;
-//	}
-
 	// Return true if the given stack is allowed to be inserted in the given slot
 	// Unlike the vanilla furnace, we allow anything to be placed in the fuel slots
 	static public boolean isItemValidForFuelSlot(ItemStack itemStack)
@@ -500,14 +411,6 @@ public class TileEntityFurnace extends TileEntity implements INamedContainerProv
     InventoryHelper.dropInventoryItems(world, blockPos, outputZoneContents);
   }
 
-  //------------------------
-//
-//	// set all slots to empty
-//	@Override
-//	public void clear() {
-//		Arrays.fill(itemStacks, ItemStack.EMPTY);  //EMPTY_ITEM
-//	}
-
   // -------------  The following two methods are used to make the TileEntity perform as a NamedContainerProvider, i.e.
   //  1) Provide a name used when displaying the container, and
   //  2) Creating an instance of container on the server, and linking it to the inventory items stored within the TileEntity
@@ -535,83 +438,5 @@ public class TileEntityFurnace extends TileEntity implements INamedContainerProv
                                   inputZoneContents, outputZoneContents, fuelZoneContents, furnaceStateData);
   }
 
-//	// Fields are used to send non-inventory information from the server to interested clients
-//	// The container code caches the fields and sends the client any fields which have changed.
-//	// The field ID is limited to byte, and the field value is limited to short. (if you use more than this, they get cast down
-//	//   in the network packets)
-//	// If you need more than this, or shorts are too small, use a custom packet in your container instead.
-//
-//	private static final byte COOK_FIELD_ID = 0;
-//	private static final byte FIRST_BURN_TIME_REMAINING_FIELD_ID = 1;
-//	private static final byte FIRST_BURN_TIME_INITIAL_FIELD_ID = FIRST_BURN_TIME_REMAINING_FIELD_ID + (byte)FUEL_SLOTS_COUNT;
-//	private static final byte NUMBER_OF_FIELDS = FIRST_BURN_TIME_INITIAL_FIELD_ID + (byte)FUEL_SLOTS_COUNT;
-
-//	@Override
-//	public int getField(int id) {
-//		if (id == COOK_FIELD_ID) return cookTime;
-//		if (id >= FIRST_BURN_TIME_REMAINING_FIELD_ID && id < FIRST_BURN_TIME_REMAINING_FIELD_ID + FUEL_SLOTS_COUNT) {
-//			return burnTimeRemaining[id - FIRST_BURN_TIME_REMAINING_FIELD_ID];
-//		}
-//		if (id >= FIRST_BURN_TIME_INITIAL_FIELD_ID && id < FIRST_BURN_TIME_INITIAL_FIELD_ID + FUEL_SLOTS_COUNT) {
-//			return burnTimeInitialValue[id - FIRST_BURN_TIME_INITIAL_FIELD_ID];
-//		}
-//		System.err.println("Invalid field ID in TileInventorySmelting.getField:" + id);
-//		return 0;
-//	}
-
-//	@Override
-//	public void setField(int id, int value)
-//	{
-//		if (id == COOK_FIELD_ID) {
-//			cookTime = (short)value;
-//		} else if (id >= FIRST_BURN_TIME_REMAINING_FIELD_ID && id < FIRST_BURN_TIME_REMAINING_FIELD_ID + FUEL_SLOTS_COUNT) {
-//			burnTimeRemaining[id - FIRST_BURN_TIME_REMAINING_FIELD_ID] = value;
-//		} else if (id >= FIRST_BURN_TIME_INITIAL_FIELD_ID && id < FIRST_BURN_TIME_INITIAL_FIELD_ID + FUEL_SLOTS_COUNT) {
-//			burnTimeInitialValue[id - FIRST_BURN_TIME_INITIAL_FIELD_ID] = value;
-//		} else {
-//			System.err.println("Invalid field ID in TileInventorySmelting.setField:" + id);
-//		}
-//	}
-//
-//	@Override
-//	public int getFieldCount() {
-//		return NUMBER_OF_FIELDS;
-//	}
-
-	// -----------------------------------------------------------------------------------------------------------
-	// The following methods are not needed for this example but are part of IInventory so they must be implemented
-
-//	// Unused unless your container specifically uses it.
-//	// Return true if the given stack is allowed to go in the given slot
-//	@Override
-//	public boolean isItemValidForSlot(int slotIndex, ItemStack itemstack) {
-//		return false;
-//	}
-//
-//	/**
-//	 * This method removes the entire contents of the given slot and returns it.
-//	 * Used by containers such as crafting tables which return any item in their slots when you close the GUI
-//	 * @param slotIndex
-//	 * @return
-//	 */
-//	@Override
-//	public ItemStack removeStackFromSlot(int slotIndex) {
-//		ItemStack itemStack = getStackInSlot(slotIndex);
-//		if (!itemStack.isEmpty()) setInventorySlotContents(slotIndex, ItemStack.EMPTY);  //isEmpty();  EMPTY_ITEM
-//		return itemStack;
-//	}
-//
-//	@Override
-//	public void openInventory(PlayerEntity player) {}
-//
-//	@Override
-//	public void closeInventory(PlayerEntity player) {}
-
-
-//  private int burnTime;
-//  private int recipesUsed;
-//  private int cookTime;
-//  private int cookTimeTotal;
-
-    private ItemStack currentlySmeltingItemLastTick = ItemStack.EMPTY;
+  private ItemStack currentlySmeltingItemLastTick = ItemStack.EMPTY;
 }

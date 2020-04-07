@@ -14,12 +14,12 @@ import java.util.function.Predicate;
  * This class is used to encapsulate the contents of the one of the zones of the furnace (eg input zone, output zone,
  *    and fuel zone) and provide the link between the parent TileEntity and the container.
  * 1) stores information about the items in the furnace: allows the container to manipulate the data stored in the tile entity
- * 2) provides a way for the container to ask if certain actions are permitted (eg isUsableByPlayer, isItemValidForSlot)
+ * 2) provides a way for the container to ask the TileEntity if certain actions are permitted (eg isUsableByPlayer, isItemValidForSlot)
  * 3) provides a way for the container to notify the TileEntity that the container has changed (eg markDirty, openInventory)
  *
  * Typical usage for a TileEntity which needs to store Items:
- * 1) When constructing the TileEntity, create and store a ChestContents using createForTileEntity()
- * 2) In your ContainerType<MyContainer>, create a ChestContents using createForClientSideContainer() and pass it to
+ * 1) When constructing the TileEntity, create and store a FurnaceZoneContents using createForTileEntity()
+ * 2) In your ContainerType<MyContainer>, create a FurnaceZoneContents using createForClientSideContainer() and pass it to
  *    the constructor of your client-side container.
  * 3) In your TileEntity write() and read() methods, call the serializeNBT() and deserializeNBT() methods
  * Vanilla and the container code will take care of everything else.
@@ -28,7 +28,7 @@ import java.util.function.Predicate;
 public class FurnaceZoneContents implements IInventory {
 
   /**
-   * Use this constructor to create a FurnaceContents which is linked to its parent TileEntity.
+   * Use this constructor to create a FurnaceZoneContents which is linked to its parent TileEntity.
    * On the server, this link will be used by the Container to request information and provide notifications to the parent
    * On the client, the link will be unused.
    * There are additional notificationLambdas available; these two are explicitly specified because your TileEntity will
@@ -49,10 +49,10 @@ public class FurnaceZoneContents implements IInventory {
   }
 
   /**
-   * Use this constructor to create a FurnaceContents which is not linked to any parent TileEntity; i.e. is used by
-   *   the client side container:
-   *   * does not permanently store items
-   *   * cannot ask questions/provide notifications to a parent TileEntity
+   * Use this constructor to create a FurnaceZoneContents which is not linked to any parent TileEntity; i.e.
+   *   is used by the client side container:
+   * * does not permanently store items
+   * * cannot ask questions/provide notifications to a parent TileEntity
    * @param size  the max number of ItemStacks in the inventory
    * @return the new ChestContents
    */

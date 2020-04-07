@@ -8,10 +8,10 @@ import java.util.Arrays;
 /**
  * Created by TGG on 4/04/2020.
  * This class is used to store some state data for the furnace (eg burn time, smelting time, etc)
- * 1) The TileEntity uses it to store the data permanently, including NBT serialisation and deserialisation
+ * 1) The Server TileEntity uses it to store the data permanently, including NBT serialisation and deserialisation
  * 2) The server container uses it to
- *    a) read/write permanent data
- *    b) synchronise the data to the client container using the IIntArray interface (via Container::trackIntArray)
+ *    a) read/write permanent data back into the TileEntity
+ *    b) synchronise the server container data to the client container using the IIntArray interface (via Container::trackIntArray)
  * 3) The client container uses it to store a temporary copy of the data, for rendering / GUI purposes
  * The TileEntity and the client container both use it by poking directly into its member variables.  That's not good
  *   practice but it's easier to understand than the vanilla method which uses an anonymous class/lambda functions

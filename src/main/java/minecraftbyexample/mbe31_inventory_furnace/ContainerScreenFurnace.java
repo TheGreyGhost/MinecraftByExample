@@ -18,13 +18,14 @@ import java.util.List;
  * User: brandon3055
  * Date: 06/01/2015
  *
- * GuiInventoryAdvanced is a gui similar to that of a furnace. It has a progress bar and a burn time indicator.
+ * ContainerScreenFurnace is a gui similar to that of a furnace. It has a progress bar and a burn time indicator.
  * Both indicators have mouse over text
  *
  * The Screen is drawn in several layers, most importantly:
  * Background - renderBackground() - eg a grey fill
  * Background texture - drawGuiContainerBackgroundLayer() (eg the frames for the slots)
  * Foreground layer - typically text labels
+ * renderHoveredToolTip - for tool tips when the mouse is hovering over something of interest
  */
 @OnlyIn(Dist.CLIENT)
 public class ContainerScreenFurnace extends ContainerScreen<ContainerFurnace> {
@@ -89,28 +90,6 @@ public class ContainerScreenFurnace extends ContainerScreen<ContainerFurnace> {
       super.renderHoveredToolTip(mouseX, mouseY);
     }
   }
-
-//  // If the mouse is over the progress bar add the progress bar hovering text
-//    if (isInRect(guiLeft + COOK_BAR_XPOS, guiTop + COOK_BAR_YPOS, COOK_BAR_WIDTH, COOK_BAR_HEIGHT, mouseX, mouseY)){
-//    hoveringText.add("Progress:");
-//    int cookPercentage =(int)(tileEntity.fractionOfCookTimeComplete() * 100);
-//    hoveringText.add(cookPercentage + "%");
-//  }
-//
-//  // If the mouse is over one of the burn time indicator add the burn time indicator hovering text
-//    for (int i = 0; i < tileEntity.FUEL_SLOTS_COUNT; ++i) {
-//    if (isInRect(guiLeft + FLAME_XPOS + FLAME_X_SPACING * i, guiTop + FLAME_YPOS, FLAME_WIDTH, FLAME_HEIGHT, mouseX, mouseY)) {
-//      hoveringText.add("Fuel Time:");
-//      hoveringText.add(tileEntity.secondsOfFuelRemaining(i) + "s");
-//    }
-//  }
-//  // If hoveringText is not empty draw the hovering text.  Otherwise, use vanilla to render tooltip for the slots
-//    if (!hoveringText.isEmpty()){
-//    renderTooltip(hoveringText, mouseX - guiLeft, mouseY - guiTop);
-//  } else {
-//    super.renderHoveredToolTip(mouseX, mouseY);
-//  }
-
 
 
   @Override

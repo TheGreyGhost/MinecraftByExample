@@ -14,7 +14,7 @@ The Footlocker will appear in the Miscellaneous tab in the creative inventory.
 
 The pieces you need to understand are located in:
 
-* `StartupCommon` and `StartupClientOnly' - used for registering the various components
+* `StartupCommon` and `StartupClientOnly` - used for registering the various components
 * `BlockInventoryBasic`
 * `TileInventoryBasic` - permanent storage of items (ie on disk)
 * `ChestContents` - stores the items and is used by the container to communicate back to the tileentity

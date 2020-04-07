@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
  * User: brandon3055
  * Date: 06/01/2015
  *
- * BlockInventoryAdvanced is an advanced furnace with 5 input, 4 output and 4 fuel slots that smelts at up to four times the
+ * BlockInventoryAdvanced is an advanced furnace with 5 input, 5 output and 4 fuel slots that smelts at up to four times the
  * speed of a regular furnace. The block itself doesn't do much more then any regular block except create a tile entity when
  * placed, open a gui when right clicked and drop the inventory's contents when harvested. Everything else is handled
  * by the tile entity.
@@ -43,7 +43,7 @@ public class BlockInventoryFurnace extends ContainerBlock
   }
 
   // --- The block changes its appearance depending on how many of the furnace slots have burning fuel in them
-  //  In order to do that, we add a blockstate for each state (0 -> 4).  We also change the blockLight emitted
+  //  In order to do that, we add a blockstate for each state (0 -> 4), each with a corresponding model.  We also change the blockLight emitted.
 
   final static int MAX_NUMBER_OF_BURNING_SIDES = 4;
   public static final IntegerProperty BURNING_SIDES_COUNT =
@@ -137,74 +137,6 @@ public class BlockInventoryFurnace extends ContainerBlock
   //------------------------------------------------------------
 	//  The code below isn't necessary for illustrating the Inventory Furnace concepts, it's just used for rendering.
 	//  For more background information see MBE03
-
-	// we will give our Block a property which tracks the number of burning sides, 0 - 4.
-	// This will affect the appearance of the block model, but does not need to be stored in metadata (it's stored in
-	//  the tileEntity) so we only need to implement getActualState.  getStateFromMeta, getMetaFromState aren't required
-	//   but we give defaults anyway because the base class getMetaFromState gives an error if we don't
-//
-//	// update the block state depending on the number of slots which contain burning fuel
-//	@Override
-//	public BlockState getActualState(BlockState state, IBlockAccess worldIn, BlockPos pos)
-//	{
-//		TileEntity tileEntity = worldIn.getTileEntity(pos);
-//		if (tileEntity instanceof TileInventoryFurnace) {
-//			TileInventoryFurnace tileInventoryFurnace = (TileInventoryFurnace)tileEntity;
-//			int burningSlots = tileInventoryFurnace.numberOfBurningFuelSlots();
-//			burningSlots = MathHelper.clamp(burningSlots, 0, 4);
-//			return getDefaultState().withProperty(BURNING_SIDES_COUNT, burningSlots);
-//		}
-//		return state;
-//    worldIn.setBlockState(pos, newState, flags & 0xffffffdf);
-//
-//  }
-//
-//	@Override
-//	public BlockState getStateFromMeta(int meta)
-//	{
-//		return this.getDefaultState();
-////		return this.getDefaultState().withProperty(BURNING_SIDES_COUNT, Integer.valueOf(meta));
-//	}
-//
-//	@Override
-//	public int getMetaFromState(BlockState state)
-//	{
-//		return 0;
-////		return ((Integer)state.getValue(BURNING_SIDES_COUNT)).intValue();
-//	}
-//
-//	// necessary to define which properties your block use
-//	// will also affect the variants listed in the blockstates model file.  See MBE03 for more info.
-//	@Override
-//	protected BlockStateContainer createBlockState()
-//	{
-//		return new BlockStateContainer(this, new IProperty[] {BURNING_SIDES_COUNT});
-//	}
-//
-//	public static final PropertyInteger BURNING_SIDES_COUNT = PropertyInteger.create("burning_sides_count", 0, 4);
-//
-//
-////	// the block will render in the SOLID layer.  See http://greyminecraftcoder.blogspot.co.at/2014/12/block-rendering-18.html for more information.
-////	@OnlyIn(Dist.CLIENT)
-////	public BlockRenderLayer getBlockLayer()
-////	{
-////		return BlockRenderLayer.SOLID;
-////	}
-//
-//	// used by the renderer to control lighting and visibility of other block.
-//	// set to false because this block doesn't fill the entire 1x1x1 space
-//	@Override
-//	public boolean isOpaqueCube(BlockState iBlockState) {
-//		return false;
-//	}
-//
-//	// used by the renderer to control lighting and visibility of other block, also by
-//	// (eg) wall or fence to control whether the fence joins itself to this block
-//	// set to false because this block doesn't fill the entire 1x1x1 space
-//	@Override
-//	public boolean isFullCube(BlockState iBlockState) {
-//		return false;
-//	}
 
 	// render using a BakedModel
   // required because the default (super method) is INVISIBLE for BlockContainers.
