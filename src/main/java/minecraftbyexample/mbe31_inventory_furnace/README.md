@@ -40,6 +40,15 @@ The key to understanding how this example works is to keep in mind the client-se
 
 Useful vanilla classes for further info: `BlockFurnace`, `TileEntityFurnace`, `ContainerFurnace`, `GuiFurnace`
 
+See also
+* Background information on [Containers](http://greyminecraftcoder.blogspot.com/2020/04/containers-1144.html)
+
+## Futher notes
+Depending on your container, there are a few other interfaces you might want to implement-
+RecipeGui-?; RecipeHelper-?
+comparator
+hopper input output
+
 ## Common errors
 
 * "Array index out of bounds"--you have messed up the mapping of slot numbers to inventories using addSlotToContainer
