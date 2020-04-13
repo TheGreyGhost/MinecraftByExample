@@ -13,7 +13,11 @@ This example shows the basics of using `IBakedModel#getQuads` to dynamically gen
 
 How it works:
 
+IModelData
+
 1. `ModelLoader.setCustomStateMapper` is used to set up a custom `StateMapper` for `BlockCamouflage`. This `StateMapper` tells vanilla to use `ModelResourceLocation` `mbe04_block_camouflage` for rendering, regardless of the block's state.
+
+
 1. The vanilla loader loads the model for `mbe04_block_camouflage` using the blockstates json and model json, as per normal blocks
 1. The `ModelBakeEvent` is then used to remove the model json from the registry and replace it with our custom `IBakedModel`.
 1. During the render, `BlockCamouflage.getExtendedState()` is called, which looks at the block's neighbours to pick a suitable block for the camouflage block to copy.  It then stores the identity of that copied block in the `IExtendedBlockState`.
