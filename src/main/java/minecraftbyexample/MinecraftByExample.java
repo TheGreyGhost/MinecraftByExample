@@ -135,9 +135,5 @@ public class MinecraftByExample {
     //----------------
     MOD_EVENT_BUS.register(minecraftbyexample.usefultools.debugging.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.usefultools.debugging.StartupCommon.class);
-
-    containerTypeTest = new ContainerTypeTest(); //todo remove
   }
-
-  static private ContainerTypeTest containerTypeTest;
 }
