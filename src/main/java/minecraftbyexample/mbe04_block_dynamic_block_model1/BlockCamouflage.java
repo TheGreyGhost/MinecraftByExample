@@ -1,5 +1,6 @@
 package minecraftbyexample.mbe04_block_dynamic_block_model1;
 
+import com.google.common.base.Preconditions;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.BlockState;
@@ -9,13 +10,12 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.ILightReader;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import javax.annotation.Nonnull;
+import java.util.*;
 
 /**
  * Created by TheGreyGhost on 19/04/2015.
@@ -26,8 +26,8 @@ import java.util.TreeMap;
 public class BlockCamouflage extends Block {
   public BlockCamouflage()
   {
-    super(Block.Properties.create(Material.MISCELLANEOUS)  // look at Block.Properties for further options
-            // doesNotBlockMovement().notOpaque().notSolid()
+    super(Block.Properties.create(Material.MISCELLANEOUS).doesNotBlockMovement()  // look at Block.Properties for further options
+            //notOpaque().notSolid()
     );
   }
 
@@ -38,101 +38,54 @@ public class BlockCamouflage extends Block {
     return BlockRenderType.MODEL;
   }
 
-  // createBlockState is used to define which properties your block possess
-  // Vanilla BlockState is composed of listed properties only.  A variant is created for each combination of listed
-  //   properties; for example two properties ON(true/false) and READY(true/false) would give rise to four variants
-  //   [on=true, ready=true]
-  //   [on=false, ready=true]
-  //   [on=true, ready=false]
-  //   [on=false, ready=false]
-  // Forge adds ExtendedBlockState, which has two types of property:
-  // - listed properties (like vanilla), and
-  // - unlisted properties, which can be used to convey information but do not cause extra variants to be created.
-  @Override
-  protected BlockStateContainer createBlockState() {
-    IProperty [] listedProperties = new IProperty[0]; // no listed properties
-    IUnlistedProperty [] unlistedProperties = new IUnlistedProperty[] {COPIEDBLOCK};
-    return new ExtendedBlockState(this, listedProperties, unlistedProperties);
-  }
-
-  /**
-   * Defines the properties needed for the BlockState
-   * @param builder
-   */
-  @Override
-  protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-    builder.add(FACING, WATERLOGGED);
-  }
-
-
-  // this method uses the block state and BlockPos to update the unlisted COPIEDBLOCK property in IExtendedBlockState based
-  // on non-metadata information.  This is then conveyed to the IBakedModel#getQuads during rendering.
-  // In this case, we look around the camouflage block to find a suitable adjacent block it should camouflage itself as
-  @Override
-  public BlockState getExtendedState(BlockState state, IBlockAccess world, BlockPos pos) {
-    if (state instanceof IExtendedBlockState) {  // avoid crash in case of mismatch
-      IExtendedBlockState retval = (IExtendedBlockState)state;
-      BlockState bestAdjacentBlock = selectBestAdjacentBlock(world, pos);
-      retval = retval.withProperty(COPIEDBLOCK, bestAdjacentBlock);
-      return retval;
-    }
-    return state;
-  }
-
-  @Override
-  public BlockState getActualState(BlockState state, IBlockAccess worldIn, BlockPos pos)
-  {
-    return state;  //for debugging - useful spot for a breakpoint.  Not necessary.
-  }
-
-  // the COPIEDBLOCK property is used to store the identity of the block that BlockCamouflage will copy
-  public static final UnlistedPropertyCopiedBlock COPIEDBLOCK = new UnlistedPropertyCopiedBlock();
 
   // Select the best adjacent block to camouflage as.
   // Algorithm is:
-  // 1) Ignore any block which are not solid (CUTOUTS or TRANSLUCENT).  Ignore adjacent camouflage.
+  // 1) Ignore any block which are not fully opaque cubes.  Ignore adjacent camouflage.  Ignore grass blocks (the
+  //       colour of grass blocks is hardcoded which makes the camouflage block look grey when copying grass)
   // 2) If there are more than one type of solid block, choose the type which is present on the greatest number of sides
   // 3) In case of a tie, prefer the type which span opposite sides of the blockpos, for example:
   //       up and down; east and west; north and south.
   // 4) If still a tie, look again for spans on both sides, counting adjacent camouflage block as a span
   // 5) If still a tie, in decreasing order of preference: NORTH, SOUTH, EAST, WEST, DOWN, UP
-  // 6) If no suitable adjacent block, return Block.air
-  private BlockState selectBestAdjacentBlock(IBlockAccess world, BlockPos blockPos)
+  // 6) If no suitable adjacent block, return Empty
+  public static Optional<BlockState> selectBestAdjacentBlock(@Nonnull ILightReader world, @Nonnull BlockPos blockPos)
   {
-    final BlockState UNCAMOUFLAGED_BLOCK = Blocks.AIR.getDefaultState();
     TreeMap<Direction, BlockState> adjacentSolidBlocks = new TreeMap<Direction, BlockState>();
 
     HashMap<BlockState, Integer> adjacentBlockCount = new HashMap<BlockState, Integer>();
     for (Direction facing : Direction.values()) {
-      BlockPos adjacentPosition = blockPos.add(facing.getFrontOffsetX(),
-                                               facing.getFrontOffsetY(),
-                                               facing.getFrontOffsetZ());
-      BlockState adjacentIBS = world.getBlockState(adjacentPosition);
-      Block adjacentBlock = adjacentIBS.getBlock();
-      if (adjacentBlock != Blocks.AIR
-          && adjacentBlock.getBlockLayer() == BlockRenderLayer.SOLID
-          && adjacentBlock.isOpaqueCube(adjacentIBS)) {
-        adjacentSolidBlocks.put(facing, adjacentIBS);
-        if (adjacentBlockCount.containsKey(adjacentIBS)) {
-          adjacentBlockCount.put(adjacentIBS, 1 + adjacentBlockCount.get(adjacentIBS));
-        } else if (adjacentIBS.getBlock() != this){
-          adjacentBlockCount.put(adjacentIBS, 1);
+      BlockPos adjacentPosition = blockPos.add(facing.getXOffset(),
+                                               facing.getYOffset(),
+                                               facing.getZOffset());
+      BlockState adjacentBS = world.getBlockState(adjacentPosition);
+      Block adjacentBlock = adjacentBS.getBlock();
+      if (!adjacentBlock.isAir(adjacentBS, world, adjacentPosition)
+          && adjacentBS.isOpaqueCube(world, adjacentPosition)) {
+        adjacentSolidBlocks.put(facing, adjacentBS);
+        if (adjacentBlockCount.containsKey(adjacentBS)) {
+          adjacentBlockCount.put(adjacentBS, 1 + adjacentBlockCount.get(adjacentBS));
+        } else if (adjacentBS.getBlock() != StartupCommon.blockCamouflage
+                   && adjacentBS.getBlock() != Blocks.GRASS_BLOCK) {
+          adjacentBlockCount.put(adjacentBS, 1);
         }
       }
     }
 
     if (adjacentBlockCount.isEmpty()) {
-      return UNCAMOUFLAGED_BLOCK;
+      return Optional.empty();
     }
 
     if (adjacentSolidBlocks.size() == 1) {
       BlockState singleAdjacentBlock = adjacentSolidBlocks.firstEntry().getValue();
-      if (singleAdjacentBlock.getBlock() == this) {
-        return UNCAMOUFLAGED_BLOCK;
+      if (singleAdjacentBlock.getBlock() == StartupCommon.blockCamouflage) {
+        return Optional.empty();
       } else {
-        return singleAdjacentBlock;
+        return Optional.of(singleAdjacentBlock);
       }
     }
+
+    // 2) multiple choices. Look for the one(s) present on the most sides.
 
     int maxCount = 0;
     ArrayList<BlockState> maxCountIBlockStates = new ArrayList<BlockState>();
@@ -141,14 +94,14 @@ public class BlockCamouflage extends Block {
         maxCountIBlockStates.clear();
         maxCountIBlockStates.add(entry.getKey());
         maxCount = entry.getValue();
-      } else if (entry.getValue() == maxCount) {
+      } else if (entry.getValue() == maxCount) { // a tie
         maxCountIBlockStates.add(entry.getKey());
       }
     }
 
-    assert maxCountIBlockStates.isEmpty() == false;
-    if (maxCountIBlockStates.size() == 1) {
-      return maxCountIBlockStates.get(0);
+    if (maxCountIBlockStates.isEmpty()) throw new AssertionError("maxCountIBlockStates.isEmpty()");
+    if (maxCountIBlockStates.size() == 1) {               // one clear winner
+      return Optional.of(maxCountIBlockStates.get(0));
     }
 
     // for each block which has a match on the opposite side, add 10 to its count.
@@ -158,7 +111,7 @@ public class BlockCamouflage extends Block {
       if (maxCountIBlockStates.contains(iBlockState)) {
         Direction oppositeSide = entry.getKey().getOpposite();
         BlockState oppositeBlock = adjacentSolidBlocks.get(oppositeSide);
-        if (oppositeBlock != null && (oppositeBlock == iBlockState || oppositeBlock.getBlock() == this) ) {
+        if (oppositeBlock != null && (oppositeBlock == iBlockState || oppositeBlock.getBlock() == StartupCommon.blockCamouflage) ) {
           adjacentBlockCount.put(iBlockState, 10 + adjacentBlockCount.get(iBlockState));
         }
       }
@@ -175,9 +128,9 @@ public class BlockCamouflage extends Block {
         maxCountIBlockStates.add(entry.getKey());
       }
     }
-    assert maxCountIBlockStates.isEmpty() == false;
-    if (maxCountIBlockStates.size() == 1) {
-      return maxCountIBlockStates.get(0);
+    if (maxCountIBlockStates.isEmpty()) throw new AssertionError("maxCountIBlockStates.isEmpty()");
+    if (maxCountIBlockStates.size() == 1) {  // one clear winner
+      return Optional.of(maxCountIBlockStates.get(0));
     }
 
     Direction[] orderOfPreference = new Direction[] {Direction.NORTH, Direction.SOUTH, Direction.EAST,
@@ -186,11 +139,10 @@ public class BlockCamouflage extends Block {
     for (Direction testFace : orderOfPreference) {
       if (adjacentSolidBlocks.containsKey(testFace) &&
           maxCountIBlockStates.contains(adjacentSolidBlocks.get(testFace))) {
-        return adjacentSolidBlocks.get(testFace);
+        return Optional.of(adjacentSolidBlocks.get(testFace));
       }
     }
-    assert false : "this shouldn't be possible";
-    return null;
+    throw new AssertionError("unreachable code");
   }
 
 }

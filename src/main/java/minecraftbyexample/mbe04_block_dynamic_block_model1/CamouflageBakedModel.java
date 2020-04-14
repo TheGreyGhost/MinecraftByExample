@@ -5,20 +5,28 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import org.apache.commons.lang3.tuple.Pair;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.ILightReader;
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.client.model.data.ModelProperty;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.vecmath.Matrix4f;
 import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
 /**
  * Created by TheGreyGhost on 19/04/2015.
  * This class is used to customise the rendering of the camouflage block, based on the block it is copying.
+ * It uses the IForgeBakedModel extension of IBakedModel to pass IModelData (blockstate to be copied) to the getQuads.
+ * In this case, the getQuads just looks up the model for the copied blockstate, and returns its quads.
  */
 public class CamouflageBakedModel implements IBakedModel {
 
@@ -27,49 +35,74 @@ public class CamouflageBakedModel implements IBakedModel {
     modelWhenNotCamouflaged = unCamouflagedModel;
   }
 
-  // create a blockstates tag (ModelResourceLocation) for our block
-  public static final ModelResourceLocation blockStatesFileName
-          = new ModelResourceLocation("minecraftbyexample:mbe04_block_camouflage_registry_name");
+  public static ModelProperty<Optional<BlockState>> COPIED_BLOCK = new ModelProperty<>();
 
-  // create a variant tag (ModelResourceLocation) for our block
-  public static final ModelResourceLocation variantTag
-          = new ModelResourceLocation("minecraftbyexample:mbe04_block_camouflage_registry_name", "normal");
-
-
-  // return a list of the quads making up the model.
-  // We choose the model based on the IBlockstate provided by the caller.
-  public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, long rand)
-  {
-    return handleBlockState(state).getQuads(state, side, rand);
+  public static ModelDataMap getEmptyIModelData() {
+    ModelDataMap.Builder builder = new ModelDataMap.Builder();
+    builder.withInitial(COPIED_BLOCK, Optional.empty());
+    ModelDataMap modelDataMap = builder.build();
+    return modelDataMap;
   }
 
-  // This method is used to create a suitable IBakedModel based on the IBlockState of the block being rendered.
-  // If IBlockState is an instance of IExtendedBlockState, you can use it to pass in any information you want.
-
-  private IBakedModel handleBlockState(@Nullable BlockState iBlockState)
+  /**
+   * Forge's extension in place of IBakedModel::getQuads
+   * It allows us to pass in some extra information which we can use to choose the appropriate quads to render
+   * @param state
+   * @param side
+   * @param rand
+   * @param extraData
+   * @return
+   */
+  @Override
+  @Nonnull
+  public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData)
   {
+    return getActualBakedModelFromIModelData(extraData).getQuads(state, side, rand);
+  }
+
+  @Override
+  @Nonnull
+  public IModelData getModelData(@Nonnull ILightReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
+  {
+    Optional<BlockState> bestAdjacentBlock = BlockCamouflage.selectBestAdjacentBlock(world, pos);
+    ModelDataMap modelDataMap = getEmptyIModelData();
+    modelDataMap.setData(COPIED_BLOCK, bestAdjacentBlock);
+    return modelDataMap;
+  }
+
+  @Override
+  public TextureAtlasSprite getParticleTexture(@Nonnull IModelData data)
+  {
+    return getActualBakedModelFromIModelData(data).getParticleTexture();
+  }
+
+  private IBakedModel getActualBakedModelFromIModelData(@Nonnull IModelData data) {
     IBakedModel retval = modelWhenNotCamouflaged;  // default
-    BlockState UNCAMOUFLAGED_BLOCK = Blocks.AIR.getDefaultState();
-
-    // Extract the block to be copied from the IExtendedBlockState, previously set by Block.getExtendedState()
-    // If the block is null, the block is not camouflaged so use the uncamouflaged model.
-    if (iBlockState instanceof IExtendedBlockState) {
-      IExtendedBlockState iExtendedBlockState = (IExtendedBlockState) iBlockState;
-      BlockState copiedBlockIBlockState = iExtendedBlockState.getValue(BlockCamouflage.COPIEDBLOCK);
-
-      if (copiedBlockIBlockState != UNCAMOUFLAGED_BLOCK) {
-        // Retrieve the IBakedModel of the copied block and return it.
-        Minecraft mc = Minecraft.getInstance();
-        BlockRendererDispatcher blockRendererDispatcher = mc.getBlockRendererDispatcher();
-        BlockModelShapes blockModelShapes = blockRendererDispatcher.getBlockModelShapes();
-        IBakedModel copiedBlockModel = blockModelShapes.getModelForState(copiedBlockIBlockState);
-        retval = copiedBlockModel;
+    if (!data.hasProperty(COPIED_BLOCK)) {
+      if (!loggedError) {
+        LOGGER.error("IModelData did not have expected property COPIED_BLOCK");
+        loggedError = true;
       }
+      return retval;
     }
+    Optional<BlockState> copiedBlock = data.getData(COPIED_BLOCK);
+    if (!copiedBlock.isPresent()) return retval;
+
+    Minecraft mc = Minecraft.getInstance();
+    BlockRendererDispatcher blockRendererDispatcher = mc.getBlockRendererDispatcher();
+    retval = blockRendererDispatcher.getModelForState(copiedBlock.get());
     return retval;
   }
 
   private IBakedModel modelWhenNotCamouflaged;
+
+
+  // ---- All these methods are required by the interface but we don't do anything special with them.
+
+  @Override
+  public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
+    throw new AssertionError("IBakedModel::getQuads should never be called, only IForgeBakedModel::getQuads");
+  }
 
   // getTexture is used directly when player is inside the block.  The game will crash if you don't use something
   //   meaningful here.
@@ -78,7 +111,8 @@ public class CamouflageBakedModel implements IBakedModel {
     return modelWhenNotCamouflaged.getParticleTexture();
   }
 
-  // ideally, this should be changed for different block being camouflaged, but this is not supported by vanilla
+
+  // ideally, this should be changed for different blocks being camouflaged, but this is not supported by vanilla or forge
     @Override
   public boolean isAmbientOcclusion()
   {
@@ -89,6 +123,11 @@ public class CamouflageBakedModel implements IBakedModel {
   public boolean isGui3d()
   {
     return modelWhenNotCamouflaged.isGui3d();
+  }
+
+  @Override
+  public boolean func_230044_c_() {
+    return modelWhenNotCamouflaged.func_230044_c_();  // related to item "diffuselighting"
   }
 
   @Override
@@ -109,33 +148,6 @@ public class CamouflageBakedModel implements IBakedModel {
     return modelWhenNotCamouflaged.getItemCameraTransforms();
   }
 
-  /** this method is necessary because Forge has deprecated getItemCameraTransforms(), and modelCore.getItemCameraTransforms()
-   *    may not return anything meaningful.  But if the base model doesn't implement IPerspectiveAwareModel then you
-   *    need to generate it.
-   * @param cameraTransformType
-   * @return
-   */
-  @Override
-  public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
-//    if (modelWhenNotCamouflaged instanceof IPerspectiveAwareModel) {
-      Matrix4f matrix4f = modelWhenNotCamouflaged.handlePerspective(cameraTransformType).getRight();
-      return Pair.of(this, matrix4f);
-//    } else {
-//      // If the parent model isn't an IPerspectiveAware, we'll need to generate the correct matrix ourselves using the
-//      //  ItemCameraTransforms.
-//
-//      ItemCameraTransforms itemCameraTransforms = modelWhenNotCamouflaged.getItemCameraTransforms();
-//      ItemTransformVec3f itemTransformVec3f = itemCameraTransforms.getTransform(cameraTransformType);
-//      TRSRTransformation tr = new TRSRTransformation(itemTransformVec3f);
-//      Matrix4f mat = null;
-//      if (tr != null) { // && tr != TRSRTransformation.identity()) {
-//        mat = tr.getMatrix();
-//      }
-//      // The TRSRTransformation for vanilla item have blockCenterToCorner() applied, however handlePerspective
-//      //  reverses it back again with blockCornerToCenter().  So we don't need to apply it here.
-//
-//      return Pair.of(this, mat);
-//    }
-  }
-
+  private static final Logger LOGGER = LogManager.getLogger();
+  private static boolean loggedError = false; // prevent spamming console
 }

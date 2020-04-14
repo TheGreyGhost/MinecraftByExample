@@ -33,48 +33,4 @@ public class TestContainer extends Container {
   public boolean canInteractWith(PlayerEntity playerIn) {
     return true;
   }
-
-  static LocationImage pointOne = ;
-  static LocationImage pointTwo = ;
-  static LocationImage pointThree = ;
-  static LocationImage pointFour = ;
-  static LocationImage pointFive = ;
-
-
-  /**
-   * This function is used to location an Easter egg given five reference images.
-   * Requirements: three Persons satisfying age >= 10 years.
-   * Person one and two must have good long-range vision.
-   * Person three must have either good long-range vision or be capable of remote communication with both one and two.
-   */
-  public void navigateToEgg(Person one, Person two, Person three) {
-    // initial setup
-    one.navigateTo(pointOne);
-    two.navitageTo(pointTwo);
-    three.navigateTo(pointOne);
-    one.lookAt(pointThree);
-    two.lookAt(pointFour);
-
-    // iterative goal search
-    // all units in metres
-    boolean atGoal = false;
-    while (!atGoal) {
-      int deviationOne = deviation(three, one.lineofSight());
-      int deviationTwo = deviation(three, two.lineofSight());
-      if (deviationOne < -1 ) {
-        one.moveRight(1);
-      } else if (deviationOne > 1) {
-        one.moveLeft(1);
-      }
-      if (deviationTwo < -1 ) {
-        two.moveRight(1);
-      } else if (deviationTwo > 1) {
-        two.moveLeft(1);
-      }
-      atGoal = (deviationOne >= -1 && deviationOne <= 1 && deviationTwo >= -1 && deviationTwo <= 1);
-    }
-    three.navigateTo(pointFive);
-    three.dig();
-  }
-
 }
