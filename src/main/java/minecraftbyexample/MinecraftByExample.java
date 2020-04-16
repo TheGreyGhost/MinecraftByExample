@@ -82,12 +82,10 @@ public class MinecraftByExample {
     // * ParticleFactoryRegisterEvent
     // * FMLCommonSetupEvent
     // * TextureStitchEvent
+    // * ModelBakeEvent
     // * FMLClientSetupEvent or FMLDedicatedServerSetupEvent
     // * ModelRegistryEvent
     // * Other ModLifecycleEvents such as InterModEnqueueEvent, InterModProcessEvent
-
-// ModelBakeEvent
-
     // Everything else: the MinecraftForge.EVENT_BUS
 
     MOD_EVENT_BUS.register(minecraftbyexample.mbe01_block_simple.StartupClientOnly.class);
