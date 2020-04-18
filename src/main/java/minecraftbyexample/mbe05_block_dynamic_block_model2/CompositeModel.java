@@ -63,22 +63,22 @@
 //      return quadsList;
 //    }
 //    IExtendedBlockState extendedBlockState = (IExtendedBlockState)blockState;
-//    if (isLinkPresent(extendedBlockState, Block3DWeb.LINK_UP)) {
+//    if (isLinkPresent(extendedBlockState, Block3DWeb.UP)) {
 //      quadsList.addAll(modelUp.getQuads(extendedBlockState, side, rand));
 //    }
-//    if (isLinkPresent(extendedBlockState, Block3DWeb.LINK_DOWN)) {
+//    if (isLinkPresent(extendedBlockState, Block3DWeb.DOWN)) {
 //      quadsList.addAll(modelDown.getQuads(extendedBlockState, side, rand));
 //    }
-//    if (isLinkPresent(extendedBlockState, Block3DWeb.LINK_WEST)) {
+//    if (isLinkPresent(extendedBlockState, Block3DWeb.WEST)) {
 //      quadsList.addAll(modelWest.getQuads(extendedBlockState, side, rand));
 //    }
-//    if (isLinkPresent(extendedBlockState, Block3DWeb.LINK_EAST)) {
+//    if (isLinkPresent(extendedBlockState, Block3DWeb.EAST)) {
 //      quadsList.addAll(modelEast.getQuads(extendedBlockState, side, rand));
 //    }
-//    if (isLinkPresent(extendedBlockState, Block3DWeb.LINK_NORTH)) {
+//    if (isLinkPresent(extendedBlockState, Block3DWeb.NORTH)) {
 //      quadsList.addAll(modelNorth.getQuads(extendedBlockState, side, rand));
 //    }
-//    if (isLinkPresent(extendedBlockState, Block3DWeb.LINK_SOUTH)) {
+//    if (isLinkPresent(extendedBlockState, Block3DWeb.SOUTH)) {
 //      quadsList.addAll(modelSouth.getQuads(extendedBlockState, side, rand));
 //    }
 //    return quadsList;

@@ -100,6 +100,9 @@ public class MinecraftByExample {
     MOD_EVENT_BUS.register(minecraftbyexample.mbe04_block_dynamic_block_model1.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe04_block_dynamic_block_model1.StartupCommon.class);
 
+    MOD_EVENT_BUS.register(minecraftbyexample.mbe05_block_dynamic_block_model2.StartupClientOnly.class);
+    MOD_EVENT_BUS.register(minecraftbyexample.mbe05_block_dynamic_block_model2.StartupCommon.class);
+
     MOD_EVENT_BUS.register(minecraftbyexample.mbe10_item_simple.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe10_item_simple.StartupCommon.class);
 

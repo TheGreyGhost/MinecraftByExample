@@ -50,12 +50,12 @@ import javax.annotation.Nullable;
  * don't call block.getRenderType(), call blockState.getRenderType() instead".
  * If that doesn't make sense to you yet, don't worry.  Just ignore the "deprecated method" warning.
  */
-public class BlockGlassLantern extends Block implements IWaterLoggable
+public class BlockGlassLantern extends Block
 {
   public BlockGlassLantern()
   {
-    super(Properties.create(Material.IRON).hardnessAndResistance(3.5F).sound(SoundType.LANTERN).notSolid()
-    );    // match the vanilla lantern properties except we don't want the lantern to be lit all the time, so omit lightValue(15)
+    super(Properties.create(Material.IRON).hardnessAndResistance(3.5F).sound(SoundType.LANTERN).notSolid().lightValue(15)
+    );    // match the vanilla lantern properties; the lightValue is turned on/off by getLightValue()
 
     BlockState defaultBlockState = this.stateContainer.getBaseState().with(HANGING, false).with(LIT, false);
     this.setDefaultState(defaultBlockState);
@@ -114,7 +114,7 @@ public class BlockGlassLantern extends Block implements IWaterLoggable
       }
     }
 
-    return null;
+    return null; //? should never get here
   }
 
   // returns the shape of the block:
@@ -125,6 +125,14 @@ public class BlockGlassLantern extends Block implements IWaterLoggable
   @Override
   public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
     return state.get(HANGING) ? HANGING_SHAPE : NON_HANGING_SHAPE;
+  }
+
+  /**
+   * Amount of light emitted- none if lantern is off.
+   */
+  @Override
+  public int getLightValue(BlockState state) {
+    return state.get(LIT) ? super.getLightValue(state) : 0;
   }
 
   /**
@@ -150,16 +158,6 @@ public class BlockGlassLantern extends Block implements IWaterLoggable
   }
 
   /**
-   * What happens when a piston block pushes this?
-   * @param state
-   * @return
-   */
-  @Override
-  public PushReaction getPushReaction(BlockState state) {
-    return PushReaction.DESTROY;
-  }
-
-  /**
    * Check to see whether the neighbour block has changed and we can't hang / rest on the ground any more
    */
   @Override
@@ -179,4 +177,15 @@ public class BlockGlassLantern extends Block implements IWaterLoggable
   public boolean allowsMovement(BlockState state, IBlockReader worldIn, BlockPos pos, PathType type) {
     return false;
   }
+
+  /**
+   * What happens when a piston block pushes this?
+   * @param state
+   * @return
+   */
+  @Override
+  public PushReaction getPushReaction(BlockState state) {
+    return PushReaction.DESTROY;
+  }
+
 }
