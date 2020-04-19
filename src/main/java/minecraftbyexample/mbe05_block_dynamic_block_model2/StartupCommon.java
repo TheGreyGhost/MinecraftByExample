@@ -21,7 +21,7 @@ public class StartupCommon
 
   @SubscribeEvent
   public static void onBlocksRegistration(final RegistryEvent.Register<Block> blockRegisterEvent) {
-    blockGlassLantern= (BlockGlassLantern)(new BlockGlassLantern().setRegistryName("minecraftbyexample", "mbe05_block_glass_lantern_registry_name"));
+    blockGlassLantern= (BlockGlassLantern)(new BlockGlassLantern().setRegistryName("minecraftbyexample", "mbe05a_block_glass_lantern_registry_name"));
     blockRegisterEvent.getRegistry().register(blockGlassLantern);
   }
 

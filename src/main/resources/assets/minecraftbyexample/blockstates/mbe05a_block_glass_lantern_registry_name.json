@@ -1,6 +1,6 @@
 {
   "variants": {
-    "hanging=true": { "model": "minecraftbyexample:block/mbe05a_glass_lantern.json"},
-    "hanging=false": { "model": "minecraftbyexample:block/mbe05a_glass_lantern.json"}
+    "hanging=true": { "model": "minecraftbyexample:block/mbe05a_glass_lantern"},
+    "hanging=false": { "model": "minecraftbyexample:block/mbe05a_glass_lantern"}
   }
 }
