@@ -1,19 +1,16 @@
 # MBE11_ITEM_VARIANTS
 
-** IItemTier ***
-
-
 This example is an Item with variants, illustrating two different ways of changing the rendering to suit the variant.
 
 Note that- in general, if you have an Item with a few variants (say up to sixteen), you should implement these as separate items 
 For example - see vanilla's GREEN_BED, BLACK_BED, RED_BED etc.  If you do that, then the techniques in this example are not required and you 
 can just base your code on mbe10.
 
-However if you have many different variants, or your item changes its appearance based on its state 
-(for example:
- * a magical wand that charges up over time and gradually changes its appearance
- * a sword where you can independently customise the appearance of the blade, crossguard, and pommel
- ), then the two methods in this example might be of interest.
+However if you have many different variants, or your item changes its appearance based on its state, for example:
+
+* a magical wand that charges up over time and gradually changes its appearance; or
+* a sword where you can independently customise the appearance of the blade, crossguard, and pommel
+<br>, then the two methods in this example might be of interest.
 
 The bottle has two types of information, both stored in the NBT data of the itemstack:
 
@@ -50,7 +47,6 @@ For background information on:
 * rendering items: see [http://greyminecraftcoder.blogspot.com.au/2014/12/item-rendering-18.html](http://greyminecraftcoder.blogspot.com.au/2014/12/item-rendering-18.html)
 
 NOTE - I've used four colours as an example because it lets me demonstrate the IItemColor lambda interface.  But in general, if you had an Item with four colour variants, you should implement these as four separate items (LIME_BOTTLE, CHERRY_BOTTLE, etc) - see for example vanilla's GREEN_BED, BLACK_BED, RED_BED etc.
-
 
 Useful vanilla classes for further info:
 
