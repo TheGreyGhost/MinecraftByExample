@@ -24,6 +24,8 @@ public class StartupCommon
   public static BlockVariants blockVariantsGreen;  // one unique instance for each colour
   public static BlockVariants blockVariantsYellow;  // one unique instance for each colour
 
+  public static Block3DWeb block3DWeb;
+
   public static BlockItem itemBlockVariantsBlue;  // this holds the unique ItemBlock instance corresponding to your block
   public static BlockItem itemBlockVariantsRed;  // this holds the unique ItemBlock instance corresponding to your block
   public static BlockItem itemBlockVariantsGreen;  // this holds the unique ItemBlock instance corresponding to your block

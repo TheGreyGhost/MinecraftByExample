@@ -1,6 +1,7 @@
 package minecraftbyexample.mbe03_block_variants;
 
 import com.google.common.collect.ImmutableMap;
+import minecraftbyexample.usefultools.SetBlockStateFlag;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.fluid.Fluid;
@@ -101,6 +102,17 @@ public class BlockVariants extends Block implements IWaterLoggable
   }
 
   /**
+   * I'm not 100% sure that this is required, but most waterloggable blocks appear to have it, so I've added it here too.
+   * @return
+   */
+  @Override
+  public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
+    if (stateIn.get(WATERLOGGED)) {
+      worldIn.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
+    }
+    return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+  }
+  /**
    * Defines the properties needed for the BlockState
    * @param builder
    */
@@ -178,10 +190,8 @@ public class BlockVariants extends Block implements IWaterLoggable
     if (fluidState.getFluid() != Fluids.WATER) return false;
     if (blockState.get(WATERLOGGED)) return false;
 
-    final int BLOCK_UPDATE_FLAG = 1;
-    final int SEND_UPDATE_TO_CLIENT_FLAG = 2;
-    world.setBlockState(blockPos, blockState.with(BlockStateProperties.WATERLOGGED, true),
-            BLOCK_UPDATE_FLAG + SEND_UPDATE_TO_CLIENT_FLAG);
+    final int FLAGS = SetBlockStateFlag.get(SetBlockStateFlag.BLOCK_UPDATE, SetBlockStateFlag.SEND_TO_CLIENTS);
+    world.setBlockState(blockPos, blockState.with(BlockStateProperties.WATERLOGGED, true), FLAGS);
     world.getPendingFluidTicks().scheduleTick(blockPos, fluidState.getFluid(), fluidState.getFluid().getTickRate(world));
     return true;
   }
@@ -195,13 +205,11 @@ public class BlockVariants extends Block implements IWaterLoggable
    */
   @Override
   public Fluid pickupFluid(IWorld world, BlockPos blockPos, BlockState blockState) {
-    final int BLOCK_UPDATE_FLAG = 1;
-    final int SEND_UPDATE_TO_CLIENT_FLAG = 2;
+    final int FLAGS = SetBlockStateFlag.get(SetBlockStateFlag.BLOCK_UPDATE, SetBlockStateFlag.SEND_TO_CLIENTS);
 
     // if block is waterlogged, remove the water from the block and return water to the caller
     if (blockState.get(WATERLOGGED)) {
-      world.setBlockState(blockPos, blockState.with(WATERLOGGED, false),
-              BLOCK_UPDATE_FLAG + SEND_UPDATE_TO_CLIENT_FLAG);
+      world.setBlockState(blockPos, blockState.with(WATERLOGGED, false),FLAGS);
       return Fluids.WATER;
     } else {
       return Fluids.EMPTY;
