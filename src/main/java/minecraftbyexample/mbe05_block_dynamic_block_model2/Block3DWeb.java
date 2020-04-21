@@ -2,28 +2,24 @@
 //
 //import net.minecraft.block.*;
 //import net.minecraft.block.material.Material;
+//import net.minecraft.block.properties.IProperty;
+//import net.minecraft.block.properties.PropertyBool;
+//import net.minecraft.block.state.BlockStateContainer;
 //import net.minecraft.block.BlockState;
-//import net.minecraft.fluid.Fluids;
-//import net.minecraft.fluid.IFluidState;
-//import net.minecraft.item.BlockItemUseContext;
 //import net.minecraft.item.ItemGroup;
 //import net.minecraft.entity.Entity;
 //import net.minecraft.block.Blocks;
+//import net.minecraft.util.BlockRenderLayer;
 //import net.minecraft.block.BlockRenderType;
-//import net.minecraft.state.BooleanProperty;
-//import net.minecraft.state.IProperty;
-//import net.minecraft.state.properties.BlockStateProperties;
-//import net.minecraft.tags.BlockTags;
-//import net.minecraft.util.Direction;
 //import net.minecraft.util.math.AxisAlignedBB;
 //import net.minecraft.util.math.BlockPos;
-//import net.minecraft.util.math.Vec3d;
-//import net.minecraft.util.math.shapes.VoxelShape;
-//import net.minecraft.util.math.shapes.VoxelShapes;
-//import net.minecraft.world.IWorld;
+//import net.minecraft.world.IBlockAccess;
 //import net.minecraft.world.World;
-//import net.minecraftforge.api.distmarker.Dist;
-//import net.minecraftforge.api.distmarker.OnlyIn;
+//import net.minecraftforge.common.property.ExtendedBlockState;
+//import net.minecraftforge.common.property.IExtendedBlockState;
+//import net.minecraftforge.common.property.IUnlistedProperty;
+//import net.minecraftforge.fml.relauncher.Side;
+//import net.minecraftforge.fml.relauncher.SideOnly;
 //
 ///**
 // * Created by TheGreyGhost on 19/04/2015.
@@ -44,6 +40,13 @@
 //  public BlockRenderLayer getBlockLayer()
 //  {
 //    return BlockRenderLayer.SOLID;
+//  }
+//
+//  // used by the renderer to control lighting and visibility of other block.
+//  // set to false because this block doesn't fully occupy the entire 1x1x1 space
+//  @Override
+//  public boolean isOpaqueCube(BlockState blockState) {
+//    return false;
 //  }
 //
 //  // make colliding players stick in the web like normal web
@@ -82,11 +85,45 @@
 //  //   [on=false, ready=true]
 //  //   [on=true, ready=false]
 //  //   [on=false, ready=false]
+//  // Forge adds ExtendedBlockState, which has two types of property:
+//  // - listed properties (like vanilla), and
+//  // - unlisted properties, which can be used to convey information but do not cause extra variants to be created.
 //  @Override
 //  protected BlockStateContainer createBlockState() {
 //    IProperty [] listedProperties = new IProperty[0]; // no listed properties
-//    IUnlistedProperty [] unlistedProperties = new IUnlistedProperty[] {UP, DOWN, EAST, WEST, NORTH, SOUTH};
+//    IUnlistedProperty [] unlistedProperties = new IUnlistedProperty[] {LINK_UP, LINK_DOWN, LINK_EAST, LINK_WEST, LINK_NORTH, LINK_SOUTH};
 //    return new ExtendedBlockState(this, listedProperties, unlistedProperties);
+//  }
+//
+//  // this method uses the block state and BlockPos to update the unlisted LINK properties in IExtendedBlockState based
+//  // on non-metadata information.  This is then conveyed to the IBakedModel#getQuads during rendering.
+//  // In this case, we look around the block to see which faces are next to either a solid block or another web block:
+//  // The web node forms a strand of web to any adjacent solid block or web nodes
+//  @Override
+//  public BlockState getExtendedState(BlockState state, IBlockAccess world, BlockPos pos) {
+//    if (state instanceof IExtendedBlockState) {  // avoid crash in case of mismatch
+//      IExtendedBlockState retval = (IExtendedBlockState)state;
+//      boolean linkup = canConnectTo(world, pos.up());
+//      retval = retval.withProperty(LINK_UP, linkup);
+//
+//      boolean linkdown = canConnectTo(world, pos.down());
+//      retval = retval.withProperty(LINK_DOWN, linkdown);
+//
+//      boolean linkeast = canConnectTo(world, pos.east());
+//      retval = retval.withProperty(LINK_EAST, linkeast);
+//
+//      boolean linkwest = canConnectTo(world, pos.west());
+//      retval = retval.withProperty(LINK_WEST, linkwest);
+//
+//      boolean linknorth = canConnectTo(world, pos.north());
+//      retval = retval.withProperty(LINK_NORTH, linknorth);
+//
+//      boolean linksouth = canConnectTo(world, pos.south());
+//      retval = retval.withProperty(LINK_SOUTH, linksouth);
+//
+//      return retval;
+//    }
+//    return state;
 //  }
 //
 //  /** returns true if the web should connect to this block
@@ -100,65 +137,16 @@
 //    BlockState iblockstate = worldIn.getBlockState(pos);
 //    Block block = iblockstate.getBlock();
 //    if (block == Blocks.BARRIER) return false;
-//    if (block == StartupCommon.blockGlassLantern) return true;
+//    if (block == StartupCommon.block3DWeb) return true;
 //    if (block.getMaterial(iblockstate).isOpaque() && block.isFullCube(iblockstate) && block.getMaterial(iblockstate) != Material.GOURD) return true;
 //    return false;
 //  }
 //
-//  public BlockState updatePostPlacement(BlockState p_196271_1_, Direction p_196271_2_, BlockState p_196271_3_, IWorld p_196271_4_, BlockPos p_196271_5_, BlockPos p_196271_6_) {
-//    if(((Boolean)p_196271_1_.get(WATERLOGGED)).booleanValue()) {
-//      p_196271_4_.getPendingFluidTicks().scheduleTick(p_196271_5_, Fluids.WATER, Fluids.WATER.getTickRate(p_196271_4_));
-//    }
-//
-//    return p_196271_2_.getAxis().getPlane() == Direction.Plane.HORIZONTAL?(BlockState)p_196271_1_.with((IProperty)FACING_TO_PROPERTY_MAP.get(p_196271_2_), Boolean.valueOf(this.func_220111_a(p_196271_3_, p_196271_3_.isSolidSide(p_196271_4_, p_196271_6_, p_196271_2_.getOpposite()), p_196271_2_.getOpposite()))):super.updatePostPlacement(p_196271_1_, p_196271_2_, p_196271_3_, p_196271_4_, p_196271_5_, p_196271_6_);
-//  }
-//
-//  public BlockState getStateForPlacement(BlockItemUseContext p_196258_1_) {
-//    World lvt_2_1_ = p_196258_1_.getWorld();
-//    BlockPos lvt_3_1_ = p_196258_1_.getPos();
-//    IFluidState lvt_4_1_ = p_196258_1_.getWorld().getFluidState(p_196258_1_.getPos());
-//    BlockPos lvt_5_1_ = lvt_3_1_.north();
-//    BlockPos lvt_6_1_ = lvt_3_1_.east();
-//    BlockPos lvt_7_1_ = lvt_3_1_.south();
-//    BlockPos lvt_8_1_ = lvt_3_1_.west();
-//    BlockState lvt_9_1_ = lvt_2_1_.getBlockState(lvt_5_1_);
-//    BlockState lvt_10_1_ = lvt_2_1_.getBlockState(lvt_6_1_);
-//    BlockState lvt_11_1_ = lvt_2_1_.getBlockState(lvt_7_1_);
-//    BlockState lvt_12_1_ = lvt_2_1_.getBlockState(lvt_8_1_);
-//    return (BlockState)((BlockState)((BlockState)((BlockState)((BlockState)super.getStateForPlacement(p_196258_1_).with(NORTH, Boolean.valueOf(this.func_220111_a(lvt_9_1_, lvt_9_1_.isSolidSide(lvt_2_1_, lvt_5_1_, Direction.SOUTH), Direction.SOUTH)))).with(EAST, Boolean.valueOf(this.func_220111_a(lvt_10_1_, lvt_10_1_.isSolidSide(lvt_2_1_, lvt_6_1_, Direction.WEST), Direction.WEST)))).with(SOUTH, Boolean.valueOf(this.func_220111_a(lvt_11_1_, lvt_11_1_.isSolidSide(lvt_2_1_, lvt_7_1_, Direction.NORTH), Direction.NORTH)))).with(WEST, Boolean.valueOf(this.func_220111_a(lvt_12_1_, lvt_12_1_.isSolidSide(lvt_2_1_, lvt_8_1_, Direction.EAST), Direction.EAST)))).with(WATERLOGGED, Boolean.valueOf(lvt_4_1_.getFluid() == Fluids.WATER));
-//  }
-//
-//
-//  public boolean func_220111_a(BlockState p_220111_1_, boolean p_220111_2_, Direction p_220111_3_) {
-//    Block lvt_4_1_ = p_220111_1_.getBlock();
-//    boolean lvt_5_1_ = lvt_4_1_.isIn(BlockTags.FENCES) && p_220111_1_.getMaterial() == this.material;
-//    boolean lvt_6_1_ = lvt_4_1_ instanceof FenceGateBlock && FenceGateBlock.isParallel(p_220111_1_, p_220111_3_);
-//    return !cannotAttach(lvt_4_1_) && p_220111_2_ || lvt_5_1_ || lvt_6_1_;
-//  }
-//
 //  // the LINK properties are used to communicate to the ISmartBlockModel which of the links should be drawn
-//  public static final BooleanProperty UP = BlockStateProperties.UP;
-//  public static final BooleanProperty DOWN = BlockStateProperties.DOWN;
-//  public static final BooleanProperty WEST = BlockStateProperties.WEST;
-//  public static final BooleanProperty EAST = BlockStateProperties.EAST;
-//  public static final BooleanProperty NORTH = BlockStateProperties.NORTH;
-//  public static final BooleanProperty SOUTH = BlockStateProperties.SOUTH;
-//
-//  // for this model, we're making the shape match the block model exactly
-//  private static final Vec3d CORE_MIN_CORNER = new Vec3d(5.0, 0.0, 5.0);
-//  private static final Vec3d CORE_MAX_CORNER = new Vec3d(11.0, 7.0, 11.0);
-//
-//  private static final Vec3d LID_MIN_CORNER = new Vec3d(6.0, 7.0, 6.0);
-//  private static final Vec3d LID_MAX_CORNER = new Vec3d(10.0, 9.0, 10.0);
-//
-//  private static final VoxelShape NON_HANGING_BASE_SHAPE =
-//          Block.makeCuboidShape(CORE_MIN_CORNER.x, CORE_MIN_CORNER.y, CORE_MIN_CORNER.z, CORE_MAX_CORNER.x, CORE_MAX_CORNER.y, CORE_MAX_CORNER.z);
-//  private static final VoxelShape NON_HANGING_LID_SHAPE =
-//          Block.makeCuboidShape(LID_MIN_CORNER.x, LID_MIN_CORNER.y, LID_MIN_CORNER.z, LID_MAX_CORNER.x, LID_MAX_CORNER.y, LID_MAX_CORNER.z);
-//  private static final VoxelShape NON_HANGING_SHAPE = VoxelShapes.or(NON_HANGING_BASE_SHAPE, NON_HANGING_LID_SHAPE);
-//
-//  private static final double HANGING_YOFFSET = 1.0;
-//  private static final VoxelShape HANGING_SHAPE = NON_HANGING_SHAPE.withOffset(0, HANGING_YOFFSET, 0);
-//
-//
+//  public static final IUnlistedProperty<Boolean> LINK_UP = new Properties.PropertyAdapter<Boolean>(PropertyBool.create("link_up"));
+//  public static final IUnlistedProperty<Boolean> LINK_DOWN = new Properties.PropertyAdapter<Boolean>(PropertyBool.create("link_down"));
+//  public static final IUnlistedProperty<Boolean> LINK_WEST = new Properties.PropertyAdapter<Boolean>(PropertyBool.create("link_west"));
+//  public static final IUnlistedProperty<Boolean> LINK_EAST = new Properties.PropertyAdapter<Boolean>(PropertyBool.create("link_east"));
+//  public static final IUnlistedProperty<Boolean> LINK_NORTH = new Properties.PropertyAdapter<Boolean>(PropertyBool.create("link_north"));
+//  public static final IUnlistedProperty<Boolean> LINK_SOUTH = new Properties.PropertyAdapter<Boolean>(PropertyBool.create("link_south"));
 //}

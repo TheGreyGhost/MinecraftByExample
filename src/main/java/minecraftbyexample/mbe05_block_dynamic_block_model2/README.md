@@ -2,13 +2,6 @@
 
 Based on code by Herbix.
 
-More advanced block models
-
-1) vanilla multipart model (3D web)
-2) dynamic quad generation (altimeter + compass)
-3) Forge multilayer model (tranparent vanilla lantern)
-
-
 This example shows how to use `IBakedModel#getQuads` in conjunction with `ModelLoader`. It is very similar to MBE04, it just uses a different method of injecting your `IBakedModel` into the registry, and assembles the quads differently.
 
 Guidelines on choosing which injection method to use:

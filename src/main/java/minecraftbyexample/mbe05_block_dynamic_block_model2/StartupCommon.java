@@ -1,40 +1,56 @@
-package minecraftbyexample.mbe05_block_dynamic_block_model2;
-
-import net.minecraft.block.Block;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-
-/**
- * User: The Grey Ghost
- * Date: 24/12/2014
- *
- * These methods are called during startup
- *  See MinecraftByExample class for more information
- */
-public class StartupCommon
-{
-  public static BlockGlassLantern blockGlassLantern;  // this holds the unique instance of your block
-  public static BlockItem itemBlockGlassLantern;  // this holds the unique instance of the ItemBlock corresponding to your block
-
-  @SubscribeEvent
-  public static void onBlocksRegistration(final RegistryEvent.Register<Block> blockRegisterEvent) {
-    blockGlassLantern= (BlockGlassLantern)(new BlockGlassLantern().setRegistryName("minecraftbyexample", "mbe05a_block_glass_lantern_registry_name"));
-    blockRegisterEvent.getRegistry().register(blockGlassLantern);
-  }
-
-  @SubscribeEvent
-  public static void onItemsRegistration(final RegistryEvent.Register<Item> itemRegisterEvent) {
-    // We need to create a BlockItem so the player can carry this block in their hand and it can appear in the inventory
-    final int MAXIMUM_STACK_SIZE = 1;  // player can only hold one of this block in their hand at once
-
-    Item.Properties itemGlassLanternProperties = new Item.Properties()
-            .maxStackSize(MAXIMUM_STACK_SIZE)
-            .group(ItemGroup.DECORATIONS);  // which inventory tab?
-    itemBlockGlassLantern = new BlockItem(blockGlassLantern, itemGlassLanternProperties);
-    itemBlockGlassLantern.setRegistryName(blockGlassLantern.getRegistryName());
-    itemRegisterEvent.getRegistry().register(itemBlockGlassLantern);
-  }
-}
+//package minecraftbyexample.mbe05_block_dynamic_block_model2;
+//
+//import net.minecraft.item.BlockItem;
+//import net.minecraftforge.fml.common.registry.ForgeRegistries;
+//
+///**
+// * User: The Grey Ghost
+// * Date: 24/12/2014
+// *
+// * The Startup classes for this example are called during startup, in the following order:
+// *  preInitCommon
+// *  preInitClientOnly
+// *  initCommon
+// *  initClientOnly
+// *  postInitCommon
+// *  postInitClientOnly
+// *  See MinecraftByExample class for more information
+// */
+//public class StartupCommon
+//{
+//  public static Block3DWeb block3DWeb;  // this holds the unique instance of your block
+//  public static BlockItem itemBlock3DWeb;  // this holds the unique instance of the ItemBlock corresponding to your block
+//
+//  public static void preInitCommon()
+//  {
+//    // each instance of your block should have two names:
+//    // 1) a registry name that is used to uniquely identify this block.  Should be unique within your mod.  use lower case.
+//    // 2) an 'unlocalised name' that is used to retrieve the text name of your block in the player's language.  For example-
+//    //    the unlocalised name might be "water", which is printed on the user's screen as "Wasser" in German or
+//    //    "aqua" in Italian.
+//    //
+//    //    Multiple block can have the same unlocalised name - for example
+//    //  +----RegistryName----+---UnlocalisedName----+
+//    //  |  flowing_water     +       water          |
+//    //  |  stationary_water  +       water          |
+//    //  +--------------------+----------------------+
+//    //
+//    block3DWeb = (Block3DWeb)(new Block3DWeb().setUnlocalizedName("mbe05_block_3d_web_unlocalised_name"));
+//    block3DWeb.setRegistryName("mbe05_block_3d_web_registry_name");
+//    ForgeRegistries.BLOCKS.register(block3DWeb);
+//
+//    // We also need to create and register an ItemBlock for this block otherwise it won't appear in the inventory
+//    itemBlock3DWeb = new BlockItem(block3DWeb);
+//    itemBlock3DWeb.setRegistryName(block3DWeb.getRegistryName());
+//    ForgeRegistries.ITEMS.register(itemBlock3DWeb);
+//  }
+//
+//  public static void initCommon()
+//  {
+//  }
+//
+//  public static void postInitCommon()
+//  {
+//  }
+//
+//}
