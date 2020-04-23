@@ -7,7 +7,9 @@ In both cases the blocks use BlockStateProperties to store the state of the bloc
 the block; the difference arises in the blockstate.json file:
 The variants example uses the "variants" json format to select a single model from a list, based on the combination of blockstateproperties.  For example
 - which way the sign is facing
-- what colour the sign is.
+
+The different colours of sign are not variants, they are each given their own BlockVariants instance and hence their own blockstates.json
+
 
 In contrast, the multipart example uses the "multipart" json format to add or remove multiple different parts of the model based on the blockstateproperties.
 For example:
@@ -91,10 +93,7 @@ For background information on:
 
 ## Common errors
 
-"Missing Model", "Missing texture", etc:
-
-See [http://greyminecraftcoder.blogspot.com.au/2015/03/troubleshooting-block-and-item-rendering.html](http://greyminecraftcoder.blogspot.com.au/2015/03/troubleshooting-block-and-item-rendering.html)
-
+"Missing Model", "Missing texture", black and white textures etc:
 These are caused when you have specified a filename or path which is not correct, typically:
 
 1. you've misspelled it

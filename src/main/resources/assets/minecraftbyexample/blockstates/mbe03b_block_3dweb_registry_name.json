@@ -1,0 +1,29 @@
+{
+  "multipart": [
+    {   "apply": { "model": "minecraftbyexample:block/mbe03b_3dweb_core_model" }},
+
+    {   "when": { "north": "true" },
+      "apply": { "model": "minecraftbyexample:block/mbe03b_3dweb_north_model"}
+    },
+
+    {   "when": { "east": "true" },
+      "apply": { "model": "minecraftbyexample:block/mbe03b_3dweb_east_model"}
+    },
+
+    {   "when": { "south": "true" },
+      "apply": { "model": "minecraftbyexample:block/mbe03b_3dweb_south_model"}
+    },
+
+    {   "when": { "west": "true" },
+      "apply": { "model": "minecraftbyexample:block/mbe03b_3dweb_west_model"}
+    },
+
+    {   "when": { "up": "true" },
+      "apply": { "model": "minecraftbyexample:block/mbe03b_3dweb_up_model"}
+    },
+
+    {   "when": { "down": "true" },
+      "apply": { "model": "minecraftbyexample:block/mbe03b_3dweb_down_model"}
+    }
+  ]
+}

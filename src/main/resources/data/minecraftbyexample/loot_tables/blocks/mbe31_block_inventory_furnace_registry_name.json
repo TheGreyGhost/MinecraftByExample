@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraftbyexample:mbe31_block_registry_name"
+          "name": "minecraftbyexample:mbe31_block_inventory_furnace_registry_name"
         }
       ],
       "conditions": [

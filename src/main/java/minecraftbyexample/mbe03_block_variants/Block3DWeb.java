@@ -12,10 +12,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.IProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -25,7 +23,6 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import org.lwjgl.system.CallbackI;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -41,9 +38,9 @@ public class Block3DWeb extends Block implements IWaterLoggable {
   {
     super(Block.Properties.create(Material.WEB).doesNotBlockMovement());                     // ensures the player can walk through the block
     BlockState defaultBlockState = this.stateContainer.getBaseState()
-            .with(LINK_UP, false).with(LINK_DOWN, false)
-            .with(LINK_EAST, false).with(LINK_WEST, false)
-            .with(LINK_NORTH, false).with(LINK_SOUTH, false)
+            .with(UP, false).with(DOWN, false)
+            .with(EAST, false).with(WEST, false)
+            .with(NORTH, false).with(SOUTH, false)
             .with(WATERLOGGED, false);
     this.setDefaultState(defaultBlockState);
     initialiseShapeCache();
@@ -95,22 +92,22 @@ public class Block3DWeb extends Block implements IWaterLoggable {
     }
     switch (facing) {  // Only update the specified direction.  Uses a switch for clarity but probably a map or similar is better for real code
       case UP:
-        blockState = blockState.with(LINK_UP, canWebAttachToNeighbourInThisDirection(world, currentPos, facing));
+        blockState = blockState.with(UP, canWebAttachToNeighbourInThisDirection(world, currentPos, facing));
         break;
       case DOWN:
-        blockState = blockState.with(LINK_DOWN, canWebAttachToNeighbourInThisDirection(world, currentPos, facing));
+        blockState = blockState.with(DOWN, canWebAttachToNeighbourInThisDirection(world, currentPos, facing));
         break;
       case EAST:
-        blockState = blockState.with(LINK_EAST, canWebAttachToNeighbourInThisDirection(world, currentPos, facing));
+        blockState = blockState.with(EAST, canWebAttachToNeighbourInThisDirection(world, currentPos, facing));
         break;
       case WEST:
-        blockState = blockState.with(LINK_WEST, canWebAttachToNeighbourInThisDirection(world, currentPos, facing));
+        blockState = blockState.with(WEST, canWebAttachToNeighbourInThisDirection(world, currentPos, facing));
         break;
       case NORTH:
-        blockState = blockState.with(LINK_NORTH, canWebAttachToNeighbourInThisDirection(world, currentPos, facing));
+        blockState = blockState.with(NORTH, canWebAttachToNeighbourInThisDirection(world, currentPos, facing));
         break;
       case SOUTH:
-        blockState = blockState.with(LINK_SOUTH, canWebAttachToNeighbourInThisDirection(world, currentPos, facing));
+        blockState = blockState.with(SOUTH, canWebAttachToNeighbourInThisDirection(world, currentPos, facing));
         break;
       default:
         LOGGER.error("Unexpected facing:" + facing);
@@ -121,12 +118,12 @@ public class Block3DWeb extends Block implements IWaterLoggable {
 
   private BlockState setConnections(IBlockReader iBlockReader, BlockPos blockPos, BlockState blockState) {
     return blockState
-            .with(LINK_UP, canWebAttachToNeighbourInThisDirection(iBlockReader, blockPos, Direction.UP))
-            .with(LINK_DOWN, canWebAttachToNeighbourInThisDirection(iBlockReader, blockPos, Direction.DOWN))
-            .with(LINK_WEST, canWebAttachToNeighbourInThisDirection(iBlockReader, blockPos, Direction.WEST))
-            .with(LINK_EAST, canWebAttachToNeighbourInThisDirection(iBlockReader, blockPos, Direction.EAST))
-            .with(LINK_NORTH, canWebAttachToNeighbourInThisDirection(iBlockReader, blockPos, Direction.NORTH))
-            .with(LINK_SOUTH, canWebAttachToNeighbourInThisDirection(iBlockReader, blockPos, Direction.SOUTH));
+            .with(UP, canWebAttachToNeighbourInThisDirection(iBlockReader, blockPos, Direction.UP))
+            .with(DOWN, canWebAttachToNeighbourInThisDirection(iBlockReader, blockPos, Direction.DOWN))
+            .with(WEST, canWebAttachToNeighbourInThisDirection(iBlockReader, blockPos, Direction.WEST))
+            .with(EAST, canWebAttachToNeighbourInThisDirection(iBlockReader, blockPos, Direction.EAST))
+            .with(NORTH, canWebAttachToNeighbourInThisDirection(iBlockReader, blockPos, Direction.NORTH))
+            .with(SOUTH, canWebAttachToNeighbourInThisDirection(iBlockReader, blockPos, Direction.SOUTH));
   }
 
   /**
@@ -143,7 +140,7 @@ public class Block3DWeb extends Block implements IWaterLoggable {
 
     if (neighborBlock == Blocks.BARRIER) return false;
     if (neighborBlock == StartupCommon.block3DWeb) return true;
-    if (!cannotAttach(neighborBlock)) return false;
+    if (cannotAttach(neighborBlock)) return false;
     boolean faceIsSolid = neighborBlockState.isSolidSide(iBlockReader, neighborPos, direction.getOpposite());
     return faceIsSolid;
   }
@@ -162,18 +159,22 @@ public class Block3DWeb extends Block implements IWaterLoggable {
    */
   @Override
   protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-    builder.add(LINK_UP, LINK_DOWN, LINK_WEST, LINK_EAST, LINK_DOWN, LINK_UP, WATERLOGGED);
+    builder.add(UP, DOWN, WEST, EAST, NORTH, SOUTH, WATERLOGGED);
   }
 
-  // the LINK properties are used to communicate to the model renderer which of the web strands should be drawn, and whether the water should be drawn
+  // the LINK properties are used to communicate to the model renderer which of the web strands should be drawn, and whether any water should be drawn
   // Be wary of using too many properties.  A blockstate is created for every permutation of properties, so even for this simple example we have
   //  2^7 = 128 blockstates.
-  public static final BooleanProperty LINK_UP = BlockStateProperties.UP;
-  public static final BooleanProperty LINK_DOWN = BlockStateProperties.DOWN;
-  public static final BooleanProperty LINK_WEST = BlockStateProperties.WEST;
-  public static final BooleanProperty LINK_EAST = BlockStateProperties.EAST;
-  public static final BooleanProperty LINK_NORTH = BlockStateProperties.NORTH;
-  public static final BooleanProperty LINK_SOUTH = BlockStateProperties.SOUTH;
+
+  // The mbe03b_block_3dweb_registry_name.json contains logic to check each of these properties by name, and draw the corresponding model components
+  //   for each property which is true.
+
+  public static final BooleanProperty UP = BlockStateProperties.UP;
+  public static final BooleanProperty DOWN = BlockStateProperties.DOWN;
+  public static final BooleanProperty WEST = BlockStateProperties.WEST;
+  public static final BooleanProperty EAST = BlockStateProperties.EAST;
+  public static final BooleanProperty NORTH = BlockStateProperties.NORTH;
+  public static final BooleanProperty SOUTH = BlockStateProperties.SOUTH;
 
   private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;  // is this block filled with water or not?
 
@@ -217,22 +218,22 @@ public class Block3DWeb extends Block implements IWaterLoggable {
   private void initialiseShapeCache() {
     for (BlockState blockState : stateContainer.getValidStates()) {
       VoxelShape combinedShape = CORE_SHAPE;
-      if (blockState.get(LINK_UP).booleanValue()) {
+      if (blockState.get(UP).booleanValue()) {
         combinedShape = VoxelShapes.or(combinedShape, LINK_UP_SHAPE);
       }
-      if (blockState.get(LINK_DOWN).booleanValue()) {
+      if (blockState.get(DOWN).booleanValue()) {
         combinedShape = VoxelShapes.or(combinedShape, LINK_DOWN_SHAPE);
       }
-      if (blockState.get(LINK_WEST).booleanValue()) {
+      if (blockState.get(WEST).booleanValue()) {
         combinedShape = VoxelShapes.or(combinedShape, LINK_WEST_SHAPE);
       }
-      if (blockState.get(LINK_EAST).booleanValue()) {
+      if (blockState.get(EAST).booleanValue()) {
         combinedShape = VoxelShapes.or(combinedShape, LINK_EAST_SHAPE);
       }
-      if (blockState.get(LINK_NORTH).booleanValue()) {
+      if (blockState.get(NORTH).booleanValue()) {
         combinedShape = VoxelShapes.or(combinedShape, LINK_NORTH_SHAPE);
       }
-      if (blockState.get(LINK_SOUTH).booleanValue()) {
+      if (blockState.get(SOUTH).booleanValue()) {
         combinedShape = VoxelShapes.or(combinedShape, LINK_SOUTH_SHAPE);
       }
       voxelShapeCache.put(blockState, combinedShape);
