@@ -23,15 +23,33 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
 
 /**
  * Created by TheGreyGhost on 19/04/2015.
+ * * Block3DWeb uses a model which
+ *  - doesn't occupy the entire 1x1x1m space,
+ *  - is made up of a central core, plus up to six "strands" radiating out from the core
+ *  - can be waterlogged (filled with water) similar to a vanilla sign or fence
+ *  We can walk over it without colliding, it slows the player like web does
  *
- * This block forms a 3D web.
  * If the block is adjacent to another Block3DWeb, or to a solid surface, it joins to it with a strand of web.
+ * The block has six true/false properties, one for each direction, to specify whether there is a strand in that direction
+ *   or not.
+ * These properties are then passed to the renderer, which uses the `multipart` blockstates format to draw each strand
+ *   depending on whether the corresponding property is true or not.
+ *
+ * For example:
+ * If the block to the east of the Block3DWeb is a solid stone block, then EAST property is true.
+ * When rendering, the corresponding multistate property will draw the model for the web strand that connects to the east
+ * mbe03b_block_3dweb_registry_name.json:
+ *     {   "when": { "east": "true" },
+ *       "apply": { "model": "minecraftbyexample:block/mbe03b_3dweb_east_model"}
+ *     },
+ *
  */
 public class Block3DWeb extends Block implements IWaterLoggable {
   public Block3DWeb()
@@ -58,6 +76,9 @@ public class Block3DWeb extends Block implements IWaterLoggable {
   public BlockRenderType getRenderType(BlockState iBlockState) {
     return BlockRenderType.MODEL;
   }
+
+
+  // ----------- methods to update the properties based on neighbours --------
 
   /**
    * when the block is placed into the world, calculates the correct BlockState based on whether there is already water
@@ -115,7 +136,6 @@ public class Block3DWeb extends Block implements IWaterLoggable {
     return blockState;
   }
 
-
   private BlockState setConnections(IBlockReader iBlockReader, BlockPos blockPos, BlockState blockState) {
     return blockState
             .with(UP, canWebAttachToNeighbourInThisDirection(iBlockReader, blockPos, Direction.UP))
@@ -145,10 +165,11 @@ public class Block3DWeb extends Block implements IWaterLoggable {
     return faceIsSolid;
   }
 
+  // ------------ methods to define the properties for this block  ----
 
   // fillStateContainer is used to define which properties your block possess
-  // A variant is created for each combination of
-  //   properties; for example two properties ON(true/false) and READY(true/false) would give rise to four variants
+  // A blockstate is created for each combination of properties;
+  // for example two properties ON(true/false) and READY(true/false) would give rise to four variants
   //   [on=true, ready=true]
   //   [on=false, ready=true]
   //   [on=true, ready=false]
@@ -162,7 +183,7 @@ public class Block3DWeb extends Block implements IWaterLoggable {
     builder.add(UP, DOWN, WEST, EAST, NORTH, SOUTH, WATERLOGGED);
   }
 
-  // the LINK properties are used to communicate to the model renderer which of the web strands should be drawn, and whether any water should be drawn
+  // the link properties below are used to communicate to the model renderer which of the web strands should be drawn, and whether any water should be drawn
   // Be wary of using too many properties.  A blockstate is created for every permutation of properties, so even for this simple example we have
   //  2^7 = 128 blockstates.
 
@@ -179,9 +200,11 @@ public class Block3DWeb extends Block implements IWaterLoggable {
   private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;  // is this block filled with water or not?
 
 
+  // -------- methods to define the VoxelShapes of the block
+
   // returns the shape of the block:
   //  The image that you see on the screen (when a block is rendered) is determined by the block model (i.e. the model json file).
-  //  But Minecraft also uses a number of other �shapes� to control the interaction of the block with its environment and with the player.
+  //  But Minecraft also uses a number of other �shapes� to control the interaction of the block with its environment and with the player
   // See  https://greyminecraftcoder.blogspot.com/2020/02/block-shapes-voxelshapes-1144.html
   @Override
   public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
