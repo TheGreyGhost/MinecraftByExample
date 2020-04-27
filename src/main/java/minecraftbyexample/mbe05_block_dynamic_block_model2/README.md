@@ -5,7 +5,15 @@ Based on code by Herbix.
 More advanced block models
 
 1) vanilla multipart model (3D web)
-2) dynamic quad generation (altimeter + compass)
+2) dynamic quad generation (altimeter + compass); temperature; humidity - on different faces
+temp = -0.5 to 2.0; downfall
+      double d0 = (double)MathHelper.clamp(this.getDefaultTemperature(), 0.0F, 1.0F);
+      double d1 = (double)MathHelper.clamp(this.getDownfall(), 0.0F, 1.0F);
+   IWorldReader
+   default Biome getBiome(BlockPos p_226691_1_) {
+      return this.getBiomeManager().getBiome(p_226691_1_);
+   }
+   
 3) Forge multilayer model (tranparent vanilla lantern)
 
 
