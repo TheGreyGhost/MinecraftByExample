@@ -82,3 +82,7 @@ BlockRendererDispatcher::
     {
       // conditional breakpoint here on state.getblock().getUnlocalisedName().contains("partofmyblockname")
 ```
+
+Block appears as a black-and-purple square
+* Your  RenderTypeLookup.setRenderLayer lambda function returns true for a layer which isn't in your multilayer model json.
+

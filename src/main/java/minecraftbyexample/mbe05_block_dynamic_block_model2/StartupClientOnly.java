@@ -30,6 +30,6 @@ public class StartupClientOnly
 
   // does the Glass Lantern render in the given layer (RenderType) - used as Predicate<RenderType> lambda for setRenderLayer
   public static boolean isGlassLanternValidLayer(RenderType layerToCheck) {
-    return layerToCheck == RenderType.getSolid() || layerToCheck == RenderType.getTranslucent();
+    return layerToCheck == RenderType.getCutout() || layerToCheck == RenderType.getTranslucent();
   }
 }
