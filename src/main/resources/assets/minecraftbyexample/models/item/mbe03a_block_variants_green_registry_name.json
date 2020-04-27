@@ -1,5 +1,5 @@
 {
-  "parent": "minecraftbyexample:block/mbe03_block_variants_model_blue",
+  "parent": "minecraftbyexample:block/mbe03a_block_variants_model_green",
   "display": {
     "thirdperson_righthand": {
       "rotation": [ 0, 0, 0 ],

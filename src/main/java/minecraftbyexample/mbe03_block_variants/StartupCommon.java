@@ -24,21 +24,28 @@ public class StartupCommon
   public static BlockVariants blockVariantsGreen;  // one unique instance for each colour
   public static BlockVariants blockVariantsYellow;  // one unique instance for each colour
 
+  public static Block3DWeb block3DWeb; // multipart block
+
   public static BlockItem itemBlockVariantsBlue;  // this holds the unique ItemBlock instance corresponding to your block
   public static BlockItem itemBlockVariantsRed;  // this holds the unique ItemBlock instance corresponding to your block
   public static BlockItem itemBlockVariantsGreen;  // this holds the unique ItemBlock instance corresponding to your block
   public static BlockItem itemBlockVariantsYellow;  // this holds the unique ItemBlock instance corresponding to your block
 
+  public static BlockItem itemBlock3DWeb;
+
   @SubscribeEvent
   public static void onBlocksRegistration(final RegistryEvent.Register<Block> blockRegisterEvent) {
-    blockVariantsBlue= (BlockVariants)(new BlockVariants(BlockVariants.EnumColour.BLUE).setRegistryName("minecraftbyexample", "mbe03_block_variants_blue_registry_name"));
-    blockVariantsRed = (BlockVariants)(new BlockVariants(BlockVariants.EnumColour.RED).setRegistryName("minecraftbyexample", "mbe03_block_variants_red_registry_name"));
-    blockVariantsGreen= (BlockVariants)(new BlockVariants(BlockVariants.EnumColour.GREEN).setRegistryName("minecraftbyexample", "mbe03_block_variants_green_registry_name"));
-    blockVariantsYellow = (BlockVariants)(new BlockVariants(BlockVariants.EnumColour.YELLOW).setRegistryName("minecraftbyexample", "mbe03_block_variants_yellow_registry_name"));
+    blockVariantsBlue= (BlockVariants)(new BlockVariants(BlockVariants.EnumColour.BLUE).setRegistryName("minecraftbyexample", "mbe03a_block_variants_blue_registry_name"));
+    blockVariantsRed = (BlockVariants)(new BlockVariants(BlockVariants.EnumColour.RED).setRegistryName("minecraftbyexample", "mbe03a_block_variants_red_registry_name"));
+    blockVariantsGreen= (BlockVariants)(new BlockVariants(BlockVariants.EnumColour.GREEN).setRegistryName("minecraftbyexample", "mbe03a_block_variants_green_registry_name"));
+    blockVariantsYellow = (BlockVariants)(new BlockVariants(BlockVariants.EnumColour.YELLOW).setRegistryName("minecraftbyexample", "mbe03a_block_variants_yellow_registry_name"));
     blockRegisterEvent.getRegistry().register(blockVariantsBlue);
     blockRegisterEvent.getRegistry().register(blockVariantsRed);
     blockRegisterEvent.getRegistry().register(blockVariantsGreen);
     blockRegisterEvent.getRegistry().register(blockVariantsYellow);
+
+    block3DWeb = (Block3DWeb)(new Block3DWeb().setRegistryName("minecraftbyexample", "mbe03b_block_3dweb_registry_name"));
+    blockRegisterEvent.getRegistry().register(block3DWeb);
   }
 
   @SubscribeEvent
@@ -64,6 +71,10 @@ public class StartupCommon
     itemBlockVariantsYellow = new BlockItem(blockVariantsYellow, itemSimpleProperties);
     itemBlockVariantsYellow.setRegistryName(blockVariantsYellow.getRegistryName());
     itemRegisterEvent.getRegistry().register(itemBlockVariantsYellow);
+
+    itemBlock3DWeb = new BlockItem(block3DWeb, itemSimpleProperties);
+    itemBlock3DWeb.setRegistryName(block3DWeb.getRegistryName());
+    itemRegisterEvent.getRegistry().register(itemBlock3DWeb);
   }
 
   @SubscribeEvent

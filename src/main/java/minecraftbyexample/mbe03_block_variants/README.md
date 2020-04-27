@@ -2,14 +2,15 @@
 
 This example has two separate parts related to different ways of modifying your block's appearance based on its BlockState.
 
-The first example is a signpost which uses 'variants'.  The second example is a 3D Web which uses 'multipart'.
+The first example (mbe03a) is a signpost which uses 'variants'.  The second example is a 3D Web which uses 'multipart'.
 In both cases the blocks use BlockStateProperties to store the state of the block and to change the model which is used to render
 the block; the difference arises in the blockstate.json file:
 The variants example uses the "variants" json format to select a single model from a list, based on the combination of blockstateproperties.  For example
 - which way the sign is facing
-- what colour the sign is.
 
-In contrast, the multipart example uses the "multipart" json format to add or remove multiple different parts of the model based on the blockstateproperties.
+The different colours of sign are not variants, they are each given their own BlockVariants instance and hence their own blockstates.json
+
+In contrast, the second example (mbe03b) uses the "multipart" json format to add or remove multiple different parts of the model based on the blockstateproperties.
 For example:
 - If the UP property is true, include a strand of web pointing up
 - If the EAST property is true, include a strand of web pointing east
@@ -36,10 +37,10 @@ The pieces you need to understand are located in:
 * `StartupCommon` class
 * `BlockVariants` class
 * `resources\assets\minecraftbyexample\lang\en_US.lang` -- for the displayed name of the block and items
-* `resources\assets\minecraftbyexample\blockstates\mbe03_block_variants_****` -- for the blockstate definition
-* `resources\assets\minecraftbyexample\models\block\mbe03_block_variants_****` -- for the models used to render the differnt block types
-* `resources\assets\minecraftbyexample\models\item\mbe03_block_variants_***` -- the models for rendering the different block variants as an item
-* `resources\assets\minecraftbyexample\textures\block\mbe03_block_variants_sign_***` -- the textures used for the different sign colours
+* `resources\assets\minecraftbyexample\blockstates\mbe03a_block_variants_****` -- for the blockstate definition
+* `resources\assets\minecraftbyexample\models\block\mbe03a_block_variants_****` -- for the models used to render the differnt block types
+* `resources\assets\minecraftbyexample\models\item\mbe03a_block_variants_***` -- the models for rendering the different block variants as an item
+* `resources\assets\minecraftbyexample\textures\block\mbe03a_block_variants_sign_***` -- the textures used for the different sign colours
 
 Useful vanilla classes to look at: `BedBlock`, `DoorBlock`, `ShulkerBoxBlock`
 
@@ -71,10 +72,10 @@ The pieces you need to understand are located in:
 * `StartupCommon` class
 * `Block3DWeb` class
 * `resources\assets\minecraftbyexample\lang\en_US.lang` -- for the displayed name of the block and items
-* `resources\assets\minecraftbyexample\blockstates\mbe03_block_variants_****` -- for the blockstate definition
-* `resources\assets\minecraftbyexample\models\block\mbe03_block_variants_****` -- for the models used to render the differnt block types
-* `resources\assets\minecraftbyexample\models\item\mbe03_block_variants_***` -- the models for rendering the different block variants as an item
-* `resources\assets\minecraftbyexample\textures\block\mbe03_block_variants_sign_***` -- the textures used for the different sign colours
+* `resources\assets\minecraftbyexample\blockstates\mbe03b_block_3dweb_registry_name` -- for the blockstate definition
+* `resources\assets\minecraftbyexample\models\block\mbe03b_3dweb_****` -- for the models used to render the differnet block types
+* `resources\assets\minecraftbyexample\models\item\mbe03b_block_3dweb_registry_name` -- the model for rendering the block as an item
+* `resources\assets\minecraftbyexample\textures\block\mbe03b_block_3dweb` -- the textures used for the different sign colours
 
 Useful vanilla classes to look at: <br>
 * `FenceBlock` and `blockstates\birch_fence.json`
@@ -91,10 +92,7 @@ For background information on:
 
 ## Common errors
 
-"Missing Model", "Missing texture", etc:
-
-See [http://greyminecraftcoder.blogspot.com.au/2015/03/troubleshooting-block-and-item-rendering.html](http://greyminecraftcoder.blogspot.com.au/2015/03/troubleshooting-block-and-item-rendering.html)
-
+"Missing Model", "Missing texture", black and white textures etc:
 These are caused when you have specified a filename or path which is not correct, typically:
 
 1. you've misspelled it

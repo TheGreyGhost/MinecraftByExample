@@ -41,7 +41,9 @@ If you use IntelliJ, you might find these [xml mapping files][mapfiles] useful t
 ### Blocks
   - [MBE01][01] - a simple cube
   - [MBE02][02] - a block with a more complicated shape
-  - [MBE03][03] - a block (coloured signpost) with multiple variants- four colours, can be placed facing in four directions
+  - [MBE03][03] - two types of blocks which vary their appearance / shape:<br>
+        a block (coloured signpost) with multiple variants- four colours, can be placed facing in four directions<br>
+        a block (3D Web) with multiple parts (multipart) similar to a vanilla fence.
   - [MBE04][04] - a camouflage ("secret door") block which dynamically changes its appearance to match adjacent blocks - uses IBlockModel.getQuads(), ModelBakeEvent, IForgeBakedModel and IModelData  
   - X [MBE05][05] - a 3D web which joins to neighbours in all six directions - uses IBlockModel.getQuads() and ICustomModelLoader
   - X [MBE06][06] - several different types of block which use redstone

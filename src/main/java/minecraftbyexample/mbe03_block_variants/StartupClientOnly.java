@@ -19,5 +19,7 @@ public class StartupClientOnly
     RenderTypeLookup.setRenderLayer(StartupCommon.blockVariantsRed, RenderType.getCutout());
     RenderTypeLookup.setRenderLayer(StartupCommon.blockVariantsGreen, RenderType.getCutout());
     RenderTypeLookup.setRenderLayer(StartupCommon.blockVariantsYellow, RenderType.getCutout());
+
+    RenderTypeLookup.setRenderLayer(StartupCommon.block3DWeb, RenderType.getSolid());
   }
 }
