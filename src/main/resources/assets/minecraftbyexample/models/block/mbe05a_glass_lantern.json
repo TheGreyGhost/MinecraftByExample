@@ -4,7 +4,7 @@
     "layers": {
       "cutout": {
         "textures": {
-          "1": "minecraftbyexample:block/mbe05_lantern_animated_flame5",
+          "1": "minecraftbyexample:block/mbe05_lantern_animated_flame9",
           "particle": "minecraftbyexample:block/mbe05_lantern_body",
           "all": "minecraftbyexample:block/mbe05_lantern_body"
         },
@@ -42,8 +42,8 @@
             "shade": false,
             "rotation": {"angle": 45, "axis": "y", "origin": [8, 8, 8]},
             "faces": {
-              "east": {"uv": [0, 0, 4, 4], "texture": "#1"},
-              "west": {"uv": [0, 0, 4, 4], "texture": "#1"}
+              "east": {"uv": [0, 11, 4, 16], "texture": "#1"},
+              "west": {"uv": [0, 11, 4, 16], "texture": "#1"}
             }
           },
           {
@@ -53,8 +53,8 @@
             "shade": false,
             "rotation": {"angle": 45, "axis": "y", "origin": [8, 8, 8]},
             "faces": {
-              "north": {"uv": [4, 0, 8, 4], "texture": "#1"},
-              "south": {"uv": [4, 0, 8, 4], "texture": "#1"}
+              "north": {"uv": [0, 11, 4, 16], "texture": "#1"},
+              "south": {"uv": [0, 11, 4, 16], "texture": "#1"}
             }
           },
           {
