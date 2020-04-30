@@ -33,6 +33,7 @@ public class StartupCommon
     Item.Properties itemGlassLanternProperties = new Item.Properties()
             .maxStackSize(MAXIMUM_STACK_SIZE)
             .group(ItemGroup.DECORATIONS);  // which inventory tab?
+//            .setISTER()
     itemBlockGlassLantern = new BlockItem(blockGlassLantern, itemGlassLanternProperties);
     itemBlockGlassLantern.setRegistryName(blockGlassLantern.getRegistryName());
     itemRegisterEvent.getRegistry().register(itemBlockGlassLantern);

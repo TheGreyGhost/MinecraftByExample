@@ -55,7 +55,7 @@ public class MinecraftByExample {
   public static IEventBus MOD_EVENT_BUS;
 
   public MinecraftByExample() {
-    final boolean HIDE_CONSOLE_NOISE = false;  // get rid of all the noise from the console (after mod is constructed) to show warnings more clearly.
+    final boolean HIDE_CONSOLE_NOISE = true;  //todo set false // get rid of all the noise from the console (after mod is constructed) to show warnings more clearly.
     if (HIDE_CONSOLE_NOISE) {
       ForgeLoggerTweaker.setMinimumLevel(Level.WARN);
       ForgeLoggerTweaker.applyLoggerFilter();

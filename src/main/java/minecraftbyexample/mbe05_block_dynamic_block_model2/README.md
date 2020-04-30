@@ -16,6 +16,18 @@ temp = -0.5 to 2.0; downfall
    
 3) Forge multilayer model (tranparent vanilla lantern)
 
+Note - When rendered directly as an item, the multilayer model does not really work as expected.
+If any of the layers is translucent, the model is rendered as translucent, otherwise it is rendered as
+  cutout.
+  Cutout textures may render correctly as translucent, except that 
+  * backface culling is off which may cause flickering if you have used flat elements (eg similar to grass or bamboo leaves)
+  * depth-buffer culling is turned on and depth-sorting is not performed, so some of the faces may disappear
+ 
+ If you really want your item to be rendered as 3D you will need to render it using a    ItemStackTileEntityRenderer (see Item.Properties.setISTER).
+ This is the reason it's implemented for the lantern.
+ 
+
+
 
 This example shows how to use `IBakedModel#getQuads` in conjunction with `ModelLoader`. It is very similar to MBE04, it just uses a different method of injecting your `IBakedModel` into the registry, and assembles the quads differently.
 

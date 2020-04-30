@@ -1,16 +1,15 @@
 {
     "loader": "forge:multi-layer",
-	"credit": "Made with Blockbench, with some manual rearrangement to fit the multilayer format",
+	"credit": "Made with Blockbench",
     "parent": "block/block",
     "textures": {
-      "particle": "minecraftbyexample:block/mbe05_lantern_body"
+      "1": "minecraftbyexample:block/mbe05_lantern_animated_flame9",
+      "2": "minecraftbyexample:block/mbe05_lantern_glass1",
+      "particle": "minecraftbyexample:block/mbe05_lantern_body",
+      "all": "minecraftbyexample:block/mbe05_lantern_body"
     },
     "layers": {
       "cutout": {
-        "textures": {
-          "2": "minecraftbyexample:block/mbe05_lantern_animated_flame9",
-          "all": "minecraftbyexample:block/mbe05_lantern_body"
-        },
         "elements": [
           {
             "name": "top",
@@ -22,7 +21,7 @@
               "south": {"uv": [0, 2, 6, 3], "texture": "#all"},
               "west": {"uv": [0, 2, 6, 3], "texture": "#all"},
               "up": {"uv": [0, 9, 6, 15], "texture": "#all"},
-              "down": {"uv": [0, 9, 6, 15], "texture": "#all", "cullface": "down"}
+              "down": {"uv": [0, 9, 6, 15], "texture": "#all"}
             }
           },
           {
@@ -34,8 +33,8 @@
               "east": {"uv": [0, 8, 6, 9], "texture": "#all"},
               "south": {"uv": [0, 8, 6, 9], "texture": "#all"},
               "west": {"uv": [0, 8, 6, 9], "texture": "#all"},
-              "up": {"uv": [6, 9, 12, 15], "texture": "#all"},
-              "down": {"uv": [0, 9, 6, 15], "texture": "#all", "cullface": "down"}
+              "up": {"uv": [0, 9, 6, 15], "texture": "#all"},
+              "down": {"uv": [0, 9, 6, 15], "texture": "#all"}
             }
           },
           {
@@ -45,8 +44,8 @@
             "shade": false,
             "rotation": {"angle": 45, "axis": "y", "origin": [8, 8, 8]},
             "faces": {
-              "east": {"uv": [0, 11, 4, 16], "texture": "#2"},
-              "west": {"uv": [0, 11, 4, 16], "texture": "#2"}
+              "east": {"uv": [0, 11, 4, 16], "texture": "#1"},
+              "west": {"uv": [0, 11, 4, 16], "texture": "#1"}
             }
           },
           {
@@ -56,8 +55,8 @@
             "shade": false,
             "rotation": {"angle": 45, "axis": "y", "origin": [8, 8, 8]},
             "faces": {
-              "north": {"uv": [0, 11, 4, 16], "texture": "#2"},
-              "south": {"uv": [0, 11, 4, 16], "texture": "#2"}
+              "north": {"uv": [0, 11, 4, 16], "texture": "#1"},
+              "south": {"uv": [0, 11, 4, 16], "texture": "#1"}
             }
           },
           {
@@ -97,9 +96,6 @@
         ]
       },
       "translucent": {
-        "textures": {
-          "1": "minecraftbyexample:block/mbe05_lantern_glass1"
-        },
         "elements": [
           {
             "name": "glass",
@@ -107,10 +103,10 @@
             "to": [11, 6, 11],
             "shade": false,
             "faces": {
-              "north": {"uv": [0, 0, 6, 5], "texture": "#1"},
-              "east": {"uv": [6, 5, 12, 10], "texture": "#1"},
-              "south": {"uv": [0, 5, 6, 10], "texture": "#1"},
-              "west": {"uv": [6, 0, 12, 5], "texture": "#1"}
+              "north": {"uv": [0, 0, 6, 5], "texture": "#2"},
+              "east": {"uv": [6, 5, 12, 10], "texture": "#2"},
+              "south": {"uv": [0, 5, 6, 10], "texture": "#2"},
+              "west": {"uv": [6, 0, 12, 5], "texture": "#2"}
             }
           }
         ]

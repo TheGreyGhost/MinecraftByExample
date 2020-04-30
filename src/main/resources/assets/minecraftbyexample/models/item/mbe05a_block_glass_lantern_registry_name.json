@@ -1,3 +1,40 @@
 {
-  "parent": "minecraftbyexample:block/mbe05a_glass_lantern"
+  "parent": "minecraftbyexample:block/mbe05a_glass_lantern",
+  "comment": "BlockBench makes it very easy to determine the correct display transformations for your item.",
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [39, 0, 0],
+      "translation": [0, 4, 2.75],
+      "scale": [0.5, 0.5, 0.5]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [39, 0, 0],
+      "translation": [0, 4, 2.75],
+      "scale": [0.5, 0.5, 0.5]
+    },
+    "firstperson_righthand": {
+      "rotation": [21, 0, 0],
+      "translation": [0, 5, 2.75],
+      "scale": [0.5, 0.5, 0.5]
+    },
+    "firstperson_lefthand": {
+      "rotation": [21, 0, 0],
+      "translation": [0, 5, 2.75],
+      "scale": [0.5, 0.5, 0.5]
+    },
+    "ground": {
+      "translation": [0, 1.5, 0],
+      "scale": [0.5, 0.5, 0.5]
+    },
+    "gui": {
+      "translation": [0, 3, 0],
+      "scale": [1.2, 1.2, 1.2]
+    },
+    "head": {
+      "translation": [0, 14.5, 0]
+    },
+    "fixed": {
+      "translation": [0, 3.25, 0]
+    }
+  }
 }
