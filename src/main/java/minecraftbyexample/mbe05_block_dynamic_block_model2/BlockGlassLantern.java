@@ -45,7 +45,7 @@ import javax.annotation.Nullable;
  *    For example - the direction that the bed is facing (north, east, south, west)
  *
  * For background information on block see here http://greyminecraftcoder.blogspot.com.au/2014/12/blocks-18.html
- * For a couple of the methods below the Forge guys have marked it as deprecated.  But you still need to override those
+ * For a couple of the methods below is has been marked as deprecated.  But you still need to override those
  * "deprecated" block methods.  What they mean is "when you want to find out what is a block's getRenderType(),
  * don't call block.getRenderType(), call blockState.getRenderType() instead".
  * If that doesn't make sense to you yet, don't worry.  Just ignore the "deprecated method" warning.

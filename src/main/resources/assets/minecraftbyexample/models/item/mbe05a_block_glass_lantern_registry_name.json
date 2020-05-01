@@ -1,6 +1,10 @@
 {
-  "parent": "minecraftbyexample:block/mbe05a_glass_lantern",
-  "comment": "BlockBench makes it very easy to determine the correct display transformations for your item.",
+  "loader": "forge:multi-layer",
+  "credit": "Made with Blockbench, with some manual rearrangement to fit the multilayer format",
+  "comment1": "The model is a direct copy of block/mbe05_glass_lantern except that the no-thickness elements (eg hook1) have been made",
+  "comment2": " single sided only, since the item rendered has turned back face culling off.",
+  "comment3": "Display for first person views has been carefully chosen to show the front face of hook1, hook2, flame1, flame2",
+  "parent": "block/block",
   "display": {
     "thirdperson_righthand": {
       "rotation": [39, 0, 0],
@@ -13,7 +17,7 @@
       "scale": [0.5, 0.5, 0.5]
     },
     "firstperson_righthand": {
-      "rotation": [21, 0, 0],
+      "rotation": [21, 90, 0],
       "translation": [0, 5, 2.75],
       "scale": [0.5, 0.5, 0.5]
     },
@@ -35,6 +39,117 @@
     },
     "fixed": {
       "translation": [0, 3.25, 0]
+    }
+  },
+
+  "textures": {
+    "particle": "minecraftbyexample:block/mbe05_lantern_body"
+  },
+  "layers": {
+    "cutout": {
+      "textures": {
+        "2": "minecraftbyexample:block/mbe05_lantern_animated_flame",
+        "all": "minecraftbyexample:block/mbe05_lantern_body"
+      },
+      "elements": [
+        {
+          "name": "top",
+          "from": [5, 6, 5],
+          "to": [11, 7, 11],
+          "faces": {
+            "north": {"uv": [0, 2, 6, 3], "texture": "#all"},
+            "east": {"uv": [0, 2, 6, 3], "texture": "#all"},
+            "south": {"uv": [0, 2, 6, 3], "texture": "#all"},
+            "west": {"uv": [0, 2, 6, 3], "texture": "#all"},
+            "up": {"uv": [0, 9, 6, 15], "texture": "#all"},
+            "down": {"uv": [0, 9, 6, 15], "texture": "#all", "cullface": "down"}
+          }
+        },
+        {
+          "name": "base",
+          "from": [5, 0, 5],
+          "to": [11, 1, 11],
+          "faces": {
+            "north": {"uv": [0, 8, 6, 9], "texture": "#all"},
+            "east": {"uv": [0, 8, 6, 9], "texture": "#all"},
+            "south": {"uv": [0, 8, 6, 9], "texture": "#all"},
+            "west": {"uv": [0, 8, 6, 9], "texture": "#all"},
+            "up": {"uv": [6, 9, 12, 15], "texture": "#all"},
+            "down": {"uv": [0, 9, 6, 15], "texture": "#all", "cullface": "down"}
+          }
+        },
+        {
+          "name": "flame1",
+          "from": [8, 1, 6],
+          "to": [8, 5, 10],
+          "shade": false,
+          "rotation": {"angle": 45, "axis": "y", "origin": [8, 8, 8]},
+          "faces": {
+            "east": {"uv": [0, 11, 4, 16], "texture": "#2"}
+          }
+        },
+        {
+          "name": "flame2",
+          "from": [6, 1, 8],
+          "to": [10, 5, 8],
+          "shade": false,
+          "rotation": {"angle": 45, "axis": "y", "origin": [8, 8, 8]},
+          "faces": {
+            "north": {"uv": [0, 11, 4, 16], "texture": "#2"}
+          }
+        },
+        {
+          "name": "topbulge",
+          "from": [6, 7, 6],
+          "to": [10, 9, 10],
+          "faces": {
+            "north": {"uv": [1, 0, 5, 2], "texture": "#all"},
+            "east": {"uv": [1, 0, 5, 2], "texture": "#all"},
+            "south": {"uv": [1, 0, 5, 2], "texture": "#all"},
+            "west": {"uv": [1, 0, 5, 2], "texture": "#all"},
+            "up": {"uv": [1, 10, 5, 14], "texture": "#all"}
+          }
+        },
+        {
+          "name": "hook1",
+          "from": [8, 9, 6.5],
+          "to": [8, 11, 9.5],
+          "shade": false,
+          "rotation": {"angle": 45, "axis": "y", "origin": [8, 8, 8]},
+          "faces": {
+            "east": {"uv": [12, 10, 15, 12], "texture": "#all"}
+          }
+        },
+        {
+          "name": "hook2",
+          "from": [6.5, 9, 8],
+          "to": [9.5, 11, 8],
+          "shade": false,
+          "rotation": {"angle": 45, "axis": "y", "origin": [8, 8, 8]},
+          "faces": {
+            "north": {"uv": [12, 1, 15, 3], "texture": "#all"}
+          }
+        }
+      ]
+    },
+    "translucent": {
+      "textures": {
+        "1": "minecraftbyexample:block/mbe05_lantern_glass"
+      },
+      "elements": [
+        {
+          "name": "glass",
+          "from": [5, 1, 5],
+          "to": [11, 6, 11],
+          "shade": false,
+          "faces": {
+            "north": {"uv": [0, 0, 6, 5], "texture": "#1"},
+            "east": {"uv": [6, 5, 12, 10], "texture": "#1"},
+            "south": {"uv": [0, 5, 6, 10], "texture": "#1"},
+            "west": {"uv": [6, 0, 12, 5], "texture": "#1"}
+          }
+        }
+      ]
     }
   }
 }

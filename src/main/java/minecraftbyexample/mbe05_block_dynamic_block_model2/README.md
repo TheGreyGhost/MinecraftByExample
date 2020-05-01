@@ -19,14 +19,12 @@ temp = -0.5 to 2.0; downfall
 Note - When rendered directly as an item, the multilayer model does not really work as expected.
 If any of the layers is translucent, the model is rendered as translucent, otherwise it is rendered as
   cutout.
-  Cutout textures may render correctly as translucent, except that 
-  * backface culling is off which may cause flickering if you have used flat elements (eg similar to grass or bamboo leaves)
-  * depth-buffer culling is turned on and depth-sorting is not performed, so some of the faces may disappear
+  Cutout textures may render correctly as translucent, except that backface culling is off in some views (3rd person).  This may cause flickering if you have used flat elements (eg similar to grass or bamboo leaves).  A possible solution is to use a separate item model where the flat elements only have one face (which can be seend from both sides), unfortunately some of the item views (eg 1st person Left hand, right hand) do use backface culling.  If you select the display settings carefully you can ensure that only the front face of the element is visible in 1st person view.
  
- If you really want your item to be rendered as 3D you will need to render it using a    ItemStackTileEntityRenderer (see Item.Properties.setISTER).
- This is the reason it's implemented for the lantern.
+ Transparent rendering into the GUI (eg inventory) also may not work how you expect it to.
+  
+ If you want maximum control over the appearanace of your item, you will need to render it using a    ItemStackTileEntityRenderer (see Item.Properties.setISTER).
  
-
 
 
 This example shows how to use `IBakedModel#getQuads` in conjunction with `ModelLoader`. It is very similar to MBE04, it just uses a different method of injecting your `IBakedModel` into the registry, and assembles the quads differently.

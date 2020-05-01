@@ -8,7 +8,7 @@
     "layers": {
       "cutout": {
         "textures": {
-          "2": "minecraftbyexample:block/mbe05_lantern_animated_flame9",
+          "2": "minecraftbyexample:block/mbe05_lantern_animated_flame",
           "all": "minecraftbyexample:block/mbe05_lantern_body"
         },
         "elements": [
@@ -73,32 +73,32 @@
             }
           },
           {
-            "name": "hook2",
-            "from": [6.5, 9, 8],
-            "to": [9.5, 11, 8],
-            "shade": false,
-            "rotation": {"angle": 45, "axis": "y", "origin": [8, 8, 8]},
-            "faces": {
-              "north": {"uv": [11, 1, 14, 3], "texture": "#all"},
-              "south": {"uv": [11, 1, 14, 3], "texture": "#all"}
-            }
-          },
-          {
             "name": "hook1",
             "from": [8, 9, 6.5],
             "to": [8, 11, 9.5],
             "shade": false,
             "rotation": {"angle": 45, "axis": "y", "origin": [8, 8, 8]},
             "faces": {
-              "east": {"uv": [11, 10, 14, 12], "texture": "#all"},
-              "west": {"uv": [11, 10, 14, 12], "texture": "#all"}
+              "east": {"uv": [12, 10, 15, 12], "texture": "#all"},
+              "west": {"uv": [12, 10, 15, 12], "texture": "#all"}
+            }
+          },
+          {
+            "name": "hook2",
+            "from": [6.5, 9, 8],
+            "to": [9.5, 11, 8],
+            "shade": false,
+            "rotation": {"angle": 45, "axis": "y", "origin": [8, 8, 8]},
+            "faces": {
+              "north": {"uv": [12, 1, 15, 3], "texture": "#all"},
+              "south": {"uv": [12, 1, 15, 3], "texture": "#all"}
             }
           }
         ]
       },
       "translucent": {
         "textures": {
-          "1": "minecraftbyexample:block/mbe05_lantern_glass1"
+          "1": "minecraftbyexample:block/mbe05_lantern_glass"
         },
         "elements": [
           {
