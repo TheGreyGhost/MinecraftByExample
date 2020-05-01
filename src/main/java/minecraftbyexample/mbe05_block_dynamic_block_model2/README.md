@@ -25,6 +25,15 @@ If any of the layers is translucent, the model is rendered as translucent, other
   
  If you want maximum control over the appearanace of your item, you will need to render it using a    ItemStackTileEntityRenderer (see Item.Properties.setISTER).
  
+features:
+hanging
+lit
+multilayer
+item model different:
+  - single sided vs double sided
+  - gui_light
+  
+
 
 
 This example shows how to use `IBakedModel#getQuads` in conjunction with `ModelLoader`. It is very similar to MBE04, it just uses a different method of injecting your `IBakedModel` into the registry, and assembles the quads differently.

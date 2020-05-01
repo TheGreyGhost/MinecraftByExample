@@ -4,7 +4,10 @@
   "comment1": "The model is a direct copy of block/mbe05_glass_lantern except that the no-thickness elements (eg hook1) have been made",
   "comment2": " single sided only, since the item rendered has turned back face culling off.",
   "comment3": "Display for first person views has been carefully chosen to show the front face of hook1, hook2, flame1, flame2",
+  "comment4": "Additionally, gui_light is set to front so that the icon in the hotbar/inventory is not as dark as default",
   "parent": "block/block",
+
+  "gui_light": "front",
   "display": {
     "thirdperson_righthand": {
       "rotation": [39, 0, 0],
@@ -41,7 +44,6 @@
       "translation": [0, 3.25, 0]
     }
   },
-
   "textures": {
     "particle": "minecraftbyexample:block/mbe05_lantern_body"
   },
