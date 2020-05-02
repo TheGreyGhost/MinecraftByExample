@@ -45,7 +45,7 @@ If you use IntelliJ, you might find these [xml mapping files][mapfiles] useful t
         a block (coloured signpost) with multiple variants- four colours, can be placed facing in four directions<br>
         a block (3D Web) with multiple parts (multipart) similar to a vanilla fence.
   - [MBE04][04] - a camouflage ("secret door") block which dynamically changes its appearance to match adjacent blocks - uses IBlockModel.getQuads(), ModelBakeEvent, IForgeBakedModel and IModelData  
-  - X [MBE05][05] - a 3D web which joins to neighbours in all six directions - uses IBlockModel.getQuads() and ICustomModelLoader
+  - [MBE05][05] - multilayer block (lantern block with transparent glass) with animated flame texture
   - X [MBE06][06] - several different types of block which use redstone
   - [MBE08][08] - how to add a creative tab for organising your custom blocks / items
 
@@ -54,7 +54,6 @@ If you use IntelliJ, you might find these [xml mapping files][mapfiles] useful t
   - [MBE11][11] - an item with multiple variants - rendered using multiple models and multiple layers
   - [MBE12][12] - an item that stores extra information in NBT, also illustrates the "in use" animation similar to drawing a bow
   - X [MBE13][13] - customise Mining behaviour of Blocks and Items - several test classes that show how mining works
-  - X [MBE14][14] - an interactive helper tool to adjust the ItemCameraTransforms for your custom item
   - X [MBE15][15] - a chessboard item with 1 - 64 pieces; uses ItemOverrideList.handleItemState(), IBlockModel.getQuads() and onModelBakeEvent()
 
 ### TileEntities

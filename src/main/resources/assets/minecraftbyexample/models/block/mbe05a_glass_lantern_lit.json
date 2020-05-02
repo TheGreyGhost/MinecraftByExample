@@ -98,7 +98,7 @@
       },
       "translucent": {
         "textures": {
-          "1": "minecraftbyexample:block/mbe05_lantern_glass"
+          "1": "minecraftbyexample:block/mbe05_lantern_glass_lit"
         },
         "elements": [
           {

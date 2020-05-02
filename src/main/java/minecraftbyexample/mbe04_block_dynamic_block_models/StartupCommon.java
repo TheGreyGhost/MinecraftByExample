@@ -1,6 +1,5 @@
-package minecraftbyexample.mbe04_block_dynamic_block_model1;
+package minecraftbyexample.mbe04_block_dynamic_block_models;
 
-import minecraftbyexample.mbe01_block_simple.BlockSimple;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;

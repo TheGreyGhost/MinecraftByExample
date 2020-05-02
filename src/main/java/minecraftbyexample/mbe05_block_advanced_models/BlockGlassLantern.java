@@ -1,17 +1,20 @@
-package minecraftbyexample.mbe05_block_dynamic_block_model2;
+package minecraftbyexample.mbe05_block_advanced_models;
 
+import minecraftbyexample.usefultools.SetBlockStateFlag;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.PushReaction;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.fluid.IFluidState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.pathfinding.PathType;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -27,30 +30,18 @@ import javax.annotation.Nullable;
  * User: The Grey Ghost
  * Date: 24/12/2014
  *
- * BlockVariants uses a model which
- * - doesn't occupy the entire 1x1x1m space,
- * - is made up of two pieces,
- * - uses a CUTOUT texture (with seethrough holes)
- * - has variants (can face in four directions, and can be four different colours)
- * - can be waterlogged (filled with water) similar to a vanilla sign or fence
- * We can walk over it without colliding.
- * Note that the method for implementing block with variants has changed a lot since 1.12.  See here for more info:
- * https://gist.github.com/williewillus/353c872bcf1a6ace9921189f6100d09a
+ * BlockGlassLantern uses a model which is rendered in multiple layers:
+ * - CUTOUT layer (with seethrough holes)
+ * - translucent layer.
  *
- * The basic rules for properly implementing variant blocks are:
- * 1) For each variant which has a different item, create a unique block instance.
- *    For example - different coloured beds are YELLOW_BED, RED_BED, GREEN_BED etc
- *    They all share the same BedBlock class; the colour for each instance is provided to the constructor
- * 2) For variants which affect the block in the world, but not the corresponding held item, use a blockstate property
- *    For example - the direction that the bed is facing (north, east, south, west)
+ * The lantern has two variants:
+ * - hanging vs non-hanging (like vanilla lantern)
+ * - lit or unlit
  *
- * For background information on block see here http://greyminecraftcoder.blogspot.com.au/2014/12/blocks-18.html
- * For a couple of the methods below is has been marked as deprecated.  But you still need to override those
- * "deprecated" block methods.  What they mean is "when you want to find out what is a block's getRenderType(),
- * don't call block.getRenderType(), call blockState.getRenderType() instead".
- * If that doesn't make sense to you yet, don't worry.  Just ignore the "deprecated method" warning.
+ * All the multi-layer magic happens in the block model and StartupClientOnly; this block just tracks  the properties
+ *   that the blockstates logic uses to choose the right block model.
  */
-public class BlockGlassLantern extends Block implements IWaterLoggable
+public class BlockGlassLantern extends Block
 {
   public BlockGlassLantern()
   {
@@ -77,9 +68,34 @@ public class BlockGlassLantern extends Block implements IWaterLoggable
     builder.add(HANGING, LIT);
   }
 
-
   public static final BooleanProperty HANGING = BlockStateProperties.HANGING;
   public static final BooleanProperty LIT = BlockStateProperties.LIT;
+
+
+  // ---- turn the lantern on or off by right-clicking it
+  @Override
+  public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos,
+                                           PlayerEntity player, Hand handIn, BlockRayTraceResult blockRayTraceResult) {
+    boolean currentlyLit = state.get(LIT);
+    boolean newLitState = !currentlyLit;
+
+    final int FLAGS = SetBlockStateFlag.get(SetBlockStateFlag.BLOCK_UPDATE, SetBlockStateFlag.SEND_TO_CLIENTS);
+    worldIn.setBlockState(pos, state.with(LIT, newLitState), FLAGS);
+    return ActionResultType.SUCCESS;
+  }
+
+  // change the lantern emitted light ("block light") depending on whether it is lit or not
+  private static final int LIT_LIGHT_VALUE = 15; // light value when lit (same as vanilla lantern)
+  private static final int UNLIT_LIGHT_VALUE = 0;  // light value when unlit
+
+  /**
+   * Amount of block light emitted by the lantern
+   */
+  public int getLightValue(BlockState state) {
+    return state.get(LIT) ? LIT_LIGHT_VALUE : UNLIT_LIGHT_VALUE;
+  }
+
+  // ------ code to implement the game-logic shape of the block (not the physical appearance)
 
   // for this model, we're making the shape match the block model exactly
   private static final Vec3d BASE_MIN_CORNER = new Vec3d(5.0, 0.0, 5.0);
@@ -94,8 +110,20 @@ public class BlockGlassLantern extends Block implements IWaterLoggable
           Block.makeCuboidShape(LID_MIN_CORNER.x, LID_MIN_CORNER.y, LID_MIN_CORNER.z, LID_MAX_CORNER.x, LID_MAX_CORNER.y, LID_MAX_CORNER.z);
   private static final VoxelShape NON_HANGING_SHAPE = VoxelShapes.or(NON_HANGING_BASE_SHAPE, NON_HANGING_LID_SHAPE);
 
-  private static final double HANGING_YOFFSET = 1.0;
+  private static final double HANGING_YOFFSET = 1.0/16.0;
   private static final VoxelShape HANGING_SHAPE = NON_HANGING_SHAPE.withOffset(0, HANGING_YOFFSET, 0);
+
+  // returns the shape of the block:
+  //  The image that you see on the screen (when a block is rendered) is determined by the block model (i.e. the model json file).
+  //  But Minecraft also uses a number of other `shapes` to control the interaction of the block with its environment and with the player.
+  // See  https://greyminecraftcoder.blogspot.com/2020/02/block-shapes-voxelshapes-1144.html
+
+  @Override
+  public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+    return state.get(HANGING) ? HANGING_SHAPE : NON_HANGING_SHAPE;
+  }
+
+  //------- methods that control correct placement in the world ------------
 
   /**
    * Set the lantern to a hanging lantern or resting-on-the-ground lantern depending on how the player places it
@@ -117,16 +145,6 @@ public class BlockGlassLantern extends Block implements IWaterLoggable
     return null;
   }
 
-  // returns the shape of the block:
-  //  The image that you see on the screen (when a block is rendered) is determined by the block model (i.e. the model json file).
-  //  But Minecraft also uses a number of other `shapes` to control the interaction of the block with its environment and with the player.
-  // See  https://greyminecraftcoder.blogspot.com/2020/02/block-shapes-voxelshapes-1144.html
-
-  @Override
-  public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-    return state.get(HANGING) ? HANGING_SHAPE : NON_HANGING_SHAPE;
-  }
-
   /**
    * Can the lantern be placed here?  i.e. if hanging - solid block above.  if not hanging - solid block below
    * @param state
@@ -141,7 +159,7 @@ public class BlockGlassLantern extends Block implements IWaterLoggable
   }
 
   /**
-   * Which face is the lantern connected?  Hanging (top face) or resting on the ground (bottom face)
+   * Which face is the lantern connected to?  Hanging (top face) or resting on the ground (bottom face)
    * @param blockState
    * @return
    */

@@ -1,6 +1,8 @@
 {
   "variants": {
-    "hanging=true": { "model": "minecraftbyexample:block/mbe05a_glass_lantern_hanging"},
-    "hanging=false": { "model": "minecraftbyexample:block/mbe05a_glass_lantern"}
+    "hanging=true,lit=true": { "model": "minecraftbyexample:block/mbe05a_glass_lantern_hanging_lit"},
+    "hanging=true,lit=false": { "model": "minecraftbyexample:block/mbe05a_glass_lantern_hanging_unlit"},
+    "hanging=false,lit=true": { "model": "minecraftbyexample:block/mbe05a_glass_lantern_lit"},
+    "hanging=false,lit=false": { "model": "minecraftbyexample:block/mbe05a_glass_lantern_unlit"}
   }
 }

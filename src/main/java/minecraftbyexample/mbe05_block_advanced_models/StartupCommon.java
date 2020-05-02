@@ -1,4 +1,4 @@
-package minecraftbyexample.mbe05_block_dynamic_block_model2;
+package minecraftbyexample.mbe05_block_advanced_models;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;

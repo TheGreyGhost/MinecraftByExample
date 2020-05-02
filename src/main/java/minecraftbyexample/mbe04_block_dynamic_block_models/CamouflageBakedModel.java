@@ -1,9 +1,7 @@
-package minecraftbyexample.mbe04_block_dynamic_block_model1;
+package minecraftbyexample.mbe04_block_dynamic_block_models;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;

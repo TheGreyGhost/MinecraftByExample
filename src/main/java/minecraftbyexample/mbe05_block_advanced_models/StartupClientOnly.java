@@ -1,17 +1,9 @@
-package minecraftbyexample.mbe05_block_dynamic_block_model2;
+package minecraftbyexample.mbe05_block_advanced_models;
 
-import minecraftbyexample.mbe03_block_variants.*;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-
-import java.util.function.Predicate;
 
 /**
  * User: The Grey Ghost

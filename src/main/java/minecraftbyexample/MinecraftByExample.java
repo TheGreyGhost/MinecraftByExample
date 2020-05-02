@@ -1,6 +1,5 @@
 package minecraftbyexample;
 
-import minecraftbyexample.testingarea.container.ContainerTypeTest;
 import minecraftbyexample.usefultools.debugging.ForgeLoggerTweaker;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -55,7 +54,7 @@ public class MinecraftByExample {
   public static IEventBus MOD_EVENT_BUS;
 
   public MinecraftByExample() {
-    final boolean HIDE_CONSOLE_NOISE = true;  //todo set false // get rid of all the noise from the console (after mod is constructed) to show warnings more clearly.
+    final boolean HIDE_CONSOLE_NOISE = false;  // get rid of all the noise from the console (after mod is constructed) to show warnings more clearly.
     if (HIDE_CONSOLE_NOISE) {
       ForgeLoggerTweaker.setMinimumLevel(Level.WARN);
       ForgeLoggerTweaker.applyLoggerFilter();
@@ -99,11 +98,11 @@ public class MinecraftByExample {
     MOD_EVENT_BUS.register(minecraftbyexample.mbe03_block_variants.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe03_block_variants.StartupCommon.class);
 
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe04_block_dynamic_block_model1.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe04_block_dynamic_block_model1.StartupCommon.class);
+    MOD_EVENT_BUS.register(minecraftbyexample.mbe04_block_dynamic_block_models.StartupClientOnly.class);
+    MOD_EVENT_BUS.register(minecraftbyexample.mbe04_block_dynamic_block_models.StartupCommon.class);
 
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe05_block_dynamic_block_model2.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe05_block_dynamic_block_model2.StartupCommon.class);
+    MOD_EVENT_BUS.register(minecraftbyexample.mbe05_block_advanced_models.StartupClientOnly.class);
+    MOD_EVENT_BUS.register(minecraftbyexample.mbe05_block_advanced_models.StartupCommon.class);
 
     MOD_EVENT_BUS.register(minecraftbyexample.mbe10_item_simple.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe10_item_simple.StartupCommon.class);
