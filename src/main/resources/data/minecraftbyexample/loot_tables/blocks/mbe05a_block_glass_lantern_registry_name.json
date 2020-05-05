@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraftbyexample:mbe05_glass_lantern_registry_name"
+          "name": "minecraftbyexample:mbe05a_block_glass_lantern_registry_name"
         }
       ],
       "conditions": [

@@ -15,10 +15,10 @@ Each example is split up to be totally independent of all the others.  The only 
 If you want more information and explanatory text about the concepts, the following links might be useful:
 
   - [The Official Forge documentation][forgedocs] (parts of it are rather outdated but on the whole still very useful starting reference)
-  - [Guide to how Minecraft works][greyminecraftcoder] (still being updated from 1.8 to 1.14.4+)
+  - [Guide to how Minecraft works][greyminecraftcoder] (explaining the key concepts for understanding vanilla code)
   - [Fabric Wiki][fabricwiki] (some of it is specific to the Fabric API, but a lot of useful general info too) 
-  - [Forge modder support forum][Forge forum]
-  - [McJty tutorials][McJty]
+  - [Forge modder support forum][Forge forum] ask for advice from the experts
+  - [McJty tutorials][McJty] lots of step-by-step instructions / tutorial
   - [Mr Crayfish Furniture Mod (lots of examples)](https://github.com/MrCrayfish/MrCrayfishFurnitureMod)
   - [Cadiboo's example mod](https://github.com/Cadiboo/Example-Mod) some great tutorials for when you're starting out
   

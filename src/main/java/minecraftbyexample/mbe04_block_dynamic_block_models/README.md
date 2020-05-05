@@ -19,7 +19,10 @@ In order to make a dynamic model (not based on quads), all we need to do is add 
 
 Forge adds an extended implementation of IBakedModel called IForgeBakedModel.  Its main benefit is allow IModelData to be passed into the getQuads so that the getQuads can customise its quads appropriately.
 
-BlockCamouflage:
+This example has two slightly different methods of generating a block model
+
+-------BlockCamouflage-------
+The camouflage block copies the model of an adjacent block:
 1. The vanilla loader loads the model for `mbe04_block_camouflage` using the blockstates json and model json, as per normal blocks
 1. The `ModelBakeEvent` is then used to remove the model json from the registry and replace it with our custom `IBakedModel`.
 1. During the render, `IForgeBakedModel::getModelData` is called, which looks at the block's neighbours to pick a suitable block for the camouflage block to copy.  It then stores the identity of that copied block in the IModelData.
@@ -39,6 +42,15 @@ The pieces you need to understand are located in:
 * `resources\assets\minecraftbyexample\models\block\mbe04_block_camouflage_model`--the model used to render the uncamouflaged block
 * `resources\assets\minecraftbyexample\models\item\mbe04_block_camouflage_registry_name`--the model for rendering as an item
 * `resources\assets\minecraftbyexample\textures\blocks\mbe04_block_camouflage`--the texture used for the uncamouflaged block
+
+----- BlockAltimeter-------
+The altimeter displays the block's elevation (y coordinate) on the side in digits, as well as a blocky arrow (needle) on the top which points towards [x=0, z=0].
+The basic method is the same as for the camouflage block, except that
+1) The elevation digits are added programmatically
+2) The arrow is drawn using a "needle" model which is added using ModelRegistryEvent and ModelLoader.addSpecialModel() instead of by registering a block name
+
+
+
 
 More background information:
 
