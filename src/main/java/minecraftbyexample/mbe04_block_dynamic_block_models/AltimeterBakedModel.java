@@ -1,6 +1,7 @@
 package minecraftbyexample.mbe04_block_dynamic_block_models;
 
 import com.google.common.collect.ImmutableList;
+import javafx.util.Pair;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
@@ -26,6 +27,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+
+import static net.minecraftforge.client.model.SimpleModelTransform.IDENTITY;
 
 /**
  * Created by TheGreyGhost on 19/04/2015.
@@ -135,22 +138,25 @@ public class AltimeterBakedModel implements IBakedModel {
     boolean digit10IsBlank = digit100IsBlank && digit10 == 0;
 
     // coordinates of the digit quads.
-    // you can generate these programmatically with a bit of cleverness but I've used an int array for clarity
-    // each group of six is bottomLeftX, bottomLeftY, bottomLeftZ, to topRightX, topRightY, topRightZ
-    //  "left and right" are when you are looking directly at the face
+    // you can generate these programmatically with a bit of cleverness and the Direction class methods but I've used an int array for clarity
+    // each group of six is minX, minY, minZ, to maxX, maxY, maxZ
     final double[][][] faceCoordinates = {
-            { {13.5, 4,  0.5, 10.5, 9,  0.5},  { 9.5, 4, 0.5, 6.5, 9,  0.5}, { 5.5, 4,  0.5,  2.5, 9,  0.5},},   // north face digit100, digit10, digit1
-            { { 2.5, 4,  0.5,  5.5, 9, 14.5},  { 6.5, 4, 0.5, 9.5, 9, 14.5}, {10.5, 4,  0.5, 13.5, 9, 14.5},},   // south face digit100, digit10, digit1
-            { { 0.5, 4,  2.5,  0.5, 9,  5.5},  { 0.5, 4, 6.5, 0.5, 9,  9.5}, { 0.5, 4, 10.5,  0.5, 9, 13.5},},   // west face digit100, digit10, digit1
-            { {14.5, 4, 13.5, 14.5, 9, 10.5},  {14.5, 4, 9.5, 0.5, 9,  6.5}, {14.5, 4,  5.5, 14.5, 9,  2.5},}    // east face digit100, digit10, digit1
+            { {10.5, 4,  0.5,  13.5, 9,  0.5},  {  6.5, 4,  0.5,   9.5, 9,  0.5}, { 2.5, 4,  0.5,   5.5, 9,  0.5}},   // north face digit100, digit10, digit1
+            { { 2.5, 4, 14.5,   5.5, 9, 14.5},  {  6.5, 4, 14.5,   9.5, 9, 14.5}, {10.5, 4, 14.5,  13.5, 9, 14.5}},   // south face digit100, digit10, digit1
+            { { 0.5, 4,  2.5,   0.5, 9,  5.5},  {  0.5, 4,  6.5,   0.5, 9,  9.5}, { 0.5, 4, 10.5,   0.5, 9, 13.5}},   // west face digit100, digit10, digit1
+            { {14.5, 4, 10.5,  14.5, 9, 13.5},  { 14.5, 4,  6.5,  14.5, 9,  9.5}, {14.5, 4,  5.5,  14.5, 9,  2.5}}    // east face digit100, digit10, digit1
     };
+    final Direction [] faceDirections = {Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST};
 
     ImmutableList.Builder<BakedQuad> builder = new ImmutableList.Builder<BakedQuad>();
 
     for (int face = 0; face < 4; ++face) {
-      builder.add(getQuadForDigit(digit100, digit100IsBlank, faceCoordinates[face][0]));
-      builder.add(getQuadForDigit(digit10, digit10IsBlank, faceCoordinates[face][1]));
-      builder.add(getQuadForDigit(digit1, false, faceCoordinates[face][2]));
+      double [] fmm = faceCoordinates[face][0]; // face min+max
+      builder.add(getQuadForDigit(digit100, digit100IsBlank, faceDirections[face], fmm[0], fmm[1], fmm[2], fmm[3], fmm[4], fmm[5]));
+      fmm = faceCoordinates[face][1];
+      builder.add(getQuadForDigit(digit10, digit10IsBlank, faceDirections[face], fmm[0], fmm[1], fmm[2], fmm[3], fmm[4], fmm[5]));
+      fmm = faceCoordinates[face][2];
+      builder.add(getQuadForDigit(digit1, false, faceDirections[face], fmm[0], fmm[1], fmm[2], fmm[3], fmm[4], fmm[5]));
     }
 
     return builder.build();
@@ -160,10 +166,12 @@ public class AltimeterBakedModel implements IBakedModel {
    * Returns a quad for the given digit
    * @param digit the digit (0 -> 9)
    * @param isBlank if true: this digit should be blank (is a leading zero)
-   * @param faceCoordinates the face coordinates: bottomLeftX, bottomLeftY, bottomLeftZ, to topRightX, topRightY, topRightZ
+   * @param minXYZ: the minimum [x,y,z] of the digit quad (from the viewer's point of view).  units = model space i.e. 0->16 is 1 metre block
+   * @param maxXYZ: the maximum [x,y,z] of the digit quad (from the viewer's point of view).  units = model space i.e. 0->16 is 1 metre block
    * @return
    */
-  private BakedQuad getQuadForDigit(int digit, boolean isBlank, double [] faceCoordinates) {
+  private BakedQuad getQuadForDigit(int digit, boolean isBlank, Direction whichFace,
+                                    double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
       // generate a BakedQuad for the given digit
 
       // we can do this manually by providing a list of vertex data, or we can use the FaceBakery::bakeQuads method
@@ -179,48 +187,61 @@ public class AltimeterBakedModel implements IBakedModel {
       //    faceData[i + 5] = Float.floatToRawIntBits(textureV));
       //    faceData[i + 6] = baked lighting (blocklight + skylight)
       //    faceData[i + 7] = normal;
-      // The order of vertices is very important!
+      // When constructing a face manually in this way, the order of vertices is very important!
       // 1) must be added anti-clockwise (from the point of view of the person looking at the face).  Otherwise the face
       //    will point in the wrong direction and it may be invisible (backs of faces are usually culled for block rendering)
       // 2) ambient occlusion (a block lighting effect) assumes that the vertices are added in the order:
+      //     top left, then bottom left, then bottom right, then top right - for the east, west, north, south faces.
+      //     for the top face: NW, SW, SE, NE.  for the bottom face: SW, NW, NE, SE
       //    If your face has ambient occlusion enabled, and the order is wrong, then the shading will be messed up
 
     Vector3f from = new Vector3f();
     Vector3f to = new Vector3f();
 
-    float bottomLeftU
-    float bottomRightU
-    float topRightU
-    float topLeftU
-    float bottomLeftV
-    float bottomRightV
-    float topRightV
-    float topLeftV
+    Pair<Integer, Integer> digitTextureMinUminV = getDigitUV(digit, isBlank);
+    int minU = digitTextureMinUminV.getKey();
+    int minV = digitTextureMinUminV.getValue();
 
-    float [] uvArray = {bottomLeftU, bottomLeftV, };
-
+    // texture UV order is important! i.e. [minU,minV] first then [maxU,maxV]
+    float [] uvArray = {minU, minV, minU + DIGIT_TEXEL_WIDTH, minV + DIGIT_TEXEL_HEIGHT};
     final int ROTATION_NONE = 0;
     BlockFaceUV blockFaceUV = new BlockFaceUV(uvArray, ROTATION_NONE);
 
     final Direction NO_FACE_CULLING = null;
     final int TINT_INDEX_NONE = -1;  // used for tintable blocks such as grass, which make a call to BlockColors to change their rendering colour.  -1 for not tintable.
-    final String DUMMY_TEXTURE_NAME = "";
+    final String DUMMY_TEXTURE_NAME = "";  // texture name is only needed for loading from json files; not needed here
     BlockPartFace blockPartFace = new BlockPartFace(NO_FACE_CULLING, TINT_INDEX_NONE, DUMMY_TEXTURE_NAME,  blockFaceUV);
-
 
     ResourceLocation digitsTextureRL = new ResourceLocation("minecraftbyexample", "block/mbe04b_altimeter_digits");
     AtlasTexture blocksStitchedTextures = ModelLoader.instance().getSpriteMap().getAtlasTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
     TextureAtlasSprite digitsTextures = blocksStitchedTextures.getSprite(digitsTextureRL);
 
-    BakedQuad bakedQuad = faceBakery.bakeQuad(from, to, blockPartFace, digitsTextures, )
-      public BakedQuad bakeQuad(Vector3f posFrom, Vector3f posTo, BlockPartFace face, TextureAtlasSprite sprite, Direction facing, IModelTransform transformIn);
-
-
-    Minecraft mc = Minecraft.getInstance();
-    BlockRendererDispatcher blockRendererDispatcher = mc.getBlockRendererDispatcher();
-    retval = blockRendererDispatcher.getModelForState(gpScoordinate.get());
-
+    final IModelTransform NO_TRANSFORMATION = IDENTITY;
+    final BlockPartRotation DEFAULT_ROTATION = null;   // rotate based on the face direction
+    final boolean APPLY_SHADING = true;
+    final ResourceLocation DUMMY_RL = new ResourceLocation("dummy name");  // used for error message only
+    BakedQuad bakedQuad = faceBakery.bakeQuad(from, to, blockPartFace, digitsTextures, whichFace, NO_TRANSFORMATION, DEFAULT_ROTATION,
+                             APPLY_SHADING, DUMMY_RL);
+    return bakedQuad;
   }
+
+  static final int DIGIT_TEXEL_WIDTH = 3;
+  static final int DIGIT_TEXEL_HEIGHT = 5;
+
+  /**
+   * Return the texture U,V for the given digit
+   * @param digit
+   * @param isBlank
+   * @return Pair<U, V> where U,V is the top left corner of the texels for the digit.  Units = 0 to 15
+   */
+  private Pair<Integer, Integer> getDigitUV(int digit, boolean isBlank) {
+    // the texture for the digits has a first row for 0->4, then a second row for 5->9, then a single blank on the third row
+    if (isBlank) return new Pair(0, DIGIT_TEXEL_HEIGHT * 2);
+    digit = MathHelper.clamp(digit, 0, 9);
+    int row = digit / 5;
+    return new Pair((digit % 5) * DIGIT_TEXEL_WIDTH, row * DIGIT_TEXEL_HEIGHT);
+  }
+
 
   private FaceBakery faceBakery = new FaceBakery();
 
@@ -229,6 +250,10 @@ public class AltimeterBakedModel implements IBakedModel {
     BlockRendererDispatcher blockRendererDispatcher = mc.getBlockRendererDispatcher();
     Blo
             retval = blockRendererDispatcher.getModelForState(gpScoordinate.get());
+    Minecraft mc = Minecraft.getInstance();
+    BlockRendererDispatcher blockRendererDispatcher = mc.getBlockRendererDispatcher();
+    retval = blockRendererDispatcher.getModelForState(gpScoordinate.get());
+
 
   }
 
