@@ -24,6 +24,7 @@ import org.lwjgl.system.CallbackI;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -59,6 +60,16 @@ public class AltimeterBakedModel implements IBakedModel {
     return modelDataMap;
   }
 
+  @Override
+  @Nonnull
+  public IModelData getModelData(@Nonnull ILightReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
+  {
+    Optional<BlockAltimeter.GPScoordinate> bestAdjacentBlock = BlockAltimeter.getGPScoordinate(world, pos);
+    ModelDataMap modelDataMap = getEmptyIModelData();
+    modelDataMap.setData(GPS_COORDINATE, bestAdjacentBlock);
+    return modelDataMap;
+  }
+
   /**
    * Forge's extension in place of IBakedModel::getQuads
    * It allows us to pass in some extra information which we can use to choose the appropriate quads to render
@@ -74,46 +85,34 @@ public class AltimeterBakedModel implements IBakedModel {
   @Nonnull
   public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData)
   {
-    if (side != null) {  // shortcut: the quads that we are generating programmatically are all side=null, so just return the base model
+    // shortcut: the quads that we are generating programmatically are all side=null, so if side != null then just return the base model
+    if (side != null) {
       return baseModel.getQuads(state, side, rand);
     }
-    return getActualBakedModelFromIModelData(extraData).getQuads(state, side, rand);
+    return getBakedQuadsFromIModelData(state, side, rand, extraData);
   }
 
-  @Override
-  @Nonnull
-  public IModelData getModelData(@Nonnull ILightReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
-  {
-    Optional<BlockAltimeter.GPScoordinate> bestAdjacentBlock = BlockAltimeter.getGPScoordinate(world, pos);
-    ModelDataMap modelDataMap = getEmptyIModelData();
-    modelDataMap.setData(GPS_COORDINATE, bestAdjacentBlock);
-    return modelDataMap;
-  }
-
-  @Override
-  public TextureAtlasSprite getParticleTexture(@Nonnull IModelData data)
-  {
-    return getActualBakedModelFromIModelData(data).getParticleTexture();
-  }
-
-  private IBakedModel getActualBakedModelFromIModelData(@Nonnull IModelData data) {
-    IBakedModel retval = baseModel;  // default, just to prevent a crash
+  private List<BakedQuad> getBakedQuadsFromIModelData(@Nullable BlockState state, Direction side, @Nonnull Random rand, @Nonnull IModelData data) {
     if (!data.hasProperty(GPS_COORDINATE)) {
       if (!loggedError) {
         LOGGER.error("IModelData did not have expected property GPS_COORDINATE");
         loggedError = true;
       }
-      return retval;
+      return baseModel.getQuads(state, side, rand);
     }
-    Optional<BlockAltimeter.GPScoordinate> gpScoordinate = data.getData(GPS_COORDINATE);
-    if (!gpScoordinate.isPresent()) return retval;
+    Optional<BlockAltimeter.GPScoordinate> gPScoordinate = data.getData(GPS_COORDINATE);
+    if (!gPScoordinate.isPresent()) return baseModel.getQuads(state, side, rand);
 
+    List<BakedQuad> digitQuads = getDigitQuads(gPScoordinate.get());
 
+    List<BakedQuad> allQuads = new LinkedList<>();
+    allQuads.addAll(baseModel.getQuads(state, side, rand, data));
+    allQuads.addAll(digitQuads);
 
 //    Minecraft mc = Minecraft.getInstance();
 //    BlockRendererDispatcher blockRendererDispatcher = mc.getBlockRendererDispatcher();
-//    retval = blockRendererDispatcher.getModelForState(gpScoordinate.get());
-    return retval;
+//    retval = blockRendererDispatcher.getModelForState(gPScoordinate.get());
+    return allQuads;
   }
 
   /**
@@ -138,8 +137,9 @@ public class AltimeterBakedModel implements IBakedModel {
     boolean digit10IsBlank = digit100IsBlank && digit10 == 0;
 
     // coordinates of the digit quads.
-    // you can generate these programmatically with a bit of cleverness and the Direction class methods but I've used an int array for clarity
-    // each group of six is minX, minY, minZ, to maxX, maxY, maxZ
+    // you can generate these programmatically with a bit of cleverness and the Direction class methods but I've used an int array for clarity instead
+    // each group of six is minX, minY, minZ, to maxX, maxY, maxZ for that digit quad
+    // for example - north face digit100 is faceCoordinates[0][0] which is from [10.5, 4, 0.5] to [13.5, 9, 0.5]
     final double[][][] faceCoordinates = {
             { {10.5, 4,  0.5,  13.5, 9,  0.5},  {  6.5, 4,  0.5,   9.5, 9,  0.5}, { 2.5, 4,  0.5,   5.5, 9,  0.5}},   // north face digit100, digit10, digit1
             { { 2.5, 4, 14.5,   5.5, 9, 14.5},  {  6.5, 4, 14.5,   9.5, 9, 14.5}, {10.5, 4, 14.5,  13.5, 9, 14.5}},   // south face digit100, digit10, digit1
@@ -172,38 +172,51 @@ public class AltimeterBakedModel implements IBakedModel {
    */
   private BakedQuad getQuadForDigit(int digit, boolean isBlank, Direction whichFace,
                                     double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
-      // generate a BakedQuad for the given digit
+    // generate a BakedQuad for the given digit
 
-      // we can do this manually by providing a list of vertex data, or we can use the FaceBakery::bakeQuads method
-      // FaceBakery::bakeQuads is much simpler and suitable for pretty much any block-style rendering, so I've used that here
-      // If you want to manually provide vertex data yourself, the format is an array of ints; look in
-      // IVertexBuilder::addQuad and FaceBakery; see also DefaultVertexFormats.BLOCK.
-      // Summary:
-      //    faceData[i + 0] = Float.floatToRawIntBits(positionIn.getX());
-      //    faceData[i + 1] = Float.floatToRawIntBits(positionIn.getY());
-      //    faceData[i + 2] = Float.floatToRawIntBits(positionIn.getZ());
-      //    faceData[i + 3] = shadeColor;
-      //    faceData[i + 4] = Float.floatToRawIntBits(textureU));
-      //    faceData[i + 5] = Float.floatToRawIntBits(textureV));
-      //    faceData[i + 6] = baked lighting (blocklight + skylight)
-      //    faceData[i + 7] = normal;
-      // When constructing a face manually in this way, the order of vertices is very important!
-      // 1) must be added anti-clockwise (from the point of view of the person looking at the face).  Otherwise the face
-      //    will point in the wrong direction and it may be invisible (backs of faces are usually culled for block rendering)
-      // 2) ambient occlusion (a block lighting effect) assumes that the vertices are added in the order:
-      //     top left, then bottom left, then bottom right, then top right - for the east, west, north, south faces.
-      //     for the top face: NW, SW, SE, NE.  for the bottom face: SW, NW, NE, SE
-      //    If your face has ambient occlusion enabled, and the order is wrong, then the shading will be messed up
+    // we can do this manually by providing a list of vertex data, or we can use the FaceBakery::bakeQuads method
+    // FaceBakery::bakeQuad is much simpler and suitable for pretty much any block-style rendering, so I've used that here
+    // If you want to manually provide vertex data yourself, the format is an array of ints; look in
+    // IVertexBuilder::addQuad and FaceBakery; see also DefaultVertexFormats.BLOCK.
+    // Summary:
+    //    faceData[i + 0] = Float.floatToRawIntBits(positionIn.getX());
+    //    faceData[i + 1] = Float.floatToRawIntBits(positionIn.getY());
+    //    faceData[i + 2] = Float.floatToRawIntBits(positionIn.getZ());
+    //    faceData[i + 3] = shadeColor;
+    //    faceData[i + 4] = Float.floatToRawIntBits(textureU));
+    //    faceData[i + 5] = Float.floatToRawIntBits(textureV));
+    //    faceData[i + 6] = baked lighting (blocklight + skylight)
+    //    faceData[i + 7] = normal;
+    // When constructing a face manually in this way, the order of vertices is very important!
+    // 1) must be added anti-clockwise (from the point of view of the person looking at the face).  Otherwise the face
+    //    will point in the wrong direction and it may be invisible (backs of faces are usually culled for block rendering)
+    // 2) ambient occlusion (a block lighting effect) assumes that the vertices are added in the order:
+    //     top left, then bottom left, then bottom right, then top right - for the east, west, north, south faces.
+    //     for the top face: NW, SW, SE, NE.  for the bottom face: SW, NW, NE, SE
+    //    If your face has ambient occlusion enabled, and the order is wrong, then the shading will be messed up
 
-    Vector3f from = new Vector3f();
-    Vector3f to = new Vector3f();
+    // FaceBakery:
+    //  Vanilla uses it to convert from the elements in a block model, i.e.
+    //    "elements": [
+    //    { "from": [ 7, 0, 7 ],
+    //      "to": [ 9, 10, 9 ],
+    //      "shade": false,
+    //      "faces": {
+    //        "down": { "uv": [ 7, 13, 9, 15 ], "texture": "#torch" },
+    //        "up":   { "uv": [ 7,  6, 9,  8 ], "texture": "#torch" }
+    //      }
+    //    },
+    //    see https://minecraft.gamepedia.com/Model#Block_models
+    //  In order to use the FaceBakery::bakeQuad method, we need to provide:
+    //   1) A suitable cuboid 'from' and 'to', in model coordinate (eg the full 1 metre cube is from [0,0,0] to [16, 16, 16])
+    //   2) the corresponding [u,v] texture coordinates for the face: [minU,minV] first then [maxU,maxV], again in texels 0->16
+    //   3) the face we want to make the quad for (eg up, down, east, west, etc).
 
-    Pair<Integer, Integer> digitTextureMinUminV = getDigitUV(digit, isBlank);
-    int minU = digitTextureMinUminV.getKey();
-    int minV = digitTextureMinUminV.getValue();
+    Vector3f from = new Vector3f((float)minX, (float)minY, (float)minZ);
+    Vector3f to = new Vector3f((float)maxX, (float)maxX, (float)maxZ);
 
     // texture UV order is important! i.e. [minU,minV] first then [maxU,maxV]
-    float [] uvArray = {minU, minV, minU + DIGIT_TEXEL_WIDTH, minV + DIGIT_TEXEL_HEIGHT};
+    float [] uvArray = getDigitUVs(digit, isBlank);
     final int ROTATION_NONE = 0;
     BlockFaceUV blockFaceUV = new BlockFaceUV(uvArray, ROTATION_NONE);
 
@@ -225,37 +238,45 @@ public class AltimeterBakedModel implements IBakedModel {
     return bakedQuad;
   }
 
-  static final int DIGIT_TEXEL_WIDTH = 3;
-  static final int DIGIT_TEXEL_HEIGHT = 5;
-
   /**
    * Return the texture U,V for the given digit
-   * @param digit
-   * @param isBlank
-   * @return Pair<U, V> where U,V is the top left corner of the texels for the digit.  Units = 0 to 15
+   * @param digit 0 -> 9
+   * @param isBlank blank digit?
+   * @return int[4] of the texture u,v: [minU,minV] first then [maxU,maxV].  Units = 0 to 16
    */
-  private Pair<Integer, Integer> getDigitUV(int digit, boolean isBlank) {
+  private float [] getDigitUVs(int digit, boolean isBlank) {
     // the texture for the digits has a first row for 0->4, then a second row for 5->9, then a single blank on the third row
-    if (isBlank) return new Pair(0, DIGIT_TEXEL_HEIGHT * 2);
-    digit = MathHelper.clamp(digit, 0, 9);
-    int row = digit / 5;
-    return new Pair((digit % 5) * DIGIT_TEXEL_WIDTH, row * DIGIT_TEXEL_HEIGHT);
+    final int DIGIT_TEXEL_WIDTH = 3;
+    final int DIGIT_TEXEL_HEIGHT = 5;
+
+    int [] retval;
+    int minU, minV;
+    if (isBlank) {
+      minU = 0;
+      minV = DIGIT_TEXEL_HEIGHT * 2;
+    } else {
+      digit = MathHelper.clamp(digit, 0, 9);
+      int row = digit / 5;
+      minU = (digit % 5) * DIGIT_TEXEL_WIDTH;
+      minV = row * DIGIT_TEXEL_HEIGHT;
+    }
+    return new float[]{minU, minV, minU + DIGIT_TEXEL_WIDTH, minV + DIGIT_TEXEL_HEIGHT};
   }
 
 
   private FaceBakery faceBakery = new FaceBakery();
 
-  private List<BakedQuad> getArrowQuads(BlockAltimeter.GPScoordinate gpScoordinate)  {
-    Minecraft mc = Minecraft.getInstance();
-    BlockRendererDispatcher blockRendererDispatcher = mc.getBlockRendererDispatcher();
-    Blo
-            retval = blockRendererDispatcher.getModelForState(gpScoordinate.get());
-    Minecraft mc = Minecraft.getInstance();
-    BlockRendererDispatcher blockRendererDispatcher = mc.getBlockRendererDispatcher();
-    retval = blockRendererDispatcher.getModelForState(gpScoordinate.get());
-
-
-  }
+//  private List<BakedQuad> getArrowQuads(BlockAltimeter.GPScoordinate gpScoordinate)  {
+//    Minecraft mc = Minecraft.getInstance();
+//    BlockRendererDispatcher blockRendererDispatcher = mc.getBlockRendererDispatcher();
+//    Blo
+//            retval = blockRendererDispatcher.getModelForState(gpScoordinate.get());
+//    Minecraft mc = Minecraft.getInstance();
+//    BlockRendererDispatcher blockRendererDispatcher = mc.getBlockRendererDispatcher();
+//    retval = blockRendererDispatcher.getModelForState(gpScoordinate.get());
+//
+//
+//  }
 
   private IBakedModel baseModel;
 
