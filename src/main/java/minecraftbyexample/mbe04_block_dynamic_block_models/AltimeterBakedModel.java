@@ -85,7 +85,7 @@ public class AltimeterBakedModel implements IBakedModel {
   @Nonnull
   public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData)
   {
-    // shortcut: the quads that we are generating programmatically are all side=null, so if side != null then just return the base model
+    // shortcut: the quads that we are generating programmatically are all side==null, so if side != null then just return the base model
     if (side != null) {
       return baseModel.getQuads(state, side, rand);
     }
@@ -109,9 +109,6 @@ public class AltimeterBakedModel implements IBakedModel {
     allQuads.addAll(baseModel.getQuads(state, side, rand, data));
     allQuads.addAll(digitQuads);
 
-//    Minecraft mc = Minecraft.getInstance();
-//    BlockRendererDispatcher blockRendererDispatcher = mc.getBlockRendererDispatcher();
-//    retval = blockRendererDispatcher.getModelForState(gPScoordinate.get());
     return allQuads;
   }
 
@@ -150,13 +147,14 @@ public class AltimeterBakedModel implements IBakedModel {
 
     ImmutableList.Builder<BakedQuad> builder = new ImmutableList.Builder<BakedQuad>();
 
-    for (int face = 0; face < 4; ++face) {
+    for (int face = 0; face < 1; ++face) { //todo 4
       double [] fmm = faceCoordinates[face][0]; // face min+max
       builder.add(getQuadForDigit(digit100, digit100IsBlank, faceDirections[face], fmm[0], fmm[1], fmm[2], fmm[3], fmm[4], fmm[5]));
-      fmm = faceCoordinates[face][1];
-      builder.add(getQuadForDigit(digit10, digit10IsBlank, faceDirections[face], fmm[0], fmm[1], fmm[2], fmm[3], fmm[4], fmm[5]));
-      fmm = faceCoordinates[face][2];
-      builder.add(getQuadForDigit(digit1, false, faceDirections[face], fmm[0], fmm[1], fmm[2], fmm[3], fmm[4], fmm[5]));
+
+//      fmm = faceCoordinates[face][1];
+//      builder.add(getQuadForDigit(digit10, digit10IsBlank, faceDirections[face], fmm[0], fmm[1], fmm[2], fmm[3], fmm[4], fmm[5]));
+//      fmm = faceCoordinates[face][2];
+//      builder.add(getQuadForDigit(digit1, false, faceDirections[face], fmm[0], fmm[1], fmm[2], fmm[3], fmm[4], fmm[5]));
     }
 
     return builder.build();
@@ -213,7 +211,7 @@ public class AltimeterBakedModel implements IBakedModel {
     //   3) the face we want to make the quad for (eg up, down, east, west, etc).
 
     Vector3f from = new Vector3f((float)minX, (float)minY, (float)minZ);
-    Vector3f to = new Vector3f((float)maxX, (float)maxX, (float)maxZ);
+    Vector3f to = new Vector3f((float)maxX, (float)maxY, (float)maxZ);
 
     // texture UV order is important! i.e. [minU,minV] first then [maxU,maxV]
     float [] uvArray = getDigitUVs(digit, isBlank);
@@ -225,14 +223,14 @@ public class AltimeterBakedModel implements IBakedModel {
     final String DUMMY_TEXTURE_NAME = "";  // texture name is only needed for loading from json files; not needed here
     BlockPartFace blockPartFace = new BlockPartFace(NO_FACE_CULLING, TINT_INDEX_NONE, DUMMY_TEXTURE_NAME,  blockFaceUV);
 
-    ResourceLocation digitsTextureRL = new ResourceLocation("minecraftbyexample", "block/mbe04b_altimeter_digits");
+    // we have previously registered digitsTexture in StartupClientOnly::onTextureStitchEvent
     AtlasTexture blocksStitchedTextures = ModelLoader.instance().getSpriteMap().getAtlasTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
     TextureAtlasSprite digitsTextures = blocksStitchedTextures.getSprite(digitsTextureRL);
 
     final IModelTransform NO_TRANSFORMATION = IDENTITY;
     final BlockPartRotation DEFAULT_ROTATION = null;   // rotate based on the face direction
     final boolean APPLY_SHADING = true;
-    final ResourceLocation DUMMY_RL = new ResourceLocation("dummy name");  // used for error message only
+    final ResourceLocation DUMMY_RL = new ResourceLocation("dummy_name");  // used for error message only
     BakedQuad bakedQuad = faceBakery.bakeQuad(from, to, blockPartFace, digitsTextures, whichFace, NO_TRANSFORMATION, DEFAULT_ROTATION,
                              APPLY_SHADING, DUMMY_RL);
     return bakedQuad;
@@ -249,7 +247,6 @@ public class AltimeterBakedModel implements IBakedModel {
     final int DIGIT_TEXEL_WIDTH = 3;
     final int DIGIT_TEXEL_HEIGHT = 5;
 
-    int [] retval;
     int minU, minV;
     if (isBlank) {
       minU = 0;
@@ -279,6 +276,10 @@ public class AltimeterBakedModel implements IBakedModel {
 //  }
 
   private IBakedModel baseModel;
+
+
+  public static ResourceLocation needleTextureRL = new ResourceLocation("minecraftbyexample:block/mbe04b_altimeter_needle");
+  public static ResourceLocation digitsTextureRL = new ResourceLocation("minecraftbyexample:block/mbe04b_altimeter_digits");
 
 
   // ---- All these methods are required by the interface but we don't do anything special with them.

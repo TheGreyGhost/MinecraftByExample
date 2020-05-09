@@ -46,7 +46,7 @@ The pieces you need to understand are located in:
 ----- BlockAltimeter-------
 The altimeter displays the block's elevation (y coordinate) on the side in digits, as well as a blocky arrow (needle) on the top which points towards [x=0, z=0].
 The basic method is the same as for the camouflage block, except that
-1) The elevation digits are added programmatically
+1) The elevation digits are added programmatically using FaceBakery.addQuad
 2) The arrow is drawn using a "needle" model which is added using ModelRegistryEvent and ModelLoader.addSpecialModel() instead of by registering a block name
 
 

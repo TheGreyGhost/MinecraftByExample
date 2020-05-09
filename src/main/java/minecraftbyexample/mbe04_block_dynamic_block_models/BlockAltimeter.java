@@ -32,7 +32,6 @@ public class BlockAltimeter extends Block {
     return BlockRenderType.MODEL;
   }
 
-
   // Return the GPS coordinates of this block
   public static Optional<GPScoordinate> getGPScoordinate(@Nonnull ILightReader world, @Nonnull BlockPos blockPos) {
     GPScoordinate gpsCoordinate = new GPScoordinate();
