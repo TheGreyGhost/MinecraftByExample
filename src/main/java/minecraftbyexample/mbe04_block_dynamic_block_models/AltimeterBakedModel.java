@@ -64,9 +64,9 @@ public class AltimeterBakedModel implements IBakedModel {
   @Nonnull
   public IModelData getModelData(@Nonnull ILightReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
   {
-    Optional<BlockAltimeter.GPScoordinate> bestAdjacentBlock = BlockAltimeter.getGPScoordinate(world, pos);
+    Optional<BlockAltimeter.GPScoordinate> gpScoordinate = BlockAltimeter.getGPScoordinate(world, pos);
     ModelDataMap modelDataMap = getEmptyIModelData();
-    modelDataMap.setData(GPS_COORDINATE, bestAdjacentBlock);
+    modelDataMap.setData(GPS_COORDINATE, gpScoordinate);
     return modelDataMap;
   }
 
@@ -150,11 +150,10 @@ public class AltimeterBakedModel implements IBakedModel {
     for (int face = 0; face < 1; ++face) { //todo 4
       double [] fmm = faceCoordinates[face][0]; // face min+max
       builder.add(getQuadForDigit(digit100, digit100IsBlank, faceDirections[face], fmm[0], fmm[1], fmm[2], fmm[3], fmm[4], fmm[5]));
-
-//      fmm = faceCoordinates[face][1];
-//      builder.add(getQuadForDigit(digit10, digit10IsBlank, faceDirections[face], fmm[0], fmm[1], fmm[2], fmm[3], fmm[4], fmm[5]));
-//      fmm = faceCoordinates[face][2];
-//      builder.add(getQuadForDigit(digit1, false, faceDirections[face], fmm[0], fmm[1], fmm[2], fmm[3], fmm[4], fmm[5]));
+      fmm = faceCoordinates[face][1];
+      builder.add(getQuadForDigit(digit10, digit10IsBlank, faceDirections[face], fmm[0], fmm[1], fmm[2], fmm[3], fmm[4], fmm[5]));
+      fmm = faceCoordinates[face][2];
+      builder.add(getQuadForDigit(digit1, false, faceDirections[face], fmm[0], fmm[1], fmm[2], fmm[3], fmm[4], fmm[5]));
     }
 
     return builder.build();
@@ -260,27 +259,56 @@ public class AltimeterBakedModel implements IBakedModel {
     return new float[]{minU, minV, minU + DIGIT_TEXEL_WIDTH, minV + DIGIT_TEXEL_HEIGHT};
   }
 
+  /**
+   * Get the quads for the compass arrow on the top of the Altimeter
+   * @param gpScoordinate
+   * @return
+   */
+  private List<BakedQuad> getArrowQuads(BlockAltimeter.GPScoordinate gpScoordinate)  {
+    // we construct the needle from a number of needle models (each needle model is a single cube 1x1x1)
+    // the needle is made up of central cube plus cubes radiating out to a 6 radius
 
-  private FaceBakery faceBakery = new FaceBakery();
+    // retrieve the needle model which we previously manually added to the model registry
+    Minecraft mc = Minecraft.getInstance();
+    BlockRendererDispatcher blockRendererDispatcher = mc.getBlockRendererDispatcher();
+    IBakedModel needleModel = blockRendererDispatcher.getBlockModelShapes().getModelManager().getModel(needleModelMRL);
 
-//  private List<BakedQuad> getArrowQuads(BlockAltimeter.GPScoordinate gpScoordinate)  {
-//    Minecraft mc = Minecraft.getInstance();
-//    BlockRendererDispatcher blockRendererDispatcher = mc.getBlockRendererDispatcher();
-//    Blo
-//            retval = blockRendererDispatcher.getModelForState(gpScoordinate.get());
-//    Minecraft mc = Minecraft.getInstance();
-//    BlockRendererDispatcher blockRendererDispatcher = mc.getBlockRendererDispatcher();
-//    retval = blockRendererDispatcher.getModelForState(gpScoordinate.get());
-//
-//
-//  }
+    BakedQuad
+  }
+
+
+  /** Make a copy of the given BakedQuad and translate it to a new position
+   * @param original
+   * @param translateBy amount to translate by in model coordinates (i.e. 0 -> 16 = 1 metre world distance)
+   * @return
+   */
+  private BakedQuad getTranslatedBakedQuadCopy(BakedQuad original, Vector3f translateBy) {
+
+    // directly manipulate the int array data for the vertices to update the x, y, z
+    int [] vertexData = original.getVertexData();
+    int [] newVertexData = new int[vertexData.length];
+    System.arraycopy(vertexData, 0, newVertexData, 0, newVertexData.length);
+
+    if (vertexData.length != 32) {
+      throw new AssertionError("Expected vertexdata to have size 32 but had " + vertexData.length + " instead.");
+    }
+    for (int i = 0; i < 32; i += 8) {
+      newVertexData[i] = Float.floatToRawIntBits(Float.intBitsToFloat(vertexData[i]) + translateBy.getX());
+      newVertexData[i + 1] = Float.floatToRawIntBits(Float.intBitsToFloat(vertexData[i+1]) + translateBy.getY());
+      newVertexData[i + 2] = Float.floatToRawIntBits(Float.intBitsToFloat(vertexData[i+2]) + translateBy.getZ());
+    }
+
+    BakedQuad translatedCopy = new BakedQuad(newVertexData, ba)
+    return translatedCopy;
+    }
 
   private IBakedModel baseModel;
+  private FaceBakery faceBakery = new FaceBakery();
 
 
   public static ResourceLocation needleTextureRL = new ResourceLocation("minecraftbyexample:block/mbe04b_altimeter_needle");
   public static ResourceLocation digitsTextureRL = new ResourceLocation("minecraftbyexample:block/mbe04b_altimeter_digits");
-
+  public static ModelResourceLocation needleModelMRL = new ModelResourceLocation("minecraftbyexample:block/mbe04b_altimeter_needle_model");
 
   // ---- All these methods are required by the interface but we don't do anything special with them.
 
