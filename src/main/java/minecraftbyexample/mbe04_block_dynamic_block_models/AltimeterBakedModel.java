@@ -9,6 +9,8 @@ import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -273,7 +275,13 @@ public class AltimeterBakedModel implements IBakedModel {
     BlockRendererDispatcher blockRendererDispatcher = mc.getBlockRendererDispatcher();
     IBakedModel needleModel = blockRendererDispatcher.getBlockModelShapes().getModelManager().getModel(needleModelMRL);
 
-    BakedQuad
+    // our needle model has its minX, minY, minZ at [0,0,0] and its size is [1,1,1], so to put it at the centre of the top
+    //  of our altimeter, we need to translate it to [7.5F, 10F, 7.5F]
+    Vector3f centrePos = new Vector3f(7.5F, 10F, 7.5F);
+
+    ImmutableList.Builder<BakedQuad> retval = new ImmutableList.Builder<>();
+    retval.add(getTranslatedBakedQuadCopy(needleModel, centrePos));
+
   }
 
 
@@ -289,18 +297,29 @@ public class AltimeterBakedModel implements IBakedModel {
     int [] newVertexData = new int[vertexData.length];
     System.arraycopy(vertexData, 0, newVertexData, 0, newVertexData.length);
 
-    if (vertexData.length != 32) {
-      throw new AssertionError("Expected vertexdata to have size 32 but had " + vertexData.length + " instead.");
+    int vertexSizeInts = DefaultVertexFormats.BLOCK.getIntegerSize();
+    Optional<VertexFormatElement> positionElement = DefaultVertexFormats.BLOCK.getElements().stream().filter(e -> e.isPositionElement()).findFirst();
+    if (!positionElement.isPresent()) throw new AssertionError("Position element not found");
+    int positionOffset = positionElement.get().getIndex();
+
+    if (vertexData.length != 4 * vertexSizeInts) {
+      throw new AssertionError("Expected vertexdata to have size " + (4 * vertexSizeInts) + " but had " + vertexData.length + " instead.");
     }
-    for (int i = 0; i < 32; i += 8) {
+    if (positionElement.get().getSize() != Float.BYTES * 3) {
+      throw new AssertionError("Vertex PositionElement didn't match expected size");
+    }
+
+    // see DefaultVertexFormats.BLOCK for info on the packed vertex format
+    for (int i = positionOffset; i < vertexData.length; i += vertexSizeInts) {
       newVertexData[i] = Float.floatToRawIntBits(Float.intBitsToFloat(vertexData[i]) + translateBy.getX());
       newVertexData[i + 1] = Float.floatToRawIntBits(Float.intBitsToFloat(vertexData[i+1]) + translateBy.getY());
       newVertexData[i + 2] = Float.floatToRawIntBits(Float.intBitsToFloat(vertexData[i+2]) + translateBy.getZ());
     }
 
-    BakedQuad translatedCopy = new BakedQuad(newVertexData, ba)
+    BakedQuad translatedCopy = new BakedQuad(newVertexData, original.getTintIndex(), original.getFace(),
+            original.func_187508_a(), original.shouldApplyDiffuseLighting());
     return translatedCopy;
-    }
+  }
 
   private IBakedModel baseModel;
   private FaceBakery faceBakery = new FaceBakery();
