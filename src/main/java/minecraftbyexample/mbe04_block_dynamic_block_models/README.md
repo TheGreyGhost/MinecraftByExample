@@ -1,4 +1,4 @@
-# MBE04_BLOCK_DYNAMIC_BLOCK_MODEL1
+# MBE04_BLOCK_DYNAMIC_BLOCK_MODELS
 
 This example shows how to use `IBakedModel#getQuads` to dynamically generate a model in conjunction with `ModelBakeEvent`.
 
@@ -15,7 +15,7 @@ When a block is rendered, the following sequence occurs:
 1) The BlockState is used to retrieve the corresponding IBakedModel for that blockstate
 2) The IBakedModel::getQuads is called, which returns a collection of quads that are drawn by the rendererer
 
-In order to make a dynamic model (not based on quads), all we need to do is add our own custom IBakedModel which changes the quads returned by getQuads.  They can be copied from other models, or generated dynamically.
+In order to make a dynamic model (not based on reading from a json), all we need to do is add our own custom IBakedModel which changes the quads returned by getQuads.  They can be copied from other models, or generated dynamically.
 
 Forge adds an extended implementation of IBakedModel called IForgeBakedModel.  Its main benefit is allow IModelData to be passed into the getQuads so that the getQuads can customise its quads appropriately.
 
@@ -47,10 +47,17 @@ The pieces you need to understand are located in:
 The altimeter displays the block's elevation (y coordinate) on the side in digits, as well as a blocky arrow (needle) on the top which points towards [x=0, z=0].
 The basic method is the same as for the camouflage block, except that
 1) The elevation digits are added programmatically using FaceBakery.addQuad
-2) The arrow is drawn using a "needle" model which is added using ModelRegistryEvent and ModelLoader.addSpecialModel() instead of by registering a block name
+2) The arrow is drawn using a "needle" model which is added using ModelRegistryEvent and ModelLoader.addSpecialModel() instead of by registering a block name.
 
-
-
+* `StartupClientOnly` and `StartupCommon`
+* `BlockAltimer`
+* `AltimeterBakedModel`
+* `resources\assets\minecraftbyexample\lang\en_US.lang`--for the displayed name of the block
+* `resources\assets\minecraftbyexample\blockstates\mbe04b_block_altimeter_registry_name`--for the blockstate definition
+* `resources\assets\minecraftbyexample\models\block\mbe04b_altimeter_model`--the model used to render the base block
+* `resources\assets\minecraftbyexample\models\block\mbe04b_altimeter_needle_model`--the model used for dynamically creating a needle on top of the base block
+* `resources\assets\minecraftbyexample\models\item\mbe04b_block_altimeter_registry_name`--the model for rendering as an item
+* `resources\assets\minecraftbyexample\textures\blocks\mbe04b_altimeter***`--the textures used for the base block and the dynamically assembled quads
 
 More background information:
 

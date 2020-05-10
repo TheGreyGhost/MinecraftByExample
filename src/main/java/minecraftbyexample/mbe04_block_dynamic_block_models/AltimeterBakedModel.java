@@ -282,6 +282,29 @@ public class AltimeterBakedModel implements IBakedModel {
 
     ImmutableList.Builder<BakedQuad> retval = new ImmutableList.Builder<>();
     addTranslatedModelQuads(needleModel, centrePos, whichFace, retval);
+
+    // make a line of needle cubes radiating out from the centre, pointing towards the origin.
+    double bearingToOriginRadians = Math.toDegrees(gpScoordinate.bearingToOrigin);  // degrees clockwise from north
+    float deltaX = (float)Math.sin(bearingToOriginRadians);
+    float deltaZ = -(float)Math.cos(bearingToOriginRadians);
+    if (Math.abs(deltaX) < Math.abs(deltaZ)) {
+      deltaX /= deltaZ;
+      deltaZ = 1;
+    } else {
+      deltaZ /= deltaX;
+      deltaX = 1;
+    }
+    float xoffset = 0;
+    float zoffset = 0;
+    final int NUMBER_OF_NEEDLE_BLOCKS = 6; // not including centre
+    for (int i = 0; i < NUMBER_OF_NEEDLE_BLOCKS; ++i) {
+      xoffset += deltaX;
+      zoffset += deltaZ;
+      Vector3f moveTo = centrePos.copy();
+      moveTo.add(xoffset, 0, zoffset);
+      addTranslatedModelQuads(needleModel, moveTo, whichFace, retval);
+    }
+
     return retval.build();
   }
 
@@ -338,7 +361,6 @@ public class AltimeterBakedModel implements IBakedModel {
 
   private IBakedModel baseModel;
   private FaceBakery faceBakery = new FaceBakery();
-
 
   public static ResourceLocation needleTextureRL = new ResourceLocation("minecraftbyexample:block/mbe04b_altimeter_needle");
   public static ResourceLocation digitsTextureRL = new ResourceLocation("minecraftbyexample:block/mbe04b_altimeter_digits");
