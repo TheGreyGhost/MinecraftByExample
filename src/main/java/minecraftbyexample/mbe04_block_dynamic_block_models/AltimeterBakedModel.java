@@ -110,7 +110,7 @@ public class AltimeterBakedModel implements IBakedModel {
     List<BakedQuad> allQuads = new LinkedList<>();
     allQuads.addAll(baseModel.getQuads(state, side, rand, data));
     allQuads.addAll(digitQuads);
-
+    allQuads.addAll(getArrowQuads(gPScoordinate.get(), side));
     return allQuads;
   }
 
@@ -125,11 +125,10 @@ public class AltimeterBakedModel implements IBakedModel {
     final int MIN_ALTITUDE = 0;
     final int MAX_ALTITUDE = 999;
     int altitudeDigits = MathHelper.clamp(gpScoordinate.altitude, MIN_ALTITUDE, MAX_ALTITUDE);
-    int digit100 = altitudeDigits % 100;
-    altitudeDigits -= digit100 * 100;
-    int digit10 = altitudeDigits % 10;
-    altitudeDigits -= digit10 * 10;
-    int digit1 = altitudeDigits;
+    int digit100 = altitudeDigits / 100;
+    altitudeDigits %= 100;
+    int digit10 = altitudeDigits / 10;
+    int digit1 = altitudeDigits % 10;
 
     // remove leading zeros (will render as blanks)
     boolean digit100IsBlank = digit100 == 0;
@@ -141,15 +140,15 @@ public class AltimeterBakedModel implements IBakedModel {
     // for example - north face digit100 is faceCoordinates[0][0] which is from [10.5, 4, 0.5] to [13.5, 9, 0.5]
     final double[][][] faceCoordinates = {
             { {10.5, 4,  0.5,  13.5, 9,  0.5},  {  6.5, 4,  0.5,   9.5, 9,  0.5}, { 2.5, 4,  0.5,   5.5, 9,  0.5}},   // north face digit100, digit10, digit1
-            { { 2.5, 4, 14.5,   5.5, 9, 14.5},  {  6.5, 4, 14.5,   9.5, 9, 14.5}, {10.5, 4, 14.5,  13.5, 9, 14.5}},   // south face digit100, digit10, digit1
+            { { 2.5, 4, 15.5,   5.5, 9, 15.5},  {  6.5, 4, 15.5,   9.5, 9, 15.5}, {10.5, 4, 15.5,  13.5, 9, 15.5}},   // south face digit100, digit10, digit1
             { { 0.5, 4,  2.5,   0.5, 9,  5.5},  {  0.5, 4,  6.5,   0.5, 9,  9.5}, { 0.5, 4, 10.5,   0.5, 9, 13.5}},   // west face digit100, digit10, digit1
-            { {14.5, 4, 10.5,  14.5, 9, 13.5},  { 14.5, 4,  6.5,  14.5, 9,  9.5}, {14.5, 4,  5.5,  14.5, 9,  2.5}}    // east face digit100, digit10, digit1
+            { {15.5, 4, 10.5,  15.5, 9, 13.5},  { 15.5, 4,  6.5,  15.5, 9,  9.5}, {15.5, 4,  5.5,  15.5, 9,  2.5}}    // east face digit100, digit10, digit1
     };
     final Direction [] faceDirections = {Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST};
 
     ImmutableList.Builder<BakedQuad> builder = new ImmutableList.Builder<BakedQuad>();
 
-    for (int face = 0; face < 1; ++face) { //todo 4
+    for (int face = 0; face < 4; ++face) {
       double [] fmm = faceCoordinates[face][0]; // face min+max
       builder.add(getQuadForDigit(digit100, digit100IsBlank, faceDirections[face], fmm[0], fmm[1], fmm[2], fmm[3], fmm[4], fmm[5]));
       fmm = faceCoordinates[face][1];
@@ -165,8 +164,8 @@ public class AltimeterBakedModel implements IBakedModel {
    * Returns a quad for the given digit
    * @param digit the digit (0 -> 9)
    * @param isBlank if true: this digit should be blank (is a leading zero)
-   * @param minXYZ: the minimum [x,y,z] of the digit quad (from the viewer's point of view).  units = model space i.e. 0->16 is 1 metre block
-   * @param maxXYZ: the maximum [x,y,z] of the digit quad (from the viewer's point of view).  units = model space i.e. 0->16 is 1 metre block
+   * @param minX: the minimum [x,y,z] of the digit quad (from the viewer's point of view).  units = model space i.e. 0->16 is 1 metre block
+   * @param maxX: the maximum [x,y,z] of the digit quad (from the viewer's point of view).  units = model space i.e. 0->16 is 1 metre block
    * @return
    */
   private BakedQuad getQuadForDigit(int digit, boolean isBlank, Direction whichFace,
@@ -266,30 +265,46 @@ public class AltimeterBakedModel implements IBakedModel {
    * @param gpScoordinate
    * @return
    */
-  private List<BakedQuad> getArrowQuads(BlockAltimeter.GPScoordinate gpScoordinate)  {
+  private List<BakedQuad> getArrowQuads(BlockAltimeter.GPScoordinate gpScoordinate, Direction whichFace)  {
     // we construct the needle from a number of needle models (each needle model is a single cube 1x1x1)
-    // the needle is made up of central cube plus cubes radiating out to a 6 radius
+    // the needle is made up of a central cube plus further cubes radiating out to a 6 texel radius
 
-    // retrieve the needle model which we previously manually added to the model registry
+    // retrieve the needle model which we previously manually added to the model registry in StartupClientOnly::onModelRegistryEvent
     Minecraft mc = Minecraft.getInstance();
     BlockRendererDispatcher blockRendererDispatcher = mc.getBlockRendererDispatcher();
-    IBakedModel needleModel = blockRendererDispatcher.getBlockModelShapes().getModelManager().getModel(needleModelMRL);
+    IBakedModel needleModel = blockRendererDispatcher.getBlockModelShapes().getModelManager().getModel(needleModelRL);
 
     // our needle model has its minX, minY, minZ at [0,0,0] and its size is [1,1,1], so to put it at the centre of the top
-    //  of our altimeter, we need to translate it to [7.5F, 10F, 7.5F]
+    //  of our altimeter, we need to translate it to [7.5F, 10F, 7.5F] in modelspace coordinates
+    final float CONVERT_MODEL_SPACE_TO_WORLD_SPACE = 1.0F/16.0F;
     Vector3f centrePos = new Vector3f(7.5F, 10F, 7.5F);
+    centrePos.mul(CONVERT_MODEL_SPACE_TO_WORLD_SPACE);
 
     ImmutableList.Builder<BakedQuad> retval = new ImmutableList.Builder<>();
-    retval.add(getTranslatedBakedQuadCopy(needleModel, centrePos));
-
+    addTranslatedModelQuads(needleModel, centrePos, whichFace, retval);
+    return retval.build();
   }
 
-
-  /** Make a copy of the given BakedQuad and translate it to a new position
+  /** Retrieve copies of the quads in the given BakedQuad and translate them to a new position
    * @param original
    * @param translateBy amount to translate by in model coordinates (i.e. 0 -> 16 = 1 metre world distance)
-   * @return
+   * @param whichFace  which faces (WEST, EAST etc) to retrieve
+   * @param quadListBuilder list to add the BakedQuad copies to
    */
+  private void addTranslatedModelQuads(IBakedModel original, Vector3f translateBy, Direction whichFace,
+                                            ImmutableList.Builder<BakedQuad> quadListBuilder) {
+    final BlockState UNUSED_BLOCKSTATE = null;
+    final Random random = new Random();
+    for (BakedQuad bakedQuad : original.getQuads(UNUSED_BLOCKSTATE, whichFace, random)) {
+      quadListBuilder.add(getTranslatedBakedQuadCopy(bakedQuad, translateBy));
+    }
+  }
+
+    /** Make a copy of the given BakedQuad and translate it to a new position
+     * @param original
+     * @param translateBy amount to translate by in model coordinates (i.e. 0 -> 16 = 1 metre world distance)
+     * @return
+     */
   private BakedQuad getTranslatedBakedQuadCopy(BakedQuad original, Vector3f translateBy) {
 
     // directly manipulate the int array data for the vertices to update the x, y, z
@@ -327,7 +342,7 @@ public class AltimeterBakedModel implements IBakedModel {
 
   public static ResourceLocation needleTextureRL = new ResourceLocation("minecraftbyexample:block/mbe04b_altimeter_needle");
   public static ResourceLocation digitsTextureRL = new ResourceLocation("minecraftbyexample:block/mbe04b_altimeter_digits");
-  public static ModelResourceLocation needleModelMRL = new ModelResourceLocation("minecraftbyexample:block/mbe04b_altimeter_needle_model");
+  public static ResourceLocation needleModelRL = new ResourceLocation("minecraftbyexample:block/mbe04b_altimeter_needle_model");
 
   // ---- All these methods are required by the interface but we don't do anything special with them.
 

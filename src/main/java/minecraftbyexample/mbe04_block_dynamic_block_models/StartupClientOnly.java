@@ -5,9 +5,12 @@ import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ModelBakery;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.apache.logging.log4j.LogManager;
@@ -61,8 +64,13 @@ public class  StartupClientOnly
         event.getModelRegistry().put(variantMRL, customModel);
       }
     }
+
   }
 
+  @SubscribeEvent
+  public static void onModelRegistryEvent(ModelRegistryEvent event) {
+    ModelLoader.addSpecialModel(AltimeterBakedModel.needleModelRL);
+  }
 
   // mbe04b_altimeter uses two textures which aren't in the block model
   // In order to use them during block rendering, we need to manually register them for stitching into the blocks texture sheet

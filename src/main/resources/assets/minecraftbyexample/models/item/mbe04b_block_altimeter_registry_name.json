@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "minecraftbyexample:item/mbe04_altimeter_item_icon"
+    "layer0": "minecraftbyexample:item/mbe04b_altimeter_item_icon"
   }
 }
