@@ -142,7 +142,7 @@ public class AltimeterBakedModel implements IBakedModel {
             { {10.5, 4,  0.5,  13.5, 9,  0.5},  {  6.5, 4,  0.5,   9.5, 9,  0.5}, { 2.5, 4,  0.5,   5.5, 9,  0.5}},   // north face digit100, digit10, digit1
             { { 2.5, 4, 15.5,   5.5, 9, 15.5},  {  6.5, 4, 15.5,   9.5, 9, 15.5}, {10.5, 4, 15.5,  13.5, 9, 15.5}},   // south face digit100, digit10, digit1
             { { 0.5, 4,  2.5,   0.5, 9,  5.5},  {  0.5, 4,  6.5,   0.5, 9,  9.5}, { 0.5, 4, 10.5,   0.5, 9, 13.5}},   // west face digit100, digit10, digit1
-            { {15.5, 4, 10.5,  15.5, 9, 13.5},  { 15.5, 4,  6.5,  15.5, 9,  9.5}, {15.5, 4,  5.5,  15.5, 9,  2.5}}    // east face digit100, digit10, digit1
+            { {15.5, 4, 10.5,  15.5, 9, 13.5},  { 15.5, 4,  6.5,  15.5, 9,  9.5}, {15.5, 4,  2.5,  15.5, 9,  5.5}}    // east face digit100, digit10, digit1
     };
     final Direction [] faceDirections = {Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST};
 
@@ -284,22 +284,22 @@ public class AltimeterBakedModel implements IBakedModel {
     addTranslatedModelQuads(needleModel, centrePos, whichFace, retval);
 
     // make a line of needle cubes radiating out from the centre, pointing towards the origin.
-    double bearingToOriginRadians = Math.toDegrees(gpScoordinate.bearingToOrigin);  // degrees clockwise from north
+    double bearingToOriginRadians = Math.toRadians(gpScoordinate.bearingToOrigin);  // degrees clockwise from north
     float deltaX = (float)Math.sin(bearingToOriginRadians);
     float deltaZ = -(float)Math.cos(bearingToOriginRadians);
     if (Math.abs(deltaX) < Math.abs(deltaZ)) {
-      deltaX /= deltaZ;
-      deltaZ = 1;
+      deltaX /= Math.abs(deltaZ);
+      deltaZ /= Math.abs(deltaZ);
     } else {
-      deltaZ /= deltaX;
-      deltaX = 1;
+      deltaZ /= Math.abs(deltaX);
+      deltaX /= Math.abs(deltaX);
     }
     float xoffset = 0;
     float zoffset = 0;
     final int NUMBER_OF_NEEDLE_BLOCKS = 6; // not including centre
     for (int i = 0; i < NUMBER_OF_NEEDLE_BLOCKS; ++i) {
-      xoffset += deltaX;
-      zoffset += deltaZ;
+      xoffset += deltaX * CONVERT_MODEL_SPACE_TO_WORLD_SPACE;
+      zoffset += deltaZ * CONVERT_MODEL_SPACE_TO_WORLD_SPACE;
       Vector3f moveTo = centrePos.copy();
       moveTo.add(xoffset, 0, zoffset);
       addTranslatedModelQuads(needleModel, moveTo, whichFace, retval);

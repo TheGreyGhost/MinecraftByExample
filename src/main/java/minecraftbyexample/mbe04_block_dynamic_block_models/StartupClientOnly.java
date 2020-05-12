@@ -67,14 +67,15 @@ public class  StartupClientOnly
 
   }
 
+  // manually add our Altimeter's needle model since it's not referenced in any blockstate json
   @SubscribeEvent
   public static void onModelRegistryEvent(ModelRegistryEvent event) {
     ModelLoader.addSpecialModel(AltimeterBakedModel.needleModelRL);
   }
 
-  // mbe04b_altimeter uses two textures which aren't in the block model
+  // mbe04b_altimeter uses two textures which aren't referenced by the block model
   // In order to use them during block rendering, we need to manually register them for stitching into the blocks texture sheet
-  // Alternatively, you could use them in an invisible part of your block model.
+  // (Alternatively, you could use them in your block model json to render an invisible face).
     @SubscribeEvent
     public static void onTextureStitchEvent(TextureStitchEvent.Pre event) {
       if (event.getMap().getTextureLocation() == LOCATION_BLOCKS_TEXTURE) {
@@ -89,8 +90,9 @@ public class  StartupClientOnly
    */
   @SubscribeEvent
   public static void onClientSetupEvent(FMLClientSetupEvent event) {
-    // Tell the renderer to render the camouflage block as a solid texture
+    // Tell the renderer to render the camouflage block and Altimeter as a solid texture
     RenderTypeLookup.setRenderLayer(StartupCommon.blockCamouflage, RenderType.getSolid());
+    RenderTypeLookup.setRenderLayer(StartupCommon.blockAltimeter, RenderType.getSolid());
   }
 
   private static final Logger LOGGER = LogManager.getLogger();
