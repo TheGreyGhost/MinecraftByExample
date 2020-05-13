@@ -25,9 +25,6 @@ import java.util.*;
  * Created by TheGreyGhost on 19/04/2015.
  * This class modifies the displayed item (a chessboard) to show a number of "pieces" (blue squares) on the chessboard,
  *   one square for each item in the itemstack.
- * For models generated from a texture turned into a "texture with thickness" (i.e. like most item), you must implement
- *   IPerspectiveAwareModel instead of IBakedModel otherwise the item transforms won't work.  This is because Forge
- *   doesn't implement BakedItemModel.getItemCameraTransforms() correctly.
  */
 public class ChessboardModel implements IBakedModel {
 
@@ -38,19 +35,7 @@ public class ChessboardModel implements IBakedModel {
   public ChessboardModel(IBakedModel i_baseChessboardModel)
   {
     baseChessboardModel = i_baseChessboardModel;
-//    chessboardItemOverrideList = new ChessboardItemOverrideList(Collections.EMPTY_LIST);
-  }
-
-  // property used to provide information to the item renderer - in this case, the number of chess pieces to draw on the
-  //  board
-
-  public static ModelProperty<Integer> NUMBER_OF_PIECES = new ModelProperty<>();
-
-  public static ModelDataMap getEmptyIModelData() {
-    ModelDataMap.Builder builder = new ModelDataMap.Builder();
-    builder.withInitial(NUMBER_OF_PIECES, 0);
-    ModelDataMap modelDataMap = builder.build();
-    return modelDataMap;
+    chessboardItemOverrideList = new ChessboardItemOverrideList();
   }
 
   // create a tag (ModelResourceLocation) for our model.
@@ -59,72 +44,15 @@ public class ChessboardModel implements IBakedModel {
   public static final ModelResourceLocation modelResourceLocation
           = new ModelResourceLocation("minecraftbyexample:mbe15_item_chessboard", "inventory");
 
-  /**
-   * Forge's extension in place of IBakedModel::getQuads
-   * It allows us to pass in some extra information which we can use to choose the appropriate quads to render
-   * @param state
-   * @param side
-   * @param rand
-   * @param extraData
-   * @return
-   */
+  // called for item rendering
   @Override
-  @Nonnull
-  public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData)
-  {
-    if (!extraData.hasProperty(NUMBER_OF_PIECES)) {
-      if (!loggedError) {
-        LOGGER.error("IModelData did not have expected property NUMBER_OF_PIECES");
-        loggedError = true;
-      }
-      return baseChessboardModel.getQuads(state, side, rand);
-    }
-
-    // we construct the item model by taking the base model's list of quads and appending extra quads to draw the chess pieces.
-
-    Integer numberOfPieces = extraData.getData(NUMBER_OF_PIECES);
-    List<BakedQuad> allQuads = new LinkedList<>();
-    allQuads.addAll(baseChessboardModel.getQuads(state, side, rand, extraData));
-    allQuads.addAll(getChessPiecesQuads());
-    return allQuads;
-  }
-
-  @Override
-  @Nonnull
-  public IModelData getModelData(@Nonnull ILightReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
-  {
-    ModelDataMap modelDataMap = getEmptyIModelData();
-    modelDataMap.setData(NUMBER_OF_PIECES, bestAdjacentBlock);
-    return modelDataMap;
-  }
-
-  @Override
-  public TextureAtlasSprite getParticleTexture(@Nonnull IModelData data)
-  {
-    return getActualBakedModelFromIModelData(data).getParticleTexture();
-  }
-
-
-
-  @Override
-  public TextureAtlasSprite getParticleTexture() {
-    return baseChessboardModel.getParticleTexture();
-  }
-
-  /**  Returns the quads for the base chessboard model only
-   * @param state
-   * @param side
-   * @param rand
-   * @return
-   */
-  @Override
-  public List<BakedQuad> getQuads(BlockState state, Direction side, long rand) {
+  public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
     return baseChessboardModel.getQuads(state, side, rand);
   }
 
   @Override
-  public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
-    return null;
+  public ItemOverrideList getOverrides() {
+    return chessboardItemOverrideList;
   }
 
   // not needed for item, but hey
@@ -140,100 +68,66 @@ public class ChessboardModel implements IBakedModel {
 
   @Override
   public boolean func_230044_c_() {
-    return false;
+    return baseChessboardModel.func_230044_c_();
   }
 
   @Override
   public boolean isBuiltInRenderer() {
-    return false;
+    return baseChessboardModel.isBuiltInRenderer();
+  }
+
+  @Override
+  public TextureAtlasSprite getParticleTexture() {
+    return baseChessboardModel.getParticleTexture();
   }
 
   @Override
   public ItemCameraTransforms getItemCameraTransforms() {
-    return baseChessboardModel.getItemCameraTransforms();  // NB this is not enough for BakedItemModels, must do handlePerspective as well
+    return baseChessboardModel.getItemCameraTransforms();
   }
 
+  // This is a forge extension that is expected for blocks only.
   @Override
-  public ItemOverrideList getOverrides() {
-    return chessboardItemOverrideList;
+  @Nonnull
+  public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData) {
+    throw new AssertionError("ChessboardModel::getQuads(IModelData) should never be called");
   }
+
+  // This is a forge extension that is expected for blocks only.
+  @Override
+  @Nonnull
+  public IModelData getModelData(@Nonnull ILightReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
+  {
+    throw new AssertionError("ChessboardModel::getModelData should never be called");
+  }
+
+
 
   private IBakedModel baseChessboardModel;
   private ChessboardItemOverrideList chessboardItemOverrideList;
 
-  @Override
-  public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
-//    if (baseChessboardModel instanceof IPerspectiveAwareModel) {
-      Matrix4f matrix4f = baseChessboardModel.handlePerspective(cameraTransformType).getRight();
-      return Pair.of(this, matrix4f);
-//    } else {
-//      // If the base model isn't an IPerspectiveAware, we'll need to generate the correct matrix ourselves using the
-//      //  ItemCameraTransforms.
-//
-//      ItemCameraTransforms itemCameraTransforms = baseChessboardModel.getItemCameraTransforms();
-//      ItemTransformVec3f itemTransformVec3f = itemCameraTransforms.getTransform(cameraTransformType);
-//      TRSRTransformation tr = new TRSRTransformation(itemTransformVec3f);
-//      Matrix4f mat = null;
-//      if (tr != null) { // && tr != TRSRTransformation.identity()) {
-//        mat = tr.getMatrix();
-//      }
-//      // The TRSRTransformation for vanilla item have blockCenterToCorner() applied, however handlePerspective
-//      //  reverses it back again with blockCornerToCenter().  So we don't need to apply it here.
-//
-//      return Pair.of(this, mat);
+//  @Override
+//  public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
+////    if (baseChessboardModel instanceof IPerspectiveAwareModel) {
+//      Matrix4f matrix4f = baseChessboardModel.handlePerspective(cameraTransformType).getRight();
+//      return Pair.of(this, matrix4f);
+////    } else {
+////      // If the base model isn't an IPerspectiveAware, we'll need to generate the correct matrix ourselves using the
+////      //  ItemCameraTransforms.
+////
+////      ItemCameraTransforms itemCameraTransforms = baseChessboardModel.getItemCameraTransforms();
+////      ItemTransformVec3f itemTransformVec3f = itemCameraTransforms.getTransform(cameraTransformType);
+////      TRSRTransformation tr = new TRSRTransformation(itemTransformVec3f);
+////      Matrix4f mat = null;
+////      if (tr != null) { // && tr != TRSRTransformation.identity()) {
+////        mat = tr.getMatrix();
+////      }
+////      // The TRSRTransformation for vanilla item have blockCenterToCorner() applied, however handlePerspective
+////      //  reverses it back again with blockCornerToCenter().  So we don't need to apply it here.
+////
+////      return Pair.of(this, mat);
 //    }
-  }
-
-  // ---- All these methods are required by the interface but we don't do anything special with them.
-
-  @Override
-  public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
-    throw new AssertionError("IBakedModel::getQuads should never be called, only IForgeBakedModel::getQuads");
-  }
-
-  // getTexture is used directly when player is inside the block.  The game will crash if you don't use something
-  //   meaningful here.
-  @Override
-  public TextureAtlasSprite getParticleTexture() {
-    return modelWhenNotCamouflaged.getParticleTexture();
-  }
-
-
-  // ideally, this should be changed for different blocks being camouflaged, but this is not supported by vanilla or forge
-  @Override
-  public boolean isAmbientOcclusion()
-  {
-    return modelWhenNotCamouflaged.isAmbientOcclusion();
-  }
-
-  @Override
-  public boolean isGui3d()
-  {
-    return modelWhenNotCamouflaged.isGui3d();
-  }
-
-  @Override
-  public boolean func_230044_c_() {
-    return modelWhenNotCamouflaged.func_230044_c_();  // related to item "diffuselighting"
-  }
-
-  @Override
-  public boolean isBuiltInRenderer()
-  {
-    return modelWhenNotCamouflaged.isBuiltInRenderer();
-  }
-
-  @Override
-  public ItemOverrideList getOverrides()
-  {
-    return modelWhenNotCamouflaged.getOverrides();
-  }
-
-  @Override
-  public ItemCameraTransforms getItemCameraTransforms()
-  {
-    return modelWhenNotCamouflaged.getItemCameraTransforms();
-  }
+//  }
 
   private static final Logger LOGGER = LogManager.getLogger();
   private static boolean loggedError = false; // prevent spamming console
