@@ -116,6 +116,9 @@ public class MinecraftByExample {
     MOD_EVENT_BUS.register(minecraftbyexample.mbe12_item_nbt_animate.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe12_item_nbt_animate.StartupCommon.class);
 
+    MOD_EVENT_BUS.register(minecraftbyexample.mbe15_item_dynamic_item_model.StartupClientOnly.class);
+    MOD_EVENT_BUS.register(minecraftbyexample.mbe15_item_dynamic_item_model.StartupCommon.class);
+
     MOD_EVENT_BUS.register(minecraftbyexample.mbe20_tileentity_data.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe20_tileentity_data.StartupCommon.class);
 
