@@ -61,7 +61,7 @@ public class ChessboardFinalisedModel implements IBakedModel {
     List<BakedQuad> combinedQuadsList = new ArrayList(parentModel.getQuads(state, side, rand));
     combinedQuadsList.addAll(getChessPiecesQuads(numberOfChessPieces));
     return combinedQuadsList;
-//    FaceBakery.makeBakedQuad() can also be useful for generating quads
+//    FaceBakery.makeBakedQuad() can also be useful for generating quads.  See mbe04: AltimeterBakedModel
   }
 
   @Override
@@ -154,7 +154,7 @@ public class ChessboardFinalisedModel implements IBakedModel {
     final float BUILTIN_GEN_ITEM_Z_MIN = BUILTIN_GEN_ITEM_Z_CENTRE - BUILTIN_GEN_ITEM_THICKNESS / 2.0F;
     final float SOUTH_FACE_POSITION = 1.0F;  // the south face of the cube is at z = 1.0F
     final float NORTH_FACE_POSITION = 0.0F;  // the north face of the cube is at z = 0.0F
-    // http://greyminecraftcoder.blogspot.co.at/2014/12/blocks-18.html
+    // https://greyminecraftcoder.blogspot.com/2020/02/blocks-1144.html
 
     final float DISTANCE_BEHIND_SOUTH_FACE = SOUTH_FACE_POSITION - BUILTIN_GEN_ITEM_Z_MAX;
     final float DISTANCE_BEHIND_NORTH_FACE = BUILTIN_GEN_ITEM_Z_MIN - NORTH_FACE_POSITION;
@@ -282,17 +282,26 @@ public class ChessboardFinalisedModel implements IBakedModel {
         break;
       }
       default: {
-        assert false : "Unexpected facing in createBakedQuadForFace:" + face;
-        return null;
+        throw new AssertionError("Unexpected Direction in createBakedQuadForFace:" + face);
       }
     }
 
+    // the order of the vertices on the face is (from the point of view of someone looking at the front face):
+    // 1 = bottom right, 2 = top right, 3 = top left, 4 = bottom left
+
     packednormal = calculatePackedNormal(x1, y1, z1,  x2, y2, z2,  x3, y3, z3,  x4, y4, z4);
-    return new BakedQuad(Ints.concat(vertexToInts(x1, y1, z1, Color.WHITE.getRGB(), texture, 16, 16, packednormal),
-            vertexToInts(x2, y2, z2, Color.WHITE.getRGB(), texture, 16, 0, packednormal),
-            vertexToInts(x3, y3, z3, Color.WHITE.getRGB(), texture, 0, 0, packednormal),
-            vertexToInts(x4, y4, z4, Color.WHITE.getRGB(), texture, 0, 16, packednormal)),
-            itemRenderLayer, face, texture, true, net.minecraft.client.renderer.vertex.DefaultVertexFormats.ITEM);
+
+    final int minU = 0;
+    final int maxU = 16;
+    final int minV = 0;
+    final int maxV = 16;
+    int [] vertexData1 = vertexToInts(x1, y1, z1, Color.WHITE.getRGB(), texture, maxU, maxV, packednormal);
+    int [] vertexData2 = vertexToInts(x2, y2, z2, Color.WHITE.getRGB(), texture, maxU, minV, packednormal);
+    int [] vertexData3 = vertexToInts(x3, y3, z3, Color.WHITE.getRGB(), texture, minU, minV, packednormal);
+    int [] vertexData4 = vertexToInts(x4, y4, z4, Color.WHITE.getRGB(), texture, minU, maxV, packednormal);
+    int [] vertexDataAll = Ints.concat(vertexData1, vertexData2, vertexData3, vertexData4);
+    final boolean APPLY_DIFFUSE_LIGHTING = true;
+    return new BakedQuad(vertexDataAll, itemRenderLayer, face, texture, APPLY_DIFFUSE_LIGHTING);
   }
 
   /**
@@ -320,13 +329,14 @@ public class ChessboardFinalisedModel implements IBakedModel {
             color,
             Float.floatToRawIntBits(texture.getInterpolatedU(u)),
             Float.floatToRawIntBits(texture.getInterpolatedV(v)),
-
             normal
     };
   }
 
   /**
    * Calculate the normal vector based on four input coordinates
+   * Follows minecraft convention that the coordinates are given in anticlockwise direction from the point of view of
+   * someone looking at the front of the face
    * assumes that the quad is coplanar but should produce a 'reasonable' answer even if not.
    * @return the packed normal, ZZYYXX
    */

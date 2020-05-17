@@ -15,6 +15,5 @@ public class ItemChessBoard extends Item
   public ItemChessBoard()
   {
     super(new Item.Properties().maxStackSize(MAXIMUM_NUMBER_OF_COUNTERS).group(ItemGroup.MISC));
-
   }
 }

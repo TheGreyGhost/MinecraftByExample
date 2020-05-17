@@ -39,7 +39,7 @@ public class ChessboardModel implements IBakedModel {
   }
 
   // create a tag (ModelResourceLocation) for our model.
-  //  "inventory" is used for item. If you don't specify it, you will end up with "normal" by default,
+  //  "inventory" is used for item. If you don't specify it, you will end up with "" by default,
   //  which is used for block.
   public static final ModelResourceLocation modelResourceLocation
           = new ModelResourceLocation("minecraftbyexample:mbe15_item_chessboard", "inventory");
@@ -100,8 +100,6 @@ public class ChessboardModel implements IBakedModel {
   {
     throw new AssertionError("ChessboardModel::getModelData should never be called");
   }
-
-
 
   private IBakedModel baseChessboardModel;
   private ChessboardItemOverrideList chessboardItemOverrideList;
