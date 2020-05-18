@@ -40,9 +40,9 @@ public class ChessboardModel implements IBakedModel {
 
   // create a tag (ModelResourceLocation) for our model.
   //  "inventory" is used for item. If you don't specify it, you will end up with "" by default,
-  //  which is used for block.
+  //  which is used for blocks.
   public static final ModelResourceLocation modelResourceLocation
-          = new ModelResourceLocation("minecraftbyexample:mbe15_item_chessboard", "inventory");
+          = new ModelResourceLocation("minecraftbyexample:mbe15_item_chessboard_registry_name", "inventory");
 
   // called for item rendering
   @Override
@@ -103,29 +103,6 @@ public class ChessboardModel implements IBakedModel {
 
   private IBakedModel baseChessboardModel;
   private ChessboardItemOverrideList chessboardItemOverrideList;
-
-//  @Override
-//  public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
-////    if (baseChessboardModel instanceof IPerspectiveAwareModel) {
-//      Matrix4f matrix4f = baseChessboardModel.handlePerspective(cameraTransformType).getRight();
-//      return Pair.of(this, matrix4f);
-////    } else {
-////      // If the base model isn't an IPerspectiveAware, we'll need to generate the correct matrix ourselves using the
-////      //  ItemCameraTransforms.
-////
-////      ItemCameraTransforms itemCameraTransforms = baseChessboardModel.getItemCameraTransforms();
-////      ItemTransformVec3f itemTransformVec3f = itemCameraTransforms.getTransform(cameraTransformType);
-////      TRSRTransformation tr = new TRSRTransformation(itemTransformVec3f);
-////      Matrix4f mat = null;
-////      if (tr != null) { // && tr != TRSRTransformation.identity()) {
-////        mat = tr.getMatrix();
-////      }
-////      // The TRSRTransformation for vanilla item have blockCenterToCorner() applied, however handlePerspective
-////      //  reverses it back again with blockCornerToCenter().  So we don't need to apply it here.
-////
-////      return Pair.of(this, mat);
-//    }
-//  }
 
   private static final Logger LOGGER = LogManager.getLogger();
   private static boolean loggedError = false; // prevent spamming console

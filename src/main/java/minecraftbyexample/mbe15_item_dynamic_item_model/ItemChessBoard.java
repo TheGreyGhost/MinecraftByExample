@@ -7,7 +7,7 @@ import net.minecraft.item.Item;
  * User: The Grey Ghost
  * Date: 30/12/2014
  *
- * ItemChessBoard is an ordinary two-dimensional item
+ * ItemChessBoard is an ordinary two-dimensional item; the based model is auto-generated from the item's texture
  */
 public class ItemChessBoard extends Item
 {

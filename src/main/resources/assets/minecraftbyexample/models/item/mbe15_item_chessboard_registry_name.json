@@ -1,7 +1,7 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "minecraftbyexample:items/mbe15_chessboard"
+        "layer0": "minecraftbyexample:item/mbe15_chessboard"
     },
   "display": {
     "thirdperson_righthand": {
