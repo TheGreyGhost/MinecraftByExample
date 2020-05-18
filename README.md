@@ -1,10 +1,6 @@
 MinecraftByExample [1.15.2]
 ==================
 ** Work in Progress **
-Note - this currently uses "latest" Forge version instead of "recommended" Forge version, because very many of the mappings
-  in the "latest" version are still obfuscated.  See `build.gradle`:<br>
-`      mappings channel: 'snapshot', version: '20200225-1.15.1`<br>
-`      minecraft 'net.minecraftforge:forge:1.15.2-31.1.18`<br>
 
 The purpose of MinecraftByExample is to give simple working examples of the important concepts in Minecraft and Forge. If you're anything like me, a good code example is worth several screens of waffling explanation, and can very quickly explain the key concepts.  I also find it much easier to adapt and debug something that already works, than to have to synthesize something from scratch and spend hours trying to discover the missing bit of information I didn't know about.
 
@@ -98,6 +94,11 @@ If you use IntelliJ, you might find these [xml mapping files][mapfiles] useful t
     2. Unzip it to an appropriate folder on your computer, such as My Documents.  (Or, if you know how to fork a project on GitHub and import it into a local git repository, you can do that instead)
     3. Look at Forge's README.txt file in this folder and follow the instructions to import it into Eclipse or IntelliJ IDEA.
     4. Use the gradle task runClient to run or debug the project.
+
+###How to compile and run:
+1) Execute gradle task runClient to test the client installation
+or
+2) Execute gradle task runServer to test the dedicated server installation.  (The first time you run this task it will exit without starting the server.  You then need to edit the eula.txt file in the run directory, and execute runServer again.)
 
     
 #### If You're Still Confused

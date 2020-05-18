@@ -25,7 +25,7 @@ import static net.minecraft.client.renderer.texture.AtlasTexture.LOCATION_BLOCKS
  * The methods for this example are called during startup
  *  See MinecraftByExample class for more information
  */
-public class  StartupClientOnly
+public class StartupClientOnly
 {
   // Called after all the other baked block models have been added to the modelRegistry
   // Allows us to manipulate the modelRegistry before BlockModelShapes caches them.

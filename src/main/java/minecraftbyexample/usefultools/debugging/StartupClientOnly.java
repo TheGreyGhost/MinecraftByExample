@@ -1,5 +1,6 @@
 package minecraftbyexample.usefultools.debugging;
 
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
@@ -14,6 +15,6 @@ public class StartupClientOnly
 {
     @SubscribeEvent
     public void onClientSetupEvent(FMLClientSetupEvent event) {
-      // not actually required for this example....
+      MinecraftForge.EVENT_BUS.register(DebugBlockVoxelShapeHighlighter.class);
     }
 }

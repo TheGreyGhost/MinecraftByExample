@@ -72,7 +72,6 @@ public class ItemVariants extends Item
    * @param livingEntity
    * @return
    */
-  @OnlyIn(Dist.CLIENT)
   private static float getFullnessPropertyOverride(ItemStack itemStack, @Nullable World world, @Nullable LivingEntity livingEntity)
   {
     EnumBottleFullness enumBottleFullness = getFullness(itemStack);

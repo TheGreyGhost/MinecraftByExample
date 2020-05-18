@@ -29,7 +29,6 @@ public class StartupCommon
   public static void onCommonSetupEvent(FMLCommonSetupEvent event) {
     MinecraftForge.EVENT_BUS.register(ServerLifecycleEvents.class);
     MinecraftForge.EVENT_BUS.register(DebugSpawnInhibitor.class);
-    MinecraftForge.EVENT_BUS.register(DebugBlockVoxelShapeHighlighter.class);
     MinecraftForge.EVENT_BUS.register(DebugTriggerWatcher.class);
   }
 }
