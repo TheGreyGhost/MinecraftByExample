@@ -1,40 +1,38 @@
-//package minecraftbyexample.mbe06_redstone;
-//
+package minecraftbyexample.mbe06_redstone;
+
 //import minecraftbyexample.mbe06_redstone.input.BlockRedstoneColouredLamp;
 //import minecraftbyexample.mbe06_redstone.input.TileEntityRedstoneColouredLamp;
 //import minecraftbyexample.mbe06_redstone.input_and_output.BlockRedstoneMeter;
 //import minecraftbyexample.mbe06_redstone.input_and_output.TileEntityRedstoneMeter;
 //import minecraftbyexample.mbe06_redstone.output_only.BlockRedstoneTarget;
-//import minecraftbyexample.mbe06_redstone.output_only.BlockRedstoneVariableSource;
-//import net.minecraft.item.BlockItem;
-//import net.minecraftforge.fml.common.registry.ForgeRegistries;
-//import net.minecraftforge.fml.common.registry.GameRegistry;
-//
-///**
-// * User: The Grey Ghost
-// * Date: 24/12/2014
-// *
-// * The Startup classes for this example are called during startup, in the following order:
-// *  preInitCommon
-// *  preInitClientOnly
-// *  initCommon
-// *  initClientOnly
-// *  postInitCommon
-// *  postInitClientOnly
-// *  See MinecraftByExample class for more information
-// */
-//public class StartupCommon
-//{
+import minecraftbyexample.mbe06_redstone.output_only.BlockRedstoneVariableSource;
+import net.minecraft.block.Block;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+
+/**
+ * User: The Grey Ghost
+ * Date: 24/12/2014
+ *
+ * These methods are called during startup
+ *  See MinecraftByExample class for more information
+ */
+public class StartupCommon
+{
 //  public static BlockRedstoneColouredLamp blockRedstoneColouredLamp;
 //  public static BlockRedstoneTarget blockRedstoneTarget;
 //  public static BlockRedstoneMeter blockRedstoneMeter;
-//  public static BlockRedstoneVariableSource blockRedstoneVariableSource;
-//
-//  public static BlockItem itemBlockRedstoneColouredLamp;
-//  public static BlockItem itemBlockRedstoneTarget;
-//  public static BlockItem itemBlockRedstoneMeter;
-//  public static BlockItem itemBlockRedstoneVariableSource;
-//
+  public static BlockRedstoneVariableSource blockRedstoneVariableSource;
+
+  public static BlockItem itemBlockRedstoneColouredLamp;
+  public static BlockItem itemBlockRedstoneTarget;
+  public static BlockItem itemBlockRedstoneMeter;
+  public static BlockItem itemBlockRedstoneVariableSource;
+
 //  public static void preInitCommon()
 //  {
 //   // ------input-------
@@ -86,13 +84,29 @@
 //    itemBlockRedstoneVariableSource.setRegistryName(blockRedstoneVariableSource.getRegistryName());
 //    ForgeRegistries.ITEMS.register(itemBlockRedstoneVariableSource);
 //  }
-//
-//  public static void initCommon()
-//  {
-//  }
-//
-//  public static void postInitCommon()
-//  {
-//  }
-//
-//}
+
+  @SubscribeEvent
+  public static void onBlocksRegistration(final RegistryEvent.Register<Block> blockRegisterEvent) {
+    blockRedstoneVariableSource = (BlockRedstoneVariableSource) (new BlockRedstoneVariableSource()
+            .setRegistryName("minecraftbyexample", "mbe06_block_redstone_variable_source_registry_name"));
+    blockRegisterEvent.getRegistry().register(blockRedstoneVariableSource);
+  }
+
+  @SubscribeEvent
+  public static void onItemsRegistration(final RegistryEvent.Register<Item> itemRegisterEvent) {
+    // We need to create a BlockItem so the player can carry this block in their hand and it can appear in the inventory
+    final int MAXIMUM_STACK_SIZE = 4;  // player can only hold 4 of this block in their hand at once
+
+    Item.Properties itemSimpleProperties = new Item.Properties()
+            .maxStackSize(MAXIMUM_STACK_SIZE)
+            .group(ItemGroup.BUILDING_BLOCKS);  // which inventory tab?
+    itemBlockRedstoneVariableSource = new BlockItem(blockRedstoneVariableSource, itemSimpleProperties);
+    itemBlockRedstoneVariableSource.setRegistryName(blockRedstoneVariableSource.getRegistryName());
+    itemRegisterEvent.getRegistry().register(itemBlockRedstoneVariableSource);
+  }
+
+  @SubscribeEvent
+  public static void onCommonSetupEvent(FMLCommonSetupEvent event) {
+    // not actually required for this example....
+  }
+}

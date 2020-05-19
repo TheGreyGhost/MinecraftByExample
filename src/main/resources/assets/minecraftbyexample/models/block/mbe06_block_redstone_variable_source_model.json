@@ -2,7 +2,7 @@
     "ambientocclusion": false,
     "textures": {
       "particle": "block/comparator_on",
-      "slab": "block/stone_slab_top"
+      "slab": "block/smooth_stone"
     },
     "elements": [
         {   "from": [ 0, 0, 0 ],

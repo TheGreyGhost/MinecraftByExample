@@ -1,5 +1,5 @@
-//package minecraftbyexample.mbe06_redstone;
-//
+package minecraftbyexample.mbe06_redstone;
+
 //import minecraftbyexample.mbe06_redstone.input.LampColour;
 //import minecraftbyexample.mbe06_redstone.input_and_output.TileEntityRedstoneMeter;
 //import minecraftbyexample.mbe06_redstone.input_and_output.TileEntitySpecialRendererRedstoneMeter;
@@ -7,22 +7,22 @@
 //import net.minecraft.client.renderer.model.ModelResourceLocation;
 //import net.minecraftforge.client.model.ModelLoader;
 //import net.minecraftforge.fml.client.registry.ClientRegistry;
-//
-///**
-// * User: The Grey Ghost
-// * Date: 24/12/2014
-// *
-// * The Startup classes for this example are called during startup, in the following order:
-// *  preInitCommon
-// *  preInitClientOnly
-// *  initCommon
-// *  initClientOnly
-// *  postInitCommon
-// *  postInitClientOnly
-// *  See MinecraftByExample class for more information
-// */
-//public class StartupClientOnly
-//{
+
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+
+/**
+ * User: The Grey Ghost
+ * Date: 24/12/2014
+ *
+ * These methods are called during startup
+ *  See MinecraftByExample class for more information
+
+ */
+public class StartupClientOnly
+{
 //  public static void preInitClientOnly()
 //  {
 //    // This is currently necessary in order to make your block render properly when it is an item (i.e. in the inventory
@@ -57,4 +57,10 @@
 //    // the LampColour class is used to change the rendering colour of the RedstoneColouredLamp
 //    Minecraft.getInstance().getBlockColors().registerBlockColorHandler(new LampColour(), StartupCommon.blockRedstoneColouredLamp);
 //  }
-//}
+
+  @SubscribeEvent
+  public static void onClientSetupEvent(FMLClientSetupEvent event) {
+    RenderTypeLookup.setRenderLayer(StartupCommon.blockRedstoneVariableSource, RenderType.getSolid());
+  }
+
+}

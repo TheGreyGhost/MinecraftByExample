@@ -34,6 +34,8 @@ If you use IntelliJ, you might find these [xml mapping files][mapfiles] useful t
 
 ** examples marked with "x" haven't been converted yet **
 
+See [here](https://greyminecraftcoder.blogspot.com/2020/05/minecraft-by-example.html) for pictures of what each example looks like in-game.
+
 ### Blocks
   - [MBE01][01] - a simple cube
   - [MBE02][02] - a block with a more complicated shape

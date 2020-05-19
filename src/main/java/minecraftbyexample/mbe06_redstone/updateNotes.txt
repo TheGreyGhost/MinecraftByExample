@@ -1,0 +1,63 @@
+AbstractButtonBlock:
+tickRate()
+  - used in worldIn.getPendingBlockTicks().scheduleTick(new BlockPos(pos), this, this.tickRate(worldIn));
+
+onBlockActivated() does:
+  p_226910_2_.setBlockState(p_226910_3_, p_226910_1_.with(POWERED, Boolean.valueOf(true)), 3);
+  this.updateNeighbors(p_226910_1_, p_226910_2_, p_226910_3_);
+  p_226910_2_.getPendingBlockTicks().scheduleTick(p_226910_3_, this, this.tickRate(p_226910_2_));
+
+onReplaced():
+if (!isMoving && state.getBlock() != newState.getBlock()) {
+   if (state.get(POWERED)) {
+      this.updateNeighbors(state, worldIn, pos);
+   }
+
+   super.onReplaced(state, worldIn, pos, newState, isMoving);
+}
+
+public int getWeakPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
+   return blockState.get(POWERED) ? 15 : 0;
+}
+
+pos is the pos of this block, side is the direction from the original block to this block
+i.e.
+is Block A donating strong power to block B?  A on top of B.
+
+getStrongPower(A, UP)
+
+public int getStrongPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
+  return blockState.get(POWERED) && getFacing(blockState) == side ? 15 : 0;
+}
+
+/**
+ * Can this block provide power. Only wire currently seems to have this change based on its state.
+ * @deprecated call via {@link IBlockState#canProvidePower()} whenever possible. Implementing/overriding is fine.
+ */
+public boolean canProvidePower(BlockState state) {
+   return true;
+}
+
+
+ public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random rand) {
+          worldIn.setBlockState(pos, state.with(POWERED, Boolean.valueOf(false)), 3);
+          this.updateNeighbors(state, worldIn, pos);
+
+
+ private void updateNeighbors(BlockState state, World worldIn, BlockPos pos) {
+    worldIn.notifyNeighborsOfStateChange(pos, this);
+    worldIn.notifyNeighborsOfStateChange(pos.offset(getFacing(state).getOpposite()), this);
+ }
+
+
+getRedstonePower() does one of two things:
+(1) if the block can be strongly powered - check for anything strongly powering it
+(2) if not - check if the block radiates weak power itself
+
+RedstoneWireBlock uses a hack when checking for power - a member variable which it resets before calling method, then sets again afterwards
+
+
+
+ ----------------
+ IForgeBlock.canConnectRedstone()
+

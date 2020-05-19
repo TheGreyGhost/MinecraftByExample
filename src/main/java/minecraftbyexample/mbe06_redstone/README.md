@@ -3,7 +3,7 @@
 There are a number of redstone examples in this package; grouped into three types:
 
 * power source blocks ("output_only") which provide redstone power to other blocks, but don't accept input from other
-    * Vanilla examples are `BlockCompressedPowered`, `BlockButton`
+    * Vanilla examples are `BlockCompressedPowered`, `AbstractButtonBlock`
 * power consumer blocks ("input_only") which accept redstone input from other blocks but don't provide it to others
     * Vanilla example is `BlockRedstoneLight`
 * mixed blocks ("input_and_output") which accept redstone input and also provide output to others
@@ -14,7 +14,9 @@ The blocks illustrate how the various types work, and some of the subtleties aro
 The examples are:
 
 * `BlockRedstoneColouredLamp`--a power consumer--has inputs on three sides: red, green, blue, which cause the lamp to light up in different colours depending on the signal strength on each input
-* `BlockRedstoneVariableSource`--a weak power source similar to a redstone torch, except that the power level can be changed by clicking on it (0%, 25%, 50%, 75%, 100%)
+
+* `BlockRedstoneVariableSource`--a weak power source similar to a redstone torch, except that the power level can be changed by clicking on it (0%, 25%, 50%, 75%, 100%).  It provides weak power to all adjacent blocks but does not provide strong power. 
+
 * `BlockRedstoneTarget`--a strong power source similar to a button--it's a bullseye target which can be hung on the side of a stone block. When an arrow is shot into the target, it sends strong power into the stone block. The closer the arrow to the bullseye, the higher the power level.
 * `BlockRedstoneMeter`--both consumes and produces power. The block has a dial gauge which shows the level of weak power being received from side neighbours. In addition, it emits weak power into the blocks above and below the meter. If a redstone lamp is placed on top of the meter, it will flash on and off--the higher the meter reading, the faster the flashing.
 
