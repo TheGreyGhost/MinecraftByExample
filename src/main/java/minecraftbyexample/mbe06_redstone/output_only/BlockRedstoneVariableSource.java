@@ -129,6 +129,8 @@ public class BlockRedstoneVariableSource extends Block
   private static final VoxelShape TORCHES_SHAPE = Block.makeCuboidShape(4.0D, 2.0D, 4.0D, 12.0D, 12.0D, 12.0D);
   private static final VoxelShape COMBINED_SHAPE = VoxelShapes.or(BASE_SHAPE, TORCHES_SHAPE);
 
+
+
   @Override
   public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
     return COMBINED_SHAPE;

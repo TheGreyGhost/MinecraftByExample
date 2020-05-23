@@ -61,6 +61,7 @@ public class StartupClientOnly
   @SubscribeEvent
   public static void onClientSetupEvent(FMLClientSetupEvent event) {
     RenderTypeLookup.setRenderLayer(StartupCommon.blockRedstoneVariableSource, RenderType.getSolid());
+    RenderTypeLookup.setRenderLayer(StartupCommon.blockRedstoneTarget, RenderType.getSolid());
   }
 
 }

@@ -1,5 +1,7 @@
 package minecraftbyexample.mbe06_redstone.output_only;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import minecraftbyexample.usefultools.UsefulFunctions;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -7,6 +9,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -15,10 +18,13 @@ import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.*;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -274,13 +280,10 @@ public class BlockRedstoneTarget extends Block
 
   // Create the appropriate state for the block being placed - in this case, figure out which way the target is facing
   @Override
-  public BlockState getStateForPlacement(World worldIn, BlockPos thisBlockPos, Direction faceOfNeighbour,
-                                   float hitX, float hitY, float hitZ, int meta, LivingEntity placer)
-  {
-    Direction directionTargetIsPointing = faceOfNeighbour;
-//    if
-
-    return this.getDefaultState().withProperty(PROPERTYFACING, directionTargetIsPointing);
+  public BlockState getStateForPlacement(BlockItemUseContext blockItemUseContext) {
+    Direction directionTargetIsPointing = blockItemUseContext.getPlacementHorizontalFacing();  // north, east, south, or west
+    BlockState blockState = getDefaultState().with(FACING, directionTargetIsPointing);
+    return blockState;
   }
 
   // Is the neighbouring block in the given direction suitable for mounting the target onto?
@@ -292,31 +295,23 @@ public class BlockRedstoneTarget extends Block
     return world.isSideSolid(neighbourPos, neighbourSide, DEFAULT_SOLID_VALUE);
   }
 
-  //--- methods related to the appearance of the block
-  //  See MBE03_block_variants for more explanation
+  //----- methods related to the block's appearance (see MBE01_BLOCK_SIMPLE and MBE02_BLOCK_PARTIAL)
 
-  // the block will render in the SOLID layer.  See http://greyminecraftcoder.blogspot.co.at/2014/12/block-rendering-18.html for more information.
-  @OnlyIn(Dist.CLIENT)
-  public BlockRenderLayer getBlockLayer()
-  {
-    return BlockRenderLayer.SOLID;
+  private static Map<Direction, VoxelShape> SHAPES;
+  static {
+    SHAPES = Maps.newEnumMap(ImmutableMap.of(
+            Direction.NORTH, Block.makeCuboidShape( 0.0D, 0.0D, 15.0D,  16.0D, 16.0D, 16.0D),
+            Direction.SOUTH, Block.makeCuboidShape( 0.0D, 0.0D,  0.0D,  16.0D, 16.0D,  1.0D),
+            Direction.EAST,  Block.makeCuboidShape( 0.0D, 0.0D,  0.0D,   1.0D, 16.0D, 16.0D),
+            Direction.WEST,  Block.makeCuboidShape(15.0D, 0.0D,  0.0D,  16.0D, 16.0D, 16.0D)   )    );
   }
 
-  // used by the renderer to control lighting and visibility of other block.
-  // set to false because this block doesn't fill the entire 1x1x1 space
   @Override
-  public boolean isOpaqueCube(BlockState iBlockState)
-  {
-    return false;
-  }
-
-  // used by the renderer to control lighting and visibility of other block, also by
-  // (eg) wall or fence to control whether the fence joins itself to this block
-  // set to false because this block doesn't fill the entire 1x1x1 space
-  @Override
-  public boolean isFullCube(BlockState iBlockState)
-  {
-    return false;
+  public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+    Direction facing = state.get(FACING);
+    VoxelShape targetShape = SHAPES.get(facing);
+    if (targetShape == null) throw new AssertionError("Unexpected facing direction:" + facing);
+    return targetShape;
   }
 
   // render using a BakedModel
