@@ -62,7 +62,7 @@ public class BlockRedstoneVariableSource extends Block
   }
 
   /** How much weak power does this block provide to the adjacent block?
-   * See http://greyminecraftcoder.blogspot.com.au/2015/11/redstone.html for more information
+   * See https://greyminecraftcoder.blogspot.com/2020/05/redstone-1152.html for more information
    * @param blockAccess a cut-down interface to world which returns basic information about the world only
    * @param pos the position of this block
    * @param blockState the blockstate of this block

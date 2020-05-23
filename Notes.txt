@@ -12,6 +12,7 @@ temp = -0.5 to 2.0; downfall
 
 Capabilities
 https://www.minecraftforge.net/forum/topic/82977-115-best-way-to-store-custom-data/
+https://github.com/Choonster-Minecraft-Mods/TestMod3/blob/06fe521371b4532a0cd337401e69bf8ed93294d4/src/main/java/choonster/testmod3/capability/maxhealth/MaxHealthCapability.java#L54
 
 https://www.minecraftforge.net/forum/topic/83656-1152-creating-keyframe-animation-of-entity/
 
