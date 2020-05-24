@@ -93,7 +93,7 @@ public class StartupCommon
     blockRegisterEvent.getRegistry().register(blockRedstoneVariableSource);
 
     blockRedstoneTarget = (BlockRedstoneTarget) (new BlockRedstoneTarget()
-            .setRegistryName("minecraftbyexample", "mbe06_block_redstone_target_registry_name"));
+            .setRegistryName("minecraftbyexample", "mbe06b_block_redstone_target_registry_name"));
     blockRegisterEvent.getRegistry().register(blockRedstoneTarget);
 
   }

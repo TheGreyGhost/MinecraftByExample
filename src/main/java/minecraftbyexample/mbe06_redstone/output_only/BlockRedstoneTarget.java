@@ -2,13 +2,13 @@ package minecraftbyexample.mbe06_redstone.output_only;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import minecraftbyexample.usefultools.SetBlockStateFlag;
 import minecraftbyexample.usefultools.UsefulFunctions;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.HorizontalBlock;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.entity.Entity;
@@ -16,13 +16,18 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.AttachFace;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -60,11 +65,11 @@ public class BlockRedstoneTarget extends Block
    * @param blockAccess
    * @param pos the position of this block
    * @param blockState the blockstate of this block
-   * @param side the side of the block - eg EAST means that this is to the EAST of the adjacent block.
+   * @param directionFromNeighborToThis eg EAST means that this is to the EAST of the block which is asking for weak power
    * @return The power provided [0 - 15]
    */
   @Override
-  public int getWeakPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
+  public int getWeakPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction directionFromNeighborToThis) {
     return 0;
   }
 
@@ -73,18 +78,19 @@ public class BlockRedstoneTarget extends Block
    * @param blockAccess
    * @param pos the position of this block
    * @param blockState the blockstate of this block
-   * @param side the side of the block - eg EAST means that this is to the EAST of the block which is asking for strong power
+   * @param directionFromNeighborToThis eg EAST means that this is to the EAST of the block which is asking for strong power
    * @return The power provided [0 - 15]
    */
   @Override
-  public int getStrongPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
-    Direction targetFacing = blockState.get(FACING);
+  public int getStrongPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction directionFromNeighborToThis) {
+    Direction directionOfBack = blockState.get(DIRECTION_THAT_BACK_IS_POINTING);
+    Direction directionFromThisToNeighbor = directionFromNeighborToThis.getOpposite();
+    // only provide strong power through the back of the target.  If the direction that the back is pointing is east,
+    //   this means that it provides power to the block which lies to the east.
+    // When this method is called by the adjacent block which lies to the east, the value of the directionFromNeighborToThis
+    //    is WEST.
 
-    // only provide strong power through the back of the target.  If the target is facing east, that means
-    //   it provides power to the block which lies to the west.
-    // When this method is called by the adjacent block which lies to the west, the value of the side parameter is EAST.
-
-    if (side != targetFacing) return 0;
+    if (directionFromThisToNeighbor  != directionOfBack) return 0;
 
     // The amount of power provided is related to how close the arrow hit to the bullseye.
     //  Bullseye = 15; Outermost ring = 3.
@@ -101,45 +107,123 @@ public class BlockRedstoneTarget extends Block
     return (int)strongPower;
   }
 
-  public void onProjectileCollision(World worldIn, BlockState state, BlockRayTraceResult hit, Entity projectile) {
+  // ---- methods to control placement of the target (must be on a solid wall)
+  // copied and adapted from WallSignBlock
 
-
-    /**
-     * Called with an entity collides with the block.
-     * In this case - we check if an arrow has collided.
-     * @param worldIn
-     * @param pos
-     * @param state
-     * @param entityIn
-     */
+  /**Is this a valid position for the target (need a solid wall to hang onto)
+   * @param state
+   * @param world
+   * @param pos
+   * @return
+   */
   @Override
-  public void onEntityCollidedWithBlock(World worldIn, BlockPos pos, BlockState state, Entity entityIn)
-  {
-    Direction targetFacing = (Direction)state.getValue(PROPERTYFACING);
+  public boolean isValidPosition(BlockState state, IWorldReader world, BlockPos pos) {
+    Direction directionFromThisToNeighbour = state.get(DIRECTION_THAT_BACK_IS_POINTING);
+    Direction faceOfNeighbourThatTargetIsMountedOn = directionFromThisToNeighbour.getOpposite();
 
-    if (!worldIn.isRemote) {
-      if (entityIn instanceof AbstractArrowEntity) {
-        AxisAlignedBB targetAABB = getCollisionBoundingBox(state, worldIn, pos);
-        AxisAlignedBB targetAABBinWorld = targetAABB.offset(pos);
-        List<AbstractArrowEntity> embeddedArrows = worldIn.getEntitiesWithinAABB(AbstractArrowEntity.class, targetAABBinWorld);
+    BlockPos neighbourBlockPos = pos.offset(directionFromThisToNeighbour);
+    BlockState neighbourBlockState = world.getBlockState(neighbourBlockPos);
+    return neighbourBlockState.isSolidSide(world, neighbourBlockPos, faceOfNeighbourThatTargetIsMountedOn);
+  }
 
-        // when a new arrow hits, remove all others which are already embedded
+  // when the block is placed into the world, calculates the correct BlockState based on which direction the player is looking
+  @Nullable
+  @Override
+  public BlockState getStateForPlacement(BlockItemUseContext context) {
+    BlockState blockstate = this.getDefaultState();
+    World world = context.getWorld();
+    BlockPos blockpos = context.getPos();
+    Direction [] nearestLookingDirections = context.getNearestLookingDirections();
 
-        for (AbstractArrowEntity embeddedEntity : embeddedArrows) {
-          if (embeddedEntity.getEntityId() != entityIn.getEntityId()) {
-            embeddedEntity.setDead();
-          }
+    for (Direction direction : nearestLookingDirections) {
+      if (direction.getAxis().isHorizontal()) {
+        blockstate = blockstate.with(DIRECTION_THAT_BACK_IS_POINTING, direction);
+        if (blockstate.isValidPosition(world, blockpos)) {
+          return blockstate;
         }
-
-        // notify my immediate neighbours, and also the immediate neighbours of the block I'm mounted on, because I
-        //  am giving strong power to it.
-        final boolean CASCADE_UPDATE = false;  // I'm not sure what this flag does, but vanilla always sets it to false
-        // except for calls by World.setBlockState()
-        worldIn.notifyNeighborsOfStateChange(pos, this, CASCADE_UPDATE);
-        Direction directionOfNeighbouringWall = targetFacing.getOpposite();
-        worldIn.notifyNeighborsOfStateChange(pos.offset(directionOfNeighbouringWall), this, CASCADE_UPDATE);
       }
     }
+
+    return null;
+  }
+
+  // ---- methods to handle changes in state and inform neighbours when necessary
+
+  /**
+   * Called when a projectile strikes the block
+   * In this case - we check if an arrow has collided.
+   * @param world
+   * @param hit
+   * @param state
+   * @param projectile
+   */
+  @Override
+  public void onProjectileCollision(World world, BlockState state, BlockRayTraceResult hit, Entity projectile) {
+    if (world.isRemote) return;  // on client - do nothing
+    if (!(projectile instanceof AbstractArrowEntity)) return;  // only for arrows
+    if (hit.getType() != RayTraceResult.Type.BLOCK) return;  // just being defensive; this should always be true
+
+    BlockPos blockPos = hit.getPos();
+    Direction hitFace = hit.getFace();
+    Direction directionOfBack = state.get(DIRECTION_THAT_BACK_IS_POINTING);
+    Direction directionOfFront = directionOfBack.getOpposite();
+    if (hitFace != directionOfFront) return;          // only count hits on the front face
+
+    // when a new arrow hits, remove all others which are already embedded:
+    // search for all arrow entities which are colliding with the target, and remove them.
+
+    VoxelShape voxelShape = state.getCollisionShape(world, hit.getPos());
+    AxisAlignedBB targetAABB = voxelShape.getBoundingBox();
+    AxisAlignedBB targetAABBinWorld = targetAABB.offset(blockPos);
+    List<AbstractArrowEntity> embeddedArrows = world.getEntitiesWithinAABB(AbstractArrowEntity.class, targetAABBinWorld);
+
+    for (AbstractArrowEntity embeddedEntity : embeddedArrows) {
+      if (embeddedEntity.getEntityId() != projectile.getEntityId()) {
+        projectile.remove();
+      }
+    }
+
+    // update our blockstate to reflect which ring the arrow is stuck into.
+    int arrowDistanceFromCentre = findArrowDistanceFromCentre(directionOfFront, targetAABBinWorld, hit.getHitVec());
+    BlockState newBlockState = state.with(ARROW_DISTANCE_FROM_CENTRE, arrowDistanceFromCentre);
+    final int FLAGS = SetBlockStateFlag.get(SetBlockStateFlag.BLOCK_UPDATE, SetBlockStateFlag.SEND_TO_CLIENTS);
+    world.setBlockState(blockPos, newBlockState, FLAGS);
+    informNeighborsOfPowerChange(newBlockState, world, blockPos);
+  }
+
+  /**
+   * A neighbour has updated their state.  Check if the supporting wall that we're mounted on has been removed.
+   */
+  @Override
+  public BlockState updatePostPlacement(BlockState thisBlockState, Direction directionFromNeighborToThis, BlockState neighborState,
+                                        IWorld world, BlockPos thisBlockPos, BlockPos neighborBlockpos) {
+    Direction directionFromThisToNeighbor = directionFromNeighborToThis.getOpposite();
+    Direction directionThatBackIsPointing = thisBlockState.get(DIRECTION_THAT_BACK_IS_POINTING);
+    if (directionFromThisToNeighbor == directionThatBackIsPointing && !thisBlockState.isValidPosition(world, thisBlockPos))
+      return Blocks.AIR.getDefaultState();
+    return super.updatePostPlacement(thisBlockState, directionFromNeighborToThis, neighborState, world, thisBlockPos, neighborBlockpos);
+  }
+
+  // Handle a change of block state
+  // Copied from LeverBlock
+  @Override
+  public void onReplaced(BlockState oldState, World world, BlockPos pos, BlockState newState, boolean isMoving) {
+    if (isMoving || (newState.getBlock() == oldState.getBlock())) return;
+    if (hasAtLeastOneArrow(oldState)) {
+      informNeighborsOfPowerChange(oldState, world, pos);
+    }
+    super.onReplaced(oldState, world, pos, newState, isMoving);
+  }
+
+  private void informNeighborsOfPowerChange(BlockState blockState, World world, BlockPos blockPos) {
+    Direction directionThatBackIsPointing = blockState.get(DIRECTION_THAT_BACK_IS_POINTING);
+
+    // inform my neighbours that I have changed state
+    world.notifyNeighborsOfStateChange(blockPos, this);
+
+    // since I am giving strong power to the neighbouring wall, inform the wall's neighbours of a change in strong power
+    Direction directionOfNeighbouringWall = directionThatBackIsPointing.getOpposite();
+    world.notifyNeighborsOfStateChange(blockPos.offset(directionOfNeighbouringWall), this);
   }
 
   /**
@@ -150,149 +234,11 @@ public class BlockRedstoneTarget extends Block
    * @param rand
    */
   @Override
-  public void updateTick(World worldIn, BlockPos pos, BlockState state, Random rand)
-  {
+  public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random rand) {
     // depending on what your block does, you may need to implement updateTick and schedule updateTicks using
     //         worldIn.scheduleUpdate(pos, this, 4);
     // For vanilla examples see BlockButton, BlockRedstoneLight
     // nothing required for this example
-  }
-
-  /** For all the arrows stuck in the target, find the one which is the closest to the centre.
-   *
-   * @param worldIn
-   * @param pos
-   * @param state
-   * @return the closest distance to the centre (eg 0->1 = centremost ring , 6 = outermost ring); or <0 for none.
-   */
-  private int findBestArrowRing(World worldIn, BlockPos pos, BlockState state)
-  {
-    final int MISS_VALUE = -1;
-    Direction targetFacing = (Direction)state.getValue(PROPERTYFACING);
-    AxisAlignedBB targetAABB = getCollisionBoundingBox(state, worldIn, pos);
-    AxisAlignedBB targetAABBinWorld = targetAABB.offset(pos);
-    List<AbstractArrowEntity> embeddedArrows = worldIn.getEntitiesWithinAABB(AbstractArrowEntity.class, targetAABBinWorld);
-    if (embeddedArrows.isEmpty()) return MISS_VALUE;
-
-    double closestDistance = Float.MAX_VALUE;
-    for (AbstractArrowEntity entity : embeddedArrows) {
-      if (!entity.isDead && entity instanceof AbstractArrowEntity) {
-        AbstractArrowEntity entityArrow = (AbstractArrowEntity) entity;
-        Vec3d hitLocation = getArrowIntersectionWithTarget(entityArrow, targetAABBinWorld);
-        if (hitLocation != null) {
-          Vec3d targetCentre = new Vec3d((targetAABBinWorld.minX + targetAABBinWorld.maxX) / 2.0,
-                                              (targetAABBinWorld.minY + targetAABBinWorld.maxY) / 2.0,
-                                              (targetAABBinWorld.minZ + targetAABBinWorld.maxZ) / 2.0
-          );
-          Vec3d hitRelativeToCentre = hitLocation.subtract(targetCentre);
-
-          // Which ring did it hit?  Calculate it as the biggest deviation of y and (x and z) from the centre.
-
-          double xDeviationPixels = 0;
-          double yDeviationPixels = Math.abs(hitRelativeToCentre.y * 16.0);
-          double zDeviationPixels = 0;
-
-          if (targetFacing == Direction.EAST || targetFacing == Direction.WEST) {
-            zDeviationPixels = Math.abs(hitRelativeToCentre.z * 16.0);
-          } else {
-            xDeviationPixels = Math.abs(hitRelativeToCentre.x * 16.0);
-          }
-
-          double maxDeviationPixels = Math.max(yDeviationPixels, Math.max(xDeviationPixels, zDeviationPixels));
-          if (maxDeviationPixels < closestDistance) {
-            closestDistance = maxDeviationPixels;
-          }
-
-        }
-      }
-    }
-
-    if (closestDistance == Float.MAX_VALUE) return MISS_VALUE;
-    final int OUTERMOST_RING = 6;
-    int ringHit = MathHelper.floor(closestDistance);
-    return (ringHit <= OUTERMOST_RING) ? ringHit : MISS_VALUE;
-  }
-
-  private static final int INNERMOST_RING_DISTANCE = 0;
-  private static final int OUTERMOST_RING_DISTANCE = 6;
-  private static final int NO_ARROW = OUTERMOST_RING_DISTANCE + 1;
-
-  /**
-   * Find the point [x,y,z] that corresponds to where the arrow has struck the face of the target
-   * @param arrow
-   * @param targetAABB
-   * @return
-   */
-  private static Vec3d getArrowIntersectionWithTarget(AbstractArrowEntity arrow, AxisAlignedBB targetAABB)
-  {
-    // create a vector that points in the same direction as the arrow.
-    // Start with a vector pointing south - this corresponds to 0 degrees yaw and 0 degrees pitch
-    // Then rotate about the x-axis to pitch up or down, then rotate about the y axis to yaw
-    Vec3d arrowDirection = new Vec3d(0.0, 0.0, 10.0);
-    float rotationPitchRadians = (float)Math.toRadians(arrow.rotationPitch);
-    float rotationYawRadians = (float)Math.toRadians(arrow.rotationYaw);
-
-    arrowDirection = arrowDirection.rotatePitch(-rotationPitchRadians);
-    arrowDirection = arrowDirection.rotateYaw(+rotationYawRadians);
-
-    Vec3d arrowRayOrigin = arrow.getPositionVector();
-    Vec3d arrowRayEndpoint = arrowRayOrigin.add(arrowDirection);
-    RayTraceResult hitLocation = targetAABB.calculateIntercept(arrowRayOrigin, arrowRayEndpoint);
-    if (hitLocation == null) return null;
-    if (hitLocation.typeOfHit != RayTraceResult.Type.BLOCK) return null;
-    return hitLocation.hitVec;
-  }
-
-  // ---- methods to control placement of the target (must be on a solid wall)
-
-  // When a neighbour changes - check if the supporting wall has been demolished
-  @Override
-  public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block neighborBlock, BlockPos neighbourPos)
-  {
-    if (!worldIn.isRemote) { // server side only
-      Direction enumfacing = (Direction) state.getValue(PROPERTYFACING);
-      Direction directionOfNeighbour = enumfacing.getOpposite();
-      if (!adjacentBlockIsASuitableSupport(worldIn, pos, directionOfNeighbour)) {
-        this.dropBlockAsItem(worldIn, pos, state, 0);
-        worldIn.setBlockToAir(pos);
-      }
-    }
-  }
-
-  /**
-   * Can we place the block at this location?
-   * @param worldIn
-   * @param thisBlockPos    the position of this block (not the neighbour)
-   * @param faceOfNeighbour the face of the neighbour that is adjacent to this block.  If I am facing east, with a stone
-   *                        block to the east of me, and I click on the westward-pointing face of the block,
-   *                        faceOfNeighbour is WEST
-   * @return true if the block can be placed here
-   */
-  @Override
-  public boolean canPlaceBlockOnSide(World worldIn, BlockPos thisBlockPos, Direction faceOfNeighbour)
-  {
-    Direction directionOfNeighbour = faceOfNeighbour.getOpposite();
-    if (directionOfNeighbour == Direction.DOWN || directionOfNeighbour == Direction.UP) {
-      return false;
-    }
-    return adjacentBlockIsASuitableSupport(worldIn, thisBlockPos, directionOfNeighbour);
-  }
-
-  // Create the appropriate state for the block being placed - in this case, figure out which way the target is facing
-  @Override
-  public BlockState getStateForPlacement(BlockItemUseContext blockItemUseContext) {
-    Direction directionTargetIsPointing = blockItemUseContext.getPlacementHorizontalFacing();  // north, east, south, or west
-    BlockState blockState = getDefaultState().with(FACING, directionTargetIsPointing);
-    return blockState;
-  }
-
-  // Is the neighbouring block in the given direction suitable for mounting the target onto?
-  private boolean adjacentBlockIsASuitableSupport(World world, BlockPos thisPos, Direction directionOfNeighbour)
-  {
-    BlockPos neighbourPos = thisPos.offset(directionOfNeighbour);
-    Direction neighbourSide = directionOfNeighbour.getOpposite();
-    boolean DEFAULT_SOLID_VALUE = false;
-    return world.isSideSolid(neighbourPos, neighbourSide, DEFAULT_SOLID_VALUE);
   }
 
   //----- methods related to the block's appearance (see MBE01_BLOCK_SIMPLE and MBE02_BLOCK_PARTIAL)
@@ -300,15 +246,15 @@ public class BlockRedstoneTarget extends Block
   private static Map<Direction, VoxelShape> SHAPES;
   static {
     SHAPES = Maps.newEnumMap(ImmutableMap.of(
-            Direction.NORTH, Block.makeCuboidShape( 0.0D, 0.0D, 15.0D,  16.0D, 16.0D, 16.0D),
-            Direction.SOUTH, Block.makeCuboidShape( 0.0D, 0.0D,  0.0D,  16.0D, 16.0D,  1.0D),
-            Direction.EAST,  Block.makeCuboidShape( 0.0D, 0.0D,  0.0D,   1.0D, 16.0D, 16.0D),
-            Direction.WEST,  Block.makeCuboidShape(15.0D, 0.0D,  0.0D,  16.0D, 16.0D, 16.0D)   )    );
+            Direction.SOUTH, Block.makeCuboidShape( 0.0D, 0.0D, 15.0D,  16.0D, 16.0D, 16.0D),
+            Direction.NORTH, Block.makeCuboidShape( 0.0D, 0.0D,  0.0D,  16.0D, 16.0D,  1.0D),
+            Direction.WEST,  Block.makeCuboidShape( 0.0D, 0.0D,  0.0D,   1.0D, 16.0D, 16.0D),
+            Direction.EAST,  Block.makeCuboidShape(15.0D, 0.0D,  0.0D,  16.0D, 16.0D, 16.0D)   )    );
   }
 
   @Override
   public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-    Direction facing = state.get(FACING);
+    Direction facing = state.get(DIRECTION_THAT_BACK_IS_POINTING);
     VoxelShape targetShape = SHAPES.get(facing);
     if (targetShape == null) throw new AssertionError("Unexpected facing direction:" + facing);
     return targetShape;
@@ -321,68 +267,66 @@ public class BlockRedstoneTarget extends Block
     return BlockRenderType.MODEL;
   }
 
-  /**
-   * Returns the borders of the target, depends on which way it is facing.
-   * Used by the vanilla getCollisionBox.
-   * @param state
-   * @param source
-   * @param pos
-   * @return the AxisAlignedBoundingBox of the target, origin at [0,0,0].
+  /** Based on the location where the arrow hit, determine the distance to the centre
+   * @return the closest distance to the centre (eg 0 = centremost ring , 6 = outermost ring); or NO_ARROW for none.
    */
-  @Override
-  public AxisAlignedBB getBoundingBox(BlockState state, IBlockAccess source, BlockPos pos)
+  private int findArrowDistanceFromCentre(Direction directionThatFrontIsPointing, AxisAlignedBB targetAABBinWorld, Vec3d hitLocation)
   {
-    Direction facing = (Direction) state.getValue(PROPERTYFACING);
+    final int MISS_VALUE = NO_ARROW;
 
-    switch (facing) {
-      case NORTH: {
-        return  NORTH_AABB;
-      }
-      case WEST: {
-        return WEST_AABB;
-      }
-      case EAST: {
-        return  EAST_AABB;
-      }
-      case SOUTH: {
-        return SOUTH_AABB;
-      }
+    Vec3d targetCentre = new Vec3d((targetAABBinWorld.minX + targetAABBinWorld.maxX) / 2.0,
+            (targetAABBinWorld.minY + targetAABBinWorld.maxY) / 2.0,
+            (targetAABBinWorld.minZ + targetAABBinWorld.maxZ) / 2.0
+    );
+
+    Vec3d hitRelativeToCentre = hitLocation.subtract(targetCentre);
+
+    // Which ring did it hit?  Calculate it as the biggest deviation of y and (x and z) from the centre.
+
+    double xDeviationPixels = 0;
+    double yDeviationPixels = Math.abs(hitRelativeToCentre.y * 16.0);
+    double zDeviationPixels = 0;
+
+    if (directionThatFrontIsPointing == Direction.EAST || directionThatFrontIsPointing == Direction.WEST) {
+      zDeviationPixels = Math.abs(hitRelativeToCentre.z * 16.0);
+    } else {
+      xDeviationPixels = Math.abs(hitRelativeToCentre.x * 16.0);
     }
-    return FULL_BLOCK_AABB;
+
+    double closestDistance = Double.MAX_VALUE; //arbitrary large value
+    double maxDeviationPixels = Math.max(yDeviationPixels, Math.max(xDeviationPixels, zDeviationPixels));
+    if (maxDeviationPixels < closestDistance) {
+      closestDistance = maxDeviationPixels;
+    }
+
+    if (closestDistance == Double.MAX_VALUE) return MISS_VALUE;
+    int ringHit = MathHelper.floor(closestDistance);
+    return (ringHit <= OUTERMOST_RING_DISTANCE) ? ringHit : MISS_VALUE;
   }
 
-  private final AxisAlignedBB NORTH_AABB = getAABBFromPixels(0, 0, 15, 16, 16, 16);
-  private final AxisAlignedBB SOUTH_AABB = getAABBFromPixels(0, 0, 0, 16, 16, 1);
-  private final AxisAlignedBB EAST_AABB = getAABBFromPixels(0, 0, 0, 1, 16, 16);
-  private final AxisAlignedBB WEST_AABB = getAABBFromPixels(15, 0, 0, 16, 16, 16);
-
-  @Override
-  public Block setBlockUnbreakable() {
-    return super.setBlockUnbreakable();
-  }
-
-  private AxisAlignedBB getAABBFromPixels(int minX, int minY, int minZ, int maxX, int maxY, int maxZ)
-  {
-    final float PIXEL_WIDTH = 1.0F / 16.0F;
-    return new AxisAlignedBB(minX * PIXEL_WIDTH, minY * PIXEL_WIDTH, minZ * PIXEL_WIDTH,
-                             maxX * PIXEL_WIDTH, maxY * PIXEL_WIDTH, maxZ * PIXEL_WIDTH);
-  }
   // ---------methods related to storing information about the block (which way it's facing, the power level)
 
   // BlockRedstoneTarget has two properties:
-  //  1) The direction it's facing - eg EAST means that the red and white rings on the target are pointing east
+  //  1) The direction that the back is pointing - eg EAST means that the back is pointing east, because the target is
+  //      mounted on a wall which lies to the east of the target.  The red and white rings are hence pointing west.
   //  2) The distance from the best arrow to the centre of the target.
   //
-  private static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
+  private static final DirectionProperty DIRECTION_THAT_BACK_IS_POINTING = HorizontalBlock.HORIZONTAL_FACING;
   // Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST
-  private static final IntegerProperty ARROW_DISTANCE_FROM_CENTRE = IntegerProperty.create("arrow_distance", INNERMOST_RING_DISTANCE, NO_ARROW);
-  // INNERMOST_RING_DISTANCE = centre of target
-  // OUTERMOST_RING_DISTANCE = outermost edge of target
-  // NO_ARROW = there are no arrows stuck in the target
 
-  // necessary to define which properties your block use
+  private static final int INNERMOST_RING_DISTANCE = 0;    // INNERMOST_RING_DISTANCE = centre of target
+  private static final int OUTERMOST_RING_DISTANCE = 6;    // OUTERMOST_RING_DISTANCE = outermost edge of target
+  private static final int NO_ARROW = OUTERMOST_RING_DISTANCE + 1;    // NO_ARROW = there are no arrows stuck in the target
+  private static final IntegerProperty ARROW_DISTANCE_FROM_CENTRE = IntegerProperty.create("arrow_distance", INNERMOST_RING_DISTANCE, NO_ARROW);
+
+  // necessary to define which properties your block uses
   protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-    builder.add(ARROW_DISTANCE_FROM_CENTRE).add(FACING);
+    builder.add(ARROW_DISTANCE_FROM_CENTRE).add(DIRECTION_THAT_BACK_IS_POINTING);
+  }
+
+  private boolean hasAtLeastOneArrow(BlockState blockState) {
+    int arrowDistanceFromCentre = blockState.get(ARROW_DISTANCE_FROM_CENTRE);
+    return (arrowDistanceFromCentre != NO_ARROW);
   }
 
 }

@@ -1,17 +1,18 @@
 {
     "textures": {
         "particle": "minecraftbyexample:block/mbe06b_redstone_target",
-        "wood": "block/planks_oak",
+        "wood": "block/oak_planks",
         "target": "minecraftbyexample:block/mbe06b_redstone_target"
     },
+    "comment": "the base model has its back pointing in the north direction",
     "elements": [
-        {   "from": [ 0, 0, 15 ],
-            "to": [ 16, 16, 16 ],
+        {   "from": [ 0, 0, 0 ],
+            "to": [ 16, 16, 1 ],
             "faces": {
                 "down":  { "uv": [  0,  0, 16,  1 ], "texture": "#wood" },
                 "up":    { "uv": [  0, 15, 16, 16 ], "texture": "#wood" },
-                "north": { "uv": [  0, 0, 16, 16 ], "texture": "#target" },
-                "south": { "uv": [  0, 0, 16, 16 ], "texture": "#wood" },
+                "north": { "uv": [  0, 0, 16, 16 ], "texture": "#wood" },
+                "south": { "uv": [  0, 0, 16, 16 ], "texture": "#target" },
                 "west":  { "uv": [ 15, 0, 16, 16 ], "texture": "#wood" },
                 "east":  { "uv": [  0, 0,  1, 16 ], "texture": "#wood" }
             }

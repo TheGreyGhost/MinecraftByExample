@@ -66,11 +66,12 @@ public class BlockRedstoneVariableSource extends Block
    * @param blockAccess a cut-down interface to world which returns basic information about the world only
    * @param pos the position of this block
    * @param blockState the blockstate of this block
-   * @param side the side of the block - eg EAST means that this is to the EAST of the adjacent block.
+   * @param directionFromNeighborToThis the side of the block - eg EAST means that this is to the EAST of the adjacent block.
    * @return The power provided [0 - 15]
    */
   @Override
-  public int getWeakPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
+  public int getWeakPower(BlockState blockState, IBlockReader blockAccess,
+                          BlockPos pos, Direction directionFromNeighborToThis) {
     Integer powerIndex = blockState.get(POWER_INDEX);
     powerIndex = MathHelper.clamp(powerIndex, 0, MAXIMUM_POWER_INDEX);
     return POWER_VALUES[powerIndex];
@@ -78,7 +79,8 @@ public class BlockRedstoneVariableSource extends Block
 
   // The variable source block does not provide strong power.  See ButtonBlock for a example of a block which does.
   @Override
-  public int getStrongPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
+  public int getStrongPower(BlockState blockState, IBlockReader blockAccess,
+                            BlockPos pos, Direction directionFromNeighborToThis) {
     return 0;
   }
 
