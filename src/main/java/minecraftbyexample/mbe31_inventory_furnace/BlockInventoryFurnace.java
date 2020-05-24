@@ -60,6 +60,7 @@ public class BlockInventoryFurnace extends ContainerBlock
   /**
    * Amount of block light emitted by the furnace
    */
+  @Override
   public int getLightValue(BlockState state) {
     int lightValue = 0;
     Integer burningSidesCount = state.get(BURNING_SIDES_COUNT);

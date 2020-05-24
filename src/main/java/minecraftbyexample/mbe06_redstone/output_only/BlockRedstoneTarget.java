@@ -74,7 +74,7 @@ public class BlockRedstoneTarget extends Block
   }
 
   /**
-   *  The target provides strong power to the block it's mounted on (hanging on)
+   *  Asks the target block how much power it is providing to a neighbour
    * @param blockAccess
    * @param pos the position of this block
    * @param blockState the blockstate of this block
@@ -83,14 +83,14 @@ public class BlockRedstoneTarget extends Block
    */
   @Override
   public int getStrongPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction directionFromNeighborToThis) {
-    Direction directionOfBack = blockState.get(DIRECTION_THAT_BACK_IS_POINTING);
+    Direction directionThatBackIsPointing = blockState.get(DIRECTION_THAT_BACK_IS_POINTING);
     Direction directionFromThisToNeighbor = directionFromNeighborToThis.getOpposite();
     // only provide strong power through the back of the target.  If the direction that the back is pointing is east,
     //   this means that it provides power to the block which lies to the east.
     // When this method is called by the adjacent block which lies to the east, the value of the directionFromNeighborToThis
     //    is WEST.
 
-    if (directionFromThisToNeighbor  != directionOfBack) return 0;
+    if (directionFromThisToNeighbor != directionThatBackIsPointing) return 0;
 
     // The amount of power provided is related to how close the arrow hit to the bullseye.
     //  Bullseye = 15; Outermost ring = 3.
