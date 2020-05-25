@@ -35,14 +35,6 @@ public class LampColour implements IBlockColor {
 
 
       int rgbColour = 0;
-      TileEntity tileEntity = worldIn.getTileEntity(pos);
-      if (tileEntity instanceof TileEntityRedstoneColouredLamp) {
-        TileEntityRedstoneColouredLamp tileEntityRedstoneColouredLamp = (TileEntityRedstoneColouredLamp)tileEntity;
-        rgbColour = tileEntityRedstoneColouredLamp.getRGBcolour();
-      }
       return rgbColour;
-  }
-
-    return 0;
   }
 }

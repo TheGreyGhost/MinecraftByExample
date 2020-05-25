@@ -181,16 +181,17 @@ public class BlockGlassLantern extends Block
    * Check to see whether the neighbour block has changed and we can't hang / rest on the ground any more
    */
   @Override
-  public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
+  public BlockState updatePostPlacement(BlockState thisBlockState, Direction directionFromThisToNeighbor, BlockState neighborState,
+                                        IWorld worldIn, BlockPos thisBlockPos, BlockPos neighborBlockPos) {
     boolean lanternIsNotSupported = false;
-    boolean checkRequired = attachmentFace(stateIn) == facing;
+    boolean checkRequired = attachmentFace(thisBlockState) == directionFromThisToNeighbor;
 
     if (checkRequired) {
-      lanternIsNotSupported = !stateIn.isValidPosition(worldIn, currentPos);
+      lanternIsNotSupported = !thisBlockState.isValidPosition(worldIn, thisBlockPos);
     }
 
     if (lanternIsNotSupported) return Blocks.AIR.getDefaultState();
-    return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+    return super.updatePostPlacement(thisBlockState, directionFromThisToNeighbor, neighborState, worldIn, thisBlockPos, neighborBlockPos);
   }
 
   @Override

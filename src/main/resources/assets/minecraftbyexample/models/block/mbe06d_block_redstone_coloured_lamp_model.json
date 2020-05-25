@@ -10,12 +10,14 @@
     "overlay_side": "minecraftbyexample:block/mbe06d/mbe06d_coloured_lamp_overlay_side",
     "overlay_top": "minecraftbyexample:block/mbe06d/mbe06d_coloured_lamp_overlay_top"
   },
+  "comment": "the cube is made of two elements: the base texture, plus the coloured overlay with tintindex = 0",
+  "comment1": "the textures have complementary cutouts so that they don't try to render on top of each other",
   "elements": [
     {   "from": [ 0, 0, 0 ],
       "to": [ 16, 16, 16 ],
       "faces": {
         "down":  { "uv": [ 0, 0, 16, 16 ], "texture": "#bottom",  "cullface": "down" },
-        "up":    { "uv": [ 0, 0, 16, 16 ], "texture": "#top",     "cullface": "up", "tintindex": 0 },
+        "up":    { "uv": [ 0, 0, 16, 16 ], "texture": "#top",     "cullface": "up"},
         "north": { "uv": [ 0, 0, 16, 16 ], "texture": "#side_none",  "cullface": "north" },
         "south": { "uv": [ 0, 0, 16, 16 ], "texture": "#side_green", "cullface": "south" },
         "west":  { "uv": [ 0, 0, 16, 16 ], "texture": "#side_red",   "cullface": "west" },

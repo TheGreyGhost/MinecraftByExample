@@ -195,13 +195,12 @@ public class BlockRedstoneTarget extends Block
    * A neighbour has updated their state.  Check if the supporting wall that we're mounted on has been removed.
    */
   @Override
-  public BlockState updatePostPlacement(BlockState thisBlockState, Direction directionFromNeighborToThis, BlockState neighborState,
+  public BlockState updatePostPlacement(BlockState thisBlockState, Direction directionFromThisToNeighbor, BlockState neighborState,
                                         IWorld world, BlockPos thisBlockPos, BlockPos neighborBlockpos) {
-    Direction directionFromThisToNeighbor = directionFromNeighborToThis.getOpposite();
     Direction directionThatBackIsPointing = thisBlockState.get(DIRECTION_THAT_BACK_IS_POINTING);
     if (directionFromThisToNeighbor == directionThatBackIsPointing && !thisBlockState.isValidPosition(world, thisBlockPos))
       return Blocks.AIR.getDefaultState();
-    return super.updatePostPlacement(thisBlockState, directionFromNeighborToThis, neighborState, world, thisBlockPos, neighborBlockpos);
+    return super.updatePostPlacement(thisBlockState, directionFromThisToNeighbor, neighborState, world, thisBlockPos, neighborBlockpos);
   }
 
   // Handle a change of block state
@@ -222,7 +221,7 @@ public class BlockRedstoneTarget extends Block
     world.notifyNeighborsOfStateChange(blockPos, this);
 
     // since I am giving strong power to the neighbouring wall, inform the wall's neighbours of a change in strong power
-    Direction directionOfNeighbouringWall = directionThatBackIsPointing.getOpposite();
+    Direction directionOfNeighbouringWall = directionThatBackIsPointing;
     world.notifyNeighborsOfStateChange(blockPos.offset(directionOfNeighbouringWall), this);
   }
 
@@ -239,6 +238,8 @@ public class BlockRedstoneTarget extends Block
     //         worldIn.scheduleUpdate(pos, this, 4);
     // For vanilla examples see BlockButton, BlockRedstoneLight
     // nothing required for this example
+
+    update here to check for arrows every second
   }
 
   //----- methods related to the block's appearance (see MBE01_BLOCK_SIMPLE and MBE02_BLOCK_PARTIAL)

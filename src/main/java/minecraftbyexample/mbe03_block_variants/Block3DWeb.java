@@ -107,33 +107,34 @@ public class Block3DWeb extends Block implements IWaterLoggable {
    * returns its solidified counterpart.
    * Also schedules a water tick if the block is waterlogged.
    */
-  public BlockState updatePostPlacement(BlockState blockState, Direction facing, BlockState facingState, IWorld world, BlockPos currentPos, BlockPos facingPos) {
-    if(blockState.get(WATERLOGGED).booleanValue()) {
-      world.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+  public BlockState updatePostPlacement(BlockState thisBlockState, Direction directionFromThisToNeighbor, BlockState neighborState,
+                                        IWorld world, BlockPos thisBlockPos, BlockPos neighborBlockPos) {
+    if(thisBlockState.get(WATERLOGGED).booleanValue()) {
+      world.getPendingFluidTicks().scheduleTick(thisBlockPos, Fluids.WATER, Fluids.WATER.getTickRate(world));
     }
-    switch (facing) {  // Only update the specified direction.  Uses a switch for clarity but probably a map or similar is better for real code
+    switch (directionFromThisToNeighbor) {  // Only update the specified direction.  Uses a switch for clarity but probably a map or similar is better for real code
       case UP:
-        blockState = blockState.with(UP, canWebAttachToNeighbourInThisDirection(world, currentPos, facing));
+        thisBlockState = thisBlockState.with(UP, canWebAttachToNeighbourInThisDirection(world, thisBlockPos, directionFromThisToNeighbor));
         break;
       case DOWN:
-        blockState = blockState.with(DOWN, canWebAttachToNeighbourInThisDirection(world, currentPos, facing));
+        thisBlockState = thisBlockState.with(DOWN, canWebAttachToNeighbourInThisDirection(world, thisBlockPos, directionFromThisToNeighbor));
         break;
       case EAST:
-        blockState = blockState.with(EAST, canWebAttachToNeighbourInThisDirection(world, currentPos, facing));
+        thisBlockState = thisBlockState.with(EAST, canWebAttachToNeighbourInThisDirection(world, thisBlockPos, directionFromThisToNeighbor));
         break;
       case WEST:
-        blockState = blockState.with(WEST, canWebAttachToNeighbourInThisDirection(world, currentPos, facing));
+        thisBlockState = thisBlockState.with(WEST, canWebAttachToNeighbourInThisDirection(world, thisBlockPos, directionFromThisToNeighbor));
         break;
       case NORTH:
-        blockState = blockState.with(NORTH, canWebAttachToNeighbourInThisDirection(world, currentPos, facing));
+        thisBlockState = thisBlockState.with(NORTH, canWebAttachToNeighbourInThisDirection(world, thisBlockPos, directionFromThisToNeighbor));
         break;
       case SOUTH:
-        blockState = blockState.with(SOUTH, canWebAttachToNeighbourInThisDirection(world, currentPos, facing));
+        thisBlockState = thisBlockState.with(SOUTH, canWebAttachToNeighbourInThisDirection(world, thisBlockPos, directionFromThisToNeighbor));
         break;
       default:
-        LOGGER.error("Unexpected facing:" + facing);
+        LOGGER.error("Unexpected facing:" + directionFromThisToNeighbor);
     }
-    return blockState;
+    return thisBlockState;
   }
 
   private BlockState setConnections(IBlockReader iBlockReader, BlockPos blockPos, BlockState blockState) {

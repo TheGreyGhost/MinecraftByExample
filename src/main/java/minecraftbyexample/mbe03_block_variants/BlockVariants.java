@@ -106,11 +106,12 @@ public class BlockVariants extends Block implements IWaterLoggable
    * @return
    */
   @Override
-  public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
-    if (stateIn.get(WATERLOGGED)) {
-      worldIn.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
+  public BlockState updatePostPlacement(BlockState thisBlockState, Direction directionFromThisToNeighbor, BlockState neighborState,
+                                        IWorld worldIn, BlockPos thisPos, BlockPos neighborPos) {
+    if (thisBlockState.get(WATERLOGGED)) {
+      worldIn.getPendingFluidTicks().scheduleTick(thisPos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
     }
-    return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+    return super.updatePostPlacement(thisBlockState, directionFromThisToNeighbor, neighborState, worldIn, thisPos, neighborPos);
   }
   /**
    * Defines the properties needed for the BlockState

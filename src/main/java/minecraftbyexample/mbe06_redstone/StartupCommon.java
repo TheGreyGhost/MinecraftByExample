@@ -5,6 +5,7 @@ package minecraftbyexample.mbe06_redstone;
 //import minecraftbyexample.mbe06_redstone.input_and_output.BlockRedstoneMeter;
 //import minecraftbyexample.mbe06_redstone.input_and_output.TileEntityRedstoneMeter;
 //import minecraftbyexample.mbe06_redstone.output_only.BlockRedstoneTarget;
+import minecraftbyexample.mbe06_redstone.input.BlockRedstoneColouredLamp;
 import minecraftbyexample.mbe06_redstone.output_only.BlockRedstoneTarget;
 import minecraftbyexample.mbe06_redstone.output_only.BlockRedstoneVariableSource;
 import net.minecraft.block.Block;
@@ -24,7 +25,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
  */
 public class StartupCommon
 {
-//  public static BlockRedstoneColouredLamp blockRedstoneColouredLamp;
+  public static BlockRedstoneColouredLamp blockRedstoneColouredLamp;
   public static BlockRedstoneTarget blockRedstoneTarget;
 //  public static BlockRedstoneMeter blockRedstoneMeter;
   public static BlockRedstoneVariableSource blockRedstoneVariableSource;
@@ -96,6 +97,10 @@ public class StartupCommon
             .setRegistryName("minecraftbyexample", "mbe06b_block_redstone_target_registry_name"));
     blockRegisterEvent.getRegistry().register(blockRedstoneTarget);
 
+    blockRedstoneColouredLamp = (BlockRedstoneColouredLamp) (new BlockRedstoneColouredLamp()
+            .setRegistryName("minecraftbyexample", "mbe06d_block_redstone_coloured_lamp_registry_name"));
+    blockRegisterEvent.getRegistry().register(blockRedstoneColouredLamp);
+
   }
 
   @SubscribeEvent
@@ -113,6 +118,10 @@ public class StartupCommon
     itemBlockRedstoneTarget = new BlockItem(blockRedstoneTarget, itemProperties);
     itemBlockRedstoneTarget.setRegistryName(blockRedstoneTarget.getRegistryName());
     itemRegisterEvent.getRegistry().register(itemBlockRedstoneTarget);
+
+    itemBlockRedstoneColouredLamp = new BlockItem(blockRedstoneColouredLamp, itemProperties);
+    itemBlockRedstoneColouredLamp.setRegistryName(blockRedstoneColouredLamp.getRegistryName());
+    itemRegisterEvent.getRegistry().register(itemBlockRedstoneColouredLamp);
   }
 
   @SubscribeEvent

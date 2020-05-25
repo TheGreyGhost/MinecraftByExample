@@ -1,5 +1,6 @@
 package minecraftbyexample.mbe06_redstone.input;
 
+import minecraftbyexample.usefultools.SetBlockStateFlag;
 import minecraftbyexample.usefultools.UsefulFunctions;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -7,6 +8,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.IntegerProperty;
@@ -14,7 +16,14 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
 
 /**
  * User: The Grey Ghost
@@ -31,114 +40,89 @@ public class BlockRedstoneColouredLamp extends Block
     super(Block.Properties.create(Material.IRON));
   }
 
-////  @Override
-////  public boolean hasTileEntity(BlockState state)
-////  {
-////    return true;
-////  }
-////
-//  // Called when the block is placed or loaded client side to get the tile entity for the block
-//  // Should return a new instance of the tile entity for the block
-//  @Override
-//  public TileEntity createTileEntity(World world, BlockState state) {return new TileEntityRedstoneColouredLamp();}
-
-  // Create the appropriate state for the block being placed - in this case, figure out which way the target is facing
-  // Don't worry about the rgb colour yet, that's handled in  onBlockPlacedBy()
-  @Override
-  public BlockState getStateForPlacement(World worldIn, BlockPos thisBlockPos, Direction faceOfNeighbour,
-                                   float hitX, float hitY, float hitZ, int meta, LivingEntity placer)
-  {
-    Direction directionTargetIsPointing = (placer == null) ? Direction.NORTH : Direction.fromAngle(placer.rotationYaw);
-    return this.getDefaultState().withProperty(PROPERTYFACING, directionTargetIsPointing);
-  }
-
-  // Called just after the player places a block.  Sets the lamp's colour.
-  @Override
-  public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-    super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
-    TileEntity tileentity = worldIn.getTileEntity(pos);
-    if (tileentity instanceof TileEntityRedstoneColouredLamp) { // prevent a crash if not the right type, or is null
-      TileEntityRedstoneColouredLamp tileEntityRedstoneColouredLamp = (TileEntityRedstoneColouredLamp)tileentity;
-
-      int rgbColour = calculateLampColour(worldIn, pos, state);
-      tileEntityRedstoneColouredLamp.setRGBcolour(rgbColour);
-    }
-  }
+  //----- methods related to redstone
 
   /**
    * Determine if this block can make a redstone connection on the side provided,
    * Useful to control which sides are inputs and outputs for redstone wires.
    *
    * @param world The current world
-   * @param posConnectingFrom Block position in world of the wire that is trying to connect  ** HAS CHANGED SINCE 1.8.9 ***
-   * @param side The side of the redstone block that is trying to make the connection, CAN BE NULL
-   * @return True to make the connection
+   * @param blockPos Block position in world of the wire that is trying to connect
+   * @param directionFromNeighborToThis if not null: the side of the wire that is trying to make a horizontal connection to this block. If null: test for a stepped connection (i.e. the wire is trying to run up or down the side of solid block in order to connect to this block)
+   * @return true if the redstone can connect to this side
    */
   @Override
-  public boolean canConnectRedstone(BlockState state, IBlockAccess world, BlockPos posConnectingFrom, Direction side)
+  public boolean canConnectRedstone(BlockState state, IBlockReader world, BlockPos blockPos, @Nullable Direction directionFromNeighborToThis)
   {
-    if (side == null) return false;
-    if (side == Direction.UP || side == Direction.DOWN) return false;
+    if (directionFromNeighborToThis == null) return false;
+    if (directionFromNeighborToThis == Direction.UP || directionFromNeighborToThis == Direction.DOWN) return false;
 
     // we can connect to three of the four side faces - if the block is facing north, then we can
     //  connect to WEST, SOUTH, or EAST.
 
-    Direction whichFaceOfLamp = side.getOpposite();
-    Direction blockFacingDirection = (Direction)state.getValue(PROPERTYFACING);
+    Direction whichFaceOfLamp = directionFromNeighborToThis.getOpposite();
+    Direction blockFacingDirection = state.get(DIRECTION_OF_UNCONNECTED_FACE);
 
     if (whichFaceOfLamp == blockFacingDirection) return false;
     return true;
   }
 
-  // Called when a neighbouring block changes.
-  // Only called on the server side- so it doesn't help us alter rendering on the client side.
-  // For that, we need to store the information in the tileentity and trigger a block update to send the
-  //   information to the client side
-  // I have no idea why this method is deprecated in 10.1.2.
-  @Override
-  public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block neighborBlock, BlockPos neighborPos)
-  {
-    TileEntity tileentity = worldIn.getTileEntity(pos);
-    if (tileentity instanceof TileEntityRedstoneColouredLamp) { // prevent a crash if not the right type, or is null
-      TileEntityRedstoneColouredLamp tileEntityRedstoneColouredLamp = (TileEntityRedstoneColouredLamp) tileentity;
-      int currentLampColour = tileEntityRedstoneColouredLamp.getRGBcolour();
-      int newLampColour = calculateLampColour(worldIn, pos, state);
+  // ---- methods to control placement of the target (must be on a solid wall)
+  // copied and adapted from WallSignBlock
 
-      if (newLampColour != currentLampColour) {
-        tileEntityRedstoneColouredLamp.setRGBcolour(newLampColour);
-        BlockState iblockstate = worldIn.getBlockState(pos);
-        final int FLAGS = 3;  // I'm not sure what these flags do, exactly.
-        worldIn.notifyBlockUpdate(pos, iblockstate, iblockstate, FLAGS);
+  // when the block is placed into the world, calculates the correct BlockState based on which direction the player is looking
+  // Don't worry about the lamp colour yet, that's handled in onBlockPlacedBy()
+  @Nullable
+  @Override
+  public BlockState getStateForPlacement(BlockItemUseContext context) {
+    BlockState blockstate = this.getDefaultState();
+    World world = context.getWorld();
+    BlockPos blockpos = context.getPos();
+    Direction [] nearestLookingDirections = context.getNearestLookingDirections();
+
+    for (Direction direction : nearestLookingDirections) {
+      if (direction.getAxis().isHorizontal()) {
+        blockstate = blockstate.with(DIRECTION_OF_UNCONNECTED_FACE, direction);
+        if (blockstate.isValidPosition(world, blockpos)) {
+          return blockstate;
+        }
       }
+    }
+
+    return null;
+  }
+
+  // ---- methods to handle changes in state and inform neighbours when necessary
+
+  // Called just after the player places a block.  Sets the lamp's colour.
+  @Override
+  public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+    super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
+    BlockState newBlockState = getLampColourFromInputs(worldIn, pos, state);
+    final int FLAGS = SetBlockStateFlag.get(SetBlockStateFlag.BLOCK_UPDATE, SetBlockStateFlag.SEND_TO_CLIENTS);
+    worldIn.setBlockState(pos, newBlockState, FLAGS);
+  }
+
+  /**
+   * A neighbour has updated their state.  Check if redstone strength inputs have changed
+   */
+  @Override
+  public void neighborChanged(BlockState currentState, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
+    BlockState newBlockState = getLampColourFromInputs(worldIn, pos, currentState);
+    if (newBlockState != currentState) {
+      final int FLAGS = SetBlockStateFlag.get(SetBlockStateFlag.BLOCK_UPDATE, SetBlockStateFlag.SEND_TO_CLIENTS);
+      worldIn.setBlockState(pos, newBlockState, FLAGS);
     }
   }
 
-  // -----------------
-  // The following methods control the appearance of the block.
-  @OnlyIn(Dist.CLIENT)
-  public BlockRenderLayer getBlockLayer()
-  {
-    return BlockRenderLayer.CUTOUT_MIPPED;
-  }
+  //----- methods related to the block's appearance (see MBE01_BLOCK_SIMPLE and MBE02_BLOCK_PARTIAL)
 
-  // used by the renderer to control lighting and visibility of other block.
-  // set to true because this block is opaque and occupies the entire 1x1x1 space
-  // not strictly required because the default (super method) is true
   @Override
-  public boolean isOpaqueCube(BlockState iBlockState) {
-    return true;
+  public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+    return VoxelShapes.fullCube();
   }
 
-  // used by the renderer to control lighting and visibility of other block, also by
-  // (eg) wall or fence to control whether the fence joins itself to this block
-  // set to true because this block occupies the entire 1x1x1 space
-  // not strictly required because the default (super method) is true
-  @Override
-  public boolean isFullCube(BlockState iBlockState) {
-    return true;
-  }
-
-  // render using a BakedModel (mbe01_block_simple.json --> mbe01_block_simple_model.json)
+  // render using a BakedModel
   // not strictly required because the default (super method) is MODEL.
   @Override
   public BlockRenderType getRenderType(BlockState iBlockState) {
