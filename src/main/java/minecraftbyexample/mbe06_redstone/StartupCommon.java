@@ -6,6 +6,7 @@ package minecraftbyexample.mbe06_redstone;
 //import minecraftbyexample.mbe06_redstone.input_and_output.TileEntityRedstoneMeter;
 //import minecraftbyexample.mbe06_redstone.output_only.BlockRedstoneTarget;
 import minecraftbyexample.mbe06_redstone.input.BlockRedstoneColouredLamp;
+import minecraftbyexample.mbe06_redstone.input_and_output.BlockRedstoneMeter;
 import minecraftbyexample.mbe06_redstone.output_only.BlockRedstoneTarget;
 import minecraftbyexample.mbe06_redstone.output_only.BlockRedstoneVariableSource;
 import net.minecraft.block.Block;
@@ -27,7 +28,7 @@ public class StartupCommon
 {
   public static BlockRedstoneColouredLamp blockRedstoneColouredLamp;
   public static BlockRedstoneTarget blockRedstoneTarget;
-//  public static BlockRedstoneMeter blockRedstoneMeter;
+  public static BlockRedstoneMeter blockRedstoneMeter;
   public static BlockRedstoneVariableSource blockRedstoneVariableSource;
 
   public static BlockItem itemBlockRedstoneColouredLamp;
@@ -97,6 +98,10 @@ public class StartupCommon
             .setRegistryName("minecraftbyexample", "mbe06b_block_redstone_target_registry_name"));
     blockRegisterEvent.getRegistry().register(blockRedstoneTarget);
 
+    blockRedstoneMeter = (BlockRedstoneMeter) (new BlockRedstoneMeter()
+            .setRegistryName("minecraftbyexample", "mbe06c_block_redstone_meter_registry_name"));
+    blockRegisterEvent.getRegistry().register(blockRedstoneMeter);
+
     blockRedstoneColouredLamp = (BlockRedstoneColouredLamp) (new BlockRedstoneColouredLamp()
             .setRegistryName("minecraftbyexample", "mbe06d_block_redstone_coloured_lamp_registry_name"));
     blockRegisterEvent.getRegistry().register(blockRedstoneColouredLamp);
@@ -118,6 +123,10 @@ public class StartupCommon
     itemBlockRedstoneTarget = new BlockItem(blockRedstoneTarget, itemProperties);
     itemBlockRedstoneTarget.setRegistryName(blockRedstoneTarget.getRegistryName());
     itemRegisterEvent.getRegistry().register(itemBlockRedstoneTarget);
+
+    itemBlockRedstoneMeter = new BlockItem(blockRedstoneMeter, itemProperties);
+    itemBlockRedstoneMeter.setRegistryName(blockRedstoneMeter.getRegistryName());
+    itemRegisterEvent.getRegistry().register(itemBlockRedstoneMeter);
 
     itemBlockRedstoneColouredLamp = new BlockItem(blockRedstoneColouredLamp, itemProperties);
     itemBlockRedstoneColouredLamp.setRegistryName(blockRedstoneColouredLamp.getRegistryName());

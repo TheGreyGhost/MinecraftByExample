@@ -66,6 +66,7 @@ public class StartupClientOnly
     RenderTypeLookup.setRenderLayer(StartupCommon.blockRedstoneVariableSource, RenderType.getSolid());
     RenderTypeLookup.setRenderLayer(StartupCommon.blockRedstoneTarget, RenderType.getSolid());
     RenderTypeLookup.setRenderLayer(StartupCommon.blockRedstoneColouredLamp, RenderType.getCutoutMipped());
+    RenderTypeLookup.setRenderLayer(StartupCommon.blockRedstoneMeter, RenderType.getCutoutMipped());
   }
 
   @SubscribeEvent

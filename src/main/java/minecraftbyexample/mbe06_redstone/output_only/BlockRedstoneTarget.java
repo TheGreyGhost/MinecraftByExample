@@ -76,14 +76,14 @@ public class BlockRedstoneTarget extends Block
 
   /**
    *  Asks the target block how much power it is providing to a neighbour
-   * @param blockAccess
+   * @param blockReader
    * @param pos the position of this block
    * @param blockState the blockstate of this block
    * @param directionFromNeighborToThis eg EAST means that this is to the EAST of the block which is asking for strong power
    * @return The power provided [0 - 15]
    */
   @Override
-  public int getStrongPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction directionFromNeighborToThis) {
+  public int getStrongPower(BlockState blockState, IBlockReader blockReader, BlockPos pos, Direction directionFromNeighborToThis) {
     Direction directionThatBackIsPointing = blockState.get(DIRECTION_THAT_BACK_IS_POINTING);
     Direction directionFromThisToNeighbor = directionFromNeighborToThis.getOpposite();
     // only provide strong power through the back of the target.  If the direction that the back is pointing is east,
