@@ -24,6 +24,7 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.awt.*;
 
 /**
  * User: The Grey Ghost
@@ -37,7 +38,9 @@ public class BlockRedstoneColouredLamp extends Block
 {
   public BlockRedstoneColouredLamp()
   {
-    super(Block.Properties.create(Material.IRON));
+    super(Block.Properties.create(Material.IRON).notSolid());
+    // notSolid is required to make the lighting work properly (affects ambient occlusion calculations) -
+    // for blocks which emit light, notSolid ensures that the skylight is added to the blocklight when calculating lighting
   }
 
   //----- methods related to redstone
@@ -171,6 +174,27 @@ public class BlockRedstoneColouredLamp extends Block
   // necessary to define which properties your block use - will also affect the variants listed in the blockstates model file
   protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
     builder.add(RED_INTENSITY).add(GREEN_INTENSITY).add(BLUE_INTENSITY).add(DIRECTION_OF_UNCONNECTED_FACE);
+  }
+
+  // returns the RGB colour of the lamp based on the current redstone inputs
+  public static int getRGBlampColour(BlockState state) {
+    int red_intensity = state.get(RED_INTENSITY);
+    int green_intensity = state.get(GREEN_INTENSITY);
+    int blue_intensity = state.get(BLUE_INTENSITY);
+
+    final int MIN_COMPONENT_VALUE = 0;
+    final int MAX_COMPONENT_VALUE = 255;
+    int redComponent = (int)UsefulFunctions.interpolate_with_clipping(red_intensity,
+                                                                      MIN_INTENSITY, MAX_INTENSITY,
+                                                                      MIN_COMPONENT_VALUE, MAX_COMPONENT_VALUE);
+    int greenComponent = (int)UsefulFunctions.interpolate_with_clipping(green_intensity,
+                                                                        MIN_INTENSITY, MAX_INTENSITY,
+                                                                        MIN_COMPONENT_VALUE, MAX_COMPONENT_VALUE);
+    int blueComponent = (int)UsefulFunctions.interpolate_with_clipping(blue_intensity,
+                                                                       MIN_INTENSITY, MAX_INTENSITY,
+                                                                       MIN_COMPONENT_VALUE, MAX_COMPONENT_VALUE);
+    Color lampColour = new Color(redComponent, greenComponent, blueComponent);
+    return lampColour.getRGB();
   }
 
   /**

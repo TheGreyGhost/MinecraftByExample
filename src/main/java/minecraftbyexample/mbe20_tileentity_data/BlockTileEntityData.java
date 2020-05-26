@@ -38,7 +38,7 @@ public class BlockTileEntityData extends Block
   // Called when the block is placed or loaded client side to get the tile entity for the block
   // Should return a new instance of the tile entity for the block
   @Override
-  public TileEntity createTileEntity(BlockState state, IBlockReader world) {return new  TileEntityData();}
+  public TileEntity createTileEntity(BlockState state, IBlockReader world) {return new TileEntityData();}
 
   // Called just after the player places a block.  Start the tileEntity's timer
   @Override

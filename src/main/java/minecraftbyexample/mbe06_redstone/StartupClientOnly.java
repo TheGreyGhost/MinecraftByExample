@@ -8,8 +8,11 @@ package minecraftbyexample.mbe06_redstone;
 //import net.minecraftforge.client.model.ModelLoader;
 //import net.minecraftforge.fml.client.registry.ClientRegistry;
 
+import minecraftbyexample.mbe06_redstone.input.LampColour;
+import minecraftbyexample.mbe11_item_variants.LiquidColour;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
@@ -65,4 +68,11 @@ public class StartupClientOnly
     RenderTypeLookup.setRenderLayer(StartupCommon.blockRedstoneColouredLamp, RenderType.getCutoutMipped());
   }
 
+  @SubscribeEvent
+  public static void onColorHandlerEvent(ColorHandlerEvent.Block event)
+  {
+    // the LiquidColour lambda function is used to change the rendering colour of the liquid in the bottle
+    // i.e.: when vanilla wants to know what colour to render our itemVariants instance, it calls the LiquidColour lambda function
+    event.getBlockColors().register(new LampColour(), StartupCommon.blockRedstoneColouredLamp);
+  }
 }

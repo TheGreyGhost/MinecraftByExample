@@ -3,6 +3,6 @@ It illustrates how to read the power inputs from adjacent blocks.
 It also shows how to change the colour of the rendered block using IBlockColor, similar to RedstoneWireBlock.colorMultiplier
 Unlike previous versions of minecraft, this method relies on using blockstates to select the colour.  This is only
 practical if the amount of information is limited.
-i.e. for this example, the RGB lamp has 4x4x4 = 64 different blockstates.  But if we used 0->15 for each power input, it
-  would give 16x16x16 = 4096 blockstates which is unreasonable.
-In this case we would need to use a TileEntity to store the information instead (with a TileEntityRenderer to render the lamp)
+i.e. for this example, the RGB lamp has 4x 5x5x5 = 600 different blockstates.  But if we used 0->15 for each power input, it
+  would give 4x 16x16x16 = 16384 blockstates which is unreasonable.
+In that case we would need to use a TileEntity to store the information instead (with a TileEntityRenderer to render the lamp)

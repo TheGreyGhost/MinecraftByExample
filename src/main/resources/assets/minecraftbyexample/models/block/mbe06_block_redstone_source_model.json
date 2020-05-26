@@ -1,6 +1,7 @@
 {
-    "parent": "block/cube",
-    "textures": {
+  "parent": "block/cube",
+  "ambientocclusion": false,
+  "textures": {
         "down": "block/redstone_block",
         "up": "block/redstone_block",
         "north": "block/redstone_block",

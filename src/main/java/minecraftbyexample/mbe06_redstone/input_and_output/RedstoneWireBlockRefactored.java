@@ -147,40 +147,40 @@ public class RedstoneWireBlockRefactored extends Block {
 
    }
 
-   private RedstoneSide getWireSideState(IBlockReader worldIn, BlockPos thisPos, Direction whichSide) {
-      BlockPos sideBlockPos = thisPos.offset(whichSide);
-      BlockState sideBlockState = worldIn.getBlockState(sideBlockPos);
-      BlockPos upBlockPos = thisPos.up();
-      BlockState upBlockState = worldIn.getBlockState(upBlockPos);
+ private RedstoneSide getWireSideState(IBlockReader worldIn, BlockPos thisPos, Direction whichSide) {
+    BlockPos sideBlockPos = thisPos.offset(whichSide);
+    BlockState sideBlockState = worldIn.getBlockState(sideBlockPos);
+    BlockPos upBlockPos = thisPos.up();
+    BlockState upBlockState = worldIn.getBlockState(upBlockPos);
 
-      // first: check if the wire can go up:
-      //     the block above the wire is empty, and
-      //     the block to the side has a solid top (eg stone block, or slab placed in upper half space), and
-      //     the block on top of the block to the side can be connected to non-directionally
-      //   if so: check the side of the side block: if solid (eg stone block), redstone runs up the side of the block
-      //            if side is not solid (eg slab): redstone goes to the side of the block but does not run up the face
-      if (!upBlockState.isNormalCube(worldIn, upBlockPos)) {
-         boolean sideBlockHasSolidTop = sideBlockState.isSolidSide(worldIn, sideBlockPos, Direction.UP) || sideBlockState.getBlock() == Blocks.HOPPER;
-         BlockPos aboveSideBlockPos = sideBlockPos.up();
-         BlockState aboveSideBlockState = worldIn.getBlockState(aboveSideBlockPos);
+    // first: check if the wire can go up:
+    //     the block above the wire is empty, and
+    //     the block to the side has a solid top (eg stone block, or slab placed in upper half space), and
+    //     the block on top of the block to the side can be connected to using side==null
+    //   if so: check the side of the side block: if solid (eg stone block), redstone runs up the side of the block
+    //            if side is not solid (eg slab): redstone goes to the side of the block but does not run up the face
+    if (!upBlockState.isNormalCube(worldIn, upBlockPos)) {
+       boolean sideBlockHasSolidTop = sideBlockState.isSolidSide(worldIn, sideBlockPos, Direction.UP) || sideBlockState.getBlock() == Blocks.HOPPER;
+       BlockPos aboveSideBlockPos = sideBlockPos.up();
+       BlockState aboveSideBlockState = worldIn.getBlockState(aboveSideBlockPos);
 
-         if (sideBlockHasSolidTop && canConnectTo(aboveSideBlockState, worldIn, aboveSideBlockPos, null)) {
-            if (sideBlockState.isCollisionShapeOpaque(worldIn, sideBlockPos)) {
-               return RedstoneSide.UP;
-            }
+       if (sideBlockHasSolidTop && canConnectTo(aboveSideBlockState, worldIn, aboveSideBlockPos, null)) {
+          if (sideBlockState.isCollisionShapeOpaque(worldIn, sideBlockPos)) {
+             return RedstoneSide.UP;
+          }
 
-            return RedstoneSide.SIDE;
-         }
-      }
+          return RedstoneSide.SIDE;
+       }
+    }
 
-      // if we can connect to the side of the block, return SIDE
-     //  otherwise, if the block to the side is empty and the block below the block to the side  can be connected to non-directionally, SIDE
+    // if we can connect to the side of the block, return SIDE
+   //  otherwise, if the block to the side is empty and the block below the block to the side can be connected to side==null, SIDE
 
-      if (canConnectTo(sideBlockState, worldIn, sideBlockPos, whichSide)) return RedstoneSide.SIDE;
-      if (sideBlockState.isNormalCube(worldIn, sideBlockPos)) return RedstoneSide.NONE;
-      if (canConnectTo(worldIn.getBlockState(sideBlockPos.down()), worldIn, sideBlockPos.down(), null)) return RedstoneSide.SIDE;
-      return RedstoneSide.NONE;
-   }
+    if (canConnectTo(sideBlockState, worldIn, sideBlockPos, whichSide)) return RedstoneSide.SIDE;
+    if (sideBlockState.isNormalCube(worldIn, sideBlockPos)) return RedstoneSide.NONE;
+    if (canConnectTo(worldIn.getBlockState(sideBlockPos.down()), worldIn, sideBlockPos.down(), null)) return RedstoneSide.SIDE;
+    return RedstoneSide.NONE;
+ }
 
    public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
       BlockPos blockpos = pos.down();

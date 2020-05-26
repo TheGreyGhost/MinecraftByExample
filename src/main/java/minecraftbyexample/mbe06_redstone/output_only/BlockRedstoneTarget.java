@@ -6,6 +6,7 @@ import minecraftbyexample.usefultools.SetBlockStateFlag;
 import minecraftbyexample.usefultools.UsefulFunctions;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.fluid.IFluidState;
@@ -149,6 +150,10 @@ public class BlockRedstoneTarget extends Block
 
   // ---- methods to handle changes in state and inform neighbours when necessary
 
+  // The trigger to turn on the power is when an arrow strikes the target and calls onProjectileCollision
+  // There is no trigger to turn off the power when the arrow disappears or it removed by the player; so instead we
+  //   use a scheduled tick to check once per second whether the arrow is still present or not.
+
   /**
    * Called when a projectile strikes the block
    * In this case - we check if an arrow has collided.
@@ -179,7 +184,7 @@ public class BlockRedstoneTarget extends Block
 
     for (AbstractArrowEntity embeddedEntity : embeddedArrows) {
       if (embeddedEntity.getEntityId() != projectile.getEntityId()) {
-        projectile.remove();
+        embeddedEntity.remove();
       }
     }
 
@@ -189,6 +194,47 @@ public class BlockRedstoneTarget extends Block
     final int FLAGS = SetBlockStateFlag.get(SetBlockStateFlag.BLOCK_UPDATE, SetBlockStateFlag.SEND_TO_CLIENTS);
     world.setBlockState(blockPos, newBlockState, FLAGS);
     informNeighborsOfPowerChange(newBlockState, world, blockPos);
+
+    // start periodically checking whether the arrow has disappeared or been removed
+    world.getPendingBlockTicks().scheduleTick(blockPos, this, this.tickRate(world));
+  }
+
+  /**
+   * Perform a scheduled update for this block
+   * Checks to see if all arrows have been removed, and if so turn off the power.
+   * @param world
+   * @param pos
+   * @param state
+   * @param rand
+   */
+  @Override
+  public void tick(BlockState state, ServerWorld world, BlockPos pos, Random rand) {
+    if (!hasAtLeastOneArrow(state)) return;
+
+    // search for all arrow entities which are colliding with the target
+
+    VoxelShape voxelShape = state.getCollisionShape(world, pos);
+    AxisAlignedBB targetAABB = voxelShape.getBoundingBox();
+    AxisAlignedBB targetAABBinWorld = targetAABB.offset(pos);
+    List<AbstractArrowEntity> embeddedArrows = world.getEntitiesWithinAABB(AbstractArrowEntity.class, targetAABBinWorld);
+
+    if (embeddedArrows.isEmpty()) {
+      BlockState newBlockState = state.with(ARROW_DISTANCE_FROM_CENTRE, NO_ARROW);
+      final int FLAGS = SetBlockStateFlag.get(SetBlockStateFlag.BLOCK_UPDATE, SetBlockStateFlag.SEND_TO_CLIENTS);
+      world.setBlockState(pos, newBlockState, FLAGS);
+      informNeighborsOfPowerChange(newBlockState, world, pos);
+    } else {
+      world.getPendingBlockTicks().scheduleTick(pos, this, this.tickRate(world));
+    }
+  }
+
+  /**
+   * How often should we tick this block?
+   */
+  public int tickRate(IWorldReader worldIn) {
+    final int TICKS_PER_SECOND = 20;
+    final int TICK_PERIOD_IN_SECONDS = 1;
+    return TICK_PERIOD_IN_SECONDS * TICKS_PER_SECOND;
   }
 
   /**
@@ -223,23 +269,6 @@ public class BlockRedstoneTarget extends Block
     // since I am giving strong power to the neighbouring wall, inform the wall's neighbours of a change in strong power
     Direction directionOfNeighbouringWall = directionThatBackIsPointing;
     world.notifyNeighborsOfStateChange(blockPos.offset(directionOfNeighbouringWall), this);
-  }
-
-  /**
-   * Perform a scheduled update for this block
-   * @param worldIn
-   * @param pos
-   * @param state
-   * @param rand
-   */
-  @Override
-  public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random rand) {
-    // depending on what your block does, you may need to implement updateTick and schedule updateTicks using
-    //         worldIn.scheduleUpdate(pos, this, 4);
-    // For vanilla examples see BlockButton, BlockRedstoneLight
-    // nothing required for this example
-
-    update here to check for arrows every second
   }
 
   //----- methods related to the block's appearance (see MBE01_BLOCK_SIMPLE and MBE02_BLOCK_PARTIAL)

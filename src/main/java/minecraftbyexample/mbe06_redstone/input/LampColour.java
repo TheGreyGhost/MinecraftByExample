@@ -32,9 +32,7 @@ public class LampColour implements IBlockColor {
    */
   @Override
   public int getColor(BlockState blockState, ILightReader iLightReader, BlockPos blockPos, int tintIndex) {
-
-
-      int rgbColour = 0;
+      int rgbColour = BlockRedstoneColouredLamp.getRGBlampColour(blockState);
       return rgbColour;
   }
 }
