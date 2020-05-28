@@ -9,7 +9,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 /**
  * Created by TGG on 29/11/2015.
  * Utility class to toggle an output between ON and OFF at a given rate.
- * Uses scheduled updates to do the toggling.
+ * Uses scheduled updates of a parent block to do the toggling.
  *
  * Typical usage:
  * (1) create the ScheduledTogglingOutput
@@ -75,9 +75,6 @@ public class ScheduledTogglingOutput
 
   private void scheduleNextTick(World world, BlockPos pos, Block block, boolean reset)
   {
-
-    !worldIn.getPendingBlockTicks().isTickPending(pos, this)
-
     if (!togglingIsActive) return;
     if (reset || ticksTillOutputStateChange == 0) {
       ticksTillOutputStateChange = (outputState == true) ? onTicks : offTicks;
@@ -85,11 +82,10 @@ public class ScheduledTogglingOutput
     final int MAXIMUM_DELAY_UNTIL_NEXT_UPDATE = 20;  // always tick at least once every 20 ticks.
     lastTickDelay = Math.min(ticksTillOutputStateChange, MAXIMUM_DELAY_UNTIL_NEXT_UPDATE);
     if (lastTickDelay != 0) {  // should never happen, but be defensive...
-      world.scheduleUpdate(pos, block, lastTickDelay);
+      world.getPendingBlockTicks().scheduleTick(pos, block, lastTickDelay);
     }
     return;
   }
-
 
   public boolean isOn()
   {
@@ -102,5 +98,4 @@ public class ScheduledTogglingOutput
   private int onTicks = 0;
   private int offTicks = 0;
   private boolean togglingIsActive = false;
-
 }

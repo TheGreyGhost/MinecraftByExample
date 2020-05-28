@@ -137,11 +137,14 @@ public class BlockRedstoneMeter extends Block
   //  Scheduling of ticks is by calling  world.scheduleTick(pos, block, numberOfTicksToDelay);
   //
   @Override
-  public void tick(BlockState state, ServerWorld world, BlockPos pos, Random rand)
-  {
+  public void tick(BlockState state, ServerWorld world, BlockPos pos, Random rand) {
 //    calculatePowerInputAndNotifyNeighbors(world, pos);
 
-  to do here: use stored power to update flasher  
+    TileEntity te = world.getTileEntity(pos);
+    if (te instanceof TileEntityRedstoneMeter) {
+      TileEntityRedstoneMeter tileEntityRedstoneMeter = (TileEntityRedstoneMeter)te;
+      tileEntityRedstoneMeter.onScheduledTick(world, pos, state.getBlock());
+    }
   }
 
   /**
@@ -149,7 +152,7 @@ public class BlockRedstoneMeter extends Block
    */
   @Override
   public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-    worldIn.getPendingBlockTicks().scheduleTick(pos, this, 1);
+    worldIn.getPendingBlockTicks().scheduleTick(pos, this, 1); // kick start the ticking
   }
 
   // not needed for this block because we have only one blockstate
@@ -172,7 +175,7 @@ public class BlockRedstoneMeter extends Block
 
       boolean currentOutputState = tileEntityRedstoneMeter.getOutputState();
       tileEntityRedstoneMeter.setPowerLevel(powerLevel);
-      // this method will also schedule the next tick using call world.scheduleUpdate(pos, block, lastTickDelay);
+      // this method will also schedule the next tick using call world.scheduleTick(pos, block, delay);
 
       if (currentOutputState != tileEntityRedstoneMeter.getOutputState()) {
         world.notifyNeighborsOfStateChange(pos, this);

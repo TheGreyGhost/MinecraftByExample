@@ -1,6 +1,7 @@
 package minecraftbyexample.mbe06_redstone.input_and_output;
 
 import minecraftbyexample.usefultools.UsefulFunctions;
+import net.minecraft.block.Block;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
@@ -8,6 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nullable;
 
@@ -66,9 +68,9 @@ public class TileEntityRedstoneMeter extends TileEntity {
   /** whenever a scheduled block update occurs, call this method
    *
    */
-  public void onScheduledUpdateTick()
+  public void onScheduledTick(ServerWorld world, BlockPos pos, Block block)
   {
-    scheduledTogglingOutput.onUpdateTick(this.getWorld(), this.getPos(), this.getBlockType());
+    scheduledTogglingOutput.onUpdateTick(world, pos, block);
   }
 
    /**
@@ -90,17 +92,16 @@ public class TileEntityRedstoneMeter extends TileEntity {
       final int FASTEST_ON_TIME = 5; // ticks
       final int SLOWEST_PERIOD = 80; // ticks
       final int FASTEST_PERIOD = 10;  // ticks
-      int periodTicks = (int)UsefulFunctions.interpolate(newPowerLevel, LOWEST_POWER, HIGHEST_POWER, SLOWEST_PERIOD, FASTEST_PERIOD);
+      int periodTicks = (int)UsefulFunctions.interpolate_with_clipping(newPowerLevel, LOWEST_POWER, HIGHEST_POWER, SLOWEST_PERIOD, FASTEST_PERIOD);
       int onTicks = (int) UsefulFunctions
-              .interpolate(newPowerLevel, LOWEST_POWER, HIGHEST_POWER, SLOWEST_ON_TIME, FASTEST_ON_TIME);
-      scheduledTogglingOutput.setToggleRate(this.getWorld(), this.getPos(), this.getBlockType(), onTicks, periodTicks);
+              .interpolate_with_clipping(newPowerLevel, LOWEST_POWER, HIGHEST_POWER, SLOWEST_ON_TIME, FASTEST_ON_TIME);
+      scheduledTogglingOutput.setToggleRate(this.getWorld(), this.getPos(), this.getBlockState().getBlock(), onTicks, periodTicks);
     }
   }
 
   private ScheduledTogglingOutput scheduledTogglingOutput = new ScheduledTogglingOutput();
 
   private int storedPowerLevel;
-
 
   //---------- general TileEntity methods
   // When the world loads from disk, the server needs to send the TileEntity information to the client
