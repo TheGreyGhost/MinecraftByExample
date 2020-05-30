@@ -1,5 +1,6 @@
 package minecraftbyexample.mbe06_redstone.input_and_output;
 
+import minecraftbyexample.mbe06_redstone.StartupCommon;
 import minecraftbyexample.usefultools.UsefulFunctions;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.CompoundNBT;
@@ -9,48 +10,54 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nullable;
+import java.util.Iterator;
 
 /**
  * This TileEntity is used for two main purposes:
- *  1) on the client side - retrieve the current power level for rendering in the associated TileEntitySpecialRenderer (TESR)
- *  2) on the server side
- *     a) used to store the current power level.  This is necessary due to the way that the redstone signals propagate,
+ *  1) to store the current power level.  This is necessary due to the way that the redstone signals propagate,
  *        e.g. getWeakPower() must retrieve a stored value and not calculate it from neighbours.
  *        see here for more information http://greyminecraftcoder.blogspot.com/2020/05/redstone-1152.html
- *     b) used to flash the output at a defined rate using block tick scheduling.
+ *  2) It's alo used to flash the output at a defined rate using block tick scheduling.
  */
 public class TileEntityRedstoneMeter extends TileEntity {
 
-  //  --- client side methods used by the renderer
-
-  // Retrieve the current power level of the meter - the maximum of the four sides (don't look up or down)
-	public int getPowerLevelClient() {
-
-//    int powerLevel = this.worldObj.isBlockIndirectlyGettingPowered(this.pos);  // if input can come from any side, use this line
-
-    int maxPowerFound = 0;
-    for (Direction whichFace : Direction.HORIZONTALS) {
-      BlockPos neighborPos = pos.offset(whichFace);
-      int powerLevel = this.world.getRedstonePower(neighborPos, whichFace);
-      maxPowerFound = Math.max(powerLevel, maxPowerFound);
-    }
-    return maxPowerFound;
+  public TileEntityRedstoneMeter() {
+    super(StartupCommon.tileEntityDataTypeMBE06);
   }
 
+//  // Retrieve the current power level of the meter - the maximum of the four sides (don't look up or down)
+//  // Intended to be called by the renderer, which may be in its own thread.
+//  // I'm very wary of using any world methods from render threads, which is why I avoid using this.world.
+//	public int calculatePowerLevelClient(World worldIn) {
+//
+////    int powerLevel = this.worldObj.isBlockIndirectlyGettingPowered(this.pos);  // if input can come from any side, use this line
+//
+//    int maxPowerFound = 0;
+//    final Direction [] HORIZONTAL_DIRECTIONS = new Direction[] {Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
+//    // can also use Direction.Plane.HORIZONTAL.iterator() if you prefer
+//    for (Direction whichFace : HORIZONTAL_DIRECTIONS) {
+//      BlockPos neighborPos = pos.offset(whichFace);
+//      int powerLevel = worldIn.getRedstonePower(neighborPos, whichFace);
+//      maxPowerFound = Math.max(powerLevel, maxPowerFound);
+//    }
+//    return maxPowerFound;
+//  }
+
   // return the smoothed position of the needle, based on the power level
-  public double getSmoothedNeedlePosition()
-  {
-    int newPowerLevel = getPowerLevelClient();
-    if (newPowerLevel != lastPowerLevel) {
-      lastPowerLevel = newPowerLevel;
-      double targetNeedlePosition = getPowerLevelClient() / 15.0;
+  public double getSmoothedNeedlePosition() {
+    return smoothNeedleMovement.getSmoothedNeedlePosition();
+  }
+
+  private void updateNeedleFromPowerLevel() {
+    if (storedPowerLevel != lastPowerLevel) {
+      lastPowerLevel = storedPowerLevel;
+      double targetNeedlePosition = storedPowerLevel / 15.0;
       smoothNeedleMovement.setTargetNeedlePosition(targetNeedlePosition, false);
     }
-
-    return smoothNeedleMovement.getSmoothedNeedlePosition();
   }
 
   private final double NEEDLE_ACCELERATION = 0.4; // acceleration in units per square second
@@ -76,7 +83,7 @@ public class TileEntityRedstoneMeter extends TileEntity {
    /**
    *  Change the stored power level (and alters the flashing rate of the power output)
    */
-  public void setPowerLevel(int newPowerLevel)
+  public void setPowerLevelServer(int newPowerLevel)
   {
     if (newPowerLevel == storedPowerLevel) return;
     storedPowerLevel = newPowerLevel;
@@ -101,58 +108,38 @@ public class TileEntityRedstoneMeter extends TileEntity {
 
   private ScheduledTogglingOutput scheduledTogglingOutput = new ScheduledTogglingOutput();
 
+  private final int MIN_POWER_LEVEL = 0;
+  private final int MAX_POWER_LEVEL = 15;
   private int storedPowerLevel;
 
   //---------- general TileEntity methods
+
   // When the world loads from disk, the server needs to send the TileEntity information to the client
-  //  it uses getUpdatePacket(), getUpdateTag(), onDataPacket(), and handleUpdateTag() to do this
-  // The tag information is loaded and saved using writeToNBT and readFromNBT.
-  // In this case, the power level is recalculated every tick on the client anyway, so we don't need to send anything,
-  //   but we do need to store the power level on the server, to allow for proper calculation of the redstone power
-  //  The update packet methods are shown here for information, even though they're not needed for this example.
-
-  // This is where you save any data that you don't want to lose when the tile entity unloads
-  @Override
-  public CompoundNBT writeToNBT(CompoundNBT parentNBTTagCompound)
-  {
-    super.writeToNBT(parentNBTTagCompound); // The super call is required to save the tiles location
-    parentNBTTagCompound.setInteger("storedPowerLevel", storedPowerLevel);
-    return parentNBTTagCompound;
-  }
-
-  // This is where you load the data that you saved in writeToNBT
-  @Override
-  public void readFromNBT(CompoundNBT parentNBTTagCompound)
-  {
-    super.readFromNBT(parentNBTTagCompound); // The super call is required to load the tiles location
-    storedPowerLevel = parentNBTTagCompound.getInteger("storedPowerLevel");  // defaults to 0 if not found
-    if (storedPowerLevel < 0 ) storedPowerLevel = 0;
-    if (storedPowerLevel > 15 ) storedPowerLevel = 15;
-  }
-
+  //  it uses getUpdatePacket(), getUpdateTag(), onDataPacket(), and handleUpdateTag() to do this:
+  //  getUpdatePacket() and onDataPacket() are used for one-at-a-time TileEntity updates
+  //  getUpdateTag() and handleUpdateTag() are used by vanilla to collate together into a single chunk update packet
   @Override
   @Nullable
   public SUpdateTileEntityPacket getUpdatePacket()
   {
     CompoundNBT updateTagDescribingTileEntityState = getUpdateTag();
-    int metadata = getBlockMetadata();
-    return new SUpdateTileEntityPacket(this.pos, metadata, updateTagDescribingTileEntityState);
+    int tileEntityType = 6;  // arbitrary number; only used for vanilla TileEntities.  You can use it, or not, as you want.
+    return new SUpdateTileEntityPacket(this.pos, tileEntityType, updateTagDescribingTileEntityState);
   }
 
   @Override
   public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-    CompoundNBT updateTagDescribingTileEntityState = pkt.getNbtCompound();
-    handleUpdateTag(updateTagDescribingTileEntityState);
+    read(pkt.getNbtCompound());
+    updateNeedleFromPowerLevel();
   }
 
   /* Creates a tag containing the TileEntity information, used by vanilla to transmit from server to client
      Warning - although our getUpdatePacket() uses this method, vanilla also calls it directly, so don't remove it.
    */
   @Override
-  public CompoundNBT getUpdateTag()
-  {
+  public CompoundNBT getUpdateTag()  {
     CompoundNBT nbtTagCompound = new CompoundNBT();
-    writeToNBT(nbtTagCompound);
+    write(nbtTagCompound);
     return nbtTagCompound;
   }
 
@@ -160,31 +147,37 @@ public class TileEntityRedstoneMeter extends TileEntity {
    Warning - although our onDataPacket() uses this method, vanilla also calls it directly, so don't remove it.
  */
   @Override
-  public void handleUpdateTag(CompoundNBT tag)
-  {
-    this.readFromNBT(tag);
+  public void handleUpdateTag(CompoundNBT tag) {
+    this.read(tag);
+    updateNeedleFromPowerLevel();
   }
 
-	/**
-	 * Don't render the needle if the player is too far away
-	 * @return the maximum distance squared at which the TESR should render
-	 */
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public double getMaxRenderDistanceSquared()
-	{
-		final int MAXIMUM_DISTANCE_IN_BLOCKS = 32;
-		return MAXIMUM_DISTANCE_IN_BLOCKS * MAXIMUM_DISTANCE_IN_BLOCKS;
-	}
+  // This is where you save any data that you don't want to lose when the tile entity unloads
+  @Override
+  public CompoundNBT write(CompoundNBT parentNBTTagCompound)
+  {
+    super.write(parentNBTTagCompound); // The super call is required to save the tiles location
+    parentNBTTagCompound.putInt("storedPowerLevel", storedPowerLevel);
+    return parentNBTTagCompound;
+  }
 
-	/** Return an appropriate bounding box enclosing the TESR
-	 * This method is used to control whether the TESR should be rendered or not, depending on where the player is looking.
-	 * The default is the AABB for the parent block, which might be too small if the TESR renders outside the borders of the
+  // This is where you load the data that you saved in writeToNBT
+  @Override
+  public void read(CompoundNBT parentNBTTagCompound)
+  {
+    super.read(parentNBTTagCompound); // The super call is required to load the tiles location
+    storedPowerLevel = parentNBTTagCompound.getInt("storedPowerLevel");  // defaults to 0 if not found
+    if (storedPowerLevel < MIN_POWER_LEVEL ) storedPowerLevel = MIN_POWER_LEVEL;
+    if (storedPowerLevel > MAX_POWER_LEVEL ) storedPowerLevel = MAX_POWER_LEVEL;
+  }
+
+  /** Return an appropriate bounding box enclosing the TER
+	 * This method is used to control whether the TER should be rendered or not, depending on where the player is looking.
+	 * The default is the AABB for the parent block, which might be too small if the TER renders outside the borders of the
 	 *   parent block.
-	 * If you get the boundary too small, the TESR may disappear when you aren't looking directly at it.
+	 * If you get the boundary too small, the TER may disappear when you aren't looking directly at it.
 	 * @return an appropriately size AABB for the TileEntity
 	 */
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	public AxisAlignedBB getRenderBoundingBox()
 	{
@@ -195,5 +188,16 @@ public class TileEntityRedstoneMeter extends TileEntity {
 		AxisAlignedBB aabb = new AxisAlignedBB(getPos(), getPos().add(1, 1, 1));
 		return aabb;
 	}
+
+  /**
+   * Don't render the needle if the player is too far away
+   * @return the maximum distance squared at which the TER should render
+   */
+  @Override
+  public double getMaxRenderDistanceSquared()
+  {
+    final int MAXIMUM_DISTANCE_IN_BLOCKS = 32;
+    return MAXIMUM_DISTANCE_IN_BLOCKS * MAXIMUM_DISTANCE_IN_BLOCKS;
+  }
 
 }

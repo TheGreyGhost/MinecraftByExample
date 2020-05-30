@@ -6,8 +6,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.state.StateContainer;
-import net.minecraft.tileentity.ComparatorTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -174,7 +172,7 @@ public class BlockRedstoneMeter extends Block
       TileEntityRedstoneMeter tileEntityRedstoneMeter = (TileEntityRedstoneMeter) tileentity;
 
       boolean currentOutputState = tileEntityRedstoneMeter.getOutputState();
-      tileEntityRedstoneMeter.setPowerLevel(powerLevel);
+      tileEntityRedstoneMeter.setPowerLevelServer(powerLevel);
       // this method will also schedule the next tick using call world.scheduleTick(pos, block, delay);
 
       if (currentOutputState != tileEntityRedstoneMeter.getOutputState()) {
