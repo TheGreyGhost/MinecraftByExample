@@ -25,10 +25,7 @@ import java.util.Random;
  * BlockRedstoneMeter is a simple block with an associated TileEntity to render the block's power level.
  * The meter will also provide weak power to the block UP and DOWN (eg a light) - it flashes the light
  *   at a speed related to the input power.
- * We use a TileEntity because
- * 1) that's the easiest way to get the block's power level on the client side, without
- *   having to use metadata.
- * 2) our block needs to store the input power level, for later use when others call the getWeakPower().
+ * We use a TileEntity because our block needs to store the input power level, for later use when others call the getWeakPower().
  *    for the reason why, see http://greyminecraftcoder.blogspot.com/2020/05/redstone-1152.html
  */
 public class BlockRedstoneMeter extends Block
@@ -50,7 +47,6 @@ public class BlockRedstoneMeter extends Block
 
   // ------ methods relevant to redstone
   //  The methods below are used to provide power to neighbours.
-  //  If you are looking for the rendering redstone calculations, look in TileEntityRedstoneMeter.getPowerLevelClient()
 
   /**
    * This block can provide power
