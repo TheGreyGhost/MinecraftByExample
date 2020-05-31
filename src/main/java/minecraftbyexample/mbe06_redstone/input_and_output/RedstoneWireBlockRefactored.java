@@ -29,7 +29,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.*;
 
-/** Some parts of the code refactored to make it easier to understand
+/** Some parts of the vanilla code refactored to make it easier to understand
  *
  */
 

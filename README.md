@@ -46,7 +46,7 @@ See [here](https://greyminecraftcoder.blogspot.com/2020/05/minecraft-by-example.
         a camouflage ("secret door") block which dynamically changes its appearance to match adjacent blocks - uses IBlockModel.getQuads(), ModelBakeEvent, IForgeBakedModel and IModelData<br>
         an "altimeter" block which shows the block altitude (y coordinate) on the side in digital display - as camouflage block but uses programmatic generation of quads  
   - [MBE05][05] - multilayer block (lantern block with transparent glass) with animated flame texture
-  - X [MBE06][06] - several different types of block which use redstone
+  - [MBE06][06] - several different types of block which use redstone
   - [MBE08][08] - how to add a creative tab for organising your custom blocks / items
 
 ### Items

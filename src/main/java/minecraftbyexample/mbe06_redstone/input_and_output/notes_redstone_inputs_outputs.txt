@@ -5,16 +5,12 @@ The redstone meter shows two techniques:
 For (1):
 We want to change the appearance of our block based on the amount of redstone power it is receiving.
 This can't be done directly during Model rendering because the methods are not provided with access to the World, they are
- methods are provided with an IBlockAccess instead of a World; block rendering is multithreaded and
+ methods are provided with an IBlockReader instead of a World; block rendering is multithreaded and
   is performed on a cached copy of the world, which only stores some of the information and has no direct access to
   weak power methods.
-It could be done by storing the redstone power in a blockstate (similar to the BlockRedstoneColouredLamp), or it could also be done
- using a TileEntity with stored information that is sent from server to client.  This could then be used by the TileEntityRenderer
- or passed to the Block renderer using IForgeTileEntity.getModelData()
-
-The third alternative method we use here is to have a TileEntitySpecialRenderer draw the moving parts (i.e. the needle)-
-  the TESR has access to its TileEntity, which has access to World and hence all the redstone power methods, which it
-  can use to calculate the input power instead of having to retrieve from a stored value on the client side.
+It could be done by storing the redstone power in a blockstate (similar to the BlockRedstoneColouredLamp).
+The method we've used here is to use a TileEntity with stored information that is sent from server to client.  This is then
+  used by the TileEntityRenderer  (or could alternatively be passed to the Block renderer using IForgeTileEntity.getModelData())
 
 For (2):
 The key thing to understand is that the block must store its power level somehow on the server side, due to the way that

@@ -1,51 +1,32 @@
 package minecraftbyexample.mbe06_redstone.input_and_output;
 
 import minecraftbyexample.mbe06_redstone.StartupCommon;
+import minecraftbyexample.usefultools.SetBlockStateFlag;
 import minecraftbyexample.usefultools.UsefulFunctions;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nullable;
-import java.util.Iterator;
 
 /**
  * This TileEntity is used for two main purposes:
  *  1) to store the current power level.  This is necessary due to the way that the redstone signals propagate,
  *        e.g. getWeakPower() must retrieve a stored value and not calculate it from neighbours.
  *        see here for more information http://greyminecraftcoder.blogspot.com/2020/05/redstone-1152.html
- *  2) It's alo used to flash the output at a defined rate using block tick scheduling.
+ *  2) It's also used to flash the output at a defined rate using block tick scheduling.
  */
 public class TileEntityRedstoneMeter extends TileEntity {
 
   public TileEntityRedstoneMeter() {
     super(StartupCommon.tileEntityDataTypeMBE06);
   }
-
-//  // Retrieve the current power level of the meter - the maximum of the four sides (don't look up or down)
-//  // Intended to be called by the renderer, which may be in its own thread.
-//  // I'm very wary of using any world methods from render threads, which is why I avoid using this.world.
-//	public int calculatePowerLevelClient(World worldIn) {
-//
-////    int powerLevel = this.worldObj.isBlockIndirectlyGettingPowered(this.pos);  // if input can come from any side, use this line
-//
-//    int maxPowerFound = 0;
-//    final Direction [] HORIZONTAL_DIRECTIONS = new Direction[] {Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
-//    // can also use Direction.Plane.HORIZONTAL.iterator() if you prefer
-//    for (Direction whichFace : HORIZONTAL_DIRECTIONS) {
-//      BlockPos neighborPos = pos.offset(whichFace);
-//      int powerLevel = worldIn.getRedstonePower(neighborPos, whichFace);
-//      maxPowerFound = Math.max(powerLevel, maxPowerFound);
-//    }
-//    return maxPowerFound;
-//  }
 
   // return the smoothed position of the needle, based on the power level
   public double getSmoothedNeedlePosition() {
@@ -81,28 +62,48 @@ public class TileEntityRedstoneMeter extends TileEntity {
   }
 
    /**
-   *  Change the stored power level (and alters the flashing rate of the power output)
+   *  Change the stored power level (and alter the flashing rate of the power output)
    */
   public void setPowerLevelServer(int newPowerLevel)
   {
     if (newPowerLevel == storedPowerLevel) return;
     storedPowerLevel = newPowerLevel;
-    if (newPowerLevel == 0) {   // always off
+    BlockState blockState = this.getBlockState();
+    setTogglingRateFromPowerLevel(true);
+    // we've changed storedPowerLevel, so inform vanilla of the change to ensure it is sent to the client
+    this.markDirty();
+    int FLAGS = SetBlockStateFlag.get(SetBlockStateFlag.BLOCK_UPDATE, SetBlockStateFlag.SEND_TO_CLIENTS);
+    this.getWorld().notifyBlockUpdate(this.getPos(), blockState, blockState, FLAGS);
+  }
+
+  private void setTogglingRateFromPowerLevel(boolean restartTickingIfOff) {
+    if (this.world != null && this.world.isRemote()) return;  // do nothing on client
+    if (this.world == null) restartTickingIfOff = false;  // ensure we don't try to restart scheduling if there's no world
+
+    if (storedPowerLevel == 0) {   // always off
       scheduledTogglingOutput.setSteadyOutput(false);
-    } else if (newPowerLevel == 15) { // always on
+    } else if (storedPowerLevel == 15) { // always on
       scheduledTogglingOutput.setSteadyOutput(true);
     } else {
-          // flashing: slowest = 1 seconds in 4 seconds; fastest = 0.25 seconds in 0.5 seconds.
+      // flashing: slowest = 1 seconds in 4 seconds; fastest = 0.25 seconds in 0.5 seconds.
       final int LOWEST_POWER = 1;
       final int HIGHEST_POWER = 14;
       final int SLOWEST_ON_TIME = 20; // ticks
       final int FASTEST_ON_TIME = 5; // ticks
       final int SLOWEST_PERIOD = 80; // ticks
       final int FASTEST_PERIOD = 10;  // ticks
-      int periodTicks = (int)UsefulFunctions.interpolate_with_clipping(newPowerLevel, LOWEST_POWER, HIGHEST_POWER, SLOWEST_PERIOD, FASTEST_PERIOD);
+      int periodTicks = (int) UsefulFunctions.interpolate_with_clipping(storedPowerLevel, LOWEST_POWER, HIGHEST_POWER, SLOWEST_PERIOD, FASTEST_PERIOD);
       int onTicks = (int) UsefulFunctions
-              .interpolate_with_clipping(newPowerLevel, LOWEST_POWER, HIGHEST_POWER, SLOWEST_ON_TIME, FASTEST_ON_TIME);
-      scheduledTogglingOutput.setToggleRate(this.getWorld(), this.getPos(), this.getBlockState().getBlock(), onTicks, periodTicks);
+              .interpolate_with_clipping(storedPowerLevel, LOWEST_POWER, HIGHEST_POWER, SLOWEST_ON_TIME, FASTEST_ON_TIME);
+      scheduledTogglingOutput.changeToggleRate(onTicks, periodTicks);
+
+      if (restartTickingIfOff) {
+        // check that we're ticking the block (used for toggling the power output) - if not, start ticking
+        if (!world.getPendingBlockTicks().isTickPending(pos, this.getBlockState().getBlock())) {
+          final boolean FORCE_RESET = true;
+          scheduledTogglingOutput.scheduleNextTick(this.world, this.pos, this.getBlockState().getBlock(), FORCE_RESET);
+        }
+      }
     }
   }
 
@@ -144,7 +145,6 @@ public class TileEntityRedstoneMeter extends TileEntity {
   }
 
   /* Populates this TileEntity with information from the tag, used by vanilla to transmit from server to client
-   Warning - although our onDataPacket() uses this method, vanilla also calls it directly, so don't remove it.
  */
   @Override
   public void handleUpdateTag(CompoundNBT tag) {
@@ -169,6 +169,7 @@ public class TileEntityRedstoneMeter extends TileEntity {
     storedPowerLevel = parentNBTTagCompound.getInt("storedPowerLevel");  // defaults to 0 if not found
     if (storedPowerLevel < MIN_POWER_LEVEL ) storedPowerLevel = MIN_POWER_LEVEL;
     if (storedPowerLevel > MAX_POWER_LEVEL ) storedPowerLevel = MAX_POWER_LEVEL;
+    setTogglingRateFromPowerLevel(false);
   }
 
   /** Return an appropriate bounding box enclosing the TER

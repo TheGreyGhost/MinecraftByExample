@@ -31,6 +31,8 @@ public final class RenderTypeHelper {
   public static final RenderType MBE_LINE_DEPTH_WRITING_ON;  // draws lines which will only be drawn over by objects which are closer (unlike RenderType.LINES)
   public static final RenderType MBE_LINE_NO_DEPTH_TEST;  // draws lines on top of anything already drawn
 
+  public static final RenderType MBE_TRIANGLES_NO_TEXTURE;  // draws triangles with a colour but no texture.
+
   static {
     LIGHTNING_TRANSPARENCY = ObfuscationReflectionHelper.getPrivateValue(RenderState.class, null, "field_228512_d_");
     TRANSLUCENT_TRANSPARENCY = ObfuscationReflectionHelper.getPrivateValue(RenderState.class, null, "field_228515_g_");
@@ -67,6 +69,13 @@ public final class RenderTypeHelper {
     MBE_LINE_NO_DEPTH_TEST = RenderType.makeType("mbe_line_1_no_depth_test",
             DefaultVertexFormats.POSITION_COLOR, GL11.GL_LINES, INITIAL_BUFFER_SIZE, renderState);
 
+    renderState = RenderType.State.getBuilder()
+            .layer(PROJECTION_LAYERING)
+            .transparency(NO_TRANSPARENCY)
+            .writeMask(WRITE_TO_DEPTH_AND_COLOR)
+            .build(AFFECTS_OUTLINE);
+    MBE_TRIANGLES_NO_TEXTURE = RenderType.makeType("mbe_triangles_no_texture",
+            DefaultVertexFormats.POSITION_COLOR, GL11.GL_TRIANGLES, INITIAL_BUFFER_SIZE, renderState);
   }
 
 }

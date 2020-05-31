@@ -18,12 +18,15 @@ import net.minecraft.world.server.ServerWorld;
 
 import java.util.Random;
 
+import static net.minecraft.util.Direction.*;
+
 /**
  * User: The Grey Ghost
  * Date: 27/11/2015
  *
  * BlockRedstoneMeter is a simple block with an associated TileEntity to render the block's power level.
- * The meter will also provide weak power to the block UP and DOWN (eg a light) - it flashes the light
+ * It gets weak power from all directions except UP.
+ * The meter provides weak power to the block UP - if a lamp is placed on top of the meter, it will flash
  *   at a speed related to the input power.
  * We use a TileEntity because our block needs to store the input power level, for later use when others call the getWeakPower().
  *    for the reason why, see http://greyminecraftcoder.blogspot.com/2020/05/redstone-1152.html
@@ -70,7 +73,7 @@ public class BlockRedstoneMeter extends Block
   @Override
   public int getWeakPower(BlockState state, IBlockReader blockReader, BlockPos pos,  Direction directionFromNeighborToThis)
   {
-    if (directionFromNeighborToThis != Direction.DOWN) {
+    if (directionFromNeighborToThis != DOWN) {
       return 0;
     }
 
@@ -107,12 +110,12 @@ public class BlockRedstoneMeter extends Block
 //    int powerLevel = world.getRedstonePowerFromNeighbors(pos);  // if input can come from any side, use this line
 
     int maxPowerFound = 0;
-    for (Direction whichFace : Direction.values()) {
-      if (whichFace != Direction.UP) {
-        BlockPos neighborPos = pos.offset(whichFace);
-        int powerLevel = world.getRedstonePower(neighborPos, whichFace);
-        maxPowerFound = Math.max(powerLevel, maxPowerFound);
-      }
+    Direction [] directions = new Direction[]{DOWN, WEST, EAST, NORTH, SOUTH};
+
+    for (Direction whichFace : directions) {
+      BlockPos neighborPos = pos.offset(whichFace);
+      int powerLevel = world.getRedstonePower(neighborPos, whichFace);
+      maxPowerFound = Math.max(powerLevel, maxPowerFound);
     }
 
     return maxPowerFound;
@@ -128,16 +131,21 @@ public class BlockRedstoneMeter extends Block
   }
 
   // Our flashing output uses scheduled ticks to toggle the output.
-  //  Scheduling of ticks is by calling  world.scheduleTick(pos, block, numberOfTicksToDelay);
+  //  Scheduling of ticks is by calling  world.scheduleTick(pos, block, numberOfTicksToDelay);  see ScheduledTogglingOutput
   //
   @Override
   public void tick(BlockState state, ServerWorld world, BlockPos pos, Random rand) {
-//    calculatePowerInputAndNotifyNeighbors(world, pos);
-
     TileEntity te = world.getTileEntity(pos);
     if (te instanceof TileEntityRedstoneMeter) {
       TileEntityRedstoneMeter tileEntityRedstoneMeter = (TileEntityRedstoneMeter)te;
+
+      boolean currentOutputState = tileEntityRedstoneMeter.getOutputState();
       tileEntityRedstoneMeter.onScheduledTick(world, pos, state.getBlock());
+      boolean newOutputState = tileEntityRedstoneMeter.getOutputState();
+
+      if (newOutputState != currentOutputState) {
+        world.notifyNeighborsOfStateChange(pos, this);
+      }
     }
   }
 
@@ -146,7 +154,7 @@ public class BlockRedstoneMeter extends Block
    */
   @Override
   public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-    worldIn.getPendingBlockTicks().scheduleTick(pos, this, 1); // kick start the ticking
+    // not needed here
   }
 
   // not needed for this block because we have only one blockstate
