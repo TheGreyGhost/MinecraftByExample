@@ -27,7 +27,6 @@ import java.util.List;
  * Foreground layer - typically text labels
  * renderHoveredToolTip - for tool tips when the mouse is hovering over something of interest
  */
-@OnlyIn(Dist.CLIENT)
 public class ContainerScreenFurnace extends ContainerScreen<ContainerFurnace> {
 
 	private ContainerFurnace containerFurnace;

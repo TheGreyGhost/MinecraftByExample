@@ -149,8 +149,6 @@ public class ItemNBTAnimate extends Item
   }
 
   // adds 'tooltip' text
-  @OnlyIn(Dist.CLIENT)
-  @SuppressWarnings("unchecked")
   @Override
   //public void addInformation(ItemStack stack, EntityPlayer playerIn, List tooltip, boolean advanced) {
   public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)

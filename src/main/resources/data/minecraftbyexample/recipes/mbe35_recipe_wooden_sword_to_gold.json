@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "mbe35_sword_upgrade_group",
+  "_comment1": "see the various types of recipe in IRecipeSerializer",
+  "_comment2": "group is optional.  use it to group similar recipes together (eg black_bed, red_bed, etc)",
+  "pattern": [
+    "CIC",
+    "CWC",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "minecraft:clay",
+      "_comment": "The suitable fields are item or tag for vanilla, plus nbt for forge (see mbe35_recipe_wooden_sword)",
+      "_comment1": "see VanillaIngredientDeserializer and Ingredient.deserializeItemList"
+    },
+    "I": {
+      "item": "minecraft:gold_ingot"
+    },
+    "W": {
+      "type": "forge:nbt",
+      "item": "minecraft:wooden_sword",
+      "count": 1,
+      "nbt": {
+        "Damage": 0
+      },
+      "comment1": "Note nbt are case sensitive! If you are having trouble getting a match, put breakpoint in NBTIngredient::test"
+    }
+  },
+  "result": {
+    "item": "minecraft:golden_sword"
+  }
+}

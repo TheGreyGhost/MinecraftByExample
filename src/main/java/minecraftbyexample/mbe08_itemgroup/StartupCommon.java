@@ -61,7 +61,6 @@ public class StartupCommon
      */
     customItemGroup = new ItemGroup("mbe08_item_group") {
       @Override
-      @OnlyIn(Dist.CLIENT)
       public ItemStack createIcon() {
         return new ItemStack(Items.GOLD_NUGGET);
       }

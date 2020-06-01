@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "_comment1": "see the various types of recipe in IRecipeSerializer",
+  "group": "mbe35_paintings_group",
+  "pattern": [
+    "PD ",
+    "PDF",
+    "PD "
+  ],
+  "key": {
+    "D": {
+      "tag": "minecraftbyexample:primary_paint_colours",
+      "_comment": "The suitable fields are item or tag for vanilla, plus nbt for forge (see mbe35_recipe_wooden_sword)",
+      "_comment1": "see VanillaIngredientDeserializer and Ingredient.deserializeItemList"
+    },
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "F": {
+      "item": "minecraft:feather"
+    }
+  },
+  "result": {
+    "item": "minecraft:painting"
+  }
+}

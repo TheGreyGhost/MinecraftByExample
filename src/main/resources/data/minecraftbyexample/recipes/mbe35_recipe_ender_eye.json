@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "",
+  "_comment1": "see the various types of recipe in IRecipeSerializer",
+  "_comment2": "group is optional.  use it to group similar recipes together (eg black_bed, red_bed, etc)",
+  "pattern": [
+    " D ",
+    "DED",
+    " D "
+  ],
+  "key": {
+    "D": {
+      "item": "minecraft:diamond",
+      "_comment": "The suitable fields are item or tag for vanilla, plus nbt for forge (see mbe35_recipe_wooden_sword)",
+      "_comment1": "see VanillaIngredientDeserializer and Ingredient.deserializeItemList"
+    },
+    "E": {
+      "item": "minecraft:emerald"
+    }
+  },
+  "result": {
+    "item": "minecraft:ender_eye"
+  }
+}

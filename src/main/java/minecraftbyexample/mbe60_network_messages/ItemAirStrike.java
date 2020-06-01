@@ -81,8 +81,6 @@ public class ItemAirStrike extends Item
   }
 
   // adds 'tooltip' text
-  @OnlyIn(Dist.CLIENT)
-  @SuppressWarnings("unchecked")
   @Override
   public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
   {

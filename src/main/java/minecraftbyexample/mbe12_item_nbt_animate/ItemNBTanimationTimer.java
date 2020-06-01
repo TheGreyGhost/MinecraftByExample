@@ -63,7 +63,6 @@ public class ItemNBTanimationTimer implements IItemPropertyGetter {
    * @return the appropriate animation frame index expected by the "overrides" section in the item json file
    */
   @Override
-  @OnlyIn(Dist.CLIENT)
   public float call(ItemStack stack, @Nullable World worldIn, @Nullable LivingEntity entityIn)
     {
       final float IDLE_FRAME_INDEX = 0.0F;

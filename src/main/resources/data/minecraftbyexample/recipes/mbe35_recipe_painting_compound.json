@@ -1,17 +1,17 @@
 {
   "type": "minecraft:crafting_shaped",
   "_comment1": "see the various types of recipe in IRecipeSerializer",
+  "group": "mbe35_paintings_group",
   "pattern": [
-    "PPP",
-    "DDD",
-    " F "
+    "PD ",
+    "PDF",
+    "PD "
   ],
   "key": {
-    "D": {
-      "tag": "minecraftbyexample:paintable_dye",
-      "_comment": "The suitable fields are item or tag for vanilla, plus nbt and compound for forge",
-      "_comment1": "see VanillaIngredientDeserializer and Ingredient.deserializeItemList"
-    },
+    "D": [
+      {"item": "minecraft:black_dye"},
+      {"item": "minecraft:white_dye"}
+    ],
     "P": {
       "item": "minecraft:paper"
     },

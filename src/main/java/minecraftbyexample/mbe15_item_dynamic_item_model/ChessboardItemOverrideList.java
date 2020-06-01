@@ -14,7 +14,6 @@ import java.util.List;
 /**
  * Created by TGG on 20/10/2016.
  */
-@OnlyIn(Dist.CLIENT)
 public class ChessboardItemOverrideList extends ItemOverrideList {
   public ChessboardItemOverrideList()
   {

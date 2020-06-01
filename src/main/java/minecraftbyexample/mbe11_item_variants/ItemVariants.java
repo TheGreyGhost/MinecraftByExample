@@ -106,7 +106,6 @@ public class ItemVariants extends Item
 
   // add a subitem for each item that we want to appear in the creative tab
   //  in this case - a full bottle of each flavour
-  @OnlyIn(Dist.CLIENT)
   @Override
   public void fillItemGroup(ItemGroup tab, NonNullList<ItemStack> subItems)
   {

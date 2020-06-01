@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "",
+  "_comment1": "see the various types of recipe in IRecipeSerializer",
+  "_comment2": "group is optional.  use it to group similar recipes together (eg black_bed, red_bed, etc)",
+  "ingredients": [
+    {"item":"minecraft:blue_dye"},
+    {"item": "minecraft:yellow_dye"}
+  ],
+  "result": {
+    "item": "minecraft:green_dye",
+    "count": 2
+  }
+}

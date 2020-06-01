@@ -5,152 +5,75 @@ import net.minecraft.item.DyeColor;
 import net.minecraft.item.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.NBTIngredient;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.GameData;
 
 /**
  * User: The Grey Ghost
  * Date: 24/12/2014
  *
- * The Startup classes for this example are called during startup, in the following order:
- *  preInitCommon
- *  preInitClientOnly
- *  initCommon
- *  initClientOnly
- *  postInitCommon
- *  postInitClientOnly
+ * The methods for this example are called during startup
  *  See MinecraftByExample class for more information
  */
 public class StartupCommon
 {
-  /**
-   * Do your mod setup. Build whatever data structures you care about. Register recipes,
-   * send FMLInterModComms messages to other mods.
-   */
-  public static void initCommon()
-  {
+  @SubscribeEvent
+  public static void onCommonSetupEvent(FMLCommonSetupEvent event) {
     // your recipes must go in initialisation phase, not preInit.
 
     //  see http://greyminecraftcoder.blogspot.com/2015/02/recipes.html for illustrations of these recipes
 
-    // group is optional.  The value of this string can be anything. Any recipes that have the same group name specified will be shown together in the crafting helper.
+    // "group" is optional.  The value of this string can be anything. Any recipes that have the same group name specified
+    // will be shown together in the crafting helper.
     // The intention is to keep similar item within the same category, such as all boats for example.
     // If you want to match an existing vanilla recipe group, look in the relevant recipe json in data.minecraft.recipes
 
-
-    CraftingHelper.register()
-
-
-    "tag": "minecraftbyexample:paintable_dye
-
-    ResourceLocation optionalGroup = new ResourceLocation("");
-
-    // a) Shaped recipe without metadata - emerald surrounded by diamond makes ender eye
-    GameRegistry.addShapedRecipe(new ResourceLocation("minecraftbyexample:mbe35_recipe_ender_eye"), optionalGroup, new ItemStack(Items.ENDER_EYE), new Object[]{
-            " D ",
-            "DED",
-            " D ",
-            'D', Items.DIAMOND,
-            'E', Items.EMERALD     // note carefully - 'E' not "E" !
-    });
-
+    // a) Shaped recipe emerald surrounded by diamond makes ender eye
+    //  see data.minecraftbyexample.recipes.mbe35_recipe_ender_eye
     // note - smaller grids are also possible, you don't need to fill up the entire 3x3 space.
 
-    // b) shaped recipe with metadata - cobblestone surrounded by red dye makes redstone
-    final int RED_DYE_DAMAGE_VALUE = DyeColor.RED.getDyeDamage();
-    GameRegistry.addShapedRecipe(new ResourceLocation("minecraftbyexample:mbe35_recipe_redstone"), optionalGroup, new ItemStack(Items.REDSTONE), new Object[]{
-            "RRR",
-            "RCR",
-            "RRR",
-            'C', Blocks.COBBLESTONE,
-            'R', new ItemStack(Items.DYE, 1, RED_DYE_DAMAGE_VALUE)
-    });
+    // b) Shapeless recipe - blue dye plus yellow dye makes two green dye blue_dye
+    //  data.minecraftbyexample.recipes.mbe35_recipe_green_dye
 
+    // c) Tag recipe - any type of tree leaves arranged around sticks makes an oak sapling
+    //    Tags are a way for mods to add block & items which are equivalent to vanilla block for crafting
+    //    For example - a recipe which uses the tag "leaves" will accept leaves of jungle_leaves, oak_leaves, etc
+    //    Vanilla tags are defined in data.minecraft.tags (eg data.minecraft.tags.items.leaves), and some additional
+    //       Forge-defined tags in Tags class
+    //   data.minecraftbyexample.recipes.mbe_35_recipe_sapling
 
-    ResourceLocation woodSwordGroup = new ResourceLocation("mbe35_woodswordgroup");
+    // d) Shaped recipe with NBT information
+    // If you want your recipes to match particular NBT information, use the forge NBTIngredient serialiser instead of item
+    // look at CraftingHelper.register(new ResourceLocation("forge", "nbt"), NBTIngredient.Serializer.INSTANCE);
+    //  (the json tag is "nbt" instead of "item")
+    // for this example, we use the nbt tag "damage" to match for an undamaged sword:
+    //   wooden sword (undamaged only) in a clay mould plus iron ingot makes iron sword
+    //   wooden sword (undamaged only) in a clay mould plus gold ingot makes gold sword
+    // both recipes are in the same "group" (mbe35_sword_upgrade_group)
+    //  see data.minecraftbyexample.recipes.mbe35_recipe_wooden_sword_to_iron and
+    //  see data.minecraftbyexample.recipes.mbe35_recipe_wooden_sword_to_gold
 
-    // c) shaped recipe for item which are damaged, or which have a metadata you want to ignore
-    //      wooden sword (any damage value) in a cobblestone shell plus iron ingot makes iron sword
-    GameRegistry.addShapedRecipe(new ResourceLocation("minecraftbyexample:mbe35_recipe_wood_to_iron_sword"), woodSwordGroup, new ItemStack(Items.IRON_SWORD), new Object[]{
-            "CIC",
-            "CWC",
-            "CCC",
-            'C', Blocks.COBBLESTONE,
-            'W', new ItemStack(Items.WOODEN_SWORD, 1, OreDictionary.WILDCARD_VALUE),   // as of 1.12.2, you can also write simply Items.WOODEN_SWORD instead of new ItemStack,
-                                                                                       // i.e. same as Items.IRON_INGOT on the next line
-            'I', Items.IRON_INGOT
-    });
-
-    // for comparison - this recipe only works with an undamaged wooden sword
-    //   wooden sword (undamaged) in a cobblestone shell plus gold ingot makes gold sword
-    // NOTE - this has changed since 1.11.2
-    GameRegistry.addShapedRecipe(new ResourceLocation("minecraftbyexample:mbe35_recipe_wood_to_gold_sword"), woodSwordGroup, new ItemStack(Items.GOLDEN_SWORD), new Object[]{
-            "CIC",
-            "CWC",
-            "CCC",
-            'C', Blocks.COBBLESTONE,
-            'W', new ItemStack(Items.WOODEN_SWORD),
-            'I', Items.GOLD_INGOT
-    });
-
-    // d) Shapeless recipe - blue dye plus yellow dye makes two green dye
-    final int BLUE_DYE_DAMAGE_VALUE = DyeColor.BLUE.getDyeDamage();
-    final int YELLOW_DYE_DAMAGE_VALUE = DyeColor.YELLOW.getDyeDamage();
-    final int GREEN_DYE_DAMAGE_VALUE = DyeColor.GREEN.getDyeDamage();
-    final int NUMBER_OF_GREEN_DYE_PRODUCED = 2;
-
-    GameRegistry.addShapelessRecipe(new ResourceLocation("minecraftbyexample:mbe35_recipe_greendye"), optionalGroup,
-                                    new ItemStack(Items.DYE, NUMBER_OF_GREEN_DYE_PRODUCED, GREEN_DYE_DAMAGE_VALUE),
-            new Ingredient[] {Ingredient.fromStacks(new ItemStack(Items.DYE, 1, YELLOW_DYE_DAMAGE_VALUE)),
-                              Ingredient.fromStacks(new ItemStack(Items.DYE, 1, BLUE_DYE_DAMAGE_VALUE))
-                             }
-    );
-
-    // g) Shaped Ore recipe - any type of tree leaves arranged around sticks makes a sapling
-    //    Ores are a way for mods to add block & item which are equivalent to vanilla block for crafting
-    //    For example - an ore recipe which uses "logWood" will accept a log of spruce, oak, birch, pine, etc.
-    //    If your mod registers its balsawood log using  OreDictionary.registerOre("logWood", BalsaWood), then your
-    //    BalsaWood log will also be accepted in the recipe.
-    IRecipe saplingRecipe = new ShapedOreRecipe(optionalGroup,
-            new ItemStack(Blocks.SAPLING), new Object[] {
-            "LLL",
-            "LSL",
-            " S ",
-            'S', Items.STICK,   // can use ordinary item, block, itemstacks in ShapedOreRecipe
-            'L', "treeLeaves",  // look in OreDictionary for vanilla definitions
-    });
-    saplingRecipe.setRegistryName(new ResourceLocation("minecraftbyexample:mbe35_recipe_sapling"));
-//    GameRegistry.register(saplingRecipe);
-    GameData.register_impl(saplingRecipe);  // looks clumsy.  Not sure why GameRegistry doesn't have an appropriate register method.
-
-    // h) by default, recipes are automatically mirror-imaged, i.e. you can flip the recipe left<--> right and it will
-    //    produce the same output.  This one isn't.  Only works for OreRecipes, but you can make ShapedOreRecipe from vanilla
-    //    Items or Blocks too (see (g) above)
-    CraftingHelper.ShapedPrimer primer = CraftingHelper.parseShaped(new Object[]{
-            false,
-            "III",
-            "I  ",
-            "III",
-            'I', Items.IRON_INGOT
-    });
-    primer.mirrored = false;
-    IRecipe unmirroredRecipe = new ShapedOreRecipe(optionalGroup, new ItemStack(Items.CAULDRON), primer);
-    unmirroredRecipe.setRegistryName(new ResourceLocation("minecraftbyexample:mbe35_recipe_cauldron"));
-    GameData.register_impl(unmirroredRecipe);  // looks clumsy.  Not sure why GameRegistry doesn't have an appropriate register method.
+    // d) Tag recipe with a custom tag - paper plus a feather plus the custom primary_paint_colours makes a painting
+    //    We've created a custom tag primary_paint_colours in data.minecraftbyexample.tags.items.primary_paint_colours
+    //    which contains the primary subtractive colours for paints, i.e. cyan, magenta, and yellow.
+    //   see data.minecraftbyexample.recipes.mbe35_recipe_painting_custom_tag for the resulting recipe
+    //   FYI - you can use Forge custom Ingredient "compound" instead of "tag" (see CompoundIngredient)
+    //   see data.minecraftbyexample.recipes.mbe35_recipe_painting_compound
+    //   both recipes are in the same "group" (mbe35_paintings_group)
 
     //---------------- FURNACE RECIPES (smelting)
 
-    // d) smelting recipe - smelt cake gives you charcoal (coal with metadata value of 1)
-    final float COAL_SMELT_XP = 0.1F;
-    final float DIAMOND_SMELT_XP = 1.0F;
-    final float CAKE_SMELT_XP = 0.0F;   // negative XP would probably cause a problem :)
-    final int NUMBER_OF_ITEMS = 1;
-    final int CHARCOAL_METADATA_VALUE = 1;
-    GameRegistry.addSmelting(Items.CAKE, new ItemStack(Items.COAL, NUMBER_OF_ITEMS, CHARCOAL_METADATA_VALUE), CAKE_SMELT_XP);
+    // d) smelting recipe - smelting cake gives you charcoal
+    //    see data.minecraftbyexample.recipes.mbe35_recipe_smelting_cake
 
     // e) fuel - use wheat as fuel in a furnace
     //   For your own item, override getItemBurnTime()
@@ -159,13 +82,14 @@ public class StartupCommon
     MinecraftForge.EVENT_BUS.register(FurnaceFuelBurnTimeEventHandler.instance);
 
     //  ------------- Custom recipes
-
     // you can even register your own custom IRecipe class to match complicated inputs - see for example RecipeFireworks
-    // GameData.register_impl(myRecipe implements IRecipe);
+    //  There are a few useful vanilla recipes and Serializers you can base your Recipe on
+    //  eg AbstractCookingRecipe, SpecialRecipe and SpecialRecipeSerializer
+    // or go the whole hog and write your own.  Lots of vanilla inspiration to keep you on the right track.
+    //  All you need to do is register your serializer like this:
+    //  @SubscribeEvent
+    //  public void registerRecipeSerializers(RegistryEvent.Register<IRecipeSerializer<?>> event) {
+    //    event.getRegistry().register(yourRecipeSerializer);
+    //  }
   }
-
-  public static void postInitCommon()
-  {
-  }
-
 }

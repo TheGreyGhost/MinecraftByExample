@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "",
+  "_comment1": "see the various types of recipe in IRecipeSerializer",
+  "_comment2": "group is optional.  use it to group similar recipes together (eg black_bed, red_bed, etc)",
+  "pattern": [
+    "LLL",
+    "LSL",
+    " S "
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:stick",
+      "_comment": "The suitable fields are item or tag for vanilla, plus nbt for forge (see mbe35_recipe_wooden_sword)",
+      "_comment1": "see VanillaIngredientDeserializer and Ingredient.deserializeItemList"
+    },
+    "L": {
+      "tag": "minecraft:leaves"
+    }
+  },
+  "result": {
+    "item": "minecraft:oak_sapling"
+  }
+}

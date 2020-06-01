@@ -18,7 +18,6 @@ public class AllMbeItemsItemGroup extends ItemGroup {
     super(label);
   }
 
-  @OnlyIn(Dist.CLIENT)
   @Override
   public ItemStack createIcon() {
     return new ItemStack(Items.BOOK);
@@ -32,7 +31,6 @@ public class AllMbeItemsItemGroup extends ItemGroup {
   //    );
   //  }
   //
-  @OnlyIn(Dist.CLIENT)
   @Override
   public void fill(NonNullList<ItemStack> itemsToShowOnTab)
   {
