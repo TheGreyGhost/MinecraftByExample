@@ -18,5 +18,20 @@ _/mbedebug param showraytraceshape 1_  --> draw the Block.getRayTraceShape() in 
 ####Entity spawning control
 _/mbedebug param preventspawning 1_    --> stops any entities from spawning (useful if you are debugging an entity and you 
    don't want annoying slimes to keep spawning nearby)<br>
-_/mbedebug action killallentities_  ---> kill all entities nearby (same as "/kill @e[type=!minecraft:player]")<br>
+_/mbedebug trigger killallentities_  ---> kill all entities nearby (same as "/kill @e[type=!minecraft:player]")<br>
    
+####Run a test case
+_/mbedebug test testnumber_ --> run testnumber on the server- see mbe5
+   
+###Logging
+MethodCallLogger - used to trace code execution when you can't use breakpoints because they affect the flow (eg user input
+  debugging)
+  
+###Interactive tweaking of parameters
+These commands are useful to adjust in-game parameters in real time without having to stop, edit code, recompile, and run again
+They are especially useful when debugging rendering (eg translations, rotations, or other interactive adjustments).
+
+_/mbedebug param yourcustomname newvalue_ set variable yourcustomname to newvalue, which your code can retrieve using DebugSettings.getDebugParameter()
+_/mbedebug paramvec_3d yourcustomname newvalue Vecd_ set variable yourcustomname to newvalue Vec3d, which your code can retrieve using DebugSettings.getDebugParameterVec3d()
+_/mbedebug trigger yourcustomname_ set variable yourcustomname, which your code can retrieve using DebugSettings.getDebugTrigger() - value resets after the call
+

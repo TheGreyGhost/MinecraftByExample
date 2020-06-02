@@ -41,7 +41,9 @@ import net.minecraftforge.registries.ForgeRegistries;
  */
 public class MBEdebugCommand {
   public static void register(CommandDispatcher<CommandSource> dispatcher) {
-    LiteralArgumentBuilder<CommandSource> mbesayCommand
+    if (haveRegistered) return;
+    haveRegistered = true;
+    LiteralArgumentBuilder<CommandSource> mbedebugCommand
       = Commands.literal("mbedebug")
             .then(Commands.literal("param")
                     .then(Commands.argument("parametername", StringArgumentType.word())
@@ -88,7 +90,8 @@ public class MBEdebugCommand {
                           .executes(context -> { DebugSettings.setDebugTest(
                                   IntegerArgumentType.getInteger(context, "testnumber")); return 1;}))
             );
-    dispatcher.register(mbesayCommand);
+    dispatcher.register(mbedebugCommand);
   }
 
+  private static boolean haveRegistered = false;
 }

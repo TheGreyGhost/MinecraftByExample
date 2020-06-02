@@ -53,7 +53,6 @@ See [here](https://greyminecraftcoder.blogspot.com/2020/05/minecraft-by-example.
   - [MBE10][10] - a simple item
   - [MBE11][11] - an item with multiple variants - rendered using multiple models and multiple layers
   - [MBE12][12] - an item that stores extra information in NBT, also illustrates the "in use" animation similar to drawing a bow
-  - X [MBE13][13] - customise Mining behaviour of Blocks and Items - several test classes that show how mining works
   - [MBE15][15] - a chessboard item with 1 - 64 pieces; uses ItemOverrideList.getModelWithOverrides(), IBlockModel.getQuads() and onModelBakeEvent()
 
 ### TileEntities
@@ -66,9 +65,6 @@ See [here](https://greyminecraftcoder.blogspot.com/2020/05/minecraft-by-example.
 
 ### Recipes (Crafting/Furnace)
   - [MBE35][35] - some typical example crafting recipes and furnace (smelting) recipes
-
-### Heads Up Display/Overlays
-  - X [MBE40][40] - simple customisations of the heads up display (hotbar, health meter)
 
 ### Commands
   - [MBE45][45] - custom commands
@@ -87,6 +83,9 @@ See [here](https://greyminecraftcoder.blogspot.com/2020/05/minecraft-by-example.
 
 ### Entities and Models
   - [MBE80][80] - Shows the basics of Models (eg PigModel), model parameters adjustable in real time using commands
+  
+### Miscellaneous Debugging Tools
+  - [DebuggingTools]- This package is a bunch of functions and tools that I use occasionally, mostly for debugging
   
 ## Usage
   - You can browse directly in GitHub, or alternatively, download it as a zip and browse it locally.
@@ -147,6 +146,8 @@ Head over [here][more_help] if this didn't make sense to you (check comments for
 
 [80]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe80_model_renderer
 
+[DebuggingTools]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/usefultools
+ 
 [Forge forum]: https://www.minecraftforge.net/forum/forum/70-modder-support/
 [fabricwiki]: https://fabricmc.net/wiki/start
 [McJty]: https://wiki.mcjty.eu/modding/index.php?title=YouTube-1.14

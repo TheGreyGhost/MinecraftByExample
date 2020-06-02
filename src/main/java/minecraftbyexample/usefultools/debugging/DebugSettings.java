@@ -119,16 +119,14 @@ public class DebugSettings {
 
   /**
    * Returns a test number if one has been triggered.  resets after being called
-   * @return the test number to execute, or -1 if none triggered
+   * @return the test number to execute, or NO_TEST_TRIGGERED if none triggered
    */
   public static synchronized int getDebugTest() {
     int value = debugTest;
-    debugTest = -1;
+    debugTest = NO_TEST_TRIGGERED;
     return value;
   }
 
-  private static int debugTest = -1;
-
-
-
+  public static final int NO_TEST_TRIGGERED = -1;
+  private static int debugTest = NO_TEST_TRIGGERED;
 }

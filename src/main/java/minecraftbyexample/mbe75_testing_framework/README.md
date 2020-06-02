@@ -12,6 +12,12 @@ One of the easiest ways to trigger a test case is using an item. In this example
 
 For example--stacksize of 2 will run test case 2; stacksize of 20 will run test case 20.
 
+You can also trigger a test using a command;
+for this example we use
+_/mbedebug test testnumber_
+eg
+_/mbedebug test 1_  to run test number 1 on the server
+
 A couple of useful functions are also demonstrated:
 
 1. teleporting the player to the test location
@@ -24,4 +30,4 @@ The pieces you need to understand are located in:
 * `ItemTestRunner`
 * `TestRunner`
 
-See MBE10 for more information on simple items.
+
