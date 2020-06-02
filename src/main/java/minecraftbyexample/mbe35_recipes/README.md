@@ -13,7 +13,7 @@ In earlier versions, recipes had to be added by code. Now they can only be added
 For json recipes, all you need is the json file in the right location.
 See `StartupCommon` for more information
 
-For pictures of the recipes being added, see [http://greyminecraftcoder.blogspot.com/2015/02/recipes.html](http://greyminecraftcoder.blogspot.com/2015/02/recipes.html).
+For pictures of the recipes being added, see [https://greyminecraftcoder.blogspot.com/2020/05/minecraft-by-example.html](https://greyminecraftcoder.blogspot.com/2020/05/minecraft-by-example.html).
 
 
 ##Tags

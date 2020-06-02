@@ -47,6 +47,7 @@ public class BlockRedstoneTarget extends Block
   public BlockRedstoneTarget()
   {
     super(Block.Properties.create(Material.WOOD));
+    this.setDefaultState(this.stateContainer.getBaseState().with(ARROW_DISTANCE_FROM_CENTRE, NO_ARROW));
   }
 
   //----- methods related to redstone
@@ -258,6 +259,19 @@ public class BlockRedstoneTarget extends Block
       informNeighborsOfPowerChange(oldState, world, pos);
     }
     super.onReplaced(oldState, world, pos, newState, isMoving);
+  }
+
+
+  // Trigger update in neighbours that I donate strong power to.
+  //  (not really required in this example because our default strong power upon placement is zero)
+  //  Vanilla typically starts block ticks here if we're powered.
+  @Override
+  public void onBlockAdded(BlockState newState, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
+    if (newState.getBlock() != oldState.getBlock()) {
+      if (!worldIn.isRemote()) {
+        informNeighborsOfPowerChange(newState, worldIn, pos);
+      }
+    }
   }
 
   private void informNeighborsOfPowerChange(BlockState blockState, World world, BlockPos blockPos) {

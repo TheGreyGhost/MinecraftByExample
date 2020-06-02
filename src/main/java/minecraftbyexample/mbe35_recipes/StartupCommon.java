@@ -1,21 +1,9 @@
 package minecraftbyexample.mbe35_recipes;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.Items;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ResourceLocation;
+
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.NBTIngredient;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.registries.GameData;
 
 /**
  * User: The Grey Ghost
@@ -28,7 +16,6 @@ public class StartupCommon
 {
   @SubscribeEvent
   public static void onCommonSetupEvent(FMLCommonSetupEvent event) {
-    // your recipes must go in initialisation phase, not preInit.
 
     //  see http://greyminecraftcoder.blogspot.com/2015/02/recipes.html for illustrations of these recipes
 
@@ -72,10 +59,10 @@ public class StartupCommon
 
     //---------------- FURNACE RECIPES (smelting)
 
-    // d) smelting recipe - smelting cake gives you charcoal
+    // e) smelting recipe - smelting cake gives you charcoal
     //    see data.minecraftbyexample.recipes.mbe35_recipe_smelting_cake
 
-    // e) fuel - use wheat as fuel in a furnace
+    // f) fuel - use wheat as fuel in a furnace
     //   For your own item, override getItemBurnTime()
     //   For vanilla, need to register for the FurnaceFuelBurnTimeEvent, which is called whenever fuel is placed into a furnace
     //   Look in the FurnaceFuelBurnTimeEventHandler class for the details.
