@@ -65,7 +65,7 @@ See [here](https://greyminecraftcoder.blogspot.com/2020/05/minecraft-by-example.
   - [MBE31][31] - a functional container such as a Furnace or Crafting Table
 
 ### Recipes (Crafting/Furnace)
-  - X [MBE35][35] - some typical example crafting recipes and furnace (smelting) recipes
+  - [MBE35][35] - some typical example crafting recipes and furnace (smelting) recipes
 
 ### Heads Up Display/Overlays
   - X [MBE40][40] - simple customisations of the heads up display (hotbar, health meter)
