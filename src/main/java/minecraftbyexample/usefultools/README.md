@@ -21,7 +21,7 @@ _/mbedebug param preventspawning 1_    --> stops any entities from spawning (use
 _/mbedebug trigger killallentities_  ---> kill all entities nearby (same as "/kill @e[type=!minecraft:player]")<br>
    
 ####Run a test case
-_/mbedebug test testnumber_ --> run testnumber on the server- see mbe5
+_/mbedebug test testnumber_ --> run testnumber on the server- see mbe75
    
 ###Logging
 MethodCallLogger - used to trace code execution when you can't use breakpoints because they affect the flow (eg user input

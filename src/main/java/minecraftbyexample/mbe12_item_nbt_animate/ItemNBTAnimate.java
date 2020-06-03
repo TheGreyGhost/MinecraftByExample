@@ -150,7 +150,6 @@ public class ItemNBTAnimate extends Item
 
   // adds 'tooltip' text
   @Override
-  //public void addInformation(ItemStack stack, EntityPlayer playerIn, List tooltip, boolean advanced) {
   public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
   {
     CompoundNBT nbtTagCompound = stack.getTag();

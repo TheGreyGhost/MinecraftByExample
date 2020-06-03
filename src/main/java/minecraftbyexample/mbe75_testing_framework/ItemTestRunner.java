@@ -9,6 +9,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -27,33 +29,30 @@ import java.util.List;
  */
 public class ItemTestRunner extends Item
 {
-  public ItemTestRunner()
-  {
-    final int MAX_TEST_NUMBER = 64;
-    this.setMaxStackSize(MAX_TEST_NUMBER);
-    this.setCreativeTab(ItemGroup.MISC);   // the item will appear on the Miscellaneous tab in creative
+  static final int MAX_TEST_NUMBER = 64;
+  public ItemTestRunner() {
+    super(new Item.Properties().maxStackSize(MAX_TEST_NUMBER).group(ItemGroup.MISC));
   }
 
   /**
    * allows item to add custom lines of information to the mouseover description
    */
   @Override
-  public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn)
-  {
-    tooltip.add("Right click: conduct test");
-    tooltip.add("Stacksize: change test #");
-    tooltip.add("  (64 = test all)");
+  public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    tooltip.add(new StringTextComponent("Right click: conduct test"));
+    tooltip.add(new StringTextComponent("Stacksize: change test #"));
+    tooltip.add(new StringTextComponent("  (64 = test all)"));
   }
 
   // what animation to use when the player holds the "use" button
   @Override
-  public UseAction getItemUseAction(ItemStack stack) {
+  public UseAction getUseAction(ItemStack stack) {
     return UseAction.BLOCK;
   }
 
   // how long the player needs to hold down the right button before the test runs again
   @Override
-  public int getMaxItemUseDuration(ItemStack stack) {
+  public int getUseDuration(ItemStack stack) {
     return 20;
   }
 

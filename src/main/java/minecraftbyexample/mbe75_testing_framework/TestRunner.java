@@ -2,11 +2,14 @@ package minecraftbyexample.mbe75_testing_framework;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.block.LadderBlock;
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -28,12 +31,12 @@ public class TestRunner
         break;
       }
       default: {
-        System.out.println("Test Number " + testNumber + " does not exist on server side.");
+        LOGGER.error("Test Number " + testNumber + " does not exist on server side.");
         return false;
       }
     }
 
-    System.out.println("Test Number " + testNumber + " called on server side:" + (success ? "success" : "failure"));
+    LOGGER.error("Test Number " + testNumber + " called on server side:" + (success ? "success" : "failure"));
     return success;
   }
 
@@ -46,17 +49,17 @@ public class TestRunner
         break;
       }
       default: {
-        System.out.println("Test Number " + testNumber + " does not exist on client side.");
+        LOGGER.error("Test Number " + testNumber + " does not exist on client side.");
         return false;
       }
     }
-    System.out.println("Test Number " + testNumber + " called on client side:" + (success ? "success" : "failure"));
+    LOGGER.error("Test Number " + testNumber + " called on client side:" + (success ? "success" : "failure"));
 
     return success;
   }
 
   // dummy test: check the correct functioning of the ladder - to see which block it can stay attached to
-  // The test region contains a ladder attached to a stone block.  We then replace it with different block and see
+  // The test region contains a ladder attached to a stone block.  We then replace the stone with a different block and see
   //   whether the ladder remains or breaks appropriately; eg
   // testA - replace with wood
   // testB - replace with a glass block
@@ -71,7 +74,7 @@ public class TestRunner
     // put a stone block with attached ladder in the middle of our test region
     worldIn.setBlockState(sourceRegionOrigin.add(1, 0, 1), Blocks.STONE.getDefaultState());
     worldIn.setBlockState(sourceRegionOrigin.add(2, 0, 1),
-                            Blocks.LADDER.getDefaultState().withProperty(LadderBlock.FACING, Direction.EAST));
+                            Blocks.LADDER.getDefaultState().with(LadderBlock.FACING, Direction.EAST));
 
     BlockPos testRegionOriginA = new BlockPos(5, 204, 0);
     BlockPos testRegionOriginB = new BlockPos(10, 204, 0);
@@ -89,7 +92,7 @@ public class TestRunner
 
     boolean success = true;
     // testA: replace stone with wood; ladder should remain
-    worldIn.setBlockState(testRegionOriginA.add(1, 0, 1), Blocks.LOG.getDefaultState());
+    worldIn.setBlockState(testRegionOriginA.add(1, 0, 1), Blocks.ACACIA_LOG.getDefaultState());
     success &= worldIn.getBlockState(testRegionOriginA.add(2, 0, 1)).getBlock() == Blocks.LADDER;
 
     // testB: replace stone with glass; ladder should be destroyed
@@ -105,33 +108,31 @@ public class TestRunner
 
   /**
    * Teleport the player to the test region (so you can see the results of the test)
-   * @param playerIn
+   * @param player
    * @param location
    * @return
    */
-  private boolean teleportPlayerToTestRegion(PlayerEntity playerIn, BlockPos location)
+  private boolean teleportPlayerToTestRegion(PlayerEntity player, BlockPos location)
   {
-    if (!(playerIn instanceof ServerPlayerEntity)) {
+    if (!(player instanceof ServerPlayerEntity)) {
       throw new UnsupportedOperationException("teleport not supported on client side; server side only");
     }
-    ServerPlayerEntity entityPlayerMP = (ServerPlayerEntity)playerIn;
 
-    String tpArguments = "@p " + location.getX() + " " + location.getY() + " " + location.getZ();
-    String[] tpArgumentsArray = tpArguments.split(" ");
-
-    CommandTeleport commandTeleport = new CommandTeleport();
+    CommandSource commandSource = player.getCommandSource();
+    String tpCommand = "/tp " + location.getX() + " " + location.getY() + " " + location.getZ();
+    int success = 0;
     try {
-      commandTeleport.execute(entityPlayerMP.mcServer, playerIn, tpArgumentsArray);
+      success = player.getServer().getCommandManager().handleCommand(commandSource, tpCommand);
     } catch (Exception e) {
       return false;
     }
-    return true;
+    return (success != 0);
   }
 
   /**
    * Copy a cuboid Test Region from one part of the world to another
    * The cuboid is x block wide, by y block high, by z block long
-   * @param entityPlayer
+   * @param player
    * @param sourceOrigin origin of the source region
    * @param destOrigin origin of the destination region
    * @param xCount >=1
@@ -139,7 +140,7 @@ public class TestRunner
    * @param zCount >=1
    * @return true for success, false otherwise
    */
-  private boolean copyTestRegion(PlayerEntity entityPlayer,
+  private boolean copyTestRegion(PlayerEntity player,
                                  BlockPos sourceOrigin, BlockPos destOrigin,
                                  int xCount, int yCount, int zCount)
   {
@@ -148,29 +149,33 @@ public class TestRunner
     checkArgument(zCount >= 1);
     String [] args = new String[9];
 
-    if (!(entityPlayer instanceof ServerPlayerEntity)) {
+    if (!(player instanceof ServerPlayerEntity)) {
       throw new UnsupportedOperationException("teleport not supported on client side; server side only");
     }
-    ServerPlayerEntity entityPlayerMP = (ServerPlayerEntity)entityPlayer;
-
 
     args[0] = String.valueOf(sourceOrigin.getX());
     args[1] = String.valueOf(sourceOrigin.getY());
     args[2] = String.valueOf(sourceOrigin.getZ());
+
     args[3] = String.valueOf(sourceOrigin.getX() + xCount - 1);
     args[4] = String.valueOf(sourceOrigin.getY() + yCount - 1);
     args[5] = String.valueOf(sourceOrigin.getZ() + zCount - 1);
+
     args[6] = String.valueOf(destOrigin.getX());
     args[7] = String.valueOf(destOrigin.getY());
     args[8] = String.valueOf(destOrigin.getZ());
 
-    CommandClone commandClone = new CommandClone();
+    String command = "/clone" + String.join(" ", args);
+
+    int success = 0;
     try {
-      commandClone.execute(entityPlayerMP.mcServer, entityPlayer, args);
+      CommandSource commandSource = player.getCommandSource();
+      success = player.getServer().getCommandManager().handleCommand(commandSource, command);
     } catch (Exception e) {
       return false;
     }
-    return true;
+    return (success != 0);
   }
 
+  private static final Logger LOGGER = LogManager.getLogger();
 }

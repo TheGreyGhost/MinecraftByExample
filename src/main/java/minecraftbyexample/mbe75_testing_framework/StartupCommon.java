@@ -1,5 +1,9 @@
 package minecraftbyexample.mbe75_testing_framework;
 
+import net.minecraft.item.Item;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+
 /**
  * User: The Grey Ghost
  * Date: 24/12/2014
@@ -11,19 +15,10 @@ public class StartupCommon
 {
   public static ItemTestRunner itemTestRunner;  // this holds the unique instance of your block
 
-  public static void preInitCommon()
-  {
-    // each instance of your item should have a name that is unique within your mod.  use lower case.
-    itemTestRunner = (ItemTestRunner)(new ItemTestRunner().setUnlocalizedName("mbe75_test_runner_unlocalised_name"));
+  @SubscribeEvent
+  public static void onItemsRegistration(final RegistryEvent.Register<Item> itemRegisterEvent) {
+    itemTestRunner = new ItemTestRunner();
     itemTestRunner.setRegistryName("mbe75_test_runner_registry_name");
-    ForgeRegistries.ITEMS.register(itemTestRunner);
-  }
-
-  public static void initCommon()
-  {
-  }
-
-  public static void postInitCommon()
-  {
+    itemRegisterEvent.getRegistry().register(itemTestRunner);
   }
 }
