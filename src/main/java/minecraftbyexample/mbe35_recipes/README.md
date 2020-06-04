@@ -22,10 +22,10 @@ Tags are used to group similar types of blocks and/or items together, usually fo
 Not to be confused with "NBT Tags", which are used to store extra information inside an ItemStack.
 
 For example
-music_discs in data\minecraft\tags\items
-beds in data\minecraft\tags\blocks
+* music_discs in data\minecraft\tags\items
+* beds in data\minecraft\tags\blocks<br>
 but also
-enderman_holdable in data\minecraft\tags\blocks
+* enderman_holdable in data\minecraft\tags\blocks
 
 ItemTags has the vanilla tags.
 Forge defines a number of custom tags in the Tags class in addition to those in the vanilla "data" resources.
@@ -34,7 +34,7 @@ Code can check if an Item has a particular tag by eg
 itemstack.getItem().isIn(ItemTags.SMALL_FLOWERS)
 
 To add your own tags, just define the appropriately named json in data.tags.item or .block or .entity_types (etc) 
-To add your own item to an existing vanilla tag, put a tag json with the same name and your extra   
+To add your own item to an existing vanilla tag, put a tag json with the same name into the correct data folder, and your extra items will be automatically added to the vanilla tag.   
 
 
 ##Notes
@@ -47,8 +47,8 @@ IRecipeSerializer contains all the vanilla recipes
 
 If you want to add special crafting recipes, you can nearly always find something similar in one of the vanilla IRecipes and IRecipeSerializers
 for example
-SuspiciousStewRecipe (SpecialRecipe and SpecialRecipeSerializer)
-FurnaceRecipe (AbstractCookingRecipe and CookingRecipeSerializer)
+* SuspiciousStewRecipe (SpecialRecipe and SpecialRecipeSerializer)
+* FurnaceRecipe (AbstractCookingRecipe and CookingRecipeSerializer)<br>
 etc
 
 The names of vanilla Items can be found in the `Items` class.
