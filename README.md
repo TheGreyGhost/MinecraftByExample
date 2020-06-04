@@ -79,7 +79,7 @@ See [here](https://greyminecraftcoder.blogspot.com/2020/05/minecraft-by-example.
   - X [MBE70][70] - configuration file linked to the "mod options" button GUI on the mods list screen
 
 ### Testing tools
-  - X [MBE75][75] - a tool to help you automate testing of your classes in-game.
+  - [MBE75][75] - a tool to help you automate testing of your classes in-game.
 
 ### Entities and Models
   - [MBE80][80] - Shows the basics of Models (eg PigModel), model parameters adjustable in real time using commands

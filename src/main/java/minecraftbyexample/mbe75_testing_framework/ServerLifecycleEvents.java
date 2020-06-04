@@ -1,8 +1,10 @@
 package minecraftbyexample.mbe75_testing_framework;
 
 import com.mojang.brigadier.CommandDispatcher;
+import minecraftbyexample.usefultools.debugging.commands.DebugTriggerWatcher;
 import minecraftbyexample.usefultools.debugging.commands.MBEdebugCommand;
 import net.minecraft.command.CommandSource;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 
@@ -20,5 +22,6 @@ public class ServerLifecycleEvents
   public static void onServerStartingEvent(FMLServerStartingEvent event) {
     CommandDispatcher<CommandSource> commandDispatcher = event.getCommandDispatcher();
     MBEdebugCommand.register(commandDispatcher);
+    MinecraftForge.EVENT_BUS.register(DebugTestWatcher.class);
   }
 }

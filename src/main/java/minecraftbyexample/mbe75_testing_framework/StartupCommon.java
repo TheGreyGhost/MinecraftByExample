@@ -1,8 +1,10 @@
 package minecraftbyexample.mbe75_testing_framework;
 
 import net.minecraft.item.Item;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 /**
  * User: The Grey Ghost
@@ -20,5 +22,10 @@ public class StartupCommon
     itemTestRunner = new ItemTestRunner();
     itemTestRunner.setRegistryName("mbe75_test_runner_registry_name");
     itemRegisterEvent.getRegistry().register(itemTestRunner);
+  }
+
+  @SubscribeEvent
+  public static void onCommonSetupEvent(FMLCommonSetupEvent event) {
+    MinecraftForge.EVENT_BUS.register(ServerLifecycleEvents.class);
   }
 }

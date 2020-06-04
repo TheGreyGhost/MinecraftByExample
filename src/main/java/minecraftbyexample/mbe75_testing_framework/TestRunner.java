@@ -1,5 +1,6 @@
 package minecraftbyexample.mbe75_testing_framework;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.LadderBlock;
 import net.minecraft.command.CommandSource;
@@ -80,7 +81,9 @@ public class TestRunner
     BlockPos testRegionOriginB = new BlockPos(10, 204, 0);
     BlockPos testRegionOriginC = new BlockPos(15, 204, 0);
 
-    teleportPlayerToTestRegion(playerIn, testRegionOriginA.south(5));  // teleport the player nearby so you can watch
+    // place a nearby block for the player to stand on, then teleport the player there, so you can watch
+    worldIn.setBlockState(testRegionOriginA.south(5).down(), Blocks.STONE.getDefaultState());
+    teleportPlayerToTestRegion(playerIn, testRegionOriginA.south(5));
 
     // copy the test block to the destination region
     copyTestRegion(playerIn, sourceRegionOrigin, testRegionOriginA,
@@ -96,11 +99,11 @@ public class TestRunner
     success &= worldIn.getBlockState(testRegionOriginA.add(2, 0, 1)).getBlock() == Blocks.LADDER;
 
     // testB: replace stone with glass; ladder should be destroyed
-    worldIn.setBlockState(testRegionOriginB.add(1, 0, 1), Blocks.GLASS.getDefaultState());
+    worldIn.setBlockState(testRegionOriginB.add(1, 0, 1), Blocks.COBWEB.getDefaultState());
     success &= worldIn.getBlockState(testRegionOriginB.add(2, 0, 1)).getBlock() == Blocks.AIR;
 
     // testC: replace stone with diamond block; ladder should remain
-    worldIn.setBlockState(testRegionOriginC.add(1, 0, 1), Blocks.DIAMOND_BLOCK.getDefaultState());
+    worldIn.setBlockState(testRegionOriginC.add(1, 0, 1), Blocks.STONE_SLAB.getDefaultState());
     success &= worldIn.getBlockState(testRegionOriginC.add(2, 0, 1)).getBlock() == Blocks.LADDER;
 
     return success;
@@ -165,7 +168,7 @@ public class TestRunner
     args[7] = String.valueOf(destOrigin.getY());
     args[8] = String.valueOf(destOrigin.getZ());
 
-    String command = "/clone" + String.join(" ", args);
+    String command = "/clone " + String.join(" ", args);
 
     int success = 0;
     try {

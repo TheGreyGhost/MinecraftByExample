@@ -46,28 +46,21 @@ public class BlockRedstoneColouredLamp extends Block
   //----- methods related to redstone
 
   /**
-   * Determine if this block can make a redstone connection on the side provided,
-   * Useful to control which sides are inputs and outputs for redstone wires.
+   * Determine if this block will provide power to redstone and can make a redstone connection on the side provided.
+   * Useful to control which sides are outputs for redstone wires.
+   *
+   * Don't use for inputs; for redstone which is just "passing by", it will make the redstone connect to the side of the block
+   *   but it won't actually inject weak power into the block.
    *
    * @param world The current world
    * @param blockPos Block position in world of the wire that is trying to connect
    * @param directionFromNeighborToThis if not null: the side of the wire that is trying to make a horizontal connection to this block. If null: test for a stepped connection (i.e. the wire is trying to run up or down the side of solid block in order to connect to this block)
-   * @return true if the redstone can connect to this side
+   * @return true if this is a power output for redstone, so that redstone wire should connect to it
    */
   @Override
   public boolean canConnectRedstone(BlockState state, IBlockReader world, BlockPos blockPos, @Nullable Direction directionFromNeighborToThis)
   {
-    if (directionFromNeighborToThis == null) return false;
-    if (directionFromNeighborToThis == Direction.UP || directionFromNeighborToThis == Direction.DOWN) return false;
-
-    // we can connect to three of the four side faces - if the block is facing north, then we can
-    //  connect to WEST, SOUTH, or EAST.
-
-    Direction whichFaceOfLamp = directionFromNeighborToThis.getOpposite();
-    Direction blockFacingDirection = state.get(DIRECTION_OF_UNCONNECTED_FACE);
-
-    if (whichFaceOfLamp == blockFacingDirection) return false;
-    return true;
+    return false;
   }
 
   // ---- methods to control placement of the target (must be on a solid wall)
