@@ -11,7 +11,7 @@ import java.util.Random;
 /**
  * This Network Message is sent from the client to the server, to tell it to spawn projectiles at a particular location.
  * Typical usage:
- * PREQUISITES:
+ * PREREQUISITES:
  *   have previously setup SimpleChannel, registered the message class and the handler
  *
  * 1) User creates an AirStrikeMessageToServer(projectile, targetCoordinates)
