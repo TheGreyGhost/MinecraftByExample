@@ -24,7 +24,6 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
 import net.minecraft.network.play.server.SCollectItemPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
@@ -33,10 +32,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.*;
@@ -63,34 +59,10 @@ public class ItemFlowerBag extends Item implements INamedContainerProvider {
 	@Nonnull
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT oldCapNbt) {
-		return new InvProvider();
+		return new CapabilityProviderFlowerBag.InvProvider();
 	}
 
-  private static final int MAX_NUMBER_OF_FLOWERS_IN_BAG = 16;
-
-	private static class InvProvider implements ICapabilitySerializable<INBT> {
-
-		private final ItemStackHandlerFlowerBag inv = new ItemStackHandlerFlowerBag(MAX_NUMBER_OF_FLOWERS_IN_BAG);
-		private final LazyOptional<IItemHandler> opt = LazyOptional.of(() -> inv);
-
-		@Nonnull
-		@Override
-		public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
-			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(capability, opt);
-		}
-
-		@Override
-		public INBT serializeNBT() {
-			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.writeNBT(inv, null);
-		}
-
-		@Override
-		public void deserializeNBT(INBT nbt) {
-			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.readNBT(inv, null, nbt);
-		}
-	}
-
-	private void onPickupItem(EntityItemPickupEvent event) {
+  private void onPickupItem(EntityItemPickupEvent event) {
 		ItemStack entityStack = event.getItem().getItem();
 		if(Block.getBlockFromItem(entityStack.getItem()) instanceof BlockModFlower && entityStack.getCount() > 0) {
 			int color = ((BlockModFlower) Block.getBlockFromItem(entityStack.getItem())).color.getId();
