@@ -25,58 +25,59 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.registries.ObjectHolder;
-import vazkii.botania.common.block.BlockModFlower;
-import vazkii.botania.common.lib.LibItemNames;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The ContainerFlowerBag is used to manipulate the contents of the FlowerBag (ItemStackHandlerFlowerBag).
+ * The master copy is on the server side, with a "dummy" copy stored on the client side
+ * The GUI on the client side interacts with the dummy copy.
+ * Vanilla ensures that the server and client copies remain synchronised.
+ */
+
 public class ContainerFlowerBag extends Container {
 
-  public static ContainerFlowerBag createContainerServerSide(int windowID, PlayerInventory playerInventory, ChestContents chestContents) {
-    return new ContainerFlowerBag(windowID, playerInventory, chestContents);
+  public static ContainerFlowerBag createContainerServerSide(int windowID, PlayerInventory playerInventory, ItemStackHandlerFlowerBag bagContents) {
+    return new ContainerFlowerBag(windowID, playerInventory, bagContents);
   }
 
   public static ContainerFlowerBag createContainerClientSide(int windowID, PlayerInventory playerInventory, net.minecraft.network.PacketBuffer extraData) {
-    //  don't need extraData for this example; if you want you can use it to provide extra information from the server, that you can use
-    //  when creating the client container
-    //  eg String detailedDescription = extraData.readString(128);
-    ChestContents chestContents = ChestContents.createForClientSideContainer(TileEntityInventoryBasic.NUMBER_OF_SLOTS);
+    // for this example we use extraData for the server to tell the client how many flower itemstacks the flower bag contains.
+    int sizeOfFlowerBag = extraData.readInt();
 
-    // on the client side there is no parent TileEntity to communicate with, so we:
-    // 1) use a dummy inventory
-    // 2) use "do nothing" lambda functions for canPlayerAccessInventory and markDirty
-    return new ContainerFlowerBag(windowID, playerInventory, chestContents);
+    try {
+      ItemStackHandlerFlowerBag itemStackHandlerFlowerBag = new ItemStackHandlerFlowerBag(sizeOfFlowerBag);
+
+      // on the client side there is no parent ItemStack to communicate with - we use a dummy inventory
+      return new ContainerFlowerBag(windowID, playerInventory, itemStackHandlerFlowerBag);
+    } catch (IllegalArgumentException iae) {
+      LOGGER.warn(iae);
+    }
+    return null;
   }
 
-  @ObjectHolder("botania:" + LibItemNames.FLOWER_BAG)
-	public static ContainerType<ContainerFlowerBag> TYPE;
+	private final ItemStackHandlerFlowerBag itemStackHandlerFlowerBag;
 
-	public static ContainerFlowerBag fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-		Hand hand = buf.readBoolean() ? Hand.MAIN_HAND : Hand.OFF_HAND;
-		return new ContainerFlowerBag(windowId, inv, inv.player.getHeldItem(hand));
-	}
-
-	private final ItemStack bag;
-
-	public ContainerFlowerBag(int windowId, PlayerInventory playerInv, ItemStack bag) {
+	public ContainerFlowerBag(int windowId, PlayerInventory playerInv, ItemStackHandlerFlowerBag itemStackHandlerFlowerBag) {
 		super(TYPE, windowId);
 		int i;
 		int j;
 
-		this.bag = bag;
-		IItemHandlerModifiable flowerBagInv = (IItemHandlerModifiable) bag.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElse(null);
+		this.itemStackHandlerFlowerBag = itemStackHandlerFlowerBag;
 
-		for(i = 0; i < 2; ++i)
-			for(j = 0; j < 8; ++j) {
+		for (i = 0; i < 2; ++i)
+			for (j = 0; j < 8; ++j) {
 				int k = j + i * 8;
 				addSlot(new SlotItemHandler(flowerBagInv, k, 17 + j * 18, 26 + i * 18));
 			}
 
-		for(i = 0; i < 3; ++i)
-			for(j = 0; j < 9; ++j)
+		for (i = 0; i < 3; ++i)
+			for (j = 0; j < 9; ++j)
 				addSlot(new Slot(playerInv, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
 
-		for(i = 0; i < 9; ++i) {
+		for (i = 0; i < 9; ++i) {
 			addSlot(new Slot(playerInv, i, 8 + i * 18, 142));
 		}
 
@@ -124,5 +125,7 @@ public class ContainerFlowerBag extends Container {
 
 		return itemstack;
 	}
+
+  private static final Logger LOGGER = LogManager.getLogger();
 
 }

@@ -33,23 +33,25 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.*;
 import net.minecraftforge.items.wrapper.InvWrapper;
-import vazkii.botania.common.block.BlockModFlower;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class ItemFlowerBag extends Item implements INamedContainerProvider {
+public class ItemFlowerBag extends Item {
 
   private static final int MAXIMUM_NUMBER_OF_FLOWER_BAGS = 1;
 
 	public ItemFlowerBag() {
     super(new Item.Properties().maxStackSize(MAXIMUM_NUMBER_OF_FLOWER_BAGS).group(ItemGroup.MISC) // the item will appear on the Miscellaneous tab in creative
     );
-	  MinecraftForge.EVENT_BUS.addListener(this::onPickupItem);
+//	  MinecraftForge.EVENT_BUS.addListener(this::onPickupItem);
 	}
 
   // --------------------
@@ -59,114 +61,155 @@ public class ItemFlowerBag extends Item implements INamedContainerProvider {
 	@Nonnull
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT oldCapNbt) {
-		return new CapabilityProviderFlowerBag.InvProvider();
+
+		return new CapabilityProviderFlowerBag();
 	}
+//
+//  private void onPickupItem(EntityItemPickupEvent event) {
+//		ItemStack entityStack = event.getItem().getItem();
+//		if(Block.getBlockFromItem(entityStack.getItem()) instanceof BlockModFlower && entityStack.getCount() > 0) {
+//			int color = ((BlockModFlower) Block.getBlockFromItem(entityStack.getItem())).color.getId();
+//
+//			for(int i = 0; i < event.getEntityPlayer().inventory.getSizeInventory(); i++) {
+//				if(i == event.getEntityPlayer().inventory.currentItem)
+//					continue; // prevent item deletion
+//
+//				ItemStack bag = event.getEntityPlayer().inventory.getStackInSlot(i);
+//				if(!bag.isEmpty() && bag.getItem() == this) {
+//					IItemHandler bagInv = bag.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(NullPointerException::new);
+//
+//					ItemStack result = bagInv.insertItem(color, entityStack, false);
+//					int numPickedUp = entityStack.getCount() - result.getCount();
+//
+//					event.getItem().setItem(result);
+//
+//					if(numPickedUp > 0) {
+//						event.setCanceled(true);
+//						if (!event.getItem().isSilent()) {
+//							event.getItem().world.playSound(null, event.getEntityPlayer().posX, event.getEntityPlayer().posY, event.getEntityPlayer().posZ,
+//									SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F,
+//									((event.getItem().world.rand.nextFloat() - event.getItem().world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+//						}
+//						((ServerPlayerEntity) event.getEntityPlayer()).connection.sendPacket(new SCollectItemPacket(event.getItem().getEntityId(), event.getEntityPlayer().getEntityId(), numPickedUp));
+//						event.getEntityPlayer().openContainer.detectAndSendChanges();
+//
+//						return;
+//					}
+//				}
+//			}
+//		}
+//	}
 
-  private void onPickupItem(EntityItemPickupEvent event) {
-		ItemStack entityStack = event.getItem().getItem();
-		if(Block.getBlockFromItem(entityStack.getItem()) instanceof BlockModFlower && entityStack.getCount() > 0) {
-			int color = ((BlockModFlower) Block.getBlockFromItem(entityStack.getItem())).color.getId();
-
-			for(int i = 0; i < event.getEntityPlayer().inventory.getSizeInventory(); i++) {
-				if(i == event.getEntityPlayer().inventory.currentItem)
-					continue; // prevent item deletion
-
-				ItemStack bag = event.getEntityPlayer().inventory.getStackInSlot(i);
-				if(!bag.isEmpty() && bag.getItem() == this) {
-					IItemHandler bagInv = bag.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(NullPointerException::new);
-
-					ItemStack result = bagInv.insertItem(color, entityStack, false);
-					int numPickedUp = entityStack.getCount() - result.getCount();
-
-					event.getItem().setItem(result);
-
-					if(numPickedUp > 0) {
-						event.setCanceled(true);
-						if (!event.getItem().isSilent()) {
-							event.getItem().world.playSound(null, event.getEntityPlayer().posX, event.getEntityPlayer().posY, event.getEntityPlayer().posZ,
-									SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F,
-									((event.getItem().world.rand.nextFloat() - event.getItem().world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-						}
-						((ServerPlayerEntity) event.getEntityPlayer()).connection.sendPacket(new SCollectItemPacket(event.getItem().getEntityId(), event.getEntityPlayer().getEntityId(), numPickedUp));
-						event.getEntityPlayer().openContainer.detectAndSendChanges();
-
-						return;
-					}
-				}
-			}
-		}
-	}
-
+  /**
+   * When the player right clicks while holding the bag, open the inventory
+   * @param world
+   * @param player
+   * @param hand
+   * @return the new itemstack
+   */
 	@Nonnull
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
-		if(!world.isRemote) {
-			ItemStack stack = player.getHeldItem(hand);
-			INamedContainerProvider container = new SimpleNamedContainerProvider((w, p, pl) -> new ContainerFlowerBag(w, p, stack), stack.getDisplayName());
-			NetworkHooks.openGui((ServerPlayerEntity) player, container, buf -> {
-        buf.writeBoolean(hand == Hand.MAIN_HAND);
-      });
+    ItemStack stack = player.getHeldItem(hand);
+    if (!world.isRemote) {  // server only!
+			INamedContainerProvider containerProviderFlowerBag = new ContainerProviderFlowerBag(this, stack);
+			NetworkHooks.openGui((ServerPlayerEntity) player, containerProviderFlowerBag, (packetBuffer)->{});
+      // (packetBuffer)->{} is just a do-nothing because we have no extra data to send
 		}
-		return ActionResult.newResult(ActionResultType.SUCCESS, player.getHeldItem(hand));
+		return ActionResult.resultSuccess(stack);
 	}
 
+  /**
+   * Uses an inner class as an INamedContainerProvider.  This does two things:
+   *   1) Provides a name used when displaying the container, and
+   *   2) Creates an instance of container on the server which is linked to the ItemFlowerBag
+   * You could use SimpleNamedContainerProvider with a lambda instead, but I find this method easier to understand
+   * I've used a static inner class instead of a non-static inner class for the same reason
+   *
+   */
+	private static class ContainerProviderFlowerBag implements INamedContainerProvider {
+	  public ContainerProviderFlowerBag(ItemFlowerBag itemFlowerBag, ItemStack itemStackFlowerBag) {
+	    this.itemStackFlowerBag = itemStackFlowerBag;
+	    this.itemFlowerBag = itemFlowerBag;
+    }
+
+    @Override
+    public ITextComponent getDisplayName() {
+      return itemStackFlowerBag.getDisplayName();
+    }
+
+    /**
+     * The name is misleading; createMenu has nothing to do with creating a Screen, it is used to create the Container on the server only
+     */
+    @Override
+    public ContainerFlowerBag createMenu(int windowID, PlayerInventory playerInventory, PlayerEntity playerEntity) {
+      ContainerFlowerBag newContainerServerSide =
+              ContainerFlowerBag.createContainerServerSide(windowID, playerInventory,
+                      itemFlowerBag.getItemStackHandlerFlowerBag(itemStackFlowerBag));
+      return newContainerServerSide;
+    }
+
+    private ItemFlowerBag itemFlowerBag;
+    private ItemStack itemStackFlowerBag;
+  }
+
+  /**
+   *  If we use the item on a block with a ITEM_HANDLER_CAPABILITY, transfer the contents of the flower bag into that block
+   * @param ctx
+   * @return
+   */
 	@Nonnull
 	@Override
 	public ActionResultType onItemUse(ItemUseContext ctx) {
 		World world = ctx.getWorld();
 		BlockPos pos = ctx.getPos();
 		Direction side = ctx.getFace();
+		ItemStack itemStack = ctx.getItem();
+		if (!(itemStack.getItem() instanceof ItemFlowerBag)) throw new AssertionError("Unexpected ItemFlowerBag type");
+		ItemFlowerBag itemFlowerBag = (ItemFlowerBag)itemStack.getItem();
 
-		TileEntity tile = world.getTileEntity(pos);
-		if(tile != null) {
-			if(!world.isRemote) {
-				IItemHandler tileInv;
-				if(tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side).isPresent())
-					tileInv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side).orElseThrow(NullPointerException::new);
-				else if(tile instanceof IInventory)
-					tileInv = new InvWrapper((IInventory) tile);
-				else return ActionResultType.FAIL;
+		TileEntity tileEntity = world.getTileEntity(pos);
 
-				ctx.getItem().getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(bagInv -> {
-					for(int i = 0; i < bagInv.getSlots(); i++) {
-						ItemStack flower = bagInv.getStackInSlot(i);
-						((IItemHandlerModifiable) bagInv).setStackInSlot(i, ItemHandlerHelper.insertItemStacked(tileInv, flower, false));
-					}
-				});
+		if (tileEntity == null) return ActionResultType.PASS;
+    if (world.isRemote()) return ActionResultType.SUCCESS; // always succeed on client side
 
-			}
+    // check if this object has an inventory- either Forge capability, or vanilla IInventory
+    IItemHandler tileInventory;
+    LazyOptional<IItemHandler> capability = tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
+    if (capability.isPresent()) {
+      tileInventory = capability.orElseThrow(AssertionError::new);
+    } else if (tileEntity instanceof IInventory) {
+      tileInventory = new InvWrapper((IInventory)tileEntity);
+    } else {
+      return ActionResultType.FAIL;
+    }
 
-			return ActionResultType.SUCCESS;
-		}
-		return ActionResultType.PASS;
+    // go through each flower ItemStack in our flower bag and try to insert as many as possible into the block's inventory.
+    ItemStackHandlerFlowerBag itemStackHandlerFlowerBag =  itemFlowerBag.getItemStackHandlerFlowerBag(itemStack);
+    for(int i = 0; i < itemStackHandlerFlowerBag.getSlots(); i++) {
+      ItemStack flower = itemStackHandlerFlowerBag.getStackInSlot(i);
+      ItemStack flowersWhichDidNotFit = ItemHandlerHelper.insertItemStacked(tileInventory, flower, false);
+      itemStackHandlerFlowerBag.setStackInSlot(i, flowersWhichDidNotFit);
+    }
+
+    NEED TO DETECT AND SET CHANGES HERE ?
+
+    return ActionResultType.SUCCESS;
 	}
 
-
-
-  // -------------  The following two methods are used to make the TileEntity perform as a NamedContainerProvider, i.e.
-  //  1) Provide a name used when displaying the container, and
-  //  2) Creating an instance of container on the server, and linking it to the inventory items stored within the TileEntity
-
   /**
-   *  standard code to look up what the human-readable name is.
-   */
-  @Override
-  public ITextComponent getDisplayName() {
-    return new TranslationTextComponent("container.minecraftbyexample.mbe32_container_registry_name");
-  }
-
-  /**
-   * The name is misleading; createMenu has nothing to do with creating a Screen, it is used to create the Container on the server only
-   * @param windowID
-   * @param playerInventory
-   * @param playerEntity
+   * Retrieves the ItemStackHandlerFlowerBag for this itemStack (retrieved from the Capability)
+   * @param itemStack
    * @return
    */
-  @Nullable
-  @Override
-  public Container createMenu(int windowID, PlayerInventory playerInventory, PlayerEntity playerEntity) {
-    return ContainerBasic.createContainerServerSide(windowID, playerInventory, chestContents);
+  private ItemStackHandlerFlowerBag getItemStackHandlerFlowerBag(ItemStack itemStack) {
+    IItemHandler flowerBag = itemStack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElse(null);
+    if (flowerBag == null || !(flowerBag instanceof ItemStackHandlerFlowerBag)) {
+      LOGGER.error("ItemFlowerBag did not have the expected ITEM_HANDLER_CAPABILITY");
+      return new ItemStackHandlerFlowerBag(1);
+    }
+    return (ItemStackHandlerFlowerBag)flowerBag;
   }
 
-
+  private static final Logger LOGGER = LogManager.getLogger();
 }

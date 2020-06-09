@@ -28,12 +28,37 @@ Capabilities:
 https://gist.github.com/williewillus/c8dc2a1e7963b57ef436c699f25a710d
 https://mcforge.readthedocs.io/en/latest/datastorage/capabilities/
 
+The terminology that Forge uses for capabilities is a bit confusing, because they use the same word (Capability) to refer to both the type of Capability (eg Capability<IItemHandler> such as CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) and the "storage" class ('interface instance') that the Capability supplies (e.g. IItemHandler) 
+
+The key concepts you need to understand:
+1) A Capability represents some extra functionality that is added to your object (ItemStack, Entity, etc)
+2) Your object needs to have a CapabilityProvider.  This is used for two main purposes
+  1) When Forge wants to know if your object supports a given Capability<Type>, it asks the CapabilityProvider using the getCapability() method.  If the type is supported, the CapabilityProvider returns the corresponding interface instance, which Forge then uses to interact with the Capability.
+  2) To read/write the Capability information to permanent storage, i.e. NBT tags. 
+3) A CapabilityProvider can be attached to objects in one of two ways:
+  1) By overriding the appropriate method for the object (eg IForgeItem::initCapabilities()), which is useful for classes that you have added to the game yourself
+  2) Using AttachCapabilitiesEvent, which allows you to attach your own Capability to vanilla objects
+4) Each instance of your object gets its own instance of CapabilityProvider
+5) The CapabilityProvider uses "Lazy initialisation", i.e. instead of fully initialising your interface instance when the CapabilityProvider is created, it waits until the first time that someone requests the interface instance.
+
+A concrete example:
+We want to give our ItemFlowerBag the ability to store Flowers.
+1) The Capability that lets us do this is CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.  This Capability has a corresponding interface instance of ItemStackhandlerFlowerBag, which can store up to 16 ItemStacks.
+2) Our CapabilityProvider is CapabilityProviderFlowerBag.  
+  1) When CapabilityProviderFlowerBag::getCapability is called with the CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, it returns an ItemStackhandlerFlowerBag, which the caller can use to look in the bag or add more flowers.
+  2) When an ItemFlowerBag is saved to disk, CapabilityProviderFlowerBag writes the ItemStackhandlerFlowerBag to NBT.  Likewise, when loading an ItemFlowerBag, CapabilityProviderFlowerBag reads the ItemStackhandlerFlowerBag out of NBT.
+3) We attach the CapabilityProviderFlowerBag using ItemFlowerBag::initCapabilities
+4) This creates a new instance of CapabilityProviderFlowerBag for each time that an ItemFlowerBag ItemStack is created 
+5) Our CapabilityProviderFlowerBag does not actually create an ItemStackhandlerFlowerBag until the first time that someone calls CapabilityProviderFlowerBag::getCapability
+
+In this example, we use a GUI to interact with the Capability via a Container:
+The GUI talks to the Container, which manipulates the ItemStackHandlerFlowerBag that it obtained from the ItemFlowerBag.
+
+You might wonder what the point of using a Capability is- you could instead just use your ItemStack methods to keep its own ItemStackHandler as a field, and handle the loading/saving to NBT directly.  
+The advantage of using the Capability is that other mods will be able to interact with the ItemStack to retrieve items from it.  For an ItemFlowerBag that might not be terribly useful, but if you are making a new block container of some sort, then it might be important.
+
+
 ItemHandlerHelper
-
-
-
-
-
 
 
 This example shows how to make an inventory block with added functionality similar to a furnace (with a few extra slots). It builds on example MBE30 for a simple inventory block.
