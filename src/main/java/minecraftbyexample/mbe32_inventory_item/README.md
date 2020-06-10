@@ -54,9 +54,8 @@ We want to give our ItemFlowerBag the ability to store Flowers.
 In this example, we use a GUI to interact with the Capability via a Container:
 The GUI talks to the Container, which manipulates the ItemStackHandlerFlowerBag that it obtained from the ItemFlowerBag.
 
-You might wonder what the point of using a Capability is- you could instead just use your ItemStack methods to keep its own ItemStackHandler as a field, and handle the loading/saving to NBT directly.  
-The advantage of using the Capability is that other mods will be able to interact with the ItemStack to retrieve items from it.  For an ItemFlowerBag that might not be terribly useful, but if you are making a new block container of some sort, then it might be important.
-
+You might wonder what the point of using a Capability is- you could instead just use method in your ItemFlowerBag class to keep its own ItemStackHandler as an NBT tag attached to the item, and handle the loading/saving to NBT directly.
+The advantage of using the Capability is that other mods will be able to interact with the ItemStack to retrieve items from it.  For an ItemFlowerBag that might not be terribly useful (since there are no vanilla items which will ask other items if they can store objects), but if you are making a new block container of some sort, then it might allow vanilla objects to interact with your container.
 
 ItemHandlerHelper
 

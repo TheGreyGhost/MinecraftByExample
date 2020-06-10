@@ -101,7 +101,21 @@ public class BlockInventoryBasic extends ContainerBlock
     }
 	}
 
-	//---------------------------------------------------------
+  // ---------------------------
+  // If you want your container to provide redstone power to a comparator based on its contents, implement these methods
+  //  see vanilla for examples
+
+  @Override
+  public boolean hasComparatorInputOverride(BlockState state) {
+    return false;
+  }
+
+  @Override
+  public int getComparatorInputOverride(BlockState blockState, World worldIn, BlockPos pos) {
+    return 0;
+  }
+
+  //---------------------------------------------------------
 
   // render using a BakedModel (mbe30_inventory_basic.json --> mbe30_inventory_basic_model.json)
   // required because the default (super method) is INVISIBLE for BlockContainers.

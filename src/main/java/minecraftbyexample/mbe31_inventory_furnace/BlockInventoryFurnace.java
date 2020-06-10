@@ -135,6 +135,20 @@ public class BlockInventoryFurnace extends ContainerBlock
     }
   }
 
+  // ---------------------------
+  // If you want your container to provide redstone power to a comparator based on its contents, implement these methods
+  //  see vanilla for examples
+
+  @Override
+  public boolean hasComparatorInputOverride(BlockState state) {
+    return false;
+  }
+
+  @Override
+  public int getComparatorInputOverride(BlockState blockState, World worldIn, BlockPos pos) {
+    return 0;
+  }
+
   //------------------------------------------------------------
 	//  The code below isn't necessary for illustrating the Inventory Furnace concepts, it's just used for rendering.
 	//  For more background information see MBE03

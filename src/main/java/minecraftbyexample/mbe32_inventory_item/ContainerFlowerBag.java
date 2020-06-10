@@ -21,6 +21,7 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.SlotItemHandler;
@@ -44,11 +45,11 @@ public class ContainerFlowerBag extends Container {
   }
 
   public static ContainerFlowerBag createContainerClientSide(int windowID, PlayerInventory playerInventory, net.minecraft.network.PacketBuffer extraData) {
-    // for this example we use extraData for the server to tell the client how many flower itemstacks the flower bag contains.
-    int sizeOfFlowerBag = extraData.readInt();
+    // for this example we use extraData for the server to tell the client how many slots for flower itemstacks the flower bag contains.
+    int numberOfFlowerSlots = extraData.readInt();
 
     try {
-      ItemStackHandlerFlowerBag itemStackHandlerFlowerBag = new ItemStackHandlerFlowerBag(sizeOfFlowerBag);
+      ItemStackHandlerFlowerBag itemStackHandlerFlowerBag = new ItemStackHandlerFlowerBag(numberOfFlowerSlots);
 
       // on the client side there is no parent ItemStack to communicate with - we use a dummy inventory
       return new ContainerFlowerBag(windowID, playerInventory, itemStackHandlerFlowerBag);
@@ -60,26 +61,91 @@ public class ContainerFlowerBag extends Container {
 
 	private final ItemStackHandlerFlowerBag itemStackHandlerFlowerBag;
 
-	public ContainerFlowerBag(int windowId, PlayerInventory playerInv, ItemStackHandlerFlowerBag itemStackHandlerFlowerBag) {
-		super(TYPE, windowId);
+  // must assign a slot number to each of the slots used by the GUI.
+  // For this container, we can see both the tile inventory's slots as well as the player inventory slots and the hotbar.
+  // Each time we add a Slot to the container, it automatically increases the slotIndex, which means
+  //  0 - 8 = hotbar slots (which will map to the InventoryPlayer slot numbers 0 - 8)
+  //  9 - 35 = player inventory slots (which map to the InventoryPlayer slot numbers 9 - 35)
+  //  36 - 51 = TileInventory slots, which map to our bag slot numbers 0 - 15)
+
+  private static final int HOTBAR_SLOT_COUNT = 9;
+  private static final int PLAYER_INVENTORY_ROW_COUNT = 3;
+  private static final int PLAYER_INVENTORY_COLUMN_COUNT = 9;
+  private static final int PLAYER_INVENTORY_SLOT_COUNT = PLAYER_INVENTORY_COLUMN_COUNT * PLAYER_INVENTORY_ROW_COUNT;
+  private static final int VANILLA_SLOT_COUNT = HOTBAR_SLOT_COUNT + PLAYER_INVENTORY_SLOT_COUNT;
+
+  private static final int VANILLA_FIRST_SLOT_INDEX = 0;
+  private static final int BAG_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT;
+  private static final int MAX_EXPECTED_BAG_SLOT_COUNT = 16;
+
+  public static final int BAG_INVENTORY_YPOS = 26;  // the ContainerScreenFlowerBag needs to know these so it can tell where to draw the Titles
+  public static final int PLAYER_INVENTORY_YPOS = 84;
+
+  /**
+   * Creates a container suitable for server side or client side
+   * @param windowId ID of the container
+   * @param playerInv the inventory of the player
+   * @param itemStackHandlerFlowerBag the inventory stored in the bag
+   */
+  private ContainerFlowerBag(int windowId, PlayerInventory playerInv, ItemStackHandlerFlowerBag itemStackHandlerFlowerBag) {
+		super(StartupCommon.containerTypeFlowerBag, windowId);
 		int i;
 		int j;
 
 		this.itemStackHandlerFlowerBag = itemStackHandlerFlowerBag;
 
-		for (i = 0; i < 2; ++i)
-			for (j = 0; j < 8; ++j) {
-				int k = j + i * 8;
-				addSlot(new SlotItemHandler(flowerBagInv, k, 17 + j * 18, 26 + i * 18));
-			}
+    final int SLOT_X_SPACING = 18;
+    final int SLOT_Y_SPACING = 18;
+    final int HOTBAR_XPOS = 8;
+    final int HOTBAR_YPOS = 142;
+    // Add the players hotbar to the gui - the [xpos, ypos] location of each item
+    for (int x = 0; x < HOTBAR_SLOT_COUNT; x++) {
+      int slotNumber = x;
+      addSlot(new Slot(playerInv, slotNumber, HOTBAR_XPOS + SLOT_X_SPACING * x, HOTBAR_YPOS));
+    }
 
-		for (i = 0; i < 3; ++i)
-			for (j = 0; j < 9; ++j)
-				addSlot(new Slot(playerInv, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
+    final int PLAYER_INVENTORY_XPOS = 8;
+    // Add the rest of the player's inventory to the gui
+    for (int y = 0; y < PLAYER_INVENTORY_ROW_COUNT; y++) {
+      for (int x = 0; x < PLAYER_INVENTORY_COLUMN_COUNT; x++) {
+        int slotNumber = HOTBAR_SLOT_COUNT + y * PLAYER_INVENTORY_COLUMN_COUNT + x;
+        int xpos = PLAYER_INVENTORY_XPOS + x * SLOT_X_SPACING;
+        int ypos = PLAYER_INVENTORY_YPOS + y * SLOT_Y_SPACING;
+        addSlot(new Slot(playerInv, slotNumber, xpos, ypos));
+      }
+    }
 
-		for (i = 0; i < 9; ++i) {
-			addSlot(new Slot(playerInv, i, 8 + i * 18, 142));
-		}
+    int bagSlotCount = itemStackHandlerFlowerBag.getSlots();
+    if (bagSlotCount < 1 || bagSlotCount > MAX_EXPECTED_BAG_SLOT_COUNT) {
+      LOGGER.warn("Unexpected invalid slot count in ItemStackHandlerFlowerBag(" + bagSlotCount + ")");
+      bagSlotCount = MathHelper.clamp(bagSlotCount, 1, MAX_EXPECTED_BAG_SLOT_COUNT);
+    }
+
+    final int BAG_SLOTS_PER_ROW = 8;
+    final int BAG_INVENTORY_XPOS = 17;
+    // Add the tile inventory container to the gui
+    for (int bagSlot = 0; bagSlot < bagSlotCount; ++bagSlot) {
+      int slotNumber = bagSlot;
+      int bagRow = bagSlot / BAG_SLOTS_PER_ROW;
+      int bagCol = bagSlot % BAG_SLOTS_PER_ROW;
+      int xpos = BAG_INVENTORY_XPOS + SLOT_X_SPACING * bagCol;
+      int ypos = BAG_INVENTORY_YPOS + SLOT_Y_SPACING * bagRow;
+      addSlot(new SlotItemHandler(itemStackHandlerFlowerBag, slotNumber, xpos, ypos));
+    }
+
+//    for (i = 0; i < 2; ++i)
+//			for (j = 0; j < 8; ++j) {
+//				int k = j + i * 8;
+//				addSlot(new SlotItemHandler(flowerBagInv, k, 17 + j * 18, 26 + i * 18));
+//			}
+//
+//		for (i = 0; i < 3; ++i)
+//			for (j = 0; j < 9; ++j)
+//				addSlot(new Slot(playerInv, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
+
+//		for (i = 0; i < 9; ++i) {
+//			addSlot(new Slot(playerInv, i, 8 + i * 18, 142));
+//		}
 
 	}
 

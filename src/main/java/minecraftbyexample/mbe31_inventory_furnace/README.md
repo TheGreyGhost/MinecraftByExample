@@ -54,6 +54,7 @@ See also
 Depending on your container, there are a few other interfaces you might want to implement-
 IRecipeHolder, IRecipeHelperPopulator, IRecipeShownListener, RecipeBookContainer - for vanilla's recipe helper
 ISidedInventoryProvider - if you want a hopper to be able to draw items from your furnace
+If you want your container to provide redstone power to a comparator based on its contents, you should override the hasComparatorInputOverride and getComparatorInputOverride methods of your Block.
 
 ## Common errors
 

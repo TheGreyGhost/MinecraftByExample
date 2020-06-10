@@ -16,6 +16,7 @@ public class StartupCommon
 {
 
   public static ItemFlowerBag itemFlowerBag;  // this holds the unique instance of your block
+  public static ContainerType<ContainerFlowerBag> containerTypeFlowerBag;
 
   @SubscribeEvent
   public static void onItemsRegistration(final RegistryEvent.Register<Item> itemRegisterEvent) {
@@ -29,13 +30,10 @@ public class StartupCommon
     // not actually required for this example....
   }
 
-  public static ContainerType<ContainerBasic> containerTypeContainerBasic;
-
   @SubscribeEvent
-  public static void registerContainers(final RegistryEvent.Register<ContainerType<?>> event)
-  {
-    containerTypeContainerBasic = IForgeContainerType.create(ContainerBasic::createContainerClientSide);
-    containerTypeContainerBasic.setRegistryName("mbe30_container_registry_name");
-    event.getRegistry().register(containerTypeContainerBasic);
+  public static void registerContainers(final RegistryEvent.Register<ContainerType<?>> event) {
+    containerTypeFlowerBag = IForgeContainerType.create(ContainerFlowerBag::createContainerClientSide);
+    containerTypeFlowerBag.setRegistryName("mbe32_container_registry_name");
+    event.getRegistry().register(containerTypeFlowerBag);
   }
 }

@@ -41,6 +41,8 @@ When the block is clicked to open the GUI:
 
 The example uses some other resources as well for block rendering etc, these aren't the focus of this example, see examples mbe01, mbe02 for more background.  This example doesn't do many of the fancy extras that vanilla chests do, for example--animation of the lid, multiple people accessing the chest at once, sound effects, facing north/south/east/west.
 See other MBE examples or alternatively the vanilla classes for clues.
+If you want your container to be able to interact with hoppers, you should also look at ISidedInventoryProvider and ISidedInventory- see vanilla for proper usage
+If you want your container to provide redstone power to a comparator based on its contents, you should override the hasComparatorInputOverride and getComparatorInputOverride methods of your Block.
 
 See also
 * Background information on [Containers](http://greyminecraftcoder.blogspot.com/2020/04/containers-1144.html)
