@@ -3,8 +3,7 @@
 This example has two separate parts related to different ways of modifying your block's appearance based on its BlockState.
 
 The first example (mbe03a) is a signpost which uses 'variants'.  The second example is a 3D Web which uses 'multipart'.
-In both cases the blocks use BlockStateProperties to store the state of the block and to change the model which is used to render
-the block; the difference arises in the blockstate.json file:
+In both cases the blocks use BlockStateProperties to store the state of the block and to change the model which is used to render the block; the difference arises in the blockstate.json file:
 The variants example uses the "variants" json format to select a single model from a list, based on the combination of blockstateproperties.  For example
 - which way the sign is facing
 
@@ -16,7 +15,7 @@ For example:
 - If the EAST property is true, include a strand of web pointing east
 - etc for all six directions
 
----mbe03a: variants -------
+---mbe03a: variants -------<br>
 The signpost has the following properties:
 * doesn't occupy the entire 1x1x1m space,
 * is made up of two pieces (the pole and a sign),
@@ -56,7 +55,7 @@ Miscellaneous notes:
 ```
 * the sign textures have alpha channel information to make the signs pointy. You need a graphics editor which understands alpha channels in order to make textures like this. GIMP is a good free example.
 
------- mbe03b: multipart ---------
+------ mbe03b: multipart ---------<br>
 The 3D web has the following properties:
 * doesn't occupy the entire 1x1x1m space,
 * is made up of a central core, plus up to six "strands" reaching out from the core to the edge of the cube: if the web block is adjacent to another Block3DWeb, or to a solid surface, it joins to it with a strand of web.

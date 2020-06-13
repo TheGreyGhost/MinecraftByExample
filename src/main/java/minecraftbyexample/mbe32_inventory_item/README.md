@@ -42,7 +42,7 @@ See also
 ## Futher notes
 ItemHandlerHelper has a number of useful methods to help you work with ItemStackHandlers and other inventories
 
-###Capabilities
+### Capabilities
 The terminology that Forge uses for capabilities is a bit confusing, because they use the same word (Capability) to refer to both the type of Capability (eg Capability<IItemHandler> such as CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) and the "storage" class ('interface instance') that the Capability supplies (e.g. IItemHandler) 
 
 The key concepts you need to understand:
@@ -72,7 +72,7 @@ The GUI talks to the Container, which manipulates the ItemStackHandlerFlowerBag 
 You might wonder what the point of using a Capability is- you could instead just use a method in your ItemFlowerBag class to keep its own ItemStackHandler as an NBT tag attached to the item, and handle the loading/saving to NBT directly.
 The advantage of using the Capability is that other mods will be able to interact with the ItemStack to retrieve items from it.  For an ItemFlowerBag that might not be terribly useful (since there are no vanilla items which will ask other items if they can store objects), but if you are making a new block container of some sort, then it might allow vanilla objects to interact with your container.
 
-###For more information about capabilities:
+### For more information about capabilities:
 https://gist.github.com/williewillus/c8dc2a1e7963b57ef436c699f25a710d
 https://mcforge.readthedocs.io/en/latest/datastorage/capabilities/
 

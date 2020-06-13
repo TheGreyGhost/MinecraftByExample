@@ -97,7 +97,7 @@ See [here](https://greyminecraftcoder.blogspot.com/2020/05/minecraft-by-example.
     3. Look at Forge's README.txt file in this folder and follow the instructions to import it into Eclipse or IntelliJ IDEA.
     4. Use the gradle task runClient to run or debug the project.
 
-###How to compile and run:
+### How to compile and run:
 1) Execute gradle task runClient to test the client installation
 or
 2) Execute gradle task runServer to test the dedicated server installation.  (The first time you run this task it will exit without starting the server.  You then need to edit the eula.txt file in the run directory, and execute runServer again.)
@@ -117,7 +117,7 @@ Head over [here][more_help] if this didn't make sense to you (check comments for
 [04]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe04_block_dynamic_block_models
 [05]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe05_block_advanced_models
 [06]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe06_redstone
-[08]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe08_creative_tab
+[08]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe08_itemgroup
 
 [10]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe10_item_simple
 [11]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe11_item_variants

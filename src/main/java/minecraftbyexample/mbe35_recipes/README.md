@@ -16,7 +16,7 @@ See `StartupCommon` for more information
 For pictures of the recipes being added, see [https://greyminecraftcoder.blogspot.com/2020/05/minecraft-by-example.html](https://greyminecraftcoder.blogspot.com/2020/05/minecraft-by-example.html).
 
 
-##Tags
+## Tags
 
 Tags are used to group similar types of blocks and/or items together, usually for crafting or loot drop purposes.
 Not to be confused with "NBT Tags", which are used to store extra information inside an ItemStack.
@@ -37,7 +37,7 @@ To add your own tags, just define the appropriately named json in data.tags.item
 To add your own item to an existing vanilla tag, put a tag json with the same name into the correct data folder, and your extra items will be automatically added to the vanilla tag.   
 
 
-##Notes
+## Notes
 
 The parsing of recipes is done in a serializer for each recipe type.  See IRecipeSerializer for the vanilla versions.  Each serializer has two main functions:
 1) parse a json recipe into an IRecipe; used on the server to read in recipe data from resource packs
@@ -54,7 +54,7 @@ etc
 The names of vanilla Items can be found in the `Items` class.
 
 
-##Further information: <br>
+## Further information: <br>
 [https://minecraft.gamepedia.com/Recipe](https://minecraft.gamepedia.com/Recipe) <br>
 [https://minecraft.gamepedia.com/Data_pack](https://minecraft.gamepedia.com/Data_pack) <br>
 [https://minecraft.gamepedia.com/Tag](https://minecraft.gamepedia.com/Tag) <br>

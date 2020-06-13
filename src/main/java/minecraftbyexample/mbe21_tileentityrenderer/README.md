@@ -65,7 +65,7 @@ Useful tool to create Entity Models:
 
 ## Common errors
 
-###"Missing Model", "Missing texture" errors, Model is a pink-and-black cube, model is the right shape but is pink and black, etc:
+### "Missing Model", "Missing texture" errors, Model is a pink-and-black cube, model is the right shape but is pink and black, etc:
 These are caused when you have specified a filename or path which is not correct, typically:
 
 1. you've misspelled it
@@ -97,14 +97,14 @@ My best advice to you is: troubleshoot by taking baby steps, starting from somet
    one small change at a time.  It can help to move to world pos [0,0,0] and/or dig into the ground to find out
    where your object is actually being rendered. 
 
-###If the object is too light or too dark:
+### If the object is too light or too dark:
 1. the multitexturing "brightness" (blocklight/skylight) is not right 
 1. your color floats are wrong (beware confusion between int colour (0-->255) and float colour (0.0-->1.0))
 
 For Wavefront OBJ files:
 . Look at the other model loading options in mbe21_ter_wavefront_model.json such as ambientToFullbright 
 
-###You can't see parts of your object from one side:
+### You can't see parts of your object from one side:
 For manual rendering of quads:
 1. If you want your faces to be visible on both sides, you need to use a render mode which disables back face culling (see RenderType class instances with .cull(CULL_DISABLED))
 1. If your face should be one-sided, but is facing the wrong way, you need to reverse the order of the points for that face. For example, you have specified points in the order A, B, C, D --> change the order to D, C, B, A
@@ -112,18 +112,18 @@ For manual rendering of quads:
 For wavefront objects:
 1. Your face normals are pointing the wrong way (i.e pointing towards the inside of the object, not the outside)
 
-###Your texture is full of lots of icons of little blocks, items 
+### Your texture is full of lots of icons of little blocks, items 
 1. You are using a RenderType which is bound to the Stitched Blocks texture sheet instead of your desired texture.  i.e. AtlasTexture.LOCATION_BLOCKS_TEXTURE - see SOLID in RenderType class
 1. For rendering where you want to use a stitched texture: you are drawing using u,v = [0,0]->[1,1] instead of using the correct ranged for your stitched texture coordinates.  eg see TextureAtlasSprite.getMinU()
 
-###Your texture is the right bitmap but is not in the correct places on the faces
+### Your texture is the right bitmap but is not in the correct places on the faces
 For manual rendering of quads:
 1. Your u,v coordinates are mismatched with the vertices 
 
 For Wavefront objects:
 1. You may need to enable flip-v = true in the model file (see mbe21_ter_wavefront_model.json)
 
-###Console error message: "Not filled all elements of the vertex":
+### Console error message: "Not filled all elements of the vertex":
 Triggered at endVertex(), eg
     vertexBuilder
             .pos(matrixPos, x, y, z) 
