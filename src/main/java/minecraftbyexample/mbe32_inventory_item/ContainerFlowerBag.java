@@ -30,20 +30,37 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
+import java.util.function.Predicate;
 
 /**
  * The ContainerFlowerBag is used to manipulate the contents of the FlowerBag (ItemStackHandlerFlowerBag).
  * The master copy is on the server side, with a "dummy" copy stored on the client side
- * The GUI on the client side interacts with the dummy copy.
+ * The GUI (ContainerScreen) on the client side interacts with the dummy copy.
  * Vanilla ensures that the server and client copies remain synchronised.
  */
 
 public class ContainerFlowerBag extends Container {
 
-  public static ContainerFlowerBag createContainerServerSide(int windowID, PlayerInventory playerInventory, ItemStackHandlerFlowerBag bagContents) {
-    return new ContainerFlowerBag(windowID, playerInventory, bagContents);
+  /**
+   * Creates the container to be used on the server side
+   * @param windowID
+   * @param playerInventory
+   * @param bagContents
+   * @param flowerBag the ItemStack for the flower bag; this is used for checking whether the player is still holding the bag in their hand
+   * @return
+   */
+  public static ContainerFlowerBag createContainerServerSide(int windowID, PlayerInventory playerInventory, ItemStackHandlerFlowerBag bagContents,
+                                                             ItemStack flowerBag) {
+    return new ContainerFlowerBag(windowID, playerInventory, bagContents, flowerBag);
   }
 
+  /**
+   * Creates the container to be used on the client side  (contains dummy data)
+   * @param windowID
+   * @param playerInventory
+   * @param extraData extra data sent from the server
+   * @return
+   */
   public static ContainerFlowerBag createContainerClientSide(int windowID, PlayerInventory playerInventory, net.minecraft.network.PacketBuffer extraData) {
     // for this example we use extraData for the server to tell the client how many slots for flower itemstacks the flower bag contains.
     int numberOfFlowerSlots = extraData.readInt();
@@ -52,7 +69,7 @@ public class ContainerFlowerBag extends Container {
       ItemStackHandlerFlowerBag itemStackHandlerFlowerBag = new ItemStackHandlerFlowerBag(numberOfFlowerSlots);
 
       // on the client side there is no parent ItemStack to communicate with - we use a dummy inventory
-      return new ContainerFlowerBag(windowID, playerInventory, itemStackHandlerFlowerBag);
+      return new ContainerFlowerBag(windowID, playerInventory, itemStackHandlerFlowerBag, ItemStack.EMPTY);
     } catch (IllegalArgumentException iae) {
       LOGGER.warn(iae);
     }
@@ -60,6 +77,7 @@ public class ContainerFlowerBag extends Container {
   }
 
 	private final ItemStackHandlerFlowerBag itemStackHandlerFlowerBag;
+  private final ItemStack itemStackBeingHeld;
 
   // must assign a slot number to each of the slots used by the GUI.
   // For this container, we can see both the tile inventory's slots as well as the player inventory slots and the hotbar.
@@ -87,12 +105,12 @@ public class ContainerFlowerBag extends Container {
    * @param playerInv the inventory of the player
    * @param itemStackHandlerFlowerBag the inventory stored in the bag
    */
-  private ContainerFlowerBag(int windowId, PlayerInventory playerInv, ItemStackHandlerFlowerBag itemStackHandlerFlowerBag) {
+  private ContainerFlowerBag(int windowId, PlayerInventory playerInv,
+                             ItemStackHandlerFlowerBag itemStackHandlerFlowerBag,
+                             ItemStack itemStackBeingHeld) {
 		super(StartupCommon.containerTypeFlowerBag, windowId);
-		int i;
-		int j;
-
 		this.itemStackHandlerFlowerBag = itemStackHandlerFlowerBag;
+		this.itemStackBeingHeld = itemStackBeingHeld;
 
     final int SLOT_X_SPACING = 18;
     final int SLOT_Y_SPACING = 18;
@@ -132,64 +150,61 @@ public class ContainerFlowerBag extends Container {
       int ypos = BAG_INVENTORY_YPOS + SLOT_Y_SPACING * bagRow;
       addSlot(new SlotItemHandler(itemStackHandlerFlowerBag, slotNumber, xpos, ypos));
     }
-
-//    for (i = 0; i < 2; ++i)
-//			for (j = 0; j < 8; ++j) {
-//				int k = j + i * 8;
-//				addSlot(new SlotItemHandler(flowerBagInv, k, 17 + j * 18, 26 + i * 18));
-//			}
-//
-//		for (i = 0; i < 3; ++i)
-//			for (j = 0; j < 9; ++j)
-//				addSlot(new Slot(playerInv, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
-
-//		for (i = 0; i < 9; ++i) {
-//			addSlot(new Slot(playerInv, i, 8 + i * 18, 142));
-//		}
-
 	}
 
+	// Check if the player is still able to access the container
+  // In this case - if the player stops holding the bag, return false
+  // Called on the server side only.
 	@Override
 	public boolean canInteractWith(@Nonnull PlayerEntity player) {
+
 		ItemStack main = player.getHeldItemMainhand();
 		ItemStack off = player.getHeldItemOffhand();
-		return !main.isEmpty() && main == bag || !off.isEmpty() && off == bag;
+		return (!main.isEmpty() && main == itemStackBeingHeld) ||
+            (!off.isEmpty() && off == itemStackBeingHeld);
 	}
 
-	@Nonnull
+  // This is where you specify what happens when a player shift clicks a slot in the gui
+  //  (when you shift click a slot in the Bag Inventory, it moves it to the first available position in the hotbar and/or
+  //    player inventory.  When you you shift-click a hotbar or player inventory item, it moves it to the first available
+  //    position in the Bag inventory)
+  // At the very least you must override this and return ItemStack.EMPTY or the game will crash when the player shift clicks a slot
+  // returns ItemStack.EMPTY if the source slot is empty, or if none of the the source slot item could be moved
+  //   otherwise, returns a copy of the source stack
+  @Nonnull
 	@Override
-	public ItemStack transferStackInSlot(PlayerEntity player, int slotIndex) {
-		ItemStack itemstack = ItemStack.EMPTY;
-		Slot slot = inventorySlots.get(slotIndex);
+	public ItemStack transferStackInSlot(PlayerEntity player, int sourceSlotIndex) {
+    Slot sourceSlot = inventorySlots.get(sourceSlotIndex);
+    if (sourceSlot == null || !sourceSlot.getHasStack()) return ItemStack.EMPTY;  //EMPTY_ITEM
+    ItemStack sourceStack = sourceSlot.getStack();
+    ItemStack copyOfSourceStack = sourceStack.copy();
+    final int BAG_SLOT_COUNT = itemStackHandlerFlowerBag.getSlots();
 
-		if(slot != null && slot.getHasStack()) {
-			ItemStack itemstack1 = slot.getStack();
-			itemstack = itemstack1.copy();
+    // Check if the slot clicked is one of the vanilla container slots
+    if (sourceSlotIndex >= VANILLA_FIRST_SLOT_INDEX && sourceSlotIndex < VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT) {
+      // This is a vanilla container slot so merge the stack into the bag inventory
+      if (!mergeItemStack(sourceStack, BAG_INVENTORY_FIRST_SLOT_INDEX, BAG_INVENTORY_FIRST_SLOT_INDEX + BAG_SLOT_COUNT, false)){
+        return ItemStack.EMPTY;  // EMPTY_ITEM
+      }
+    } else if (sourceSlotIndex >= BAG_INVENTORY_FIRST_SLOT_INDEX && sourceSlotIndex < BAG_INVENTORY_FIRST_SLOT_INDEX + BAG_SLOT_COUNT) {
+      // This is a bag slot so merge the stack into the players inventory
+      if (!mergeItemStack(sourceStack, VANILLA_FIRST_SLOT_INDEX, VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT, false)) {
+        return ItemStack.EMPTY;
+      }
+    } else {
+      LOGGER.warn("Invalid slotIndex:" + sourceSlotIndex);
+      return ItemStack.EMPTY;
+    }
 
-			if(slotIndex < 16) {
-				if(!mergeItemStack(itemstack1, 16, 52, true))
-					return ItemStack.EMPTY;
-			} else {
-				Block b = Block.getBlockFromItem(itemstack.getItem());
-				int i = b instanceof BlockModFlower ? ((BlockModFlower) b).color.getId() : -1;
-				if(i >= 0 && i < 16) {
-					Slot slot1 = inventorySlots.get(i);
-					if(slot1.isItemValid(itemstack) && !mergeItemStack(itemstack1, i, i + 1, true))
-						return ItemStack.EMPTY;
-				}
-			}
+    // If stack size == 0 (the entire stack was moved) set slot contents to null
+    if (sourceStack.getCount() == 0) {
+      sourceSlot.putStack(ItemStack.EMPTY);
+    } else {
+      sourceSlot.onSlotChanged();
+    }
 
-			if(itemstack1.isEmpty())
-				slot.putStack(ItemStack.EMPTY);
-			else slot.onSlotChanged();
-
-			if(itemstack1.getCount() == itemstack.getCount())
-				return ItemStack.EMPTY;
-
-			slot.onTake(player, itemstack1);
-		}
-
-		return itemstack;
+    sourceSlot.onTake(player, sourceStack);
+    return copyOfSourceStack;
 	}
 
   private static final Logger LOGGER = LogManager.getLogger();

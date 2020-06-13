@@ -29,10 +29,16 @@
   "item.minecraftbyexample.mbe15_item_chessboard_registry_name": "MBE15 Smart Item Model Chessboard",
   "block.minecraftbyexample.mbe20_tileentity_data_block_registry_name": "MBE20 TileEntity data",
   "block.minecraftbyexample.mbe21_ter_block_registry_name": "MBE21 TileEntityRenderer",
+
   "block.minecraftbyexample.mbe30_block_registry_name": "MBE30 Inventory Basic Block",
   "container.minecraftbyexample.mbe30_container_registry_name": "MBE30 Inventory Basic GUI",
+
   "block.minecraftbyexample.mbe31_block_inventory_furnace_registry_name": "MBE31 Inventory Furnace Block",
   "container.minecraftbyexample.mbe31_container_registry_name": "MBE31 Inventory Furnace GUI",
+
+  "item.minecraftbyexample.mbe32_flower_bag_registry_name": "MBE32 Flower Bag",
+  "container.minecraftbyexample.mbe32_container_registry_name": "MBE32 Flower Bag GUI",
+
   "item.minecraftbyexample.mbe40_hud_overlay_item": "MBE40 HUD overlay activator",
   "block.minecraftbyexample.mbe50_block_flame_emitter_registry_name": "MBE50 Particle flame emitter",
   "item.minecraftbyexample.mbe60_item_airstrike_registry_name": "MBE60 Network Messages Airstrike Targeter",

@@ -62,6 +62,7 @@ See [here](https://greyminecraftcoder.blogspot.com/2020/05/minecraft-by-example.
 ### Containers (Inventories)
   - [MBE30][30] - a simple container for storing items in the world - similar to a Chest
   - [MBE31][31] - a functional container such as a Furnace or Crafting Table
+  - [MBE32][32] - an item (bag of flowers) which can store other items inside it.  Also shows how to use Capability
 
 ### Recipes (Crafting/Furnace)
   - [MBE35][35] - some typical example crafting recipes and furnace (smelting) recipes
@@ -130,6 +131,8 @@ Head over [here][more_help] if this didn't make sense to you (check comments for
 
 [30]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe30_inventory_basic
 [31]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe31_inventory_furnace
+[32]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe32_inventory_item
+
 [35]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe35_recipes
 
 [40]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe40_hud_overlay

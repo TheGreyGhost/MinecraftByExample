@@ -8,7 +8,7 @@
  *
  * File Created @ [Jan 13, 2014, 9:01:32 PM (GMT)]
  */
-package minecraftbyexample.mbe32_inventory_item;
+package minecraftbyexample.mbe70_configuration;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "minecraftbyexample:item/mbe32_flower_bag_icon"
+  }
+}

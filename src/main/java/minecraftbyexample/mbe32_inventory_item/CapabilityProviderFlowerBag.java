@@ -15,7 +15,6 @@ import javax.annotation.Nullable;
  * This class provides all the capabilities that the FlowerBag possesses.
  * In this case it only provides one capability, the ITEM_HANDLER_CAPABILITY i.e. ItemStackHandlerFlowerBag, which
  *   is used to store flower ItemStacks.
- *
  */
 
 public class CapabilityProviderFlowerBag implements ICapabilitySerializable<INBT> {
@@ -34,9 +33,9 @@ public class CapabilityProviderFlowerBag implements ICapabilitySerializable<INBT
   public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
     if (CapabilityItemHandler.ITEM_HANDLER_CAPABILITY == capability) return (LazyOptional<T>)(lazyInitialisionSupplier);
     return LazyOptional.empty();
-//  I have written these two lines out in long hand to make it clearer what is going on, but you can also use the following
-//    instead, which does the same thing:
-//    return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(capability, lazyInitialisionSupplier);
+  //  I have written these two lines out in long hand to make it clearer what is going on, but if your Provider only has
+  //    one Capability, you can also use the following instead, which does the same thing:
+  //    return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(capability, lazyInitialisionSupplier);
   }
 
   /**

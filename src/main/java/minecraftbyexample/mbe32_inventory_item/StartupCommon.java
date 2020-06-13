@@ -21,7 +21,7 @@ public class StartupCommon
   @SubscribeEvent
   public static void onItemsRegistration(final RegistryEvent.Register<Item> itemRegisterEvent) {
     itemFlowerBag = new ItemFlowerBag();
-    itemFlowerBag.setRegistryName("mbe10_item_simple_registry_name");
+    itemFlowerBag.setRegistryName("mbe32_flower_bag_registry_name");
     itemRegisterEvent.getRegistry().register(itemFlowerBag);
   }
 

@@ -35,6 +35,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.*;
 import net.minecraftforge.items.wrapper.InvWrapper;
@@ -51,57 +52,10 @@ public class ItemFlowerBag extends Item {
 	public ItemFlowerBag() {
     super(new Item.Properties().maxStackSize(MAXIMUM_NUMBER_OF_FLOWER_BAGS).group(ItemGroup.MISC) // the item will appear on the Miscellaneous tab in creative
     );
-//	  MinecraftForge.EVENT_BUS.addListener(this::onPickupItem);
 	}
-
-  // --------------------
-  //
-
-
-	@Nonnull
-	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT oldCapNbt) {
-
-		return new CapabilityProviderFlowerBag();
-	}
-//
-//  private void onPickupItem(EntityItemPickupEvent event) {
-//		ItemStack entityStack = event.getItem().getItem();
-//		if(Block.getBlockFromItem(entityStack.getItem()) instanceof BlockModFlower && entityStack.getCount() > 0) {
-//			int color = ((BlockModFlower) Block.getBlockFromItem(entityStack.getItem())).color.getId();
-//
-//			for(int i = 0; i < event.getEntityPlayer().inventory.getSizeInventory(); i++) {
-//				if(i == event.getEntityPlayer().inventory.currentItem)
-//					continue; // prevent item deletion
-//
-//				ItemStack bag = event.getEntityPlayer().inventory.getStackInSlot(i);
-//				if(!bag.isEmpty() && bag.getItem() == this) {
-//					IItemHandler bagInv = bag.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(NullPointerException::new);
-//
-//					ItemStack result = bagInv.insertItem(color, entityStack, false);
-//					int numPickedUp = entityStack.getCount() - result.getCount();
-//
-//					event.getItem().setItem(result);
-//
-//					if(numPickedUp > 0) {
-//						event.setCanceled(true);
-//						if (!event.getItem().isSilent()) {
-//							event.getItem().world.playSound(null, event.getEntityPlayer().posX, event.getEntityPlayer().posY, event.getEntityPlayer().posZ,
-//									SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F,
-//									((event.getItem().world.rand.nextFloat() - event.getItem().world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-//						}
-//						((ServerPlayerEntity) event.getEntityPlayer()).connection.sendPacket(new SCollectItemPacket(event.getItem().getEntityId(), event.getEntityPlayer().getEntityId(), numPickedUp));
-//						event.getEntityPlayer().openContainer.detectAndSendChanges();
-//
-//						return;
-//					}
-//				}
-//			}
-//		}
-//	}
 
   /**
-   * When the player right clicks while holding the bag, open the inventory
+   * When the player right clicks while holding the bag, open the inventory screen
    * @param world
    * @param player
    * @param hand
@@ -113,56 +67,30 @@ public class ItemFlowerBag extends Item {
     ItemStack stack = player.getHeldItem(hand);
     if (!world.isRemote) {  // server only!
 			INamedContainerProvider containerProviderFlowerBag = new ContainerProviderFlowerBag(this, stack);
-			NetworkHooks.openGui((ServerPlayerEntity) player, containerProviderFlowerBag, (packetBuffer)->{});
-      // (packetBuffer)->{} is just a do-nothing because we have no extra data to send
+			final int NUMBER_OF_FLOWER_SLOTS = 16;
+			NetworkHooks.openGui((ServerPlayerEntity) player,
+                           containerProviderFlowerBag,
+                           (packetBuffer)->{packetBuffer.writeInt(NUMBER_OF_FLOWER_SLOTS);});
+      // We use the packetBuffer to send the bag size; not necessary since it's always 16, but just for illustration purposes
 		}
 		return ActionResult.resultSuccess(stack);
 	}
 
   /**
-   * Uses an inner class as an INamedContainerProvider.  This does two things:
-   *   1) Provides a name used when displaying the container, and
-   *   2) Creates an instance of container on the server which is linked to the ItemFlowerBag
-   * You could use SimpleNamedContainerProvider with a lambda instead, but I find this method easier to understand
-   * I've used a static inner class instead of a non-static inner class for the same reason
-   *
-   */
-	private static class ContainerProviderFlowerBag implements INamedContainerProvider {
-	  public ContainerProviderFlowerBag(ItemFlowerBag itemFlowerBag, ItemStack itemStackFlowerBag) {
-	    this.itemStackFlowerBag = itemStackFlowerBag;
-	    this.itemFlowerBag = itemFlowerBag;
-    }
-
-    @Override
-    public ITextComponent getDisplayName() {
-      return itemStackFlowerBag.getDisplayName();
-    }
-
-    /**
-     * The name is misleading; createMenu has nothing to do with creating a Screen, it is used to create the Container on the server only
-     */
-    @Override
-    public ContainerFlowerBag createMenu(int windowID, PlayerInventory playerInventory, PlayerEntity playerEntity) {
-      ContainerFlowerBag newContainerServerSide =
-              ContainerFlowerBag.createContainerServerSide(windowID, playerInventory,
-                      itemFlowerBag.getItemStackHandlerFlowerBag(itemStackFlowerBag));
-      return newContainerServerSide;
-    }
-
-    private ItemFlowerBag itemFlowerBag;
-    private ItemStack itemStackFlowerBag;
-  }
-
-  /**
-   *  If we use the item on a block with a ITEM_HANDLER_CAPABILITY, transfer the contents of the flower bag into that block
+   *  If we use the item on a block with a ITEM_HANDLER_CAPABILITY, automatically transfer the entire contents of the flower bag
+   *     into that block
+   *  onItemUseFirst is a forge extension that is called before the block is activated
+   *  If you use onItemUse, this will never get called for a container because the container will capture the click first
    * @param ctx
    * @return
    */
 	@Nonnull
 	@Override
-	public ActionResultType onItemUse(ItemUseContext ctx) {
-		World world = ctx.getWorld();
-		BlockPos pos = ctx.getPos();
+	public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext ctx) {
+	  World world = ctx.getWorld();
+    if (world.isRemote()) return ActionResultType.PASS;
+
+    BlockPos pos = ctx.getPos();
 		Direction side = ctx.getFace();
 		ItemStack itemStack = ctx.getItem();
 		if (!(itemStack.getItem() instanceof ItemFlowerBag)) throw new AssertionError("Unexpected ItemFlowerBag type");
@@ -184,18 +112,66 @@ public class ItemFlowerBag extends Item {
       return ActionResultType.FAIL;
     }
 
-    // go through each flower ItemStack in our flower bag and try to insert as many as possible into the block's inventory.
+    // go through each flower ItemStack in our flower bag and try to insert as many as possible into the tile's inventory.
     ItemStackHandlerFlowerBag itemStackHandlerFlowerBag =  itemFlowerBag.getItemStackHandlerFlowerBag(itemStack);
-    for(int i = 0; i < itemStackHandlerFlowerBag.getSlots(); i++) {
+    for (int i = 0; i < itemStackHandlerFlowerBag.getSlots(); i++) {
       ItemStack flower = itemStackHandlerFlowerBag.getStackInSlot(i);
       ItemStack flowersWhichDidNotFit = ItemHandlerHelper.insertItemStacked(tileInventory, flower, false);
       itemStackHandlerFlowerBag.setStackInSlot(i, flowersWhichDidNotFit);
     }
 
-    NEED TO DETECT AND SET CHANGES HERE ?
-
+    tileEntity.markDirty();           // make sure that the tileEntity knows we have changed its contents
     return ActionResultType.SUCCESS;
 	}
+
+   // ------  Code used to generate a suitable Container for the contents of the FlowerBag
+
+  /**
+   * Uses an inner class as an INamedContainerProvider.  This does two things:
+   *   1) Provides a name used when displaying the container, and
+   *   2) Creates an instance of container on the server which is linked to the ItemFlowerBag
+   * You could use SimpleNamedContainerProvider with a lambda instead, but I find this method easier to understand
+   * I've used a static inner class instead of a non-static inner class for the same reason
+   *
+   */
+  private static class ContainerProviderFlowerBag implements INamedContainerProvider {
+    public ContainerProviderFlowerBag(ItemFlowerBag itemFlowerBag, ItemStack itemStackFlowerBag) {
+      this.itemStackFlowerBag = itemStackFlowerBag;
+      this.itemFlowerBag = itemFlowerBag;
+    }
+
+    @Override
+    public ITextComponent getDisplayName() {
+      return itemStackFlowerBag.getDisplayName();
+    }
+
+    /**
+     * The name is misleading; createMenu has nothing to do with creating a Screen, it is used to create the Container on the server only
+     */
+    @Override
+    public ContainerFlowerBag createMenu(int windowID, PlayerInventory playerInventory, PlayerEntity playerEntity) {
+      ContainerFlowerBag newContainerServerSide =
+              ContainerFlowerBag.createContainerServerSide(windowID, playerInventory,
+                      itemFlowerBag.getItemStackHandlerFlowerBag(itemStackFlowerBag),
+                      itemStackFlowerBag);
+      return newContainerServerSide;
+    }
+
+    private ItemFlowerBag itemFlowerBag;
+    private ItemStack itemStackFlowerBag;
+  }
+
+
+  // ---------------- Code related to Capabilities
+  //
+
+  // The CapabilityProvider returned from this method is used to specify which capabilities the ItemFlowerBag has
+  @Nonnull
+  @Override
+  public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT oldCapNbt) {
+
+    return new CapabilityProviderFlowerBag();
+  }
 
   /**
    * Retrieves the ItemStackHandlerFlowerBag for this itemStack (retrieved from the Capability)
