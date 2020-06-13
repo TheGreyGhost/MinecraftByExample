@@ -1,6 +1,15 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "minecraftbyexample:item/mbe32_flower_bag_icon"
-  }
+    "layer0": "minecraftbyexample:item/mbe32_flower_bag_icon_0pc"
+  },
+  "__comment": "we use the fullness property override to choose which bag icon to render",
+  "overrides": [
+    { "predicate": { "fullness": 0 }, "model": "minecraftbyexample:item/mbe32_flower_bag_0_empty" },
+    { "predicate": { "fullness": 0.01 }, "model": "minecraftbyexample:item/mbe32_flower_bag_1_almost_empty" },
+    { "predicate": { "fullness": 0.33 }, "model": "minecraftbyexample:item/mbe32_flower_bag_2_moderately_full" },
+    { "predicate": { "fullness": 0.66 }, "model": "minecraftbyexample:item/mbe32_flower_bag_3_mostly_full" },
+    { "predicate": { "fullness": 0.99 }, "model": "minecraftbyexample:item/mbe32_flower_bag_4_full" }
+  ]
 }
+

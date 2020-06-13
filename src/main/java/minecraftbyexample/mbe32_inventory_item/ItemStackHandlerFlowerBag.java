@@ -36,4 +36,19 @@ public class ItemStackHandlerFlowerBag extends ItemStackHandler {
     if (item.isIn(ItemTags.SMALL_FLOWERS) || item.isIn(ItemTags.TALL_FLOWERS)) return true;
     return false;
   }
+
+  /**Count how many empty slots are in the bag
+   * @return the number of empty slots
+   */
+  public int getNumberOfEmptySlots() {
+    final int NUMBER_OF_SLOTS = getSlots();
+
+    int emptySlotCount = 0;
+    for (int i = 0; i < NUMBER_OF_SLOTS; ++i) {
+      if (getStackInSlot(i) == ItemStack.EMPTY) {
+        ++emptySlotCount;
+      }
+    }
+    return emptySlotCount;
+  }
 }

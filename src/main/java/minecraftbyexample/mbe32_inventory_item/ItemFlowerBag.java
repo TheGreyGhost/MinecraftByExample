@@ -12,6 +12,7 @@ package minecraftbyexample.mbe32_inventory_item;
 
 import minecraftbyexample.mbe30_inventory_basic.ContainerBasic;
 import net.minecraft.block.Block;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -52,6 +53,8 @@ public class ItemFlowerBag extends Item {
 	public ItemFlowerBag() {
     super(new Item.Properties().maxStackSize(MAXIMUM_NUMBER_OF_FLOWER_BAGS).group(ItemGroup.MISC) // the item will appear on the Miscellaneous tab in creative
     );
+    this.addPropertyOverride(new ResourceLocation("fullness"), ItemFlowerBag::getFullnessPropertyOverride);
+    // use lambda function to link the NBT fullness value to a suitable property override value
 	}
 
   /**
@@ -178,13 +181,29 @@ public class ItemFlowerBag extends Item {
    * @param itemStack
    * @return
    */
-  private ItemStackHandlerFlowerBag getItemStackHandlerFlowerBag(ItemStack itemStack) {
+  private static ItemStackHandlerFlowerBag getItemStackHandlerFlowerBag(ItemStack itemStack) {
     IItemHandler flowerBag = itemStack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElse(null);
     if (flowerBag == null || !(flowerBag instanceof ItemStackHandlerFlowerBag)) {
       LOGGER.error("ItemFlowerBag did not have the expected ITEM_HANDLER_CAPABILITY");
       return new ItemStackHandlerFlowerBag(1);
     }
     return (ItemStackHandlerFlowerBag)flowerBag;
+  }
+
+  // ------------ code used for changing the appearance of the bag based on the number of flowers in it
+
+  /**
+   * gets the fullness property override, used in mbe32_flower_bag_registry_name.json to select which model should
+   *   be rendered
+   * @param itemStack
+   * @param world
+   * @param livingEntity
+   * @return 0.0 (empty) -> 1.0 (full) based on the number of slots in the bag which are in use
+   */
+  private static float getFullnessPropertyOverride(ItemStack itemStack, @Nullable World world, @Nullable LivingEntity livingEntity) {
+    ItemStackHandlerFlowerBag flowerBag = getItemStackHandlerFlowerBag(itemStack);
+    float fractionEmpty = flowerBag.getNumberOfEmptySlots() / (float)flowerBag.getSlots();
+    return 1.0F - fractionEmpty;
   }
 
   private static final Logger LOGGER = LogManager.getLogger();
