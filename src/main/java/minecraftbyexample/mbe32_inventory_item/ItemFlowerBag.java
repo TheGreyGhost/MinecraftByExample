@@ -12,6 +12,7 @@ package minecraftbyexample.mbe32_inventory_item;
 
 import minecraftbyexample.mbe30_inventory_basic.ContainerBasic;
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -122,10 +123,28 @@ public class ItemFlowerBag extends Item {
       ItemStack flowersWhichDidNotFit = ItemHandlerHelper.insertItemStacked(tileInventory, flower, false);
       itemStackHandlerFlowerBag.setStackInSlot(i, flowersWhichDidNotFit);
     }
-
+    TODO trigger a resynchronise here
     tileEntity.markDirty();           // make sure that the tileEntity knows we have changed its contents
     return ActionResultType.SUCCESS;
 	}
+
+//  /**
+//   * Called once per tick while the Item is held in a player inventory (includes the hotbar, offhand, and armor)
+//   * Is called on both client side and server side.
+//   * We use it to trigger the server to send updated ItemStack information to the client, if the contents have changed
+//    * @param stack
+//   * @param worldIn
+//   * @param entityIn
+//   * @param itemSlot
+//   * @param isSelected
+//   */
+//  public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
+//    if (worldIn.isRemote()) return;  // don't do anything on the client
+//	  if (!(stack.getItem() instanceof ItemFlowerBag)) { // should never happen!
+//	    LOGGER.warn("unexpected Item class");
+//	    return;
+//    }
+//  }
 
    // ------  Code used to generate a suitable Container for the contents of the FlowerBag
 

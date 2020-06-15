@@ -25,7 +25,9 @@ The pieces you need to understand are located in:
 See ReadMeFlowerBagDataFlow.png for a diagram of the dataflow between the classes.
 
 The key to understanding how this example works is to keep in mind the client-server synchronisation that is required.
- On the server, the data (the flowers) are all stored in a capability attached to the ItemStack.  There is also a client ItemStack and this is synchronised automatically by vanilla using NBT data.
+ On the server, the data (the flowers) are all stored in a capability attached to the ItemStack.  There is also a client ItemStack and this is synchronised automatically by vanilla using NBT data, when vanilla detects that the ItemStack has changed.<br>
+ ** Warning** - The Capability information for the ItemStack is stored as a field that the vanilla server does not use when checking for changes that it needs to send to the client.  This field is only accessed when serialising / deserialising the ItemStack for loading/saving to disk or for network transmission.<br>
+ This means that if you update Capability information, and you want the client to know about the change (eg because the capability affects rendering), you must manually trigger the server to resynchronise the ItemStack to the client.   
     
 The synchronisation for the Graphical User Interface (GUI) is different.  It takes place through two Containers, one on the server and one on the client:   
 1. When the flower bag GUI is opened, two Containers are created.  The Container on the server is linked to the server's ItemStack. But the Container on the client is a dummy for temporary storage only, it is NOT linked to a real ItemStack.  It is synchronised with the server container instead.  Manipulation of flowers in slots is handled automatically between the two containers.

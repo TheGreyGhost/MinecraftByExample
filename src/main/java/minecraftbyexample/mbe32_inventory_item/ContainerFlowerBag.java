@@ -19,6 +19,7 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.MathHelper;
@@ -206,6 +207,29 @@ public class ContainerFlowerBag extends Container {
     sourceSlot.onTake(player, sourceStack);
     return copyOfSourceStack;
 	}
+
+  /**
+   * Because capability nbt is not actually stored in the ItemStack nbt (it is created fresh each time we need to transmit or save an nbt), detectAndSendChanges
+   *   does not work for our ItemFlowerBag ItemStack.  i.e. when the contents of ItemStackHandlerFlowerBag are changed, the nbt of ItemFlowerBag ItemStack don't change,
+   *   so it is not sent to the client.
+   * For this reason, we need to manually detect when it has changed and mark it dirty.
+   * The easiest way is just to set a counter in the nbt tag and let the vanilla code notice that the itemstack has changed.
+   * The side effect is that the player's hand moves down and up (because the client thinks it is a new ItemStack) but that's not objectionable.
+   * Alternatively you could copy the code from vanilla detectAndSendChanges and tweak it to find the slot for itemStackBeingHeld and send it manually.
+   *
+   * Of course, if your ItemStack's capability doesn't affect the rendering of the ItemStack, i.e. the Capability is not needed on the client at all, then
+   *   you don't need to bother with any of this...
+   */
+	@Override
+  public void detectAndSendChanges() {
+    if (itemStackHandlerFlowerBag.isDirty()) {
+      CompoundNBT nbt = itemStackBeingHeld.getOrCreateTag();
+      int dirtyCounter = nbt.getInt("dirtyCounter");
+      nbt.putInt("dirtyCounter", dirtyCounter + 1);
+      itemStackBeingHeld.setTag(nbt);
+    }
+    super.detectAndSendChanges();
+  }
 
   private static final Logger LOGGER = LogManager.getLogger();
 

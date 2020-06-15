@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "minecraftbyexample:item/mbe32_flower_bag_icon_0pc"
+    "layer0": "minecraftbyexample:item/mbe32_flower_bag_icon_0"
   },
   "__comment": "we use the fullness property override to choose which bag icon to render",
   "overrides": [
