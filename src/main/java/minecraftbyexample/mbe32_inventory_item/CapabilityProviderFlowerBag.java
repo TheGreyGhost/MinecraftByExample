@@ -36,6 +36,9 @@ public class CapabilityProviderFlowerBag implements ICapabilitySerializable<INBT
   //  I have written these two lines out in long hand to make it clearer what is going on, but if your Provider only has
   //    one Capability, you can also use the following instead, which does the same thing:
   //    return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(capability, lazyInitialisionSupplier);
+  // Note that if you are implementing getCapability in a derived class, eg MyEntity, then you should call
+  //     return super.getCapability(capability, facing);
+  //   instead of returning empty.
   }
 
   /**
