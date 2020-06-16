@@ -218,7 +218,7 @@ public class ContainerFlowerBag extends Container {
    * Alternatively you could copy the code from vanilla detectAndSendChanges and tweak it to find the slot for itemStackBeingHeld and send it manually.
    *
    * Of course, if your ItemStack's capability doesn't affect the rendering of the ItemStack, i.e. the Capability is not needed on the client at all, then
-   *   you don't need to bother with any of this...
+   *   you don't need to bother with marking it dirty.
    */
 	@Override
   public void detectAndSendChanges() {

@@ -81,7 +81,7 @@ public class ItemFlowerBag extends Item {
 	}
 
   /**
-   *  If we use the item on a block with a ITEM_HANDLER_CAPABILITY, automatically transfer the entire contents of the flower bag
+   *  If we use the item on a block with an ITEM_HANDLER_CAPABILITY, automatically transfer the entire contents of the flower bag
    *     into that block
    *  onItemUseFirst is a forge extension that is called before the block is activated
    *  If you use onItemUse, this will never get called for a container because the container will capture the click first
@@ -123,28 +123,23 @@ public class ItemFlowerBag extends Item {
       ItemStack flowersWhichDidNotFit = ItemHandlerHelper.insertItemStacked(tileInventory, flower, false);
       itemStackHandlerFlowerBag.setStackInSlot(i, flowersWhichDidNotFit);
     }
-    TODO trigger a resynchronise here
     tileEntity.markDirty();           // make sure that the tileEntity knows we have changed its contents
+
+    // we need to mark the flowerbag ItemStack as dirty so that the server will send it to the player.
+    // This normally happens in ServerPlayerEntity.tick(), which calls this.openContainer.detectAndSendChanges();
+    // Unfortunately, this code only detects changes to item type, number, or nbt.  It doesn't check the capability instance.
+    // We could copy the detectAndSendChanges code out and call it manually, but it's easier to mark the itemstack as
+    //  dirty by modifying its nbt...
+    //  Of course, if your ItemStack's capability doesn't affect the rendering of the ItemStack, i.e. the Capability is not needed
+    //  on the client at all, then you don't need to bother to mark it dirty.
+
+    CompoundNBT nbt = itemStack.getOrCreateTag();
+    int dirtyCounter = nbt.getInt("dirtyCounter");
+    nbt.putInt("dirtyCounter", dirtyCounter + 1);
+    itemStack.setTag(nbt);
+
     return ActionResultType.SUCCESS;
 	}
-
-//  /**
-//   * Called once per tick while the Item is held in a player inventory (includes the hotbar, offhand, and armor)
-//   * Is called on both client side and server side.
-//   * We use it to trigger the server to send updated ItemStack information to the client, if the contents have changed
-//    * @param stack
-//   * @param worldIn
-//   * @param entityIn
-//   * @param itemSlot
-//   * @param isSelected
-//   */
-//  public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-//    if (worldIn.isRemote()) return;  // don't do anything on the client
-//	  if (!(stack.getItem() instanceof ItemFlowerBag)) { // should never happen!
-//	    LOGGER.warn("unexpected Item class");
-//	    return;
-//    }
-//  }
 
    // ------  Code used to generate a suitable Container for the contents of the FlowerBag
 
@@ -154,7 +149,6 @@ public class ItemFlowerBag extends Item {
    *   2) Creates an instance of container on the server which is linked to the ItemFlowerBag
    * You could use SimpleNamedContainerProvider with a lambda instead, but I find this method easier to understand
    * I've used a static inner class instead of a non-static inner class for the same reason
-   *
    */
   private static class ContainerProviderFlowerBag implements INamedContainerProvider {
     public ContainerProviderFlowerBag(ItemFlowerBag itemFlowerBag, ItemStack itemStackFlowerBag) {
@@ -182,7 +176,6 @@ public class ItemFlowerBag extends Item {
     private ItemFlowerBag itemFlowerBag;
     private ItemStack itemStackFlowerBag;
   }
-
 
   // ---------------- Code related to Capabilities
   //

@@ -63,6 +63,7 @@ public class ItemStackHandlerFlowerBag extends ItemStackHandler {
     isDirty = false;
     return currentState;
   }
+
   /** Called whenever the contents of the bag have changed.
    *   We need to do this manually in order to make sure that the server sends a synchronisation packet to the client for the parent ItemStack
    *   The reason is because capability information is not stored in the ItemStack nbt tag, so vanilla does not notice when
@@ -70,8 +71,6 @@ public class ItemStackHandlerFlowerBag extends ItemStackHandler {
    * @param slot
    */
   protected void onContentsChanged(int slot) {
-//    if (parentItemStackFlowerBag.isEmpty()) return;
-
     // A problem - the ItemStack and the ItemStackHandler don't know which player is holding the flower bag.  Or in fact whether
     //   the bag is being held by any player at all.
     // We have a few choices -
@@ -85,7 +84,6 @@ public class ItemStackHandlerFlowerBag extends ItemStackHandler {
     isDirty = true;
   }
 
-//  private ItemStack parentItemStackFlowerBag = ItemStack.EMPTY;
   private boolean isDirty = true;
 
 }
