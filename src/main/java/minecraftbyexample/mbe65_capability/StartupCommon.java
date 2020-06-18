@@ -4,6 +4,7 @@ import minecraftbyexample.mbe32_inventory_item.ContainerFlowerBag;
 import minecraftbyexample.mbe32_inventory_item.ItemFlowerBag;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -29,7 +30,7 @@ public class StartupCommon
 
   @SubscribeEvent
   public static void onCommonSetupEvent(FMLCommonSetupEvent event) {
-    // not actually required for this example....
+    CapabilityElementalFire.register();
   }
 
   @SubscribeEvent
