@@ -20,6 +20,11 @@ You can attach capability to most vanilla objects- if you look for classes which
 * Dimension
 * Chunk
 
+Capabilities can be added in one of three ways:
+1) If you are extending a base object which already implements ICapabilityProvider (eg an Entity, or a TileEntity) then you can override the getCapability() method directly.
+2) If you are adding a new Item, you can override the initCapability() method to return an ICapabilityProvider, which is attached to the ItemStack instance whenever one is created. 
+3) Otherwise- (eg for attaching to vanilla objects) use AttachCapabilityEvent to specify an ICapabilityProvider 
+
 This example uses two different Capabilities, which can be attached to ItemStacks and Entities.  The gameplay mechanic is:
 1) There are two bows: Elemental Air, and Elemental Fire
 2) When the player shoots an Entity with one of the bows, the entity takes no damage but becomes tagged with that element.
