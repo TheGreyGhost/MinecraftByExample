@@ -26,7 +26,7 @@ Capabilities can be added in one of three ways:
 3) Otherwise- (eg for attaching to vanilla objects) use AttachCapabilityEvent to specify an ICapabilityProvider 
 
 This example uses two different Capabilities, which can be attached to ItemStacks and Entities.  The gameplay mechanic is:
-1) There are two bows: Elemental Air, and Elemental Fire
+1) There are two projectile weapons: Elemental Air crossbow, and Elemental Fire bow
 2) When the player shoots an Entity with one of the bows, the entity takes no damage but becomes tagged with that element.
 3) An entity tagged with Elemental Air gets blown up into the air a short distance.  Repeated shots with the Air bow causes the magnitude of the effect to increase each time.
 4) An entity tagged with Elemental Fire becomes prone to spontaneous combustion: if the entity takes any damage , it catches fire.  Repeated shots with the Fire bow increases the duration of the fire.
@@ -34,11 +34,9 @@ This example uses two different Capabilities, which can be attached to ItemStack
 
 The algorithm to achieve this is:
 1) There are two Capability types: Fire and Air
-2) The Elemental Air bow has the Air capability, and the Elemental Fire bow has the Fire capability
+2) The Elemental Air crossbow has the Air capability, and the Elemental Fire bow has the Fire capability
 3) When the bow is fired, it tags the fired arrow ItemStack with either Air or Fire
 4) When the arrow strikes an Entity, it tags the Entity with the Air or Fire Capability as appropriate
-
-
 
 It illustrates two concepts:
 1) How to add an inventory to an item

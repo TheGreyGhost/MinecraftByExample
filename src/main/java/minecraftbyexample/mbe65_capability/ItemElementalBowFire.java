@@ -1,7 +1,9 @@
 package minecraftbyexample.mbe65_capability;
 
+import minecraftbyexample.mbe32_inventory_item.ItemStackHandlerFlowerBag;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
@@ -11,6 +13,11 @@ import net.minecraft.stats.Stats;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -23,6 +30,9 @@ import java.util.function.Predicate;
  * ItemSimple is an ordinary two-dimensional item
  * For background information on item see here http://greyminecraftcoder.blogspot.com/2013/12/items.html
  *   and here http://greyminecraftcoder.blogspot.com.au/2014/12/item-rendering-18.html
+ *
+ *   The arrow does no damage.  The longer that the player pulls the bow back (holds the right button down), the more elemental fire energy is
+ *     charged into the arrow, up to 4 seconds.
  */
 public class ItemElementalBowFire extends ShootableItem
 {
@@ -31,8 +41,8 @@ public class ItemElementalBowFire extends ShootableItem
   {
     super(new Properties().maxStackSize(MAXIMUM_NUMBER_OF_FROGS).group(ItemGroup.MISC) // the item will appear on the Miscellaneous tab in creative
     );
-    this.addPropertyOverride(new ResourceLocation("pull"), ItemElementalBowFire::getPullDurationSeconds);
-    this.addPropertyOverride(new ResourceLocation("pulling"), ItemElementalBowFire::isPulledBack);
+    this.addPropertyOverride(new ResourceLocation("pulltime"), ItemElementalBowFire::getPullDurationSeconds);
+    this.addPropertyOverride(new ResourceLocation("isbeingpulled"), ItemElementalBowFire::isBeingPulled);
   }
 
   /** How long has the player been pulling the bow back for?
@@ -51,7 +61,7 @@ public class ItemElementalBowFire extends ShootableItem
   /** Is the bow pulled back at all?
    * @return 0.0 = not pulled,  1.0 = yes
    */
-  public static float isPulledBack(ItemStack itemStack, @Nullable World world, @Nullable LivingEntity livingEntity) {
+  public static float isBeingPulled(ItemStack itemStack, @Nullable World world, @Nullable LivingEntity livingEntity) {
     final float NOT_PULLED = 0.0F;
     final float IS_PULLED = 1.0F;
     if (livingEntity == null) return NOT_PULLED;
@@ -68,7 +78,9 @@ public class ItemElementalBowFire extends ShootableItem
 
   /**
    * Called when the player stops using an Item (stops holding the right mouse button).
-   * Fire our arrow!  Copied straight from vanilla BowItem
+   * Fire our arrow!  Copied straight from vanilla BowItem, with some tweaks
+   *
+   * WHen the arrow is fired, set its ElementalFireCapability
    */
   public void onPlayerStoppedUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int timeLeft) {
     if (!(entityLiving instanceof PlayerEntity)) return;
@@ -87,46 +99,40 @@ public class ItemElementalBowFire extends ShootableItem
 
     float arrowVelocity = getArrowVelocity(pullDurationTicks);
     if (arrowVelocity < 0.1) return;
-    boolean flag1 = playerentity.abilities.isCreativeMode || (ammo.getItem() instanceof ArrowItem && ((ArrowItem)ammo.getItem()).isInfinite(ammo, stack, playerentity));
+    boolean infiniteAmmo = playerentity.abilities.isCreativeMode || (ammo.getItem() instanceof ArrowItem && ((ArrowItem)ammo.getItem()).isInfinite(ammo, stack, playerentity));
 
     if (!worldIn.isRemote) {
       ArrowItem arrowitem = (ArrowItem)(ammo.getItem() instanceof ArrowItem ? ammo.getItem() : Items.ARROW);
-      AbstractArrowEntity abstractarrowentity = arrowitem.createArrow(worldIn, ammo, playerentity);
-      abstractarrowentity = customeArrow(abstractarrowentity);
-      abstractarrowentity.shoot(playerentity, playerentity.rotationPitch, playerentity.rotationYaw, 0.0F, arrowVelocity * 3.0F, 1.0F);
+      AbstractArrowEntity abstractArrowEntity = arrowitem.createArrow(worldIn, ammo, playerentity);
+      abstractArrowEntity = customeArrow(abstractArrowEntity);
+      abstractArrowEntity.shoot(playerentity, playerentity.rotationPitch, playerentity.rotationYaw, 0.0F, arrowVelocity * 3.0F, 1.0F);
       if (arrowVelocity == 1.0F) {
-        abstractarrowentity.setIsCritical(true);
+        abstractArrowEntity.setIsCritical(true);
       }
 
-      int j = EnchantmentHelper.getEnchantmentLevel(Enchantments.POWER, stack);
-      if (j > 0) {
-        abstractarrowentity.setDamage(abstractarrowentity.getDamage() + (double)j * 0.5D + 0.5D);
+      abstractArrowEntity.setDamage(0.0);
+      abstractArrowEntity.setKnockbackStrength(0);
+
+      if (infiniteAmmo || playerentity.abilities.isCreativeMode && (ammo.getItem() == Items.SPECTRAL_ARROW || ammo.getItem() == Items.TIPPED_ARROW)) {
+        abstractArrowEntity.pickupStatus = AbstractArrowEntity.PickupStatus.CREATIVE_ONLY;
       }
 
-      int k = EnchantmentHelper.getEnchantmentLevel(Enchantments.PUNCH, stack);
-      if (k > 0) {
-        abstractarrowentity.setKnockbackStrength(k);
-      }
+      // set the level of fire based on how long the bow has been charging up (how long the player has been pulling it)
+      final float MAX_CHARGEUP_TIME = 4;
+      final float MAX_CHARGE = 100;
+      float pullDurationSeconds = getPullDurationSeconds(stack, worldIn, entityLiving);
+      if (pullDurationSeconds > MAX_CHARGEUP_TIME) pullDurationSeconds = MAX_CHARGEUP_TIME;
+      int fireCharge = (int)(MAX_CHARGE*pullDurationSeconds);
+      setElementalFireLevel(abstractArrowEntity, fireCharge);
 
-      if (EnchantmentHelper.getEnchantmentLevel(Enchantments.FLAME, stack) > 0) {
-        abstractarrowentity.setFire(100);
-      }
-
-      stack.damageItem(1, playerentity, (p_220009_1_) -> {
-        p_220009_1_.sendBreakAnimation(playerentity.getActiveHand());
-      });
-      if (flag1 || playerentity.abilities.isCreativeMode && (ammo.getItem() == Items.SPECTRAL_ARROW || ammo.getItem() == Items.TIPPED_ARROW)) {
-        abstractarrowentity.pickupStatus = AbstractArrowEntity.PickupStatus.CREATIVE_ONLY;
-      }
-
-      worldIn.addEntity(abstractarrowentity);
+      worldIn.addEntity(abstractArrowEntity);
     }
 
     worldIn.playSound((PlayerEntity)null,
             playerentity.getPosX(), playerentity.getPosY(), playerentity.getPosZ(),
             SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.PLAYERS,
             1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F) + arrowVelocity * 0.5F);
-    if (!flag1 && !playerentity.abilities.isCreativeMode) {
+    if (!infiniteAmmo && !playerentity.abilities.isCreativeMode) {
       ammo.shrink(1);
       if (ammo.isEmpty()) {
         playerentity.inventory.deleteStack(ammo);
@@ -134,6 +140,16 @@ public class ItemElementalBowFire extends ShootableItem
     }
 
     playerentity.addStat(Stats.ITEM_USED.get(this));
+  }
+
+  /** Set the Elemental fire level of the given entity
+   * @param abstractArrowEntity
+   * @param fireCharge
+   */
+  private void setElementalFireLevel(Entity abstractArrowEntity, int fireCharge) {
+    ElementalFireInterfaceInstance fireInterface = abstractArrowEntity.getCapability(CapabilityElementalFire.CAPABILITY_ELEMENTAL_FIRE).orElse(null);
+    if (fireInterface == null) return;;
+    fireInterface.addCharge(fireCharge);
   }
 
   /**
@@ -168,12 +184,12 @@ public class ItemElementalBowFire extends ShootableItem
    */
   public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
     ItemStack itemstack = playerIn.getHeldItem(handIn);
-    boolean flag = !playerIn.findAmmo(itemstack).isEmpty();
+    boolean playerHasAmmo = !playerIn.findAmmo(itemstack).isEmpty();
 
-    ActionResult<ItemStack> ret = net.minecraftforge.event.ForgeEventFactory.onArrowNock(itemstack, worldIn, playerIn, handIn, flag);
+    ActionResult<ItemStack> ret = net.minecraftforge.event.ForgeEventFactory.onArrowNock(itemstack, worldIn, playerIn, handIn, playerHasAmmo);
     if (ret != null) return ret;
 
-    if (!playerIn.abilities.isCreativeMode && !flag) {
+    if (!playerIn.abilities.isCreativeMode && !playerHasAmmo) {
       return ActionResult.resultFail(itemstack);
     } else {
       playerIn.setActiveHand(handIn);
@@ -191,6 +207,6 @@ public class ItemElementalBowFire extends ShootableItem
   public AbstractArrowEntity customeArrow(AbstractArrowEntity arrow) {
     return arrow;
   }
-}
 
+  private static final Logger LOGGER = LogManager.getLogger();
 }
