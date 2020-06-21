@@ -72,6 +72,7 @@ public class BlockFlameEmitter extends Block
     // Usually, it is desirable to spawn particles on the client only.
     // It is possible for the server to send a "spawn particle" command to the client, but this requires a lot of bandwidth if
     //   you are rendering even modest amounts of particles.
+    //  See ServerWorld.spawnParticle
     // Instead, send a custom message to the client and spawn lots of particles in response to the single message
     // (see mbe60 MessageHandlerOnClient for an example).
     if (worldIn.isRemote) {  // is this on the client side?  should always be true...

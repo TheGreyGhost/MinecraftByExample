@@ -1,6 +1,6 @@
 {
-    "parent": "item/bow",
+    "parent": "minecraftbyexample:item/mbe65_bow_fire_registry_name",
     "textures": {
-        "layer0": "item/bow_pulling_0"
+        "layer0": "minecraftbyexample:item/mbe65_bow_fire_pulling_0"
     }
 }

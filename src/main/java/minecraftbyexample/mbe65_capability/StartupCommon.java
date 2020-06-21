@@ -2,8 +2,10 @@ package minecraftbyexample.mbe65_capability;
 
 import minecraftbyexample.mbe32_inventory_item.ContainerFlowerBag;
 import minecraftbyexample.mbe32_inventory_item.ItemFlowerBag;
+import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -30,5 +32,7 @@ public class StartupCommon
   @SubscribeEvent
   public static void onCommonSetupEvent(FMLCommonSetupEvent event) {
     CapabilityElementalFire.register();
+    MinecraftForge.EVENT_BUS.register(CapabilityAttachEventHandler.class);
+    MinecraftForge.EVENT_BUS.register(ElementalInteractions.class);
   }
 }

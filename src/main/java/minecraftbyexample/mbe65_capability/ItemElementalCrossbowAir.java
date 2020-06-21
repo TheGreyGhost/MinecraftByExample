@@ -228,23 +228,35 @@ public class ItemElementalCrossbowAir extends ShootableItem {
   }
 
   private static void fireProjectile(World world, LivingEntity livingEntity, Hand hand, ItemStack crossbowItemStack, ItemStack projectileItemStack,
-                                     float soundPitch, boolean isCreativeMode, float speed, float p_220016_8_, float p_220016_9_) {
+                                     float soundPitch, boolean isCreativeMode, float speed, float inaccuracy, float yawAngle) {
     if (!world.isRemote) {
       AbstractArrowEntity abstractArrowEntity = createArrow(world, livingEntity, crossbowItemStack, projectileItemStack);
 
       if (livingEntity instanceof ICrossbowUser) {
-        ICrossbowUser lvt_12_2_ = (ICrossbowUser)livingEntity;
-        lvt_12_2_.shoot(lvt_12_2_.getAttackTarget(), crossbowItemStack, abstractArrowEntity, p_220016_9_);
+        ICrossbowUser crossbowUser = (ICrossbowUser)livingEntity;
+        crossbowUser.shoot(crossbowUser.getAttackTarget(), crossbowItemStack, abstractArrowEntity, yawAngle);
       } else {
-        Vec3d lvt_12_2_1 = livingEntity.getUpVector(1.0F);
-        Quaternion lvt_13_1_ = new Quaternion(new Vector3f(lvt_12_2_1), p_220016_9_, true);
-        Vec3d lvt_14_1_ = livingEntity.getLook(1.0F);
-        Vector3f lvt_15_1_ = new Vector3f(lvt_14_1_);
-        lvt_15_1_.transform(lvt_13_1_);
-        ((IProjectile)lvt_11_2_).shoot((double)lvt_15_1_.getX(), (double)lvt_15_1_.getY(), (double)lvt_15_1_.getZ(), speed, p_220016_8_);
+        Vec3d headVerticalAxis = livingEntity.getUpVector(1.0F);
+        Quaternion rotationAboutHeadVerticalAxis = new Quaternion(new Vector3f(headVerticalAxis), yawAngle, true);
+        Vec3d lookVector = livingEntity.getLook(1.0F);
+        Vector3f lookVector3f = new Vector3f(lookVector);
+        lookVector3f.transform(rotationAboutHeadVerticalAxis);
+        abstractArrowEntity.shoot(lookVector3f.getX(), lookVector3f.getY(), lookVector3f.getZ(), speed, inaccuracy);
       }
 
-      world.addEntity((Entity) lvt_11_2_);
+      //todo change to air
+      // set the level of fire based on how long the bow has been charging up (how long the player has been pulling it)
+      final float MAX_CHARGEUP_TIME = 4;
+      final float MAX_CHARGE = 100;
+//      float pullDurationSeconds = getPullDurationSeconds(stack, worldIn, entityLiving);
+//      if (pullDurationSeconds > MAX_CHARGEUP_TIME) pullDurationSeconds = MAX_CHARGEUP_TIME;
+//      int fireCharge = (int)(MAX_CHARGE*pullDurationSeconds);
+      int fireCharge = (int)(MAX_CHARGE);
+//      ItemElementalBowFire.setElementalFireLevel(abstractArrowEntity, fireCharge);
+
+
+
+      world.addEntity(abstractArrowEntity);
       world.playSound((PlayerEntity) null, livingEntity.getPosX(), livingEntity.getPosY(), livingEntity.getPosZ(),
               SoundEvents.ITEM_CROSSBOW_SHOOT, SoundCategory.PLAYERS, 1.0F, soundPitch);
     }

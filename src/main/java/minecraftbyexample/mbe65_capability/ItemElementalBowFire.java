@@ -34,7 +34,7 @@ import java.util.function.Predicate;
  *   The arrow does no damage.  The longer that the player pulls the bow back (holds the right button down), the more elemental fire energy is
  *     charged into the arrow, up to 4 seconds.
  */
-public class ItemElementalBowFire extends ShootableItem
+public class ItemElementalBowFire extends BowItem  // extend BowItem instead of ShootableItem, otherwise the Field Of View Zoom doesn't work.
 {
   static private final int MAXIMUM_NUMBER_OF_FROGS = 6; // maximum stack size
   public ItemElementalBowFire()
@@ -55,6 +55,10 @@ public class ItemElementalBowFire extends ShootableItem
     if (livingEntity.getActiveItemStack() != itemStack) return NO_PULL;
 
     int pullDurationTicks = itemStack.getUseDuration() - livingEntity.getItemInUseCount();   // getItemInUseCount starts from maximum!
+    if (pullDurationTicks > 40) {
+      int i = 1;
+      //todo remove
+    }
     return pullDurationTicks / TICKS_PER_SECOND;
   }
 

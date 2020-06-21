@@ -42,6 +42,7 @@
   "item.minecraftbyexample.mbe40_hud_overlay_item": "MBE40 HUD overlay activator",
   "block.minecraftbyexample.mbe50_block_flame_emitter_registry_name": "MBE50 Particle flame emitter",
   "item.minecraftbyexample.mbe60_item_airstrike_registry_name": "MBE60 Network Messages Airstrike Targeter",
+  "item.minecraftbyexample.mbe65_bow_fire_registry_name": "MBE65 Elemental Fire Bow",
   "block.minecraftbyexample.mbe80_testmodel_block_registry_name": "MBE80 Test Model",
   "gui.minecraftbyexample.mbe70_configuration.mainTitle": "MinecraftByExample Configuration",
   "gui.minecraftbyexample.mbe70_configuration.ctgy.general": "General Configuration",
