@@ -1,18 +1,27 @@
 package minecraftbyexample.mbe65_capability;
 
+import minecraftbyexample.usefultools.NBTtypesMBE;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.IntNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
  * This class provides all the capabilities that an Entity can possess.
- * In this case there is only one.
+ * In this case there are two:
  * 1) CapabilityElementalFire --> ElementalFireInterfaceInstance
+ * 2) CapabilityElementalAir --> ElementalAirInterfaceInstance
  */
 public class CapabilityProviderEntities implements ICapabilitySerializable<INBT> {
 
@@ -37,25 +46,51 @@ public class CapabilityProviderEntities implements ICapabilitySerializable<INBT>
       // The explicit cast to LazyOptional<T> is required because our CAPABILITY_ELEMENTAL_FIRE can't be typed.  Our code has
       //   checked that the requested capability matches, so the explict cast is safe (unless you have mixed them up)
     }
+    if (CapabilityElementalAir.CAPABILITY_ELEMENTAL_AIR == capability) {
+      return (LazyOptional<T>)LazyOptional.of(()->elementalAirInterfaceInstance);
+    }
+
     return LazyOptional.empty();
   // Note that if you are implementing getCapability in a derived class which implements ICapabilityProvider, eg MyEntity, then you should call
   //     return super.getCapability(capability, facing);
   //   instead of returning empty.
   }
 
-  /**Write all the capability state information to NBT - in this case only the fire information
+  private final static String AIR_NBT = "air";
+  private final static String FIRE_NBT = "fire";
+
+  /**Write all the capability state information to NBT - fire, and air
    */
   @Override
   public INBT serializeNBT() {
-    return CapabilityElementalFire.CAPABILITY_ELEMENTAL_FIRE.writeNBT(elementalFireInterfaceInstance, NO_SPECIFIC_SIDE);
+    CompoundNBT nbt = new CompoundNBT();
+    INBT fireNBT = CapabilityElementalFire.CAPABILITY_ELEMENTAL_FIRE.writeNBT(elementalFireInterfaceInstance, NO_SPECIFIC_SIDE);
+    INBT airNBT = CapabilityElementalAir.CAPABILITY_ELEMENTAL_AIR.writeNBT(elementalAirInterfaceInstance, NO_SPECIFIC_SIDE);
+    nbt.put(AIR_NBT, airNBT);
+    nbt.put(FIRE_NBT, fireNBT);
+    return nbt;
   }
 
-  /**Read the capability state information out of NBT - in this case only the fire information
+  /**Read the capability state information out of NBT - fire, and air
+   * Overwrite the interface instances with the nbt information
    */
   @Override
   public void deserializeNBT(INBT nbt) {
-    CapabilityElementalFire.CAPABILITY_ELEMENTAL_FIRE.readNBT(elementalFireInterfaceInstance, NO_SPECIFIC_SIDE, nbt);
+    if (nbt.getId() != NBTtypesMBE.COMPOUND_NBT_ID) {
+      LOGGER.warn("Unexpected NBT type:"+nbt);
+      return;  // leave as default
+    }
+    CompoundNBT compoundNBT = (CompoundNBT)nbt;
+    INBT airNBT = compoundNBT.get(AIR_NBT);
+    INBT fireNBT = compoundNBT.get(AIR_NBT);
+
+    CapabilityElementalAir.CAPABILITY_ELEMENTAL_AIR.readNBT(elementalAirInterfaceInstance, NO_SPECIFIC_SIDE, airNBT);
+    CapabilityElementalFire.CAPABILITY_ELEMENTAL_FIRE.readNBT(elementalFireInterfaceInstance, NO_SPECIFIC_SIDE, fireNBT);
   }
 
   private ElementalFireInterfaceInstance elementalFireInterfaceInstance = new ElementalFireInterfaceInstance();
+  private ElementalAirInterfaceInstance elementalAirInterfaceInstance = new ElementalAirInterfaceInstance();
+
+  private static final Logger LOGGER = LogManager.getLogger();
+
 }

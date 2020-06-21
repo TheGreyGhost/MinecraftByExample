@@ -8,17 +8,18 @@ import net.minecraftforge.common.capabilities.Capability;
 /**
  * Created by TGG on 18/06/2020.
  *
- * This class stores the amount of ElementalFire that has been attached to the ItemStack or Entity.
- * It's basically identical to ElementalAir, I have duplicated them for illustrative purposes only
+ * This class stores the amount of ElementalAir that has been attached to the ItemStack or Entity.
+ * It's basically identical to ElementalFire, I have duplicated them for illustrative purposes only
+ *
  * It contains a static inner class which is used to convert to/from NBT storage, for loading/saving to disk and for network transmission
  */
-public class ElementalFireInterfaceInstance {
+public class ElementalAirInterfaceInstance {
 
-  public ElementalFireInterfaceInstance() {
+  public ElementalAirInterfaceInstance() {
     this(0);
   }
 
-  public ElementalFireInterfaceInstance(int initialChargeLevel) {
+  public ElementalAirInterfaceInstance(int initialChargeLevel) {
     chargeLevel = initialChargeLevel;
   }
 
@@ -30,15 +31,15 @@ public class ElementalFireInterfaceInstance {
   private int chargeLevel;
 
   // Convert to/from NBT
-  public static class ElementalFireNBTStorage implements Capability.IStorage<ElementalFireInterfaceInstance> {
+  public static class ElementalAirNBTStorage implements Capability.IStorage<ElementalAirInterfaceInstance> {
     @Override
-    public INBT writeNBT(Capability<ElementalFireInterfaceInstance> capability, ElementalFireInterfaceInstance instance, Direction side) {
+    public INBT writeNBT(Capability<ElementalAirInterfaceInstance> capability, ElementalAirInterfaceInstance instance, Direction side) {
       IntNBT intNBT = IntNBT.valueOf(instance.chargeLevel);
       return intNBT;
     }
 
     @Override
-    public void readNBT(Capability<ElementalFireInterfaceInstance> capability, ElementalFireInterfaceInstance instance, Direction side, INBT nbt) {
+    public void readNBT(Capability<ElementalAirInterfaceInstance> capability, ElementalAirInterfaceInstance instance, Direction side, INBT nbt) {
       int chargeLevel = 0;
       if (nbt.getType() == IntNBT.TYPE) {
         chargeLevel = ((IntNBT)nbt).getInt();
@@ -47,8 +48,8 @@ public class ElementalFireInterfaceInstance {
     }
   }
 
-  public static ElementalFireInterfaceInstance createADefaultInstance() {
-    return new ElementalFireInterfaceInstance();
+  public static ElementalAirInterfaceInstance createADefaultInstance() {
+    return new ElementalAirInterfaceInstance();
   }
 
 }

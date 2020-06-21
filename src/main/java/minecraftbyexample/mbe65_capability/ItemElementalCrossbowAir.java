@@ -11,9 +11,7 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ICrossbowUser;
-import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.FireworkRocketEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
@@ -22,7 +20,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.*;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -46,8 +43,6 @@ public class ItemElementalCrossbowAir extends ShootableItem {
   private boolean isLoadingMiddle = false;
 
   static private final int MAXIMUM_NUMBER_OF_FROGS = 6; // maximum stack size
-
-  //todo make arrow disappear on hit
 
   public ItemElementalCrossbowAir() {
 
@@ -121,35 +116,36 @@ public class ItemElementalCrossbowAir extends ShootableItem {
     }
   }
 
-  public void onPlayerStoppedUsing(ItemStack p_77615_1_, World p_77615_2_, LivingEntity p_77615_3_, int p_77615_4_) {
-    int lvt_5_1_ = this.getUseDuration(p_77615_1_) - p_77615_4_;
-    float lvt_6_1_ = getCharge(lvt_5_1_, p_77615_1_);
-    if(lvt_6_1_ >= 1.0F && !isCharged(p_77615_1_) && hasAmmo(p_77615_3_, p_77615_1_)) {
-      setCharged(p_77615_1_, true);
-      SoundCategory lvt_7_1_ = p_77615_3_ instanceof PlayerEntity?SoundCategory.PLAYERS:SoundCategory.HOSTILE;
-      p_77615_2_.playSound((PlayerEntity)null, p_77615_3_.getPosX(), p_77615_3_.getPosY(), p_77615_3_.getPosZ(), SoundEvents.ITEM_CROSSBOW_LOADING_END, lvt_7_1_, 1.0F, 1.0F / (random.nextFloat() * 0.5F + 1.0F) + 0.2F);
+  public void onPlayerStoppedUsing(ItemStack itemStack, World world, LivingEntity livingEntity, int timeLeft) {
+    int pullDurationTicks = this.getUseDuration(itemStack) - timeLeft;
+    float fractionCharged = getFractionCharged(pullDurationTicks, itemStack);
+    if(fractionCharged >= 1.0F && !isCharged(itemStack) && hasAmmo(livingEntity, itemStack)) {
+      setCharged(itemStack, true);
+      SoundCategory soundCategory = livingEntity instanceof PlayerEntity?SoundCategory.PLAYERS:SoundCategory.HOSTILE;
+      world.playSound(null, livingEntity.getPosX(), livingEntity.getPosY(), livingEntity.getPosZ(),
+              SoundEvents.ITEM_CROSSBOW_LOADING_END, soundCategory, 1.0F, 1.0F / (random.nextFloat() * 0.5F + 1.0F) + 0.2F);
     }
 
   }
 
-  private static boolean hasAmmo(LivingEntity p_220021_0_, ItemStack p_220021_1_) {
-    int lvt_2_1_ = EnchantmentHelper.getEnchantmentLevel(Enchantments.MULTISHOT, p_220021_1_);
-    int lvt_3_1_ = lvt_2_1_ == 0?1:3;
-    boolean lvt_4_1_ = p_220021_0_ instanceof PlayerEntity && ((PlayerEntity)p_220021_0_).abilities.isCreativeMode;
-    ItemStack lvt_5_1_ = p_220021_0_.findAmmo(p_220021_1_);
-    ItemStack lvt_6_1_ = lvt_5_1_.copy();
+  private static boolean hasAmmo(LivingEntity livingEntity, ItemStack crossbowItemStack) {
+    int multishotFlag = EnchantmentHelper.getEnchantmentLevel(Enchantments.MULTISHOT, crossbowItemStack);
+    int numberOfShots = multishotFlag == 0 ? 1 : 3;
+    boolean creativeMode = livingEntity instanceof PlayerEntity && ((PlayerEntity)livingEntity).abilities.isCreativeMode;
+    ItemStack ammoItemStack = livingEntity.findAmmo(crossbowItemStack);
+    ItemStack ammoItemStackCopy = ammoItemStack.copy();
 
-    for(int lvt_7_1_ = 0; lvt_7_1_ < lvt_3_1_; ++lvt_7_1_) {
-      if(lvt_7_1_ > 0) {
-        lvt_5_1_ = lvt_6_1_.copy();
+    for (int i = 0; i < numberOfShots; ++i) {
+      if (i > 0) {
+        ammoItemStack = ammoItemStackCopy.copy();
       }
 
-      if(lvt_5_1_.isEmpty() && lvt_4_1_) {
-        lvt_5_1_ = new ItemStack(Items.ARROW);
-        lvt_6_1_ = lvt_5_1_.copy();
+      if (ammoItemStack.isEmpty() && creativeMode) {
+        ammoItemStack = new ItemStack(Items.ARROW);
+        ammoItemStackCopy = ammoItemStack.copy();
       }
 
-      if(!func_220023_a(p_220021_0_, p_220021_1_, lvt_5_1_, lvt_7_1_ > 0, lvt_4_1_)) {
+      if (!storeChargedAmmo(livingEntity, crossbowItemStack, ammoItemStack, i > 0, creativeMode)) {
         return false;
       }
     }
@@ -157,22 +153,22 @@ public class ItemElementalCrossbowAir extends ShootableItem {
     return true;
   }
 
-  private static boolean func_220023_a(LivingEntity p_220023_0_, ItemStack p_220023_1_, ItemStack p_220023_2_, boolean p_220023_3_, boolean p_220023_4_) {
-    if(p_220023_2_.isEmpty()) {
+  private static boolean storeChargedAmmo(LivingEntity shooter, ItemStack crossbowItemStack, ItemStack ammoItemStack, boolean notFirstBolt, boolean creativeMode) {
+    if (ammoItemStack.isEmpty()) {
       return false;
     } else {
-      boolean lvt_5_1_ = p_220023_4_ && p_220023_2_.getItem() instanceof ArrowItem;
-      ItemStack lvt_6_2_;
-      if(!lvt_5_1_ && !p_220023_4_ && !p_220023_3_) {
-        lvt_6_2_ = p_220023_2_.split(1);
-        if(p_220023_2_.isEmpty() && p_220023_0_ instanceof PlayerEntity) {
-          ((PlayerEntity)p_220023_0_).inventory.deleteStack(p_220023_2_);
-        }
+      boolean ammoIsCreativeArrow = creativeMode && ammoItemStack.getItem() instanceof ArrowItem;
+      ItemStack chargedAmmoItemStack;
+      if (ammoIsCreativeArrow || creativeMode || notFirstBolt) {
+        chargedAmmoItemStack = ammoItemStack.copy();
       } else {
-        lvt_6_2_ = p_220023_2_.copy();
+        chargedAmmoItemStack = ammoItemStack.split(1);
+        if (ammoItemStack.isEmpty() && shooter instanceof PlayerEntity) {
+          ((PlayerEntity)shooter).inventory.deleteStack(ammoItemStack);
+        }
       }
 
-      addChargedProjectile(p_220023_1_, lvt_6_2_);
+      addChargedProjectile(crossbowItemStack, chargedAmmoItemStack);
       return true;
     }
   }
@@ -244,16 +240,9 @@ public class ItemElementalCrossbowAir extends ShootableItem {
         abstractArrowEntity.shoot(lookVector3f.getX(), lookVector3f.getY(), lookVector3f.getZ(), speed, inaccuracy);
       }
 
-      //todo change to air
-      // set the level of fire based on how long the bow has been charging up (how long the player has been pulling it)
-      final float MAX_CHARGEUP_TIME = 4;
-      final float MAX_CHARGE = 100;
-//      float pullDurationSeconds = getPullDurationSeconds(stack, worldIn, entityLiving);
-//      if (pullDurationSeconds > MAX_CHARGEUP_TIME) pullDurationSeconds = MAX_CHARGEUP_TIME;
-//      int fireCharge = (int)(MAX_CHARGE*pullDurationSeconds);
-      int fireCharge = (int)(MAX_CHARGE);
-//      ItemElementalBowFire.setElementalFireLevel(abstractArrowEntity, fireCharge);
-
+      // crossbow always fires the same charge
+      final int MAX_CHARGE = 100;
+      ItemElementalCrossbowAir.setElementalAirLevel(abstractArrowEntity, MAX_CHARGE);
 
 
       world.addEntity(abstractArrowEntity);
@@ -262,23 +251,24 @@ public class ItemElementalCrossbowAir extends ShootableItem {
     }
   }
 
-  private static AbstractArrowEntity createArrow(World p_220024_0_, LivingEntity p_220024_1_, ItemStack p_220024_2_, ItemStack p_220024_3_) {
-    ArrowItem lvt_4_1_ = (ArrowItem)((ArrowItem)(p_220024_3_.getItem() instanceof ArrowItem?p_220024_3_.getItem():Items.ARROW));
-    AbstractArrowEntity lvt_5_1_ = lvt_4_1_.createArrow(p_220024_0_, p_220024_3_, p_220024_1_);
-    if(p_220024_1_ instanceof PlayerEntity) {
-      lvt_5_1_.setIsCritical(true);
+  private static AbstractArrowEntity createArrow(World world, LivingEntity livingEntity, ItemStack crossbowItemStack, ItemStack arrowItemStack) {
+    ArrowItem arrowItem = (ArrowItem)(arrowItemStack.getItem() instanceof ArrowItem ? arrowItemStack.getItem() : Items.ARROW);
+    AbstractArrowEntity abstractArrowEntity = arrowItem.createArrow(world, arrowItemStack, livingEntity);
+    if (livingEntity instanceof PlayerEntity) {
+      abstractArrowEntity.setIsCritical(true);
     }
 
-    lvt_5_1_.setHitSound(SoundEvents.ITEM_CROSSBOW_HIT);
-    lvt_5_1_.setShotFromCrossbow(true);
-    int lvt_6_1_ = EnchantmentHelper.getEnchantmentLevel(Enchantments.PIERCING, p_220024_2_);
-    if(lvt_6_1_ > 0) {
-      lvt_5_1_.setPierceLevel((byte)lvt_6_1_);
+    abstractArrowEntity.setHitSound(SoundEvents.ITEM_CROSSBOW_HIT);
+    abstractArrowEntity.setShotFromCrossbow(true);
+    int pierceLevel = EnchantmentHelper.getEnchantmentLevel(Enchantments.PIERCING, crossbowItemStack);
+    if (pierceLevel > 0) {
+      abstractArrowEntity.setPierceLevel((byte) pierceLevel);
     }
 
-    return lvt_5_1_;
+    return abstractArrowEntity;
   }
 
+  I AM UP TO HERE
   public static void fireProjectiles(World world, LivingEntity livingEntity, Hand hand, ItemStack crossbowItemStack, float speed, float p_220014_5_) {
     List<ItemStack> chargedProjectiles = getChargedProjectiles(crossbowItemStack);
     float[] randomSoundPitches = getRandomSoundPitches(livingEntity.getRNG());
@@ -351,8 +341,8 @@ public class ItemElementalCrossbowAir extends ShootableItem {
     return getChargeTime(p_77626_1_) + 3;
   }
 
-  public static int getChargeTime(ItemStack p_220026_0_) {
-    int lvt_1_1_ = EnchantmentHelper.getEnchantmentLevel(Enchantments.QUICK_CHARGE, p_220026_0_);
+  public static int getChargeTime(ItemStack itemStack) {
+    int lvt_1_1_ = EnchantmentHelper.getEnchantmentLevel(Enchantments.QUICK_CHARGE, itemStack);
     return lvt_1_1_ == 0?25:25 - 5 * lvt_1_1_;
   }
 
@@ -373,13 +363,13 @@ public class ItemElementalCrossbowAir extends ShootableItem {
     }
   }
 
-  private static float getCharge(int p_220031_0_, ItemStack p_220031_1_) {
-    float lvt_2_1_ = (float)p_220031_0_ / (float)getChargeTime(p_220031_1_);
-    if(lvt_2_1_ > 1.0F) {
-      lvt_2_1_ = 1.0F;
+  private static float getFractionCharged(int pullDurationTicks, ItemStack itemStack) {
+    float fractionCharged = (float)pullDurationTicks / (float)getChargeTime(itemStack);
+    if(fractionCharged > 1.0F) {
+      fractionCharged = 1.0F;
     }
 
-    return lvt_2_1_;
+    return fractionCharged;
   }
 
   @OnlyIn(Dist.CLIENT)
@@ -403,5 +393,13 @@ public class ItemElementalCrossbowAir extends ShootableItem {
     }
   }
 
-
+  /** Set the Elemental air level of the given entity
+   * @param abstractArrowEntity
+   * @param airCharge
+   */
+  private static void setElementalAirLevel(Entity abstractArrowEntity, int airCharge) {
+    ElementalAirInterfaceInstance airInterface = abstractArrowEntity.getCapability(CapabilityElementalAir.CAPABILITY_ELEMENTAL_AIR).orElse(null);
+    if (airInterface == null) return;
+    airInterface.addCharge(airCharge);
+  }
 }
