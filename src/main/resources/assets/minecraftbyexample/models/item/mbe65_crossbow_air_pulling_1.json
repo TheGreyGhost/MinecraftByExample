@@ -1,0 +1,6 @@
+{
+    "parent": "minecraftbyexample:item/mbe65_crossbow_air_registry_name",
+    "textures": {
+        "layer0": "minecraftbyexample:item/mbe65_crossbow_air_pulling_1"
+    }
+}

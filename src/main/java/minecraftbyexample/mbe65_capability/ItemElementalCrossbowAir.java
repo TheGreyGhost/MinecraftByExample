@@ -28,6 +28,8 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -38,7 +40,7 @@ import java.util.function.Predicate;
 /**
  * Created by TGG on 19/06/2020.
  */
-public class ItemElementalCrossbowAir extends ShootableItem {
+public class ItemElementalCrossbowAir extends CrossbowItem {  // need to extend CrossbowItem otherwise the pull-string-back rendering does not work properly
   private boolean isLoadingStart = false;
   private boolean isLoadingMiddle = false;
 
@@ -54,17 +56,17 @@ public class ItemElementalCrossbowAir extends ShootableItem {
   }
 
   /** How long has the player been pulling the crossbow back for?
-   * @return fraction pulled back (0.0--> 1.0);
+   * @return fraction pulled back (0.0--> 1.0 plus a bit);  returns 0.0 if already charged
    */
   public static float getPullFraction(ItemStack itemStack, @Nullable World world, @Nullable LivingEntity livingEntity) {
     final float NO_PULL = 0.0F;
-    final float MAX_PULL = 1.0F;
     if (livingEntity == null) return NO_PULL;
     if (livingEntity.getActiveItemStack() != itemStack) return NO_PULL;
-    if (isCharged(itemStack)) return MAX_PULL;
+    if (isCharged(itemStack)) return NO_PULL;
 
     int pullDurationTicks = itemStack.getUseDuration() - livingEntity.getItemInUseCount();   // getItemInUseCount starts from maximum!
-    return (float)UsefulFunctions.interpolate_with_clipping(pullDurationTicks, 0, getChargeTime(itemStack), NO_PULL, MAX_PULL);
+    float pullFraction = pullDurationTicks / (float)getChargeTime(itemStack);
+    return pullFraction;
   }
 
   /** Is the crossbow currently being pulled back?
@@ -88,14 +90,17 @@ public class ItemElementalCrossbowAir extends ShootableItem {
     return livingEntity != null && isCharged(itemStack) ? 1.0F : 0.0F;
   }
 
+  @Override
   public Predicate<ItemStack> getAmmoPredicate() {
     return ARROWS;
   }
 
+  @Override
   public Predicate<ItemStack> getInventoryAmmoPredicate() {
     return ARROWS;
   }
 
+  @Override
   public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity playerEntity, Hand hand) {
     ItemStack heldItem = playerEntity.getHeldItem(hand);
     if (isCharged(heldItem)) {
@@ -116,10 +121,13 @@ public class ItemElementalCrossbowAir extends ShootableItem {
     }
   }
 
+  @Override
   public void onPlayerStoppedUsing(ItemStack itemStack, World world, LivingEntity livingEntity, int timeLeft) {
+//    LOGGER.warn("onPlayerStoppedUsing-timeLeft:" + timeLeft);
+
     int pullDurationTicks = this.getUseDuration(itemStack) - timeLeft;
     float fractionCharged = getFractionCharged(pullDurationTicks, itemStack);
-    if(fractionCharged >= 1.0F && !isCharged(itemStack) && hasAmmo(livingEntity, itemStack)) {
+    if (fractionCharged >= 1.0F && !isCharged(itemStack) && hasAmmo(livingEntity, itemStack)) {
       setCharged(itemStack, true);
       SoundCategory soundCategory = livingEntity instanceof PlayerEntity?SoundCategory.PLAYERS:SoundCategory.HOSTILE;
       world.playSound(null, livingEntity.getPosX(), livingEntity.getPosY(), livingEntity.getPosZ(),
@@ -268,8 +276,7 @@ public class ItemElementalCrossbowAir extends ShootableItem {
     return abstractArrowEntity;
   }
 
-  I AM UP TO HERE
-  public static void fireProjectiles(World world, LivingEntity livingEntity, Hand hand, ItemStack crossbowItemStack, float speed, float p_220014_5_) {
+  public static void fireProjectiles(World world, LivingEntity livingEntity, Hand hand, ItemStack crossbowItemStack, float speed, float inaccuracy) {
     List<ItemStack> chargedProjectiles = getChargedProjectiles(crossbowItemStack);
     float[] randomSoundPitches = getRandomSoundPitches(livingEntity.getRNG());
 
@@ -278,80 +285,92 @@ public class ItemElementalCrossbowAir extends ShootableItem {
       boolean isCreativeMode = livingEntity instanceof PlayerEntity && ((PlayerEntity)livingEntity).abilities.isCreativeMode;
       if (!chargedProjectile.isEmpty()) {
         if (i == 0) {
-          fireProjectile(world, livingEntity, hand, crossbowItemStack, chargedProjectile, randomSoundPitches[i], isCreativeMode, speed, p_220014_5_, 0.0F);
+          fireProjectile(world, livingEntity, hand, crossbowItemStack, chargedProjectile, randomSoundPitches[i], isCreativeMode, speed, inaccuracy, 0.0F);
         } else if (i == 1) {
-          fireProjectile(world, livingEntity, hand, crossbowItemStack, chargedProjectile, randomSoundPitches[i], isCreativeMode, speed, p_220014_5_, -10.0F);
+          fireProjectile(world, livingEntity, hand, crossbowItemStack, chargedProjectile, randomSoundPitches[i], isCreativeMode, speed, inaccuracy, -10.0F);
         } else if( i == 2) {
-          fireProjectile(world, livingEntity, hand, crossbowItemStack, chargedProjectile, randomSoundPitches[i], isCreativeMode, speed, p_220014_5_, 10.0F);
+          fireProjectile(world, livingEntity, hand, crossbowItemStack, chargedProjectile, randomSoundPitches[i], isCreativeMode, speed, inaccuracy, 10.0F);
         }
       }
     }
-
+    //todo mark entities as dirty after update
     fireProjectilesAfter(world, livingEntity, crossbowItemStack);
   }
 
-  private static float[] getRandomSoundPitches(Random p_220028_0_) {
-    boolean lvt_1_1_ = p_220028_0_.nextBoolean();
-    return new float[]{1.0F, getRandomSoundPitch(lvt_1_1_), getRandomSoundPitch(!lvt_1_1_)};
+  private static float[] getRandomSoundPitches(Random rnd) {
+    boolean randBoolean = rnd.nextBoolean();
+    return new float[]{1.0F, getRandomSoundPitch(randBoolean), getRandomSoundPitch(!randBoolean)};
   }
 
-  private static float getRandomSoundPitch(boolean p_220032_0_) {
-    float lvt_1_1_ = p_220032_0_?0.63F:0.43F;
-    return 1.0F / (random.nextFloat() * 0.5F + 1.8F) + lvt_1_1_;
+  private static float getRandomSoundPitch(boolean randFlag) {
+    float f = randFlag?0.63F:0.43F;
+    return 1.0F / (random.nextFloat() * 0.5F + 1.8F) + f;
   }
 
-  private static void fireProjectilesAfter(World p_220015_0_, LivingEntity p_220015_1_, ItemStack p_220015_2_) {
-    if(p_220015_1_ instanceof ServerPlayerEntity) {
-      ServerPlayerEntity lvt_3_1_ = (ServerPlayerEntity)p_220015_1_;
-      if(!p_220015_0_.isRemote) {
-        CriteriaTriggers.SHOT_CROSSBOW.func_215111_a(lvt_3_1_, p_220015_2_);
+  private static void fireProjectilesAfter(World world, LivingEntity livingEntity, ItemStack crossbowItemStack) {
+    if(livingEntity instanceof ServerPlayerEntity) {
+      ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity)livingEntity;
+      if (!world.isRemote) {
+        CriteriaTriggers.SHOT_CROSSBOW.func_215111_a(serverPlayerEntity, crossbowItemStack);
       }
 
-      lvt_3_1_.addStat(Stats.ITEM_USED.get(p_220015_2_.getItem()));
+      serverPlayerEntity.addStat(Stats.ITEM_USED.get(crossbowItemStack.getItem()));
     }
 
-    clearProjectiles(p_220015_2_);
+    clearProjectiles(crossbowItemStack);
   }
 
-  public void onUse(World p_219972_1_, LivingEntity p_219972_2_, ItemStack p_219972_3_, int p_219972_4_) {
-    if(!p_219972_1_.isRemote) {
-      int lvt_5_1_ = EnchantmentHelper.getEnchantmentLevel(Enchantments.QUICK_CHARGE, p_219972_3_);
-      SoundEvent lvt_6_1_ = this.getSoundEvent(lvt_5_1_);
-      SoundEvent lvt_7_1_ = lvt_5_1_ == 0?SoundEvents.ITEM_CROSSBOW_LOADING_MIDDLE:null;
-      float lvt_8_1_ = (float)(p_219972_3_.getUseDuration() - p_219972_4_) / (float)getChargeTime(p_219972_3_);
-      if(lvt_8_1_ < 0.2F) {
+  /**
+   * If this itemstack's item is a crossbow
+   * Otherwise - the ticksRemaining gets reset to maximum at the end of the pulling-back-the-string, rather than holding at 0
+   */
+  @Override
+  public boolean isCrossbow(ItemStack stack) {
+    return true;
+  }
+
+  @Override
+  public void onUse(World world, LivingEntity livingEntity, ItemStack itemStack, int ticksRemaining) {
+    if (!world.isRemote) {
+//      LOGGER.warn("onUse-ticksRemaining:" + ticksRemaining);
+      int enchantmentLevel = EnchantmentHelper.getEnchantmentLevel(Enchantments.QUICK_CHARGE, itemStack);
+      SoundEvent soundEvent = this.getSoundEvent(enchantmentLevel);
+      SoundEvent soundEvent1 = enchantmentLevel == 0 ? SoundEvents.ITEM_CROSSBOW_LOADING_MIDDLE : null;
+      float fractionCharged = (itemStack.getUseDuration() - ticksRemaining) / (float)getChargeTime(itemStack);
+      if (fractionCharged < 0.2F) {
         this.isLoadingStart = false;
         this.isLoadingMiddle = false;
       }
 
-      if(lvt_8_1_ >= 0.2F && !this.isLoadingStart) {
+      if (fractionCharged >= 0.2F && !this.isLoadingStart) {
         this.isLoadingStart = true;
-        p_219972_1_.playSound((PlayerEntity)null, p_219972_2_.getPosX(), p_219972_2_.getPosY(), p_219972_2_.getPosZ(), lvt_6_1_, SoundCategory.PLAYERS, 0.5F, 1.0F);
+        world.playSound((PlayerEntity)null, livingEntity.getPosX(), livingEntity.getPosY(), livingEntity.getPosZ(), soundEvent, SoundCategory.PLAYERS, 0.5F, 1.0F);
       }
 
-      if(lvt_8_1_ >= 0.5F && lvt_7_1_ != null && !this.isLoadingMiddle) {
+      if (fractionCharged >= 0.5F && soundEvent1 != null && !this.isLoadingMiddle) {
         this.isLoadingMiddle = true;
-        p_219972_1_.playSound((PlayerEntity)null, p_219972_2_.getPosX(), p_219972_2_.getPosY(), p_219972_2_.getPosZ(), lvt_7_1_, SoundCategory.PLAYERS, 0.5F, 1.0F);
+        world.playSound((PlayerEntity)null, livingEntity.getPosX(), livingEntity.getPosY(), livingEntity.getPosZ(), soundEvent1, SoundCategory.PLAYERS, 0.5F, 1.0F);
       }
     }
-
   }
 
-  public int getUseDuration(ItemStack p_77626_1_) {
-    return getChargeTime(p_77626_1_) + 3;
+  @Override
+  public int getUseDuration(ItemStack itemStack) {
+    return getChargeTime(itemStack) + 3;
   }
 
   public static int getChargeTime(ItemStack itemStack) {
-    int lvt_1_1_ = EnchantmentHelper.getEnchantmentLevel(Enchantments.QUICK_CHARGE, itemStack);
-    return lvt_1_1_ == 0?25:25 - 5 * lvt_1_1_;
+    int enchantmentLevel = EnchantmentHelper.getEnchantmentLevel(Enchantments.QUICK_CHARGE, itemStack);
+    return enchantmentLevel == 0 ? 25 : 25 - 5 * enchantmentLevel;
   }
 
-  public UseAction getUseAction(ItemStack p_77661_1_) {
+  @Override
+  public UseAction getUseAction(ItemStack itemStack) {
     return UseAction.CROSSBOW;
   }
 
-  private SoundEvent getSoundEvent(int p_220025_1_) {
-    switch(p_220025_1_) {
+  private SoundEvent getSoundEvent(int eventID) {
+    switch(eventID) {
       case 1:
         return SoundEvents.ITEM_CROSSBOW_QUICK_CHARGE_1;
       case 2:
@@ -373,20 +392,21 @@ public class ItemElementalCrossbowAir extends ShootableItem {
   }
 
   @OnlyIn(Dist.CLIENT)
-  public void addInformation(ItemStack p_77624_1_, @Nullable World p_77624_2_, List<ITextComponent> p_77624_3_, ITooltipFlag p_77624_4_) {
-    List lvt_5_1_ = getChargedProjectiles(p_77624_1_);
-    if(isCharged(p_77624_1_) && !lvt_5_1_.isEmpty()) {
-      ItemStack lvt_6_1_ = (ItemStack)lvt_5_1_.get(0);
-      p_77624_3_.add((new TranslationTextComponent("item.minecraft.crossbow.projectile", new Object[0])).appendText(" ").appendSibling(lvt_6_1_.getTextComponent()));
-      if(p_77624_4_.isAdvanced() && lvt_6_1_.getItem() == Items.FIREWORK_ROCKET) {
-        ArrayList lvt_7_1_ = Lists.newArrayList();
-        Items.FIREWORK_ROCKET.addInformation(lvt_6_1_, p_77624_2_, lvt_7_1_, p_77624_4_);
-        if(!lvt_7_1_.isEmpty()) {
-          for(int lvt_8_1_ = 0; lvt_8_1_ < lvt_7_1_.size(); ++lvt_8_1_) {
-            lvt_7_1_.set(lvt_8_1_, (new StringTextComponent("  ")).appendSibling((ITextComponent)lvt_7_1_.get(lvt_8_1_)).applyTextStyle(TextFormatting.GRAY));
+  public void addInformation(ItemStack itemStack, @Nullable World world, List<ITextComponent> textComponentList, ITooltipFlag tooltipFlag) {
+    List chargedProjectiles = getChargedProjectiles(itemStack);
+    if (isCharged(itemStack) && !chargedProjectiles.isEmpty()) {
+      ItemStack firstProjectile = (ItemStack)chargedProjectiles.get(0);
+      textComponentList.add((new TranslationTextComponent("item.minecraft.crossbow.projectile", new Object[0]))
+              .appendText(" ").appendSibling(firstProjectile.getTextComponent()));
+      if (tooltipFlag.isAdvanced() && firstProjectile.getItem() == Items.FIREWORK_ROCKET) {
+        ArrayList arrayList = Lists.newArrayList();
+        Items.FIREWORK_ROCKET.addInformation(firstProjectile, world, arrayList, tooltipFlag);
+        if (!arrayList.isEmpty()) {
+          for (int i = 0; i < arrayList.size(); ++i) {
+            arrayList.set(i, (new StringTextComponent("  ")).appendSibling((ITextComponent)arrayList.get(i)).applyTextStyle(TextFormatting.GRAY));
           }
 
-          p_77624_3_.addAll(lvt_7_1_);
+          textComponentList.addAll(arrayList);
         }
       }
 
@@ -402,4 +422,7 @@ public class ItemElementalCrossbowAir extends ShootableItem {
     if (airInterface == null) return;
     airInterface.addCharge(airCharge);
   }
+
+  private static final Logger LOGGER = LogManager.getLogger();
+
 }

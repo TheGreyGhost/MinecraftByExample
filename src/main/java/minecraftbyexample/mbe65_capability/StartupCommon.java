@@ -18,20 +18,24 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
  */
 public class StartupCommon
 {
-
-  public static ItemElementalBowFire itemElementalBowFire;  // this holds the unique instance of your block
-  public static ContainerType<ContainerFlowerBag> containerTypeFlowerBag;
+  public static ItemElementalBowFire itemElementalBowFire;
+  public static ItemElementalCrossbowAir itemElementalCrossbowAir;
 
   @SubscribeEvent
   public static void onItemsRegistration(final RegistryEvent.Register<Item> itemRegisterEvent) {
     itemElementalBowFire = new ItemElementalBowFire();
     itemElementalBowFire.setRegistryName("mbe65_bow_fire_registry_name");
     itemRegisterEvent.getRegistry().register(itemElementalBowFire);
+
+    itemElementalCrossbowAir = new ItemElementalCrossbowAir();
+    itemElementalCrossbowAir.setRegistryName("mbe65_crossbow_air_registry_name");
+    itemRegisterEvent.getRegistry().register(itemElementalCrossbowAir);
   }
 
   @SubscribeEvent
   public static void onCommonSetupEvent(FMLCommonSetupEvent event) {
     CapabilityElementalFire.register();
+    CapabilityElementalAir.register();
     MinecraftForge.EVENT_BUS.register(CapabilityAttachEventHandler.class);
     MinecraftForge.EVENT_BUS.register(ElementalInteractions.class);
   }

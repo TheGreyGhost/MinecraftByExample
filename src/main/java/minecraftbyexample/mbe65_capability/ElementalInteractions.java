@@ -43,7 +43,7 @@ public class ElementalInteractions {
   public static final int MAX_FIRE_CHARGE_LEVEL_ENTITY = 1000;  // a living entity can't hold more than this amount
 
   public static final int MAX_AIR_CHARGE_LEVEL_ARROW = 100;    // an arrow can't hold more than this amount
-  public static final int MAX_AIR_CHARGE_LEVEL_ENTITY = 10000;  // a living entity can't hold more than this amount
+  public static final int MAX_AIR_CHARGE_LEVEL_ENTITY = 1000;  // a living entity can't hold more than this amount
 
   // When a fire or air arrow strikes an entity or block...
   @SubscribeEvent
@@ -89,12 +89,13 @@ public class ElementalInteractions {
 
   private static void blockHitFire(ServerWorld serverWorld, RayTraceResult rayTraceResult,
                                    ElementalFireInterfaceInstance fireInterfaceInstance) {
+    int arrowFireChargeLevel = fireInterfaceInstance.getChargeLevel();
+    if (arrowFireChargeLevel == 0) return;
+
     if (!(rayTraceResult instanceof BlockRayTraceResult)) throw new AssertionError("BlockRayTraceResult expected");
     BlockRayTraceResult blockRayTraceResult = (BlockRayTraceResult)rayTraceResult;
-
     Vec3d hitPosition = blockRayTraceResult.getHitVec();
 
-    int arrowFireChargeLevel = fireInterfaceInstance.getChargeLevel();
     final int MAX_SMOKE_PARTICLES = 20;
     int smokeParticleCount = 1 + ((MAX_SMOKE_PARTICLES - 1) * arrowFireChargeLevel / MAX_FIRE_CHARGE_LEVEL_ARROW);
     final Vec3d OFFSET_VARIATION = new Vec3d(0.5, 0.25, 0.5);
@@ -109,24 +110,27 @@ public class ElementalInteractions {
 
   private static void blockHitAir(ServerWorld serverWorld, RayTraceResult rayTraceResult,
                                    ElementalAirInterfaceInstance airInterfaceInstance) {
+    int arrowAirChargeLevel = airInterfaceInstance.getChargeLevel();
+    if (arrowAirChargeLevel == 0) return;
+
     if (!(rayTraceResult instanceof BlockRayTraceResult)) throw new AssertionError("BlockRayTraceResult expected");
     BlockRayTraceResult blockRayTraceResult = (BlockRayTraceResult)rayTraceResult;
-
     Vec3d hitPosition = blockRayTraceResult.getHitVec();
 
     final Vec3d OFFSET_VARIATION = new Vec3d(0.0, 0.0, 0.0);
     final int SPEED = 0;
     final int PARTICLE_COUNT = 1;
-    serverWorld.spawnParticle(ParticleTypes.INSTANT_EFFECT, hitPosition.getX(), hitPosition.getY(), hitPosition.getZ(),
+    serverWorld.spawnParticle(ParticleTypes.CLOUD, hitPosition.getX(), hitPosition.getY(), hitPosition.getZ(),
             PARTICLE_COUNT, OFFSET_VARIATION.getX(), OFFSET_VARIATION.getY(), OFFSET_VARIATION.getZ(), SPEED);
 
-    serverWorld.spawnParticle(ParticleTypes.FLASH, hitPosition.getX(), hitPosition.getY(), hitPosition.getZ(),
+    serverWorld.spawnParticle(ParticleTypes.HAPPY_VILLAGER, hitPosition.getX(), hitPosition.getY(), hitPosition.getZ(),
             1, 0, 0, 0, SPEED);
   }
 
   private static void entityHitFire(ServerWorld serverWorld, LivingEntity livingEntity,
                                     ElementalFireInterfaceInstance arrowFire) {
     ElementalFireInterfaceInstance entityFire = livingEntity.getCapability(CapabilityElementalFire.CAPABILITY_ELEMENTAL_FIRE).orElse(null);
+    if (arrowFire.getChargeLevel() == 0) return;
     if (entityFire == null) return;
 
     entityFire.addCharge(arrowFire.getChargeLevel());
@@ -144,6 +148,7 @@ public class ElementalInteractions {
                                     ElementalAirInterfaceInstance arrowAir) {
     ElementalAirInterfaceInstance entityAir = livingEntity.getCapability(CapabilityElementalAir.CAPABILITY_ELEMENTAL_AIR).orElse(null);
     if (entityAir == null) return;
+    if (arrowAir.getChargeLevel() == 0) return;
 
     entityAir.addCharge(arrowAir.getChargeLevel());
 
@@ -151,8 +156,8 @@ public class ElementalInteractions {
     final int TICKS_PER_SECOND = 20;
     final int DURATION_TICKS = DURATION_SECONDS * TICKS_PER_SECOND;
     final int MAXIMUM_AMPLIFICATION = 10;
-    int amplification = 0 + MAXIMUM_AMPLIFICATION * (entityAir.getChargeLevel() / MAX_AIR_CHARGE_LEVEL_ENTITY);
-    EffectInstance speedEffect = new EffectInstance(Effects.LEVITATION, DURATION_TICKS, amplification);
+    float amplification = 0 + MAXIMUM_AMPLIFICATION * (entityAir.getChargeLevel() / (float)MAX_AIR_CHARGE_LEVEL_ENTITY);
+    EffectInstance speedEffect = new EffectInstance(Effects.LEVITATION, DURATION_TICKS, (int)amplification);
     livingEntity.addPotionEffect(speedEffect);
   }
 
@@ -166,8 +171,8 @@ public class ElementalInteractions {
 
       final float MINIMUM_RADIUS = 0.5F;
       final float MAXIMUM_RADIUS = 10F;
-      float airChargeFraction = entityAir.getChargeLevel() / MAX_AIR_CHARGE_LEVEL_ENTITY;
-      float fireChargeFraction = entityFire.getChargeLevel() / MAX_FIRE_CHARGE_LEVEL_ENTITY;
+      float airChargeFraction = entityAir.getChargeLevel() / (float)MAX_AIR_CHARGE_LEVEL_ENTITY;
+      float fireChargeFraction = entityFire.getChargeLevel() / (float)MAX_FIRE_CHARGE_LEVEL_ENTITY;
       float combinedChargeFraction = Math.max(airChargeFraction, fireChargeFraction);
 
       float explosionRadius = MINIMUM_RADIUS + (MAXIMUM_RADIUS - MINIMUM_RADIUS) * combinedChargeFraction;
