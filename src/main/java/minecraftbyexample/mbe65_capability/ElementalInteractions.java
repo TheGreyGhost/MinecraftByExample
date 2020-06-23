@@ -19,7 +19,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.annotation.Nullable;
 import java.util.Optional;
 
 /**
@@ -36,21 +35,23 @@ import java.util.Optional;
  *      much Elemental Fire is has accumulated
  *   c) If the entity receives both Elemental Air and Elemental Fire, it explodes.
  *
+ * It is triggered by subscribing to the ProjectileImpactEvent.
+ *
  */
 public class ElementalInteractions {
 
-  public static final int MAX_FIRE_CHARGE_LEVEL_ARROW = 400;    // an arrow can't hold more than this amount
-  public static final int MAX_FIRE_CHARGE_LEVEL_ENTITY = 1000;  // a living entity can't hold more than this amount
+  public static final int MAX_FIRE_CHARGE_LEVEL_ARROW = 400;    // an arrow can't hold more than this amount of fire
+  public static final int MAX_FIRE_CHARGE_LEVEL_ENTITY = 1000;  // a living entity can't hold more than this amount of fire
 
-  public static final int MAX_AIR_CHARGE_LEVEL_ARROW = 100;    // an arrow can't hold more than this amount
-  public static final int MAX_AIR_CHARGE_LEVEL_ENTITY = 1000;  // a living entity can't hold more than this amount
+  public static final int MAX_AIR_CHARGE_LEVEL_ARROW = 100;    // an arrow can't hold more than this amount of air
+  public static final int MAX_AIR_CHARGE_LEVEL_ENTITY = 1000;  // a living entity can't hold more than this amount of air
 
   // When a fire or air arrow strikes an entity or block...
   @SubscribeEvent
   public static void onProjectileImpact(ProjectileImpactEvent.Arrow event) {
     AbstractArrowEntity arrowEntity = event.getArrow();
-    ElementalFireInterfaceInstance arrowFire = arrowEntity.getCapability(CapabilityElementalFire.CAPABILITY_ELEMENTAL_FIRE).orElse(null);
-    ElementalAirInterfaceInstance arrowAir = arrowEntity.getCapability(CapabilityElementalAir.CAPABILITY_ELEMENTAL_AIR).orElse(null);
+    ElementalFire arrowFire = arrowEntity.getCapability(CapabilityElementalFire.CAPABILITY_ELEMENTAL_FIRE).orElse(null);
+    ElementalAir arrowAir = arrowEntity.getCapability(CapabilityElementalAir.CAPABILITY_ELEMENTAL_AIR).orElse(null);
 
     if (arrowFire == null && arrowAir == null) return;
 
@@ -87,8 +88,14 @@ public class ElementalInteractions {
     arrowEntity.remove();
   }
 
+  /**
+   * When the block is hit by a fire arrow, spawn particles at the point of impact
+   * @param serverWorld
+   * @param rayTraceResult
+   * @param fireInterfaceInstance
+   */
   private static void blockHitFire(ServerWorld serverWorld, RayTraceResult rayTraceResult,
-                                   ElementalFireInterfaceInstance fireInterfaceInstance) {
+                                   ElementalFire fireInterfaceInstance) {
     int arrowFireChargeLevel = fireInterfaceInstance.getChargeLevel();
     if (arrowFireChargeLevel == 0) return;
 
@@ -108,8 +115,14 @@ public class ElementalInteractions {
             1, 0, 0, 0, SPEED);
   }
 
+  /**
+   * When the block is hit by an air arrow, spawn particles at the point of impact
+   * @param serverWorld
+   * @param rayTraceResult
+   * @param airInterfaceInstance
+   */
   private static void blockHitAir(ServerWorld serverWorld, RayTraceResult rayTraceResult,
-                                   ElementalAirInterfaceInstance airInterfaceInstance) {
+                                   ElementalAir airInterfaceInstance) {
     int arrowAirChargeLevel = airInterfaceInstance.getChargeLevel();
     if (arrowAirChargeLevel == 0) return;
 
@@ -127,9 +140,15 @@ public class ElementalInteractions {
             1, 0, 0, 0, SPEED);
   }
 
+  /**
+   * When the entity is hit by a fire arrow, add to the entity's elemental fire level and grant it a speed boost
+   * @param serverWorld
+   * @param livingEntity
+   * @param arrowFire
+   */
   private static void entityHitFire(ServerWorld serverWorld, LivingEntity livingEntity,
-                                    ElementalFireInterfaceInstance arrowFire) {
-    ElementalFireInterfaceInstance entityFire = livingEntity.getCapability(CapabilityElementalFire.CAPABILITY_ELEMENTAL_FIRE).orElse(null);
+                                    ElementalFire arrowFire) {
+    ElementalFire entityFire = livingEntity.getCapability(CapabilityElementalFire.CAPABILITY_ELEMENTAL_FIRE).orElse(null);
     if (arrowFire.getChargeLevel() == 0) return;
     if (entityFire == null) return;
 
@@ -144,9 +163,15 @@ public class ElementalInteractions {
     livingEntity.addPotionEffect(speedEffect);
   }
 
+  /**
+   * When the entity is hit by an air arrow, add to the entity's elemental air level and levitate it
+   * @param serverWorld
+   * @param livingEntity
+   * @param arrowAir
+   */
   private static void entityHitAir(ServerWorld serverWorld, LivingEntity livingEntity,
-                                    ElementalAirInterfaceInstance arrowAir) {
-    ElementalAirInterfaceInstance entityAir = livingEntity.getCapability(CapabilityElementalAir.CAPABILITY_ELEMENTAL_AIR).orElse(null);
+                                    ElementalAir arrowAir) {
+    ElementalAir entityAir = livingEntity.getCapability(CapabilityElementalAir.CAPABILITY_ELEMENTAL_AIR).orElse(null);
     if (entityAir == null) return;
     if (arrowAir.getChargeLevel() == 0) return;
 
@@ -161,10 +186,15 @@ public class ElementalInteractions {
     livingEntity.addPotionEffect(speedEffect);
   }
 
+  /**
+   * If the entity has both fire and air, create an explosion (the greater the stored fire and air, the greater the explosion)
+   * @param serverWorld
+   * @param livingEntity
+   */
   private static void checkForFireAirMixture(ServerWorld serverWorld, LivingEntity livingEntity) {
-    ElementalFireInterfaceInstance entityFire = livingEntity.getCapability(CapabilityElementalFire.CAPABILITY_ELEMENTAL_FIRE).orElse(null);
+    ElementalFire entityFire = livingEntity.getCapability(CapabilityElementalFire.CAPABILITY_ELEMENTAL_FIRE).orElse(null);
     if (entityFire == null) return;
-    ElementalAirInterfaceInstance entityAir = livingEntity.getCapability(CapabilityElementalAir.CAPABILITY_ELEMENTAL_AIR).orElse(null);
+    ElementalAir entityAir = livingEntity.getCapability(CapabilityElementalAir.CAPABILITY_ELEMENTAL_AIR).orElse(null);
     if (entityAir == null) return;
     if (entityAir.getChargeLevel() > 0 && entityFire.getChargeLevel() > 0) {
       Vec3d entityPos = livingEntity.getPositionVec();

@@ -12,6 +12,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 /**
  * Created by TGG on 20/06/2020.
  *
+ * This class is used to attach our CapabilityProviderEntities to relevant vanilla entities
+ *
+ *
  * AttachCapabilitiesEvent<Entity>: Fires only for entities.
  * AttachCapabilitiesEvent<TileEntity>: Fires only for tile entities.
  * AttachCapabilitiesEvent<ItemStack>: Fires only for item stacks.

@@ -12,13 +12,13 @@ import net.minecraftforge.common.capabilities.Capability;
  * It's basically identical to ElementalAir, I have duplicated them for illustrative purposes only
  * It contains a static inner class which is used to convert to/from NBT storage, for loading/saving to disk and for network transmission
  */
-public class ElementalFireInterfaceInstance {
+public class ElementalFire {
 
-  public ElementalFireInterfaceInstance() {
+  public ElementalFire() {
     this(0);
   }
 
-  public ElementalFireInterfaceInstance(int initialChargeLevel) {
+  public ElementalFire(int initialChargeLevel) {
     chargeLevel = initialChargeLevel;
   }
 
@@ -30,15 +30,15 @@ public class ElementalFireInterfaceInstance {
   private int chargeLevel;
 
   // Convert to/from NBT
-  public static class ElementalFireNBTStorage implements Capability.IStorage<ElementalFireInterfaceInstance> {
+  public static class ElementalFireNBTStorage implements Capability.IStorage<ElementalFire> {
     @Override
-    public INBT writeNBT(Capability<ElementalFireInterfaceInstance> capability, ElementalFireInterfaceInstance instance, Direction side) {
+    public INBT writeNBT(Capability<ElementalFire> capability, ElementalFire instance, Direction side) {
       IntNBT intNBT = IntNBT.valueOf(instance.chargeLevel);
       return intNBT;
     }
 
     @Override
-    public void readNBT(Capability<ElementalFireInterfaceInstance> capability, ElementalFireInterfaceInstance instance, Direction side, INBT nbt) {
+    public void readNBT(Capability<ElementalFire> capability, ElementalFire instance, Direction side, INBT nbt) {
       int chargeLevel = 0;
       if (nbt.getType() == IntNBT.TYPE) {
         chargeLevel = ((IntNBT)nbt).getInt();
@@ -47,8 +47,8 @@ public class ElementalFireInterfaceInstance {
     }
   }
 
-  public static ElementalFireInterfaceInstance createADefaultInstance() {
-    return new ElementalFireInterfaceInstance();
+  public static ElementalFire createADefaultInstance() {
+    return new ElementalFire();
   }
 
 }

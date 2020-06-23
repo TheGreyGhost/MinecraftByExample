@@ -1,6 +1,5 @@
 package minecraftbyexample.mbe65_capability;
 
-import minecraftbyexample.mbe32_inventory_item.ItemStackHandlerFlowerBag;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
@@ -13,9 +12,6 @@ import net.minecraft.stats.Stats;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,46 +23,24 @@ import java.util.function.Predicate;
  * User: The Grey Ghost
  * Date: 30/12/2014
  *
- * ItemSimple is an ordinary two-dimensional item
- * For background information on item see here http://greyminecraftcoder.blogspot.com/2013/12/items.html
- *   and here http://greyminecraftcoder.blogspot.com.au/2014/12/item-rendering-18.html
+ * ItemElementalBowFire is used to fire arrows which have been given Elemental Fire
  *
- *   The arrow does no damage.  The longer that the player pulls the bow back (holds the right button down), the more elemental fire energy is
+ *   The longer that the player pulls the bow back (holds the right button down), the more elemental fire energy is
  *     charged into the arrow, up to 4 seconds.
+ *
+ *   The arrow does no damage when it hits.
+ *
+ * Most of this class is copied directly from BowItem.
+ *
  */
 public class ItemElementalBowFire extends BowItem  // extend BowItem instead of ShootableItem, otherwise the Field Of View Zoom doesn't work.
 {
-  static private final int MAXIMUM_NUMBER_OF_FROGS = 6; // maximum stack size
   public ItemElementalBowFire()
   {
-    super(new Properties().maxStackSize(MAXIMUM_NUMBER_OF_FROGS).group(ItemGroup.MISC) // the item will appear on the Miscellaneous tab in creative
+    super(new Properties().maxStackSize(1).group(ItemGroup.COMBAT)
     );
     this.addPropertyOverride(new ResourceLocation("pulltime"), ItemElementalBowFire::getPullDurationSeconds);
     this.addPropertyOverride(new ResourceLocation("isbeingpulled"), ItemElementalBowFire::isBeingPulled);
-  }
-
-  /** How long has the player been pulling the bow back for?
-   * @return time spent pulling, in seconds
-   */
-  public static float getPullDurationSeconds(ItemStack itemStack, @Nullable World world, @Nullable LivingEntity livingEntity) {
-    final float NO_PULL = 0.0F;
-    final float TICKS_PER_SECOND = 20.0F;
-    if (livingEntity == null) return NO_PULL;
-    if (livingEntity.getActiveItemStack() != itemStack) return NO_PULL;
-
-    int pullDurationTicks = itemStack.getUseDuration() - livingEntity.getItemInUseCount();   // getItemInUseCount starts from maximum!
-    return pullDurationTicks / TICKS_PER_SECOND;
-  }
-
-  /** Is the bow pulled back at all?
-   * @return 0.0 = not pulled,  1.0 = yes
-   */
-  public static float isBeingPulled(ItemStack itemStack, @Nullable World world, @Nullable LivingEntity livingEntity) {
-    final float NOT_PULLED = 0.0F;
-    final float IS_PULLED = 1.0F;
-    if (livingEntity == null) return NOT_PULLED;
-    if (livingEntity.isHandActive() && livingEntity.getActiveItemStack() == itemStack) return IS_PULLED;
-    return NOT_PULLED;
   }
 
   // The CapabilityProvider returned from this method is used to specify which capabilities the Bow has.
@@ -74,6 +48,16 @@ public class ItemElementalBowFire extends BowItem  // extend BowItem instead of 
   @Override
   public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT oldCapNbt) {
     return new CapabilityProviderFireItems();
+  }
+
+  /** Set the Elemental fire level of the given entity
+   * @param abstractArrowEntity
+   * @param fireCharge
+   */
+  private void setElementalFireLevel(Entity abstractArrowEntity, int fireCharge) {
+    ElementalFire fireInterface = abstractArrowEntity.getCapability(CapabilityElementalFire.CAPABILITY_ELEMENTAL_FIRE).orElse(null);
+    if (fireInterface == null) return;;
+    fireInterface.addCharge(fireCharge);
   }
 
   /**
@@ -90,7 +74,7 @@ public class ItemElementalBowFire extends BowItem  // extend BowItem instead of 
 
     int pullDurationTicks = this.getUseDuration(stack) - timeLeft;
     pullDurationTicks = net.minecraftforge.event.ForgeEventFactory.onArrowLoose(stack, worldIn, playerentity,
-                                                                                pullDurationTicks, !ammo.isEmpty() || dontNeedAmmo);
+            pullDurationTicks, !ammo.isEmpty() || dontNeedAmmo);
     if (pullDurationTicks < 0) return;
     if (ammo.isEmpty() && !dontNeedAmmo) return;
     if (ammo.isEmpty()) {
@@ -117,6 +101,8 @@ public class ItemElementalBowFire extends BowItem  // extend BowItem instead of 
         abstractArrowEntity.pickupStatus = AbstractArrowEntity.PickupStatus.CREATIVE_ONLY;
       }
 
+      // --------- our capability code is this part -----------
+
       // set the level of fire based on how long the bow has been charging up (how long the player has been pulling it)
       final float MAX_CHARGEUP_TIME = 4;
       final float MAX_CHARGE = 100;
@@ -142,14 +128,30 @@ public class ItemElementalBowFire extends BowItem  // extend BowItem instead of 
     playerentity.addStat(Stats.ITEM_USED.get(this));
   }
 
-  /** Set the Elemental fire level of the given entity
-   * @param abstractArrowEntity
-   * @param fireCharge
+  // ---------- Vanilla code below -----------
+
+  /** How long has the player been pulling the bow back for?
+   * @return time spent pulling, in seconds
    */
-  private void setElementalFireLevel(Entity abstractArrowEntity, int fireCharge) {
-    ElementalFireInterfaceInstance fireInterface = abstractArrowEntity.getCapability(CapabilityElementalFire.CAPABILITY_ELEMENTAL_FIRE).orElse(null);
-    if (fireInterface == null) return;;
-    fireInterface.addCharge(fireCharge);
+  public static float getPullDurationSeconds(ItemStack itemStack, @Nullable World world, @Nullable LivingEntity livingEntity) {
+    final float NO_PULL = 0.0F;
+    final float TICKS_PER_SECOND = 20.0F;
+    if (livingEntity == null) return NO_PULL;
+    if (livingEntity.getActiveItemStack() != itemStack) return NO_PULL;
+
+    int pullDurationTicks = itemStack.getUseDuration() - livingEntity.getItemInUseCount();   // getItemInUseCount starts from maximum!
+    return pullDurationTicks / TICKS_PER_SECOND;
+  }
+
+  /** Is the bow pulled back at all?
+   * @return 0.0 = not pulled,  1.0 = yes
+   */
+  public static float isBeingPulled(ItemStack itemStack, @Nullable World world, @Nullable LivingEntity livingEntity) {
+    final float NOT_PULLED = 0.0F;
+    final float IS_PULLED = 1.0F;
+    if (livingEntity == null) return NOT_PULLED;
+    if (livingEntity.isHandActive() && livingEntity.getActiveItemStack() == itemStack) return IS_PULLED;
+    return NOT_PULLED;
   }
 
   /**

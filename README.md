@@ -76,6 +76,9 @@ See [here](https://greyminecraftcoder.blogspot.com/2020/05/minecraft-by-example.
 ### Network
   - [MBE60][60] - send network messages between client and server
 
+### Capabilities
+  - [MBE65][65] - define new Capabilities and attach them to vanilla objects 
+
 ### Configuration GUI
   - X [MBE70][70] - configuration file linked to the "mod options" button GUI on the mods list screen
 
@@ -142,6 +145,8 @@ Head over [here][more_help] if this didn't make sense to you (check comments for
 [50]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe50_particle
 
 [60]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe60_network_messages
+
+[65]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe65_capability
 
 [70]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe70_configuration
 

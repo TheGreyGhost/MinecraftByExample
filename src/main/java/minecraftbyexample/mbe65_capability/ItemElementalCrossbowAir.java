@@ -2,7 +2,6 @@ package minecraftbyexample.mbe65_capability;
 
 import com.google.common.collect.Lists;
 import minecraftbyexample.usefultools.NBTtypesMBE;
-import minecraftbyexample.usefultools.UsefulFunctions;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.Vector3f;
@@ -37,93 +36,140 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
 
-/**
- * Created by TGG on 19/06/2020.
+ /**
+ * User: The Grey Ghost
+ * Date: 30/12/2014
+ *
+ * ItemElementalCrossbowAir is used to fire arrows which have been given Elemental Air
+ *   The arrow does no damage when it hits.
+ *
+ * Most of this class is copied directly from CrossbowItem.
+ *
  */
 public class ItemElementalCrossbowAir extends CrossbowItem {  // need to extend CrossbowItem otherwise the pull-string-back rendering does not work properly
-  private boolean isLoadingStart = false;
-  private boolean isLoadingMiddle = false;
-
-  static private final int MAXIMUM_NUMBER_OF_FROGS = 6; // maximum stack size
-
   public ItemElementalCrossbowAir() {
 
-    super(new Properties().maxStackSize(MAXIMUM_NUMBER_OF_FROGS).group(ItemGroup.MISC) // the item will appear on the Miscellaneous tab in creative
+    super(new Properties().maxStackSize(1).group(ItemGroup.COMBAT)
     );
     this.addPropertyOverride(new ResourceLocation("pullfraction"), ItemElementalCrossbowAir::getPullFraction);
     this.addPropertyOverride(new ResourceLocation("isbeingpulled"), ItemElementalCrossbowAir::isBeingPulled);
     this.addPropertyOverride(new ResourceLocation("ischarged"), ItemElementalCrossbowAir::isFullyCharged);
   }
 
-  /** How long has the player been pulling the crossbow back for?
-   * @return fraction pulled back (0.0--> 1.0 plus a bit);  returns 0.0 if already charged
-   */
-  public static float getPullFraction(ItemStack itemStack, @Nullable World world, @Nullable LivingEntity livingEntity) {
-    final float NO_PULL = 0.0F;
-    if (livingEntity == null) return NO_PULL;
-    if (livingEntity.getActiveItemStack() != itemStack) return NO_PULL;
-    if (isCharged(itemStack)) return NO_PULL;
+   /** Set the Elemental air level of the given arrow
+    * @param abstractArrowEntity
+    * @param airCharge
+    */
+   private static void setElementalAirLevel(Entity abstractArrowEntity, int airCharge) {
+     ElementalAir airInterface = abstractArrowEntity.getCapability(CapabilityElementalAir.CAPABILITY_ELEMENTAL_AIR).orElse(null);
+     if (airInterface == null) return;
+     airInterface.addCharge(airCharge);
+   }
 
-    int pullDurationTicks = itemStack.getUseDuration() - livingEntity.getItemInUseCount();   // getItemInUseCount starts from maximum!
-    float pullFraction = pullDurationTicks / (float)getChargeTime(itemStack);
-    return pullFraction;
-  }
+   /**
+    * Copied mostly from vanilla, modified to impart air elemental energy to the arrow that is being fired
+    */
+   private static void fireProjectile(World world, LivingEntity livingEntity, Hand hand, ItemStack crossbowItemStack, ItemStack projectileItemStack,
+                                      float soundPitch, boolean isCreativeMode, float speed, float inaccuracy, float yawAngle) {
+     if (!world.isRemote) {
+       AbstractArrowEntity abstractArrowEntity = createArrow(world, livingEntity, crossbowItemStack, projectileItemStack);
 
-  /** Is the crossbow currently being pulled back?
-   * @return 0.0 = not pulled,  1.0 = yes.  Once fully charged, returns 0.0
-   */
-  public static float isBeingPulled(ItemStack itemStack, @Nullable World world, @Nullable LivingEntity livingEntity) {
-    final float NOT_PULLED = 0.0F;
-    final float IS_PULLED = 1.0F;
-    if (livingEntity == null) return NOT_PULLED;
-    if (livingEntity.isHandActive()
-            && livingEntity.getActiveItemStack() == itemStack
-            && !isCharged(itemStack)
-            ) return IS_PULLED;
-    return NOT_PULLED;
-  }
+       if (livingEntity instanceof ICrossbowUser) {
+         ICrossbowUser crossbowUser = (ICrossbowUser)livingEntity;
+         crossbowUser.shoot(crossbowUser.getAttackTarget(), crossbowItemStack, abstractArrowEntity, yawAngle);
+       } else {
+         Vec3d headVerticalAxis = livingEntity.getUpVector(1.0F);
+         Quaternion rotationAboutHeadVerticalAxis = new Quaternion(new Vector3f(headVerticalAxis), yawAngle, true);
+         Vec3d lookVector = livingEntity.getLook(1.0F);
+         Vector3f lookVector3f = new Vector3f(lookVector);
+         lookVector3f.transform(rotationAboutHeadVerticalAxis);
+         abstractArrowEntity.shoot(lookVector3f.getX(), lookVector3f.getY(), lookVector3f.getZ(), speed, inaccuracy);
+       }
 
-  /** Is the crossbow fully charged?
-   * @return 0.0 = no,  1.0 = yes.
-   */
-  public static float isFullyCharged(ItemStack itemStack, @Nullable World world, @Nullable LivingEntity livingEntity) {
-    return livingEntity != null && isCharged(itemStack) ? 1.0F : 0.0F;
-  }
+       // crossbow always fires the same charge
+       final int MAX_CHARGE = 100;
+       ItemElementalCrossbowAir.setElementalAirLevel(abstractArrowEntity, MAX_CHARGE);
 
-  @Override
-  public Predicate<ItemStack> getAmmoPredicate() {
-    return ARROWS;
-  }
 
-  @Override
-  public Predicate<ItemStack> getInventoryAmmoPredicate() {
-    return ARROWS;
-  }
+       world.addEntity(abstractArrowEntity);
+       world.playSound((PlayerEntity) null, livingEntity.getPosX(), livingEntity.getPosY(), livingEntity.getPosZ(),
+               SoundEvents.ITEM_CROSSBOW_SHOOT, SoundCategory.PLAYERS, 1.0F, soundPitch);
+     }
+   }
 
-  @Override
-  public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity playerEntity, Hand hand) {
-    ItemStack heldItem = playerEntity.getHeldItem(hand);
-    if (isCharged(heldItem)) {
-      final float ARROW_SPEED = 1.6F;
-      fireProjectiles(world, playerEntity, hand, heldItem, ARROW_SPEED, 1.0F);
-      setCharged(heldItem, false);
-      return ActionResult.resultConsume(heldItem);
-    } else if (!playerEntity.findAmmo(heldItem).isEmpty()) {
-      if (!isCharged(heldItem)) {
-        this.isLoadingStart = false;
-        this.isLoadingMiddle = false;
-        playerEntity.setActiveHand(hand);
-      }
+   // --------- the remaining code is all directly from vanilla -------------
 
-      return ActionResult.resultConsume(heldItem);
-    } else {
-      return ActionResult.resultFail(heldItem);
-    }
-  }
+   private boolean isLoadingStart = false;
+   private boolean isLoadingMiddle = false;
+
+   @Override
+   public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity playerEntity, Hand hand) {
+     ItemStack heldItem = playerEntity.getHeldItem(hand);
+     if (isCharged(heldItem)) {
+       final float ARROW_SPEED = 1.6F;
+       fireProjectiles(world, playerEntity, hand, heldItem, ARROW_SPEED, 1.0F);
+       setCharged(heldItem, false);
+       return ActionResult.resultConsume(heldItem);
+     } else if (!playerEntity.findAmmo(heldItem).isEmpty()) {
+       if (!isCharged(heldItem)) {
+         this.isLoadingStart = false;
+         this.isLoadingMiddle = false;
+         playerEntity.setActiveHand(hand);
+       }
+
+       return ActionResult.resultConsume(heldItem);
+     } else {
+       return ActionResult.resultFail(heldItem);
+     }
+   }
+
+   /** How long has the player been pulling the crossbow back for?
+    * @return fraction pulled back (0.0--> 1.0 plus a bit);  returns 0.0 if already charged
+    */
+   public static float getPullFraction(ItemStack itemStack, @Nullable World world, @Nullable LivingEntity livingEntity) {
+     final float NO_PULL = 0.0F;
+     if (livingEntity == null) return NO_PULL;
+     if (livingEntity.getActiveItemStack() != itemStack) return NO_PULL;
+     if (isCharged(itemStack)) return NO_PULL;
+
+     int pullDurationTicks = itemStack.getUseDuration() - livingEntity.getItemInUseCount();   // getItemInUseCount starts from maximum!
+     float pullFraction = pullDurationTicks / (float)getChargeTime(itemStack);
+     return pullFraction;
+   }
+
+   /** Is the crossbow currently being pulled back?
+    * @return 0.0 = not pulled,  1.0 = yes.  Once fully charged, returns 0.0
+    */
+   public static float isBeingPulled(ItemStack itemStack, @Nullable World world, @Nullable LivingEntity livingEntity) {
+     final float NOT_PULLED = 0.0F;
+     final float IS_PULLED = 1.0F;
+     if (livingEntity == null) return NOT_PULLED;
+     if (livingEntity.isHandActive()
+             && livingEntity.getActiveItemStack() == itemStack
+             && !isCharged(itemStack)
+     ) return IS_PULLED;
+     return NOT_PULLED;
+   }
+
+   /** Is the crossbow fully charged?
+    * @return 0.0 = no,  1.0 = yes.
+    */
+   public static float isFullyCharged(ItemStack itemStack, @Nullable World world, @Nullable LivingEntity livingEntity) {
+     return livingEntity != null && isCharged(itemStack) ? 1.0F : 0.0F;
+   }
+
+   @Override
+   public Predicate<ItemStack> getAmmoPredicate() {
+     return ARROWS;
+   }
+
+   @Override
+   public Predicate<ItemStack> getInventoryAmmoPredicate() {
+     return ARROWS;
+   }
 
   @Override
   public void onPlayerStoppedUsing(ItemStack itemStack, World world, LivingEntity livingEntity, int timeLeft) {
-//    LOGGER.warn("onPlayerStoppedUsing-timeLeft:" + timeLeft);
 
     int pullDurationTicks = this.getUseDuration(itemStack) - timeLeft;
     float fractionCharged = getFractionCharged(pullDurationTicks, itemStack);
@@ -231,34 +277,6 @@ public class ItemElementalCrossbowAir extends CrossbowItem {  // need to extend 
     }
   }
 
-  private static void fireProjectile(World world, LivingEntity livingEntity, Hand hand, ItemStack crossbowItemStack, ItemStack projectileItemStack,
-                                     float soundPitch, boolean isCreativeMode, float speed, float inaccuracy, float yawAngle) {
-    if (!world.isRemote) {
-      AbstractArrowEntity abstractArrowEntity = createArrow(world, livingEntity, crossbowItemStack, projectileItemStack);
-
-      if (livingEntity instanceof ICrossbowUser) {
-        ICrossbowUser crossbowUser = (ICrossbowUser)livingEntity;
-        crossbowUser.shoot(crossbowUser.getAttackTarget(), crossbowItemStack, abstractArrowEntity, yawAngle);
-      } else {
-        Vec3d headVerticalAxis = livingEntity.getUpVector(1.0F);
-        Quaternion rotationAboutHeadVerticalAxis = new Quaternion(new Vector3f(headVerticalAxis), yawAngle, true);
-        Vec3d lookVector = livingEntity.getLook(1.0F);
-        Vector3f lookVector3f = new Vector3f(lookVector);
-        lookVector3f.transform(rotationAboutHeadVerticalAxis);
-        abstractArrowEntity.shoot(lookVector3f.getX(), lookVector3f.getY(), lookVector3f.getZ(), speed, inaccuracy);
-      }
-
-      // crossbow always fires the same charge
-      final int MAX_CHARGE = 100;
-      ItemElementalCrossbowAir.setElementalAirLevel(abstractArrowEntity, MAX_CHARGE);
-
-
-      world.addEntity(abstractArrowEntity);
-      world.playSound((PlayerEntity) null, livingEntity.getPosX(), livingEntity.getPosY(), livingEntity.getPosZ(),
-              SoundEvents.ITEM_CROSSBOW_SHOOT, SoundCategory.PLAYERS, 1.0F, soundPitch);
-    }
-  }
-
   private static AbstractArrowEntity createArrow(World world, LivingEntity livingEntity, ItemStack crossbowItemStack, ItemStack arrowItemStack) {
     ArrowItem arrowItem = (ArrowItem)(arrowItemStack.getItem() instanceof ArrowItem ? arrowItemStack.getItem() : Items.ARROW);
     AbstractArrowEntity abstractArrowEntity = arrowItem.createArrow(world, arrowItemStack, livingEntity);
@@ -331,7 +349,6 @@ public class ItemElementalCrossbowAir extends CrossbowItem {  // need to extend 
   @Override
   public void onUse(World world, LivingEntity livingEntity, ItemStack itemStack, int ticksRemaining) {
     if (!world.isRemote) {
-//      LOGGER.warn("onUse-ticksRemaining:" + ticksRemaining);
       int enchantmentLevel = EnchantmentHelper.getEnchantmentLevel(Enchantments.QUICK_CHARGE, itemStack);
       SoundEvent soundEvent = this.getSoundEvent(enchantmentLevel);
       SoundEvent soundEvent1 = enchantmentLevel == 0 ? SoundEvents.ITEM_CROSSBOW_LOADING_MIDDLE : null;
@@ -410,16 +427,6 @@ public class ItemElementalCrossbowAir extends CrossbowItem {  // need to extend 
       }
 
     }
-  }
-
-  /** Set the Elemental air level of the given entity
-   * @param abstractArrowEntity
-   * @param airCharge
-   */
-  private static void setElementalAirLevel(Entity abstractArrowEntity, int airCharge) {
-    ElementalAirInterfaceInstance airInterface = abstractArrowEntity.getCapability(CapabilityElementalAir.CAPABILITY_ELEMENTAL_AIR).orElse(null);
-    if (airInterface == null) return;
-    airInterface.addCharge(airCharge);
   }
 
   private static final Logger LOGGER = LogManager.getLogger();

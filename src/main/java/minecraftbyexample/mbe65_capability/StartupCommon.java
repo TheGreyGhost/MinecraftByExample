@@ -34,9 +34,13 @@ public class StartupCommon
 
   @SubscribeEvent
   public static void onCommonSetupEvent(FMLCommonSetupEvent event) {
+    // used to define our Capabilities
     CapabilityElementalFire.register();
     CapabilityElementalAir.register();
+    // CapabilityAttachEvent is used to attach Capabilities to vanilla objects
     MinecraftForge.EVENT_BUS.register(CapabilityAttachEventHandler.class);
+
+    // used to capture the ProjectileImpactEvent event, for when the arrow hits a target.
     MinecraftForge.EVENT_BUS.register(ElementalInteractions.class);
   }
 }

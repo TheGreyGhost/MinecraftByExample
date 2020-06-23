@@ -10,13 +10,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * This class provides all the capabilities that an Air ItemStack can possess.
+ * This class provides all the capabilities that an Air ItemStack can possess.  (used for the ItemElementalCrossbowAir)
  * In this case there is only one.
  * 1) CapabilityElementalAir --> ElementalAirInterfaceInstance
  */
 public class CapabilityProviderAirItems implements ICapabilitySerializable<INBT> {
 
-  private final Direction NO_SPECIFIC_SIDE = null;
+  private static final Direction NO_SPECIFIC_SIDE = null;
 
   /**
    * Asks the Provider if it has the given capability
@@ -31,23 +31,26 @@ public class CapabilityProviderAirItems implements ICapabilitySerializable<INBT>
   @Override
   public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
     if (CapabilityElementalFire.CAPABILITY_ELEMENTAL_FIRE == capability) {
-      return (LazyOptional<T>)LazyOptional.of(()-> elementalAirInterfaceInstance);
+      return (LazyOptional<T>)LazyOptional.of(()-> elementalAir);
       // why are we using a lambda?  Because LazyOptional.of() expects a NonNullSupplier interface.  The lambda automatically
-      //   conforms itself to that interface.  This save me having to define an inner class implementing NonNullSupplier.
+      //   conforms itself to that interface.  This saves me having to define an inner class implementing NonNullSupplier.
       // The explicit cast to LazyOptional<T> is required because our CAPABILITY_ELEMENTAL_FIRE can't be typed.  Our code has
-      //   checked that the requested capability matches, so the explict cast is safe (unless you have mixed them up)
+      //   checked that the requested capability matches, so the explict cast is safe (unless you have made a mistake and mixed them up!)
     }
     return LazyOptional.empty();
-  // Note that if you are implementing getCapability in a derived class which implements ICapabilityProvider, eg MyEntity, then you should call
-  //     return super.getCapability(capability, facing);
-  //   instead of returning empty.
+    // Note that if you are implementing getCapability in a derived class which implements ICapabilityProvider
+    // eg you have added a new MyEntity which has the method MyEntity::getCapability instead of using AttachCapabilitiesEvent to attach a
+    // separate class, then you should call
+    // return super.getCapability(capability, facing);
+    //   instead of
+    // return LazyOptional.empty();
   }
 
   /**Write all the capability state information to NBT - in this case only the air information
    */
   @Override
   public INBT serializeNBT() {
-    return CapabilityElementalAir.CAPABILITY_ELEMENTAL_AIR.writeNBT(elementalAirInterfaceInstance, NO_SPECIFIC_SIDE);
+    return CapabilityElementalAir.CAPABILITY_ELEMENTAL_AIR.writeNBT(elementalAir, NO_SPECIFIC_SIDE);
   }
 
   /**Read the capability state information out of NBT - in this case only the air information
@@ -55,8 +58,8 @@ public class CapabilityProviderAirItems implements ICapabilitySerializable<INBT>
    */
   @Override
   public void deserializeNBT(INBT nbt) {
-    CapabilityElementalAir.CAPABILITY_ELEMENTAL_AIR.readNBT(elementalAirInterfaceInstance, NO_SPECIFIC_SIDE, nbt);
+    CapabilityElementalAir.CAPABILITY_ELEMENTAL_AIR.readNBT(elementalAir, NO_SPECIFIC_SIDE, nbt);
   }
 
-  private ElementalAirInterfaceInstance elementalAirInterfaceInstance = new ElementalAirInterfaceInstance();
+  private ElementalAir elementalAir = new ElementalAir();
 }

@@ -13,13 +13,13 @@ import net.minecraftforge.common.capabilities.Capability;
  *
  * It contains a static inner class which is used to convert to/from NBT storage, for loading/saving to disk and for network transmission
  */
-public class ElementalAirInterfaceInstance {
+public class ElementalAir {
 
-  public ElementalAirInterfaceInstance() {
+  public ElementalAir() {
     this(0);
   }
 
-  public ElementalAirInterfaceInstance(int initialChargeLevel) {
+  public ElementalAir(int initialChargeLevel) {
     chargeLevel = initialChargeLevel;
   }
 
@@ -31,15 +31,15 @@ public class ElementalAirInterfaceInstance {
   private int chargeLevel;
 
   // Convert to/from NBT
-  public static class ElementalAirNBTStorage implements Capability.IStorage<ElementalAirInterfaceInstance> {
+  public static class ElementalAirNBTStorage implements Capability.IStorage<ElementalAir> {
     @Override
-    public INBT writeNBT(Capability<ElementalAirInterfaceInstance> capability, ElementalAirInterfaceInstance instance, Direction side) {
+    public INBT writeNBT(Capability<ElementalAir> capability, ElementalAir instance, Direction side) {
       IntNBT intNBT = IntNBT.valueOf(instance.chargeLevel);
       return intNBT;
     }
 
     @Override
-    public void readNBT(Capability<ElementalAirInterfaceInstance> capability, ElementalAirInterfaceInstance instance, Direction side, INBT nbt) {
+    public void readNBT(Capability<ElementalAir> capability, ElementalAir instance, Direction side, INBT nbt) {
       int chargeLevel = 0;
       if (nbt.getType() == IntNBT.TYPE) {
         chargeLevel = ((IntNBT)nbt).getInt();
@@ -48,8 +48,8 @@ public class ElementalAirInterfaceInstance {
     }
   }
 
-  public static ElementalAirInterfaceInstance createADefaultInstance() {
-    return new ElementalAirInterfaceInstance();
+  public static ElementalAir createADefaultInstance() {
+    return new ElementalAir();
   }
 
 }

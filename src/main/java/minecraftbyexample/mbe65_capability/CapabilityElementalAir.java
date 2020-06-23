@@ -9,27 +9,26 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
  *
  * This class doesn't do much!
  * It's really just a marker for the capability.
- * register() should be called during FMLCommonSetupEvent, and forge comes back later and stores the
+ * register() should be called during FMLCommonSetupEvent: forge comes back later and stores the
  *   CapabilityElementalFire instance into the @CapabilityInject field.
  *
- * Note that, although I've used concrete implementations of the interface, you can register using interfaces instead
- * eg
- *   ElementalFireInterfaceInstance1 implements ElementalFireInterface
+ * Note that, although I've used concrete implementations of the interface, you can register using a bare interface instead
+ * see for example CapabilityItemHandler which uses
+ *     @CapabilityInject(IItemHandler.class)
+ *     public static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY = null;
  *
- *       CapabilityManager.INSTANCE.register(
- *               ElementalFireInterface.class,
- *               new ElementalFireInterface.nbt,  // write to NBT or read from NBT
- *               ElementalFireInterfaceInstance::createADefaultInstance);
+ *     public static void register() {
+ *         CapabilityManager.INSTANCE.register(IItemHandler.class, new Capability.IStorage<IItemHandler>()
  *
  */
 public class CapabilityElementalAir {
-    @CapabilityInject(ElementalAirInterfaceInstance.class)
-    public static Capability<ElementalAirInterfaceInstance> CAPABILITY_ELEMENTAL_AIR = null;
+    @CapabilityInject(ElementalAir.class)
+    public static Capability<ElementalAir> CAPABILITY_ELEMENTAL_AIR = null;
 
     public static void register() {
       CapabilityManager.INSTANCE.register(
-              ElementalAirInterfaceInstance.class,
-              new ElementalAirInterfaceInstance.ElementalAirNBTStorage(),
-              ElementalAirInterfaceInstance::createADefaultInstance);
+              ElementalAir.class,
+              new ElementalAir.ElementalAirNBTStorage(),
+              ElementalAir::createADefaultInstance);
     }
 }
