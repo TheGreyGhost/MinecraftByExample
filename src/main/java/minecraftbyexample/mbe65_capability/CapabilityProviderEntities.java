@@ -82,7 +82,7 @@ public class CapabilityProviderEntities implements ICapabilitySerializable<INBT>
     }
     CompoundNBT compoundNBT = (CompoundNBT)nbt;
     INBT airNBT = compoundNBT.get(AIR_NBT);
-    INBT fireNBT = compoundNBT.get(AIR_NBT);
+    INBT fireNBT = compoundNBT.get(FIRE_NBT);
 
     CapabilityElementalAir.CAPABILITY_ELEMENTAL_AIR.readNBT(elementalAirInterfaceInstance, NO_SPECIFIC_SIDE, airNBT);
     CapabilityElementalFire.CAPABILITY_ELEMENTAL_FIRE.readNBT(elementalFireInterfaceInstance, NO_SPECIFIC_SIDE, fireNBT);

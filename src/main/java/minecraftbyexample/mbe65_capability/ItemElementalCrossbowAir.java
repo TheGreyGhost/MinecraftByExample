@@ -293,7 +293,6 @@ public class ItemElementalCrossbowAir extends CrossbowItem {  // need to extend 
         }
       }
     }
-    //todo mark entities as dirty after update
     fireProjectilesAfter(world, livingEntity, crossbowItemStack);
   }
 

@@ -55,10 +55,6 @@ public class ItemElementalBowFire extends BowItem  // extend BowItem instead of 
     if (livingEntity.getActiveItemStack() != itemStack) return NO_PULL;
 
     int pullDurationTicks = itemStack.getUseDuration() - livingEntity.getItemInUseCount();   // getItemInUseCount starts from maximum!
-    if (pullDurationTicks > 40) {
-      int i = 1;
-      //todo remove
-    }
     return pullDurationTicks / TICKS_PER_SECOND;
   }
 
