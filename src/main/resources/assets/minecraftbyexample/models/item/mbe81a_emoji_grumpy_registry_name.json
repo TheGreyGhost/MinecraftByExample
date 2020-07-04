@@ -1,0 +1,6 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "minecraftbyexample:item/mbe81a_projectile_icon_1"
+    }
+}

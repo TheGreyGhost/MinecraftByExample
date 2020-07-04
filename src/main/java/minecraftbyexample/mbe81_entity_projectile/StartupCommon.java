@@ -20,14 +20,19 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
  */
 public class StartupCommon
 {
-  public static EmojiItem emojiItem;  // this holds the unique instance of your block
+  public static EmojiItem emojiItemHappy;
+  public static EmojiItem emojiItemGrumpy;
   public static EntityType<EmojiEntity> emojiEntityType;
 
   @SubscribeEvent
   public static void onItemsRegistration(final RegistryEvent.Register<Item> itemRegisterEvent) {
-    emojiItem = new EmojiItem();
-    emojiItem.setRegistryName("mbe81a_emoji_registry_name");
-    itemRegisterEvent.getRegistry().register(emojiItem);
+    emojiItemHappy = new EmojiItem(EmojiItem.EmojiMood.HAPPY);
+    emojiItemHappy.setRegistryName("mbe81a_emoji_happy_registry_name");
+    itemRegisterEvent.getRegistry().register(emojiItemHappy);
+
+    emojiItemGrumpy = new EmojiItem(EmojiItem.EmojiMood.GRUMPY);
+    emojiItemGrumpy.setRegistryName("mbe81a_emoji_grumpy_registry_name");
+    itemRegisterEvent.getRegistry().register(emojiItemGrumpy);
   }
 
   @SubscribeEvent

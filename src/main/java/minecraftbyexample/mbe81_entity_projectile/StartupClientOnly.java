@@ -18,32 +18,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
  */
 public class StartupClientOnly
 {
-  /**
-   * Tell the renderer this is a solid block
-   * @param event
-   */
-  @SubscribeEvent
-  public static void onClientSetupEvent(FMLClientSetupEvent event) {
-    RenderTypeLookup.setRenderLayer(minecraftbyexample.mbe81_entity_projectile.StartupCommon.blockFlameEmitter, RenderType.getSolid());
-  }
-
-  // Register the factory that will spawn our Particle from ParticleData
-  @SubscribeEvent
-  public static void onParticleFactoryRegistration(ParticleFactoryRegisterEvent event) {
-
-    // beware - there are two registerFactory methods with different signatures.
-    // If you use the wrong one it will put Minecraft into an infinite loading loop with no console errors
-    Minecraft.getInstance().particles.registerFactory(StartupCommon.flameParticleType, sprite -> new FlameParticleFactory(sprite));
-    //  This lambda may not be obvious: its purpose is:
-    //  the registerFactory method creates an IAnimatedSprite, then passes it to the constructor of FlameParticleFactory
-
-    //  General rule of thumb:
-    // If you are creating a TextureParticle with a corresponding json to specify textures which will be stitched into the
-    //    particle texture sheet, then use the 1-parameter constructor method
-    // If you're supplying the render yourself, or using a texture from the block sheet, use the 0-parameter constructor method
-    //   (examples are MobAppearanceParticle, DiggingParticle).  See ParticleManager::registerFactories for more.
-  }
-
 }
 
 
