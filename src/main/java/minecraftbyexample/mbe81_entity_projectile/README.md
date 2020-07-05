@@ -22,6 +22,19 @@ You need to have:
 *   public static void onEntityTypeRegistration(RegistryEvent.Register<EntityType<?>> entityTypeRegisterEvent) {
 If you forget any of these or get them incorrect, your code won't work and might fail silently.
 
+
+-------BoomerangEntity (mbe81b) -------<br>
+If you use Blender to generate wavefront (obj) files, you need to make sure that all faces are either quads or triangles (no "n-gons" > 4).
+The easiest way to do that is to select all faces (in edit mode) then:
+1) Triangulate faces; then
+2) Tris to Quads<br>
+
+Google is your friend here!
+
+Alternatively you can use BlockBench in "entity model" and export it as wavefront.
+
+Personally I find BlockBench easier to use when making the "blocky" style of minecraft models, and it's much easier to learn than Blender. 
+
 ## Common errors
 * My entity doesn't appear on the client; no errors in the console<br>
 You may have incorrectly implemented createSpawnPacket for your Entity
