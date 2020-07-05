@@ -87,6 +87,7 @@ See [here](https://greyminecraftcoder.blogspot.com/2020/05/minecraft-by-example.
 
 ### Entities and Models
   - [MBE80][80] - Shows the basics of Models (eg PigModel), model parameters adjustable in real time using commands
+  - [MBE81][81] - Projectile Entities (eg snowballs, arrows)
   
 ### Miscellaneous Debugging Tools
   - [DebuggingTools]- This package is a bunch of functions and tools that I use occasionally, mostly for debugging
@@ -153,6 +154,7 @@ Head over [here][more_help] if this didn't make sense to you (check comments for
 [75]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe75_testing_framework
 
 [80]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe80_model_renderer
+[81]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe81_entity_projectile
 
 [DebuggingTools]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/usefultools
  

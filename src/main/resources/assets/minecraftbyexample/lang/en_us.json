@@ -63,5 +63,9 @@
   "gui.minecraftbyexample.mbe70_configuration.myIntList.tooltip": "My Int List Tooltip",
   "gui.minecraftbyexample.mbe70_configuration.myColour": "My Colour",
   "gui.minecraftbyexample.mbe70_configuration.myColour.tooltip": "My Colour Tooltip",
-  "item.minecraftbyexample.mbe75_test_runner_registry_name": "MBE75 Item Testrunner"
+  "item.minecraftbyexample.mbe75_test_runner_registry_name": "MBE75 Item Testrunner",
+
+  "item.minecraftbyexample.mbe81a_emoji_happy_registry_name": "MBE81a Throwable Emoji",
+  "item.minecraftbyexample.mbe81a_emoji_grumpy_registry_name": "MBE81a Throwable Emoji",
+  "entity.minecraftbyexample.mbe81a_emoji_type_registry_name": "MBE81a Throwable Emoji"
 }

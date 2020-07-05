@@ -56,7 +56,7 @@ public class MinecraftByExample {
   public static IEventBus MOD_EVENT_BUS;
 
   public MinecraftByExample() {
-    final boolean HIDE_CONSOLE_NOISE = false;  // todo get rid of all the noise from the console (after mod is constructed) to show warnings more clearly.
+    final boolean HIDE_CONSOLE_NOISE = true;  // todo get rid of all the noise from the console (after mod is constructed) to show warnings more clearly.
     if (HIDE_CONSOLE_NOISE) {
       ForgeLoggerTweaker.setMinimumLevel(Level.WARN);
       ForgeLoggerTweaker.applyLoggerFilter();
@@ -124,6 +124,7 @@ public class MinecraftByExample {
     MOD_EVENT_BUS.register(minecraftbyexample.mbe65_capability.StartupCommon.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe75_testing_framework.StartupCommon.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe80_model_renderer.StartupCommon.class);
+    MOD_EVENT_BUS.register(minecraftbyexample.mbe81_entity_projectile.StartupCommon.class);
 
     //----------------
     MOD_EVENT_BUS.register(minecraftbyexample.usefultools.debugging.StartupCommon.class);
@@ -153,6 +154,7 @@ public class MinecraftByExample {
     MOD_EVENT_BUS.register(minecraftbyexample.mbe65_capability.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe75_testing_framework.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe80_model_renderer.StartupClientOnly.class);
+    MOD_EVENT_BUS.register(minecraftbyexample.mbe81_entity_projectile.StartupClientOnly.class);
 
     //----------------
     MOD_EVENT_BUS.register(minecraftbyexample.usefultools.debugging.StartupClientOnly.class);

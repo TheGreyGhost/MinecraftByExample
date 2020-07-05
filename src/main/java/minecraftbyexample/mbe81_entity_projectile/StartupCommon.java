@@ -24,6 +24,7 @@ public class StartupCommon
   public static EmojiItem emojiItemGrumpy;
   public static EntityType<EmojiEntity> emojiEntityType;
 
+  // register the two different items- they both use the same class but each have a different mood
   @SubscribeEvent
   public static void onItemsRegistration(final RegistryEvent.Register<Item> itemRegisterEvent) {
     emojiItemHappy = new EmojiItem(EmojiItem.EmojiMood.HAPPY);
@@ -35,19 +36,18 @@ public class StartupCommon
     itemRegisterEvent.getRegistry().register(emojiItemGrumpy);
   }
 
+  // register our entity type
+  @SubscribeEvent
+  public static void onEntityTypeRegistration(RegistryEvent.Register<EntityType<?>> entityTypeRegisterEvent) {
+    emojiEntityType = EntityType.Builder.<EmojiEntity>create(EmojiEntity::new, EntityClassification.MISC)
+            .size(0.25F, 0.25F)
+            .build("minecraftbyexample:mbe81a_emoji_type_registry_name");
+    emojiEntityType.setRegistryName("minecraftbyexample:mbe81a_emoji_type_registry_name");
+    entityTypeRegisterEvent.getRegistry().register(emojiEntityType);
+  }
+
   @SubscribeEvent
   public static void onCommonSetupEvent(FMLCommonSetupEvent event) {
     // not actually required for this example....
   }
-
-  @SubscribeEvent
-  public static void onEntityTypeRegistration(RegistryEvent.Register<EntityType<?>> entityTypeRegisterEvent) {
-    EntityType<EmojiEntity> emojiEntityType = EntityType.Builder.<EmojiEntity>create(EmojiEntity::new, EntityClassification.MISC)
-            .size(0.25F, 0.25F)
-            .build("minecraftbyexample:mbe81_emoji_type_registry_name");
-    emojiEntityType.setRegistryName("minecraftbyexample:mbe81_emoji_type_registry_name");
-    entityTypeRegisterEvent.getRegistry().register(emojiEntityType);
-  }
-
-
 }

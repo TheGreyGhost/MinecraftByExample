@@ -13,6 +13,11 @@ import java.util.Random;
 /**
  * Created by TGG on 24/06/2020.
  * Heavily based on the vanilla SnowballItem
+ *
+ * Is either HAPPY or GRUMPY.
+ *
+ * When thrown, produces an EmojiEntity
+ *
  */
 public class EmojiItem extends Item {
   static private final int MAXIMUM_NUMBER_OF_EMOJI = 64; // maximum stack size
@@ -40,7 +45,7 @@ public class EmojiItem extends Item {
     double happyChance = foodlevel / (MAX_FOOD_LEVEL * 1.1);
     Random random = new Random();
     EmojiMood mood = random.nextDouble() < happyChance ? EmojiMood.HAPPY : EmojiMood.GRUMPY;
-    SoundEvent soundEvent = (mood == EmojiMood.HAPPY) ? SoundEvents.ENTITY_VILLAGER_CELEBRATE : SoundEvents.ENTITY_VILLAGER_NO;
+    SoundEvent soundEvent = (mood == EmojiMood.HAPPY) ? SoundEvents.ENTITY_VILLAGER_YES : SoundEvents.ENTITY_VILLAGER_NO;
     EmojiItem itemToThrow = (mood == EmojiMood.HAPPY) ? StartupCommon.emojiItemHappy : StartupCommon.emojiItemGrumpy;
     ItemStack itemStackToThrow = new ItemStack(itemToThrow);
 
@@ -49,7 +54,11 @@ public class EmojiItem extends Item {
     if (!world.isRemote) {
       EmojiEntity emojiEntity = new EmojiEntity(world, playerEntity);
       emojiEntity.setItem(itemStackToThrow);
+
+      // set the motion of the new entity
       emojiEntity.shoot(playerEntity, playerEntity.rotationPitch, playerEntity.rotationYaw, 0.0F, 1.5F, 1.0F);
+
+      // spawn the entity in the world
       world.addEntity(emojiEntity);
     }
 
