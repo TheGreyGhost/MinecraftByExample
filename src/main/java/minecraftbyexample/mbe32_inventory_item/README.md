@@ -5,7 +5,7 @@ This example is a Flower Bag- an item that can be used to contain other items (i
 It illustrates two concepts:
 1) How to add an inventory to an item
 2) How to use Forge Capability 
-3) How to synchronise capability information to the client for use in rendering
+3) How to synchronise capability information to the client for use in rendering  *** WARNING THIS CODE CURRENTLY CONTAINS A BUG - synchronisation currently only works in single player, not multiplayer.  Am working on a fix. ***
 
 The code is heavily based on the Mystical Flower Bag from the Botania mod, created by Vazkii (thanks dude!):
 [https://botaniamod.net/](https://botaniamod.net/)

@@ -91,6 +91,7 @@ The advantage of using the Capability is that other mods will be able to interac
 
 ### For more information about capabilities:
 https://gist.github.com/williewillus/c8dc2a1e7963b57ef436c699f25a710d
+
 https://mcforge.readthedocs.io/en/latest/datastorage/capabilities/
 
 Some notes on using capabilities defined by other mods:
