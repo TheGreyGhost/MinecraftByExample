@@ -1,5 +1,6 @@
 package minecraftbyexample.mbe81_entity_projectile;
 
+import minecraftbyexample.usefultools.CubicSpline;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
@@ -40,7 +41,11 @@ public class BoomerangFlightPath {
                              boolean anticlockwise,
                              double flightDuration) {
 
+    flightPathCubicSpline = CubicSpline.createMonotoneCubicSpline()
   }
+
+  private CubicSpline flightPathCubicSpline;
+
 
   private void integrateCurve() {
     double flightTimeTicks;
@@ -93,6 +98,21 @@ public class BoomerangFlightPath {
   private float apexYaw;
   private double maximumSidewaysDeflection;
   private double flightDuration; // seconds
+
+  // the flight path consists of a few points, smoothly connected by a cubic spline.
+  // The BASE_FLIGHT_PATH consists of a series of tuples: [path_fraction, lengthways_distance, sideways_distance]
+  //  see boomerang_flight_path.
+  //  path_fraction = 0.0 at start of flight, and 1.0 at the end of its flight when it has returned to the thrower
+  //  lengthways_distance = 0.0 at the thrower and 1.0 at the apex (furthest point) of the flight.
+  //  sideways distance is 0.0 for no-sideways-deviation, or +/- with the same scale as lengthways.  The base path
+  //    uses a sideways deviation of -0.2 to +0.2.
+  //  The path is based on a uniform flight speed throughout its flight.
+  //  We then stretch and rotate the path so that it matches the direction that the player throws the boomerang
+  //   as well as how far they throw it.
+  private static final float [][] BASE_FLIGHT_PATH = {
+          {0.0F, 0.0F, 0.0F},
+
+  };
 
 
 }
