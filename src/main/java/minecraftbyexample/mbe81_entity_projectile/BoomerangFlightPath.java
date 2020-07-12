@@ -33,8 +33,6 @@ import java.util.List;
  *
  * So I have used Excel to numerically integrate it (for a typical maximumSidewaysDeflection) and fit the data to a
  * cubic spline, which can be calculated very quickly.
- *
- *
  */
 public class BoomerangFlightPath {
 
@@ -113,7 +111,6 @@ public class BoomerangFlightPath {
     return retval;
   }
 
-
   private Vec3d startPoint;
   private float distanceToApex;
   private float apexYaw;
@@ -135,8 +132,17 @@ public class BoomerangFlightPath {
   //  We then stretch and rotate the path so that it matches the direction that the player throws the boomerang
   //   as well as how far they throw it.
   private static final float [][] BASE_FLIGHT_PATH = {
-          {0.0F, 0.0F, 0.0F},
-
+          {0.0F, 0.00F,  0.00F},
+          {0.1F, 0.20F,  0.09F},
+          {0.2F, 0.42F,  0.17F},
+          {0.3F, 0.64F,  0.20F},
+          {0.4F, 0.86F,  0.17F},
+          {0.5F, 1.00F,  0.0F},
+          {0.6F, 0.86F, -0.17F},
+          {0.7F, 0.64F, -0.20F},
+          {0.8F, 0.42F, -0.17F},
+          {0.9F, 0.20F, -0.09F},
+          {1.0F, 0.00F,  0.00F}
   };
 
 
