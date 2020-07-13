@@ -85,12 +85,19 @@ We want to give our ItemFlowerBag the ability to store Flowers.
 4) This creates a new instance of CapabilityProviderFlowerBag for each time that an ItemFlowerBag ItemStack is created 
 5) Our CapabilityProviderFlowerBag does not actually create an ItemStackhandlerFlowerBag until the first time that someone calls CapabilityProviderFlowerBag::getCapability
 
-
 You might wonder what the point of using a Capability is- you could instead just use a method in your ItemFlowerBag class to keep its own ItemStackHandler as an NBT tag attached to the item, and handle the loading/saving to NBT directly.
 The advantage of using the Capability is that other mods will be able to interact with the ItemStack to retrieve items from it.  For an ItemFlowerBag that might not be terribly useful (since there are no vanilla items which will ask other items if they can store objects), but if you are making a new block container of some sort, then it might allow vanilla objects to interact with your container.
 
+### Synchronising Capabilities from server to client
+By default, capability information attached to an object is only valid on the server; it is not transmitted to the client.  If you want to access capability information on the client, you must synchronise it manually:
+1) For Entity - use a custom packet or use an EntityDataManager with DataParameter
+2) For World, Dimension or Chunk - use a custom packet 
+3) For TileEntity- implement getUpdatePacket(), getUpdateTag(), onDataPacket(), and handleUpdateTag() to serialise+deserialise your capability
+4) For ItemStack: for a vanilla Item: use a custom packet.  For one of your own Items: override Item.getShareTag() and readShareTag() to transmit your capability 
+
 ### For more information about capabilities:
 https://gist.github.com/williewillus/c8dc2a1e7963b57ef436c699f25a710d
+
 https://mcforge.readthedocs.io/en/latest/datastorage/capabilities/
 
 Some notes on using capabilities defined by other mods:

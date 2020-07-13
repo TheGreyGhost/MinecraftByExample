@@ -202,6 +202,59 @@ public class ItemFlowerBag extends Item {
     return (ItemStackHandlerFlowerBag)flowerBag;
   }
 
+  private final String BASE_NBT_TAG = "base";
+  private final String CAPABILITY_NBT_TAG = "cap";
+
+  /**
+   * Ensure that our capability is sent to the client when transmitted over the network.
+   * Not needed if you don't need the capability information on the client
+   *
+   * Note that this will sometimes be applied multiple times, the following MUST
+   * be supported:
+   *   Item item = stack.getItem();
+   *   NBTTagCompound nbtShare1 = item.getShareTag(stack);
+   *   stack.readShareTag(nbtShare1);
+   *   NBTTagCompound nbtShare2 = item.getShareTag(stack);
+   *   assert nbtShare1.equals(nbtShare2);
+   *
+   * @param stack The stack to send the NBT tag for
+   * @return The NBT tag
+   */
+  @Nullable
+  @Override
+  public CompoundNBT getShareTag(ItemStack stack) {
+    CompoundNBT baseTag = stack.getTag();
+    ItemStackHandlerFlowerBag itemStackHandlerFlowerBag = getItemStackHandlerFlowerBag(stack);
+    CompoundNBT capabilityTag = itemStackHandlerFlowerBag.serializeNBT();
+    CompoundNBT combinedTag = new CompoundNBT();
+    if (baseTag != null) {
+      combinedTag.put(BASE_NBT_TAG, baseTag);
+    }
+    if (capabilityTag != null) {
+      combinedTag.put(CAPABILITY_NBT_TAG, capabilityTag);
+    }
+    return combinedTag;
+  }
+
+  /** Retrieve our capability information from the transmitted NBT information
+   *
+   * @param stack The stack that received NBT
+   * @param nbt   Received NBT, can be null
+   */
+  @Override
+  public void readShareTag(ItemStack stack, @Nullable CompoundNBT nbt) {
+    if (nbt == null) {
+      stack.setTag(null);
+      return;
+    }
+    CompoundNBT baseTag = nbt.getCompound(BASE_NBT_TAG);              // empty if not found
+    CompoundNBT capabilityTag = nbt.getCompound(CAPABILITY_NBT_TAG); // empty if not found
+    stack.setTag(baseTag);
+    ItemStackHandlerFlowerBag itemStackHandlerFlowerBag = getItemStackHandlerFlowerBag(stack);
+    itemStackHandlerFlowerBag.deserializeNBT(capabilityTag);
+  }
+
+
   // ------------ code used for changing the appearance of the bag based on the number of flowers in it
 
   /**
