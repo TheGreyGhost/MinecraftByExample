@@ -24,6 +24,8 @@ public class StartupCommon
   public static EmojiItem emojiItemGrumpy;
   public static EntityType<EmojiEntity> emojiEntityType;
 
+  public static EntityType<BoomerangEntity> boomerangEntityType;
+
   // register the two different items- they both use the same class but each have a different mood
   @SubscribeEvent
   public static void onItemsRegistration(final RegistryEvent.Register<Item> itemRegisterEvent) {
@@ -44,6 +46,12 @@ public class StartupCommon
             .build("minecraftbyexample:mbe81a_emoji_type_registry_name");
     emojiEntityType.setRegistryName("minecraftbyexample:mbe81a_emoji_type_registry_name");
     entityTypeRegisterEvent.getRegistry().register(emojiEntityType);
+
+    boomerangEntityType = EntityType.Builder.<BoomerangEntity>create(BoomerangEntity::new, EntityClassification.MISC)
+            .size(0.25F, 0.25F)
+            .build("minecraftbyexample:mbe81b_boomerang_type_registry_name");
+    boomerangEntityType.setRegistryName("minecraftbyexample:mbe81b_boomerang_type_registry_name");
+    entityTypeRegisterEvent.getRegistry().register(boomerangEntityType);
   }
 
   @SubscribeEvent
