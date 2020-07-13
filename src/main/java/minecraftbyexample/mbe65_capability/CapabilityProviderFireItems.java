@@ -35,7 +35,7 @@ public class CapabilityProviderFireItems implements ICapabilitySerializable<INBT
       // why are we using a lambda?  Because LazyOptional.of() expects a NonNullSupplier interface.  The lambda automatically
       //   conforms itself to that interface.  This save me having to define an inner class implementing NonNullSupplier.
       // The explicit cast to LazyOptional<T> is required because our CAPABILITY_ELEMENTAL_FIRE can't be typed.  Our code has
-      //   checked that the requested capability matches, so the explict cast is safe (unless you have made a mistake and mixed them up!)
+      //   checked that the requested capability matches, so the explicit cast is safe (unless you have made a mistake and mixed them up!)
     }
     return LazyOptional.empty();
     // Note that if you are implementing getCapability in a derived class which implements ICapabilityProvider

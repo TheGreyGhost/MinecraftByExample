@@ -5,7 +5,7 @@ This example is a Flower Bag- an item that can be used to contain other items (i
 It illustrates two concepts:
 1) How to add an inventory to an item
 2) How to use Forge Capability 
-3) How to synchronise capability information to the client for use in rendering  *** WARNING THIS CODE CURRENTLY CONTAINS A BUG - synchronisation currently only works in single player, not multiplayer.  Am working on a fix. ***
+3) How to synchronise capability information to the client for use in rendering.
 
 The code is heavily based on the Mystical Flower Bag from the Botania mod, created by Vazkii (thanks dude!):
 [https://botaniamod.net/](https://botaniamod.net/)
@@ -24,11 +24,19 @@ The pieces you need to understand are located in:
 
 See ReadMeFlowerBagDataFlow.png for a diagram of the dataflow between the classes.
 
+## Synchronisation 
 The key to understanding how this example works is to keep in mind the client-server synchronisation that is required.
  On the server, the data (the flowers) are all stored in a capability attached to the server ItemStack.  There is also a client ItemStack and this is synchronised automatically by vanilla using NBT data, when vanilla detects that the ItemStack has changed. This normally happens in ServerPlayerEntity.tick(), which calls `this.openContainer.detectAndSendChanges()`;<br>
- But beware!  The Capability information for the ItemStack is stored as a field that the vanilla server does not use when checking for changes that it needs to send to the client.  This field is only accessed when serialising / deserialising the ItemStack for loading/saving to disk or for network transmission.<br>
- This means that if you update server Capability information, and you want the client to know about the change (eg because the capability affects rendering), you must manually trigger the server to resynchronise the ItemStack to the client.   
-    
+ But beware!  The Capability information for the ItemStack is stored as a field that the vanilla server does not use when checking for changes that it needs to send to the client.  This field is only accessed when serialising / deserialising the ItemStack for loading/saving to disk.<br>
+ In addition, when your ItemStack is sent from server to client, it happens differently depending on whether the server is local or is on a different machine:
+ * If the server and client are on the same machine, the synchronisation packet (eg SSetSlotPacket) is transmitted from the server to the client using a Netty LocalChannel.  This method does not serialise & deserialise the ItemStack, i.e. the client just receives a direct copy of the ItemStack (produced using ItemStack.copy();) which also copies the Capability field. 
+ * If the server and client are on different machines, the synchronisation packet is transmitted using an actual network channel, which uses IForgeItemStack.getShareTag() and IForgeItemStack.readShareTag() to serialise and deserialise the ItemStack.  By default, these methods do not copy the capability information.
+ 
+ This means that if you update server Capability information, and you want the client to know about the change (eg because the capability affects rendering), you must do two things:
+ 1) manually trigger the server to resynchronise the ItemStack to the client, and
+ 2) override your Item.getShareTag() and readShareTag() to transmit your relevant capability information   
+
+## Synchronisation in Graphical User Interface    
 The synchronisation for the Graphical User Interface (GUI) is different.  It takes place through two Containers, one on the server and one on the client:<br>   
 When the flower bag GUI is opened, two Containers are created.  The Container on the server is linked to the server's ItemStack.  But the Container on the client is a dummy for temporary storage only, it is NOT linked to the client's ItemStack: it is synchronised with the server container instead.  The manipulation of flowers in slots is handled automatically between the two containers, and does not involve the client ItemStack at all.
 
