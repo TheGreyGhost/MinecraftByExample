@@ -52,7 +52,7 @@ public class CubicSpline {
    * @throws IllegalArgumentException
    *             if the t or t arrays are null, have different lengths or have fewer than 2 values.
    */
-  public static CubicSpline createMonotoneCubicSpline(List<Float> t, List<Float> x) {
+  public static CubicSpline createCubicSpline(List<Float> t, List<Float> x) {
     if (t == null || x == null || t.size() != x.size() || t.size() < 2) {
       throw new IllegalArgumentException("There must be at least two control "
               + "points and the arrays must be of equal length.");

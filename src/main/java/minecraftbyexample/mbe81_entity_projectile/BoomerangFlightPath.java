@@ -13,12 +13,12 @@ import java.util.List;
  * This class models the flight path of the boomerang.
  * It calculates the position[x,y,z] of the boomerang at a given time after throwing.
  * It also calculates the direction that the top of the boomerang is facing (the yaw)
- * It uses parametric calculation of the [x,y,z] to do this.
+ * It uses parametric calculation of the [x,y,z] to do these calculations.
  * see boomerang_flight_path.png for an illustration of the path
  * (In real life, boomerangs fly in a circle, but the teardrop looks better).
 
  * Normally, minecraft entities use velocity calculations for this purpose.  But that doesn't work well for the
- *   boomerang flight path because it curves is a complex way.
+ *   boomerang flight path because it curves in a complex way.
  *
  * The parametric equation for the unscaled teardrop shape is
  * x = 0.5*(1 - cos(theta))
@@ -27,7 +27,7 @@ import java.util.List;
  *
  * dx/dtheta = 0.5*sin(theta)
  * dy/dtheta = sin(theta/2)*cos(theta) + 0.5*sin(theta)*cos(theta/2)
- * We want speed to be constant, i.e. dx^2 + dy^2 = constant, which gives us our step size in theta
+ * We want speed to be constant, i.e. dx^2 + dy^2 = constant, which gives us our step size in theta as a function of time
  *
  * This is hard to solve analytically, and quite slow if we need minecraft to calculate it.
  *
@@ -71,8 +71,8 @@ public class BoomerangFlightPath {
       xValues.add((float)offsetFromStart.getX());
       zValues.add((float)offsetFromStart.getZ());
     }
-    flightPathX = CubicSpline.createMonotoneCubicSpline(tValues, xValues);
-    flightPathZ = CubicSpline.createMonotoneCubicSpline(tValues, zValues);
+    flightPathX = CubicSpline.createCubicSpline(tValues, xValues);
+    flightPathZ = CubicSpline.createCubicSpline(tValues, zValues);
   }
 
   // calculate the current position on the flight path
@@ -123,13 +123,13 @@ public class BoomerangFlightPath {
 
   // the flight path consists of a few points, smoothly connected by a cubic spline.
   // The BASE_FLIGHT_PATH consists of a series of tuples: [path_fraction, lengthways_distance, sideways_distance]
-  //  see boomerang_flight_path.
+  //  see boomerang_flight_path.png.
   //  path_fraction = 0.0 at start of flight, and 1.0 at the end of its flight when it has returned to the thrower
   //  lengthways_distance = 0.0 at the thrower and 1.0 at the apex (furthest point) of the flight.
   //  sideways distance is 0.0 for no-sideways-deviation, or +/- with the same scale as lengthways.  The base path
   //    uses a sideways deviation of -0.2 to +0.2.
   //  The path is based on a uniform flight speed throughout its flight.
-  //  We then stretch and rotate the path so that it matches the direction that the player throws the boomerang
+  //  We then rotate and stretch the path so that it matches the direction that the player throws the boomerang
   //   as well as how far they throw it.
   private static final float [][] BASE_FLIGHT_PATH = {
           {0.0F, 0.00F,  0.00F},
@@ -144,6 +144,4 @@ public class BoomerangFlightPath {
           {0.9F, 0.20F, -0.09F},
           {1.0F, 0.00F,  0.00F}
   };
-
-
 }
