@@ -1,5 +1,8 @@
 package minecraftbyexample.usefultools;
 
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.DoubleNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.math.Vec3d;
 
 /**
@@ -38,4 +41,26 @@ public class UsefulFunctions
   }
 
 
+  /***
+   * creates a NBT list from the Vec3d passed to this function
+   */
+  public static ListNBT serializeVec3d(Vec3d vec3d) {
+    ListNBT listnbt = new ListNBT();
+    listnbt.add(DoubleNBT.valueOf(vec3d.x));
+    listnbt.add(DoubleNBT.valueOf(vec3d.y));
+    listnbt.add(DoubleNBT.valueOf(vec3d.z));
+    return listnbt;
+  }
+
+  /**
+   * Creates a Vec3d from the given NBT tag
+   * @param nbt
+   * @param tagname
+   * @return
+   */
+  public static Vec3d deserializeVec3d(CompoundNBT nbt, String tagname) {
+    ListNBT listnbt = nbt.getList("Pos", NBTtypesMBE.DOUBLE_NBT_ID);
+    Vec3d retval = new Vec3d(listnbt.getDouble(0), listnbt.getDouble(1), listnbt.getDouble(2));
+    return retval;
+  }
 }

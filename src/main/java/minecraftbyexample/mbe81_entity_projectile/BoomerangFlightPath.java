@@ -1,9 +1,14 @@
 package minecraftbyexample.mbe81_entity_projectile;
 
 import minecraftbyexample.usefultools.CubicSpline;
+import minecraftbyexample.usefultools.UsefulFunctions;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.common.util.INBTSerializable;
 
+import javax.jws.soap.SOAPBinding;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,48 +39,45 @@ import java.util.List;
  * So I have used Excel to numerically integrate it (for a typical maximumSidewaysDeflection) and fit the data to a
  * cubic spline, which can be calculated very quickly.
  */
-public class BoomerangFlightPath {
+public class BoomerangFlightPath implements INBTSerializable<CompoundNBT> {
 
+  /**
+   * @param startPoint  the spawn point of the flight path
+   * @param apexYaw the yaw angle in degrees (compass direction of the apex relative to the thrower).  0 degrees is south and increases clockwise.
+   * @param distanceToApex number of blocks to the apex of the flight path
+   * @param maximumSidewaysDeflection maximum sideways deflection from the straight line from thrower to apex
+   * @param anticlockwise is the flight path clockwise or anticlockwise
+   * @param flightSpeed speed of the flight in blocks per second
+   */
   public BoomerangFlightPath(Vec3d startPoint,
                              float apexYaw, float distanceToApex,
                              float maximumSidewaysDeflection,
                              boolean anticlockwise,
-                             float flightDuration) {
+                             float flightSpeed) {
     this.startPoint = startPoint;
     this.apexYaw = apexYaw;
     this.distanceToApex = distanceToApex;
     this.maximumSidewaysDeflection = maximumSidewaysDeflection;
     this.anticlockwise = anticlockwise;
-    this.flightDuration = flightDuration;
+    this.flightDuration = BASE_FLIGHT_PATH_LENGTH * distanceToApex / flightSpeed;
     calculateFlightPath();
   }
 
-  private void calculateFlightPath() {
-    // in order to calculate the flight path, we take the
-    // basic flight path coordinates, transform them to the correct shape:
-    //  1) scale the long axis to match the desired distance to the apex
-    //  2) scale the sidewaysdeflection axis to the desired sideways deflection
-    //  3) rotate around [0,0] based on the player's yaw (direction the player is facing)
-    // Then we fit a cubic spline to the points.
-    // The anticlockwise/clockwise and the flightDuration are handled during the lookup, not in the fitted curve
+  public BoomerangFlightPath(CompoundNBT nbt) {
+    deserializeNBT(nbt);
+  }
 
-    List<Float> tValues = new ArrayList<>();
-    List<Float> xValues = new ArrayList<>();
-    List<Float> zValues = new ArrayList<>();
-
-    for (float [] point : BASE_FLIGHT_PATH) {
-      tValues.add(point[0]);
-      float u = point[1] * distanceToApex;
-      float v = point[2] * maximumSidewaysDeflection;
-      Vec3d offsetFromStart = new Vec3d(u, 0, v).rotateYaw(apexYaw);
-      xValues.add((float)offsetFromStart.getX());
-      zValues.add((float)offsetFromStart.getZ());
-    }
-    flightPathX = CubicSpline.createCubicSpline(tValues, xValues);
-    flightPathZ = CubicSpline.createCubicSpline(tValues, zValues);
+  /**
+   * Default/dummy (do nothing)
+   */
+  public BoomerangFlightPath() {
+    distanceToApex = 1;
+    flightDuration = 1;
+    calculateFlightPath();
   }
 
   // calculate the current position on the flight path
+  // time in seconds
   public Vec3d getPosition(double time) {
     float pathFraction = (float)MathHelper.clamp(time, 0, flightDuration) / flightDuration;
     if (anticlockwise) pathFraction = 1 - pathFraction;
@@ -111,6 +113,41 @@ public class BoomerangFlightPath {
     return retval;
   }
 
+
+  /*  Save our flight path to NBT for storage on disk or for transmission to client
+   */
+  @Override
+  public CompoundNBT serializeNBT() {
+    CompoundNBT nbt = new CompoundNBT();
+    nbt.put(START_POINT_NBT, UsefulFunctions.serializeVec3d(startPoint));
+    nbt.putFloat(DISTANCE_TO_APEX_NBT, distanceToApex);
+    nbt.putFloat(APEX_YAW_NBT, apexYaw);
+    nbt.putFloat(MAXIMUM_SIDEWAYS_DEFLECTION_NBT, maximumSidewaysDeflection);
+    nbt.putFloat(FLIGHT_DURATION_NBT, flightDuration);
+    nbt.putBoolean(ANTICLOCKWISE_NBT, anticlockwise);
+    return nbt;
+  }
+
+  /*  Create a path from NBT (after loading from disk or transmitted from server)
+   */
+  @Override
+  public void deserializeNBT(CompoundNBT nbt) {
+    startPoint = UsefulFunctions.deserializeVec3d(nbt, START_POINT_NBT);
+    distanceToApex = nbt.getFloat(DISTANCE_TO_APEX_NBT);
+    apexYaw = nbt.getFloat(APEX_YAW_NBT);
+    maximumSidewaysDeflection  = nbt.getFloat(MAXIMUM_SIDEWAYS_DEFLECTION_NBT);
+    flightDuration = nbt.getFloat(FLIGHT_DURATION_NBT);
+    anticlockwise = nbt.getBoolean(ANTICLOCKWISE_NBT);
+    calculateFlightPath();
+  }
+
+  private final String START_POINT_NBT = "startpoint";
+  private final String DISTANCE_TO_APEX_NBT = "distancetoapex";
+  private final String APEX_YAW_NBT = "apexyaw";
+  private final String MAXIMUM_SIDEWAYS_DEFLECTION_NBT = "maximumsidewaysdeflection";
+  private final String FLIGHT_DURATION_NBT = "flightduration";
+  private final String ANTICLOCKWISE_NBT = "anticlockwise";
+
   private Vec3d startPoint;
   private float distanceToApex;
   private float apexYaw;
@@ -120,6 +157,31 @@ public class BoomerangFlightPath {
 
   private CubicSpline flightPathX;
   private CubicSpline flightPathZ;
+
+  private void calculateFlightPath() {
+    // in order to calculate the flight path, we take the
+    // basic flight path coordinates, transform them to the correct shape:
+    //  1) scale the long axis to match the desired distance to the apex
+    //  2) scale the sidewaysdeflection axis to the desired sideways deflection
+    //  3) rotate around [0,0] based on the player's yaw (direction the player is facing)
+    // Then we fit a cubic spline to the points.
+    // The anticlockwise/clockwise and the flightDuration are handled during the lookup, not in the fitted curve
+
+    List<Float> tValues = new ArrayList<>();
+    List<Float> xValues = new ArrayList<>();
+    List<Float> zValues = new ArrayList<>();
+
+    for (float [] point : BASE_FLIGHT_PATH) {
+      tValues.add(point[0]);
+      float u = point[1] * distanceToApex;
+      float v = point[2] * maximumSidewaysDeflection;
+      Vec3d offsetFromStart = new Vec3d(u, 0, v).rotateYaw(apexYaw);
+      xValues.add((float)offsetFromStart.getX());
+      zValues.add((float)offsetFromStart.getZ());
+    }
+    flightPathX = CubicSpline.createCubicSpline(tValues, xValues);
+    flightPathZ = CubicSpline.createCubicSpline(tValues, zValues);
+  }
 
   // the flight path consists of a few points, smoothly connected by a cubic spline.
   // The BASE_FLIGHT_PATH consists of a series of tuples: [path_fraction, lengthways_distance, sideways_distance]
@@ -144,4 +206,6 @@ public class BoomerangFlightPath {
           {0.9F, 0.20F, -0.09F},
           {1.0F, 0.00F,  0.00F}
   };
+
+  private static final float BASE_FLIGHT_PATH_LENGTH = 2.26F;
 }
