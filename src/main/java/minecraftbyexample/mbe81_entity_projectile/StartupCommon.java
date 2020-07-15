@@ -24,6 +24,7 @@ public class StartupCommon
   public static EmojiItem emojiItemGrumpy;
   public static EntityType<EmojiEntity> emojiEntityType;
 
+  public static BoomerangItem boomerangItem;
   public static EntityType<BoomerangEntity> boomerangEntityType;
 
   // register the two different items- they both use the same class but each have a different mood
@@ -36,6 +37,10 @@ public class StartupCommon
     emojiItemGrumpy = new EmojiItem(EmojiItem.EmojiMood.GRUMPY);
     emojiItemGrumpy.setRegistryName("mbe81a_emoji_grumpy_registry_name");
     itemRegisterEvent.getRegistry().register(emojiItemGrumpy);
+
+    boomerangItem = new BoomerangItem();
+    boomerangItem.setRegistryName("mbe81b_boomerang_registry_name");
+    itemRegisterEvent.getRegistry().register(boomerangItem);
   }
 
   // register our entity type
