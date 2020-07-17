@@ -90,7 +90,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     this.getDataManager().register(ITEMSTACK, ItemStack.EMPTY);
   }
 
-    // Is this boomerang in flight?  (true = yes, false = no (it has hit something))
+    // Is this boomerang in flight?  (true = yes, false = no (it has hit something and is now acting like a discarded item))
   private static final DataParameter<Boolean> IN_FLIGHT =
           EntityDataManager.createKey(BoomerangEntity.class, DataSerializers.BOOLEAN);
     // What ItemStack was used to throw the boomerang?
@@ -220,7 +220,6 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
       this.prevRotationYaw = this.rotationYaw;
       this.prevRotationPitch = this.rotationPitch;
     }
-
   }
 
 
@@ -251,8 +250,11 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
 
     final float TICKS_PER_SECOND = 20F;
     boolean isInFlight = this.dataManager.get(IN_FLIGHT);
-
-
+    if (isInFlight) {
+      tickInFlight();
+    } else {
+      tickNotInFlight();
+    }
   }
 
   /**
@@ -264,6 +266,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
       --this.pickupDelay;
     }
 
+    // apply buoyancy if underwater, or gravity acceleration if out of water
     this.prevPosX = this.getPosX();
     this.prevPosY = this.getPosY();
     this.prevPosZ = this.getPosZ();
@@ -271,32 +274,44 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     if (this.areEyesInFluid(FluidTags.WATER)) {
       this.applyFloatMotion();
     } else if (!this.hasNoGravity()) {
-      this.setMotion(this.getMotion().add(0.0D, -0.04D, 0.0D));
+      final double ACCELERATION_DUE_TO_GRAVITY = -0.04; // blocks per tick squared
+      this.setMotion(this.getMotion().add(0.0, ACCELERATION_DUE_TO_GRAVITY, 0.0));
     }
 
+    // check if we have collided with a block; if so, move out of the block
     if (this.world.isRemote) {
       this.noClip = false;
     } else {
       this.noClip = !this.world.hasNoCollisions(this);
       if (this.noClip) {
-        this.pushOutOfBlocks(this.getPosX(), (this.getBoundingBox().minY + this.getBoundingBox().maxY) / 2.0D, this.getPosZ());
+        this.pushOutOfBlocks(this.getPosX(), (this.getBoundingBox().minY + this.getBoundingBox().maxY) / 2.0, this.getPosZ());
       }
     }
 
-    if (!this.onGround || horizontalMag(this.getMotion()) > (double)1.0E-5F || (this.ticksExisted + this.getEntityId()) % 4 == 0) {
+    // move the item and adjust its speed
+    final float THRESHOLD_HORIZONTAL_SPEED = 1E-5F;// below this speed, there is negligible horizontal speed
+    if (!this.onGround
+            || horizontalMag(this.getMotion()) > THRESHOLD_HORIZONTAL_SPEED
+            || (this.ticksExisted + this.getEntityId()) % 4 == 0) {
       this.move(MoverType.SELF, this.getMotion());
-      float f = 0.98F;
+      final float FRICTION_FACTOR = 0.98F;
+      float horizontalfrictionFactor = FRICTION_FACTOR;
+
       if (this.onGround) {
         BlockPos pos = new BlockPos(this.getPosX(), this.getPosY() - 1.0D, this.getPosZ());
-        f = this.world.getBlockState(pos).getSlipperiness(this.world, pos, this) * 0.98F;
+        horizontalfrictionFactor *= this.world.getBlockState(pos).getSlipperiness(this.world, pos, this);
       }
 
-      this.setMotion(this.getMotion().mul((double)f, 0.98D, (double)f));
+      this.setMotion(this.getMotion().mul(horizontalfrictionFactor, FRICTION_FACTOR, horizontalfrictionFactor));
       if (this.onGround) {
-        this.setMotion(this.getMotion().mul(1.0D, -0.5D, 1.0D));
+        final double BOUNCE_MULTIPLIER = -0.5;
+        this.setMotion(this.getMotion().mul(1.0, BOUNCE_MULTIPLIER, 1.0));
       }
     }
 
+
+    todo UP TO HERE
+            
       boolean flag = MathHelper.floor(this.prevPosX) != MathHelper.floor(this.getPosX()) || MathHelper.floor(this.prevPosY) != MathHelper.floor(this.getPosY()) || MathHelper.floor(this.prevPosZ) != MathHelper.floor(this.getPosZ());
       int i = flag ? 2 : 40;
       if (this.ticksExisted % i == 0) {
@@ -331,9 +346,20 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     }
   }
 
+  /** called when underwater: apply upwards acceleration (while below a maximum upwards speed)
+   */
   private void applyFloatMotion() {
-    Vec3d vec3d = this.getMotion();
-    this.setMotion(vec3d.x * (double)0.99F, vec3d.y + (double)(vec3d.y < (double)0.06F ? 5.0E-4F : 0.0F), vec3d.z * (double)0.99F);
+    Vec3d velocity = this.getMotion();
+    final double SIDEWAYS_FRICTION_FACTOR = 0.99;
+    final double MAXIMUM_UPWARDS_VELOCITY = 0.06;    // blocks per tick
+    final double ACCELERATION_DUE_TO_BUOYANCY = 0.0005;  // blocks per tick squared
+    double upwardsAcceleration = 0;
+    if (velocity.y < MAXIMUM_UPWARDS_VELOCITY) {
+      upwardsAcceleration = ACCELERATION_DUE_TO_BUOYANCY;
+    }
+    this.setMotion(velocity.x * SIDEWAYS_FRICTION_FACTOR,
+                   velocity.y + upwardsAcceleration,
+                   velocity.z * SIDEWAYS_FRICTION_FACTOR);
   }
 
 
