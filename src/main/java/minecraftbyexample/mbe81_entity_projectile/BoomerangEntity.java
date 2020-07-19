@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import minecraftbyexample.usefultools.NBTtypesMBE;
 import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -17,6 +18,7 @@ import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.entity.projectile.ProjectileHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.IPacket;
@@ -31,6 +33,7 @@ import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
@@ -81,6 +84,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
       throwerID = thrower.getUniqueID();
     }
     dataManager.set(ITEMSTACK, boomerangItemStack);
+    dataManager.set(IN_FLIGHT, true);
     boomerangFlightPath = new BoomerangFlightPath(startPosition, apexYaw, distanceToApex,
             maximumSidewaysDeflection, anticlockwise, flightSpeed);
   }
@@ -111,31 +115,6 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
   @Override
   public IPacket<?> createSpawnPacket() {
     return NetworkHooks.getEntitySpawningPacket(this);
-  }
-
-  // We hit something (entity or block).
-  @Override
-  protected void onImpact(RayTraceResult rayTraceResult) {
-    // if we hit an entity, apply an effect to it depending on the emoji mood
-    if (rayTraceResult.getType() == RayTraceResult.Type.ENTITY) {
-      EntityRayTraceResult entityRayTraceResult = (EntityRayTraceResult)rayTraceResult;
-      Entity entity = entityRayTraceResult.getEntity();
-      if (entity instanceof LivingEntity) {
-        LivingEntity livingEntity = (LivingEntity)entity;
-        Optional<EmojiItem.EmojiMood> mood = getMoodFromMyItem();
-        if (mood.isPresent()) {
-          EffectInstance effect = (mood.get() == EmojiItem.EmojiMood.HAPPY) ?
-                  new EffectInstance(Effects.REGENERATION, 100, 1) :
-                  new EffectInstance(Effects.POISON, 10, 0);
-          livingEntity.addPotionEffect(effect);
-        }
-      }
-    }
-
-    if (!this.world.isRemote) {
-      this.world.setEntityState(this, VANILLA_IMPACT_STATUS_ID);  // calls handleStatusUpdate which tells the client to render particles
-      this.remove();
-    }
   }
 
 
@@ -238,9 +217,6 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
    * 1) If the boomerang is in flight, every tick we force the entity position to a defined position on the curve.
    * 2) If the boomerang is not in flight (has hit something and is falling to the ground), then we use vanilla
    *    mechanics i.e. set motion (velocity) and let gravity act on the entity
-   *
-   *
-   *
    */
   public void tick() {
     super.tick();
@@ -270,7 +246,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     this.prevPosX = this.getPosX();
     this.prevPosY = this.getPosY();
     this.prevPosZ = this.getPosZ();
-    Vec3d vec3d = this.getMotion();
+    Vec3d initialVelocity = this.getMotion();
     if (this.areEyesInFluid(FluidTags.WATER)) {
       this.applyFloatMotion();
     } else if (!this.hasNoGravity()) {
@@ -279,6 +255,9 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     }
 
     // check if we have collided with a block; if so, move out of the block
+    // "noClip" is confusingly named.  It actually means "this entity is already colliding with a block before it has moved on this tick"
+    //  If this is true, then we just push the entity out of the block in a suitable direction, and the move method doesn't check for
+    //   collisions again on this tick.
     if (this.world.isRemote) {
       this.noClip = false;
     } else {
@@ -292,12 +271,12 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     final float THRESHOLD_HORIZONTAL_SPEED = 1E-5F;// below this speed, there is negligible horizontal speed
     if (!this.onGround
             || horizontalMag(this.getMotion()) > THRESHOLD_HORIZONTAL_SPEED
-            || (this.ticksExisted + this.getEntityId()) % 4 == 0) {
+            || (this.ticksExisted + this.getEntityId()) % 4 == 0) {  // check for movement at least every fourth tick
       this.move(MoverType.SELF, this.getMotion());
       final float FRICTION_FACTOR = 0.98F;
       float horizontalfrictionFactor = FRICTION_FACTOR;
 
-      if (this.onGround) {
+      if (this.onGround) {  // get the slipperiness of the block under the entity's "feet"
         BlockPos pos = new BlockPos(this.getPosX(), this.getPosY() - 1.0D, this.getPosZ());
         horizontalfrictionFactor *= this.world.getBlockState(pos).getSlipperiness(this.world, pos, this);
       }
@@ -309,44 +288,44 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
       }
     }
 
-
-    todo UP TO HERE
-            
-      boolean flag = MathHelper.floor(this.prevPosX) != MathHelper.floor(this.getPosX()) || MathHelper.floor(this.prevPosY) != MathHelper.floor(this.getPosY()) || MathHelper.floor(this.prevPosZ) != MathHelper.floor(this.getPosZ());
-      int i = flag ? 2 : 40;
-      if (this.ticksExisted % i == 0) {
-        if (this.world.getFluidState(new BlockPos(this)).isTagged(FluidTags.LAVA)) {
-          this.setMotion((double)((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F), (double)0.2F, (double)((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F));
-          this.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.4F, 2.0F + this.rand.nextFloat() * 0.4F);
-        }
-
-        if (!this.world.isRemote && this.func_213857_z()) {
-          this.searchForOtherItemsNearby();
-        }
+    // check if we're in lava, bounce around if we are
+    boolean blockPositionHasChanged = MathHelper.floor(this.prevPosX) != MathHelper.floor(this.getPosX())
+                     || MathHelper.floor(this.prevPosY) != MathHelper.floor(this.getPosY())
+                     || MathHelper.floor(this.prevPosZ) != MathHelper.floor(this.getPosZ());
+    int tickUpdatePeriod = blockPositionHasChanged ? 2 : 40;
+    if (this.ticksExisted % tickUpdatePeriod == 0) {
+      if (this.world.getFluidState(new BlockPos(this)).isTagged(FluidTags.LAVA)) {
+        this.setMotion( (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F,
+                        0.2,
+                        (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F  );
+        this.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.4F, 2.0F + this.rand.nextFloat() * 0.4F);
       }
-
-      this.isAirBorne |= this.handleWaterMovement();
-      if (!this.world.isRemote) {
-        double d0 = this.getMotion().subtract(vec3d).lengthSquared();
-        if (d0 > 0.01D) {
-          this.isAirBorne = true;
-        }
-      }
-
-      ItemStack item = this.getItemStack();
-      ++ticksSpentInFlight;
-      if (!this.world.isRemote && ticksSpentNotInFlight >= LIFESPAN_BEFORE_DISAPPEAR_TICKS) {
-        this.remove();
-      }
-
-      if (item.isEmpty()) {
-        this.remove();
-      }
-
     }
+
+    // isAirBorne is poorly named.  it should actually be "has entity accelerated significantly?"
+    //  if true, it prompts the server to send an immediate entity update to the client
+    this.isAirBorne |= this.handleWaterMovement();
+    if (!this.world.isRemote) {
+      double accelerationSquared = this.getMotion().subtract(initialVelocity).lengthSquared();
+      final double THRESHOLD_ACCELERATION_TO_BECOME_AIRBORNE = 0.1;
+      if (accelerationSquared > THRESHOLD_ACCELERATION_TO_BECOME_AIRBORNE * THRESHOLD_ACCELERATION_TO_BECOME_AIRBORNE) {
+        this.isAirBorne = true;
+      }
+    }
+
+    ItemStack item = this.getItemStack();
+    ++ticksSpentNotInFlight;
+    if (!this.world.isRemote && ticksSpentNotInFlight >= LIFESPAN_BEFORE_DISAPPEAR_TICKS) {
+      this.remove();
+    }
+
+    if (item.isEmpty()) {
+      this.remove();
+    }
+
   }
 
-  /** called when underwater: apply upwards acceleration (while below a maximum upwards speed)
+  /** called when underwater: apply upwards acceleration if currently moving slower than maximum upwards speed
    */
   private void applyFloatMotion() {
     Vec3d velocity = this.getMotion();
@@ -364,17 +343,11 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
 
 
   private void tickInFlight() {
-
-    Vec3d motion;
-    if (isInFlight) {
-      Vec3d startPosition = this.getPositionVec();
-      Vec3d endPosition = boomerangFlightPath.getPosition((ticksSpentInFlight + 1) / TICKS_PER_SECOND);
-      motion = endPosition.subtract(startPosition);
-    } else {
-      motion = this.getMotion();
-    }
+    final float TICKS_PER_SECOND = 20.0F;
+    Vec3d startPosition = this.getPositionVec();
+    Vec3d endPosition = boomerangFlightPath.getPosition((ticksSpentInFlight + 1) / TICKS_PER_SECOND);
+    Vec3d motion = endPosition.subtract(startPosition);
     AxisAlignedBB aabbCollisionZone = this.getBoundingBox().expand(motion).grow(1.0D);
-
 
 //    List<Entity> possibleCollisions = this.world.getEntitiesInAABBexcluding(this,
 //            axisalignedbb, BoomerangEntity::canBeCollidedWith);
@@ -392,6 +365,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
 //    }
 
     // Calculate the first object that the boomerang hits (if any)
+    // Trigger an appropriate effect on that object, and then we're no longer in flight.
     RayTraceResult raytraceresult = ProjectileHelper.rayTrace(this, aabbCollisionZone,
             this::canEntityBeCollidedWith, RayTraceContext.BlockMode.OUTLINE, true);
 
@@ -403,16 +377,16 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
           this.setPortal(blockHitPos);
         } else {
           if (!net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, raytraceresult)){
-            this.onImpact(raytraceresult);
-            isInFlight = false;
+            this.onImpactWithBlock((BlockRayTraceResult)raytraceresult);
+            dataManager.set(IN_FLIGHT, false);
           }
         }
         break;
       }
       case ENTITY: {
         if (!net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, raytraceresult)){
-          this.onImpact(raytraceresult);
-          isInFlight = false;
+          this.onImpactWithEntity((EntityRayTraceResult)raytraceresult);
+          dataManager.set(IN_FLIGHT, false);
         }
         break;
       }
@@ -420,17 +394,12 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
         break;
       }
     }
-
-    // calculate the new yaw and pitch
-
-    if (isInFlight) {
-      this.rotationYaw = boomerangFlightPath.getYaw((ticksSpentInFlight + 1) / TICKS_PER_SECOND);
-      this.rotationPitch = 0;  // later - rotation  todo
-    }
+    this.rotationYaw = boomerangFlightPath.getYaw((ticksSpentInFlight + 1) / TICKS_PER_SECOND);
+    this.rotationPitch = 0;  // later - rotation  todo
 
 //    this.rotationPitch = (float)(MathHelper.atan2(vec3d.y, (double)horizontalSpeed) * (double)(180F / (float)Math.PI));
 
-    // ensure proper wraparound to avoid jerkiness due to partialTick interpolation
+    // ensure proper wraparound to avoid jerkiness due to partialTick interpolation when rendering
 
     while (this.rotationPitch - this.prevRotationPitch < -180.0F) {
       this.prevRotationPitch -= 360.0F;
@@ -446,12 +415,14 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
       this.prevRotationYaw += 360.0F;
     }
 
+    // smooth the rotations so that they're not abrupt / jerky
     this.rotationPitch = MathHelper.lerp(0.2F, this.prevRotationPitch, this.rotationPitch);
     this.rotationYaw = MathHelper.lerp(0.2F, this.prevRotationYaw, this.rotationYaw);
 
     Vec3d newPosition = this.getPositionVec().add(motion);
-    float FRICTION_MULTIPLER;
 
+    // if flying through water, add bubbles but don't slow the boomerang down (unrealistic I guess, but making it slow down in water
+    //   would add extra complexity to the code and it's complicated enough already!)
     if (this.isInWater()) {
       for (int i = 0; i < 4; ++i) {
         final float TRAIL_DISTANCE_FACTOR = 0.25F;
@@ -461,91 +432,58 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
                 bubbleSpawnPosition.getX(), bubbleSpawnPosition.getY(), bubbleSpawnPosition.getZ(),
                 motion.getX(), motion.getY(), motion.getZ());
       }
-      FRICTION_MULTIPLER = 0.8F;
-    } else {
-      FRICTION_MULTIPLER = 0.99F;
     }
-    if (!isInFlight) {
-      motion = motion.scale(FRICTION_MULTIPLER);
-    }
-    if (!this.hasNoGravity()) {
-      motion = motion.subtract(0, getGravityVelocity(), 0);
-    }
+
     this.setMotion(motion);
-
     this.setPosition(newPosition.getX(), newPosition.getY(), newPosition.getZ());
-    this.doBlockCollisions();
+    this.doBlockCollisions();  // "collision" just means that the boomerang has entered this block's space
+                               //  eg a tripwire, or moving through a web
+                               //  it doesn't mean that the boomerang has hit anything
 
-    if (isInFlight) {
-      ++ticksSpentInFlight;
+    ++ticksSpentInFlight;
+  }
+
+  private void onImpactWithBlock(BlockRayTraceResult rayTraceResult) {
+
+    pickupDelay = MINIMUM_TIME_BEFORE_PICKUP_TICKS;
+    dataManager.set(IN_FLIGHT, false);
+
+    BLOCK_WOOD_HIT
+    this.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.4F, 2.0F + this.rand.nextFloat() * 0.4F);
+
+
+    BlockState blockstate1 = worldIn.getBlockState(blockpos2);
+    TileEntity tileentity = blockstate1.hasTileEntity() ? worldIn.getTileEntity(blockpos2) : null;
+    Block.spawnDrops(blockstate1, worldIn, blockpos2, tileentity);
+    worldIn.setBlockState(blockpos2, Blocks.AIR.getDefaultState(), 18);
+
+AxeItem.getDestroySpeed
+    float f = state.getBlockHardness(worldIn, pos);
+    ItemStack dummyAxe = new ItemStack(Items.WOODEN_AXE);
+
+    // if we hit an entity, apply an effect to it depending on the emoji mood
+    if (rayTraceResult.getType() == RayTraceResult.Type.ENTITY) {
+      EntityRayTraceResult entityRayTraceResult = (EntityRayTraceResult)rayTraceResult;
+      Entity entity = entityRayTraceResult.getEntity();
+      if (entity instanceof LivingEntity) {
+        LivingEntity livingEntity = (LivingEntity)entity;
+        Optional<EmojiItem.EmojiMood> mood = getMoodFromMyItem();
+        if (mood.isPresent()) {
+          EffectInstance effect = (mood.get() == EmojiItem.EmojiMood.HAPPY) ?
+                  new EffectInstance(Effects.REGENERATION, 100, 1) :
+                  new EffectInstance(Effects.POISON, 10, 0);
+          livingEntity.addPotionEffect(effect);
+        }
+      }
+    }
+
+    if (!this.world.isRemote) {
+      this.world.setEntityState(this, VANILLA_IMPACT_STATUS_ID);  // calls handleStatusUpdate which tells the client to render particles
+      this.remove();
     }
   }
 
-  /**
-   * Called when the arrow hits a block or an entity
-   */
-  protected void onHit(RayTraceResult raytraceResultIn) {
-    RayTraceResult.Type raytraceresult$type = raytraceResultIn.getType();
-    if (raytraceresult$type == RayTraceResult.Type.ENTITY) {
-      this.onEntityHit((EntityRayTraceResult)raytraceResultIn);
-    } else if (raytraceresult$type == RayTraceResult.Type.BLOCK) {
-      BlockRayTraceResult blockraytraceresult = (BlockRayTraceResult)raytraceResultIn;
-      BlockState blockstate = this.world.getBlockState(blockraytraceresult.getPos());
-      this.inBlockState = blockstate;
-      Vec3d vec3d = blockraytraceresult.getHitVec().subtract(this.getPosX(), this.getPosY(), this.getPosZ());
-      this.setMotion(vec3d);
-      Vec3d vec3d1 = vec3d.normalize().scale((double)0.05F);
-      this.setRawPosition(this.getPosX() - vec3d1.x, this.getPosY() - vec3d1.y, this.getPosZ() - vec3d1.z);
-      this.playSound(this.getHitGroundSound(), 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
-      this.inGround = true;
-      this.arrowShake = 7;
-      this.setIsCritical(false);
-      this.setPierceLevel((byte)0);
-      this.setHitSound(SoundEvents.ENTITY_ARROW_HIT);
-      this.setShotFromCrossbow(false);
-      this.func_213870_w();
-      blockstate.onProjectileCollision(this.world, blockstate, blockraytraceresult, this);
-    }
-
-  }
-
-
-  /**
-   * Called when the arrow hits a block or an entity
-   */
-  protected void onHit(RayTraceResult raytraceResultIn) {
-    RayTraceResult.Type raytraceresult$type = raytraceResultIn.getType();
-    if (raytraceresult$type == RayTraceResult.Type.ENTITY) {
-      this.onEntityHit((EntityRayTraceResult)raytraceResultIn);
-    } else if (raytraceresult$type == RayTraceResult.Type.BLOCK) {
-      BlockRayTraceResult blockraytraceresult = (BlockRayTraceResult)raytraceResultIn;
-      BlockState blockstate = this.world.getBlockState(blockraytraceresult.getPos());
-      this.inBlockState = blockstate;
-      Vec3d vec3d = blockraytraceresult.getHitVec().subtract(this.getPosX(), this.getPosY(), this.getPosZ());
-      this.setMotion(vec3d);
-      Vec3d vec3d1 = vec3d.normalize().scale((double)0.05F);
-      this.setRawPosition(this.getPosX() - vec3d1.x, this.getPosY() - vec3d1.y, this.getPosZ() - vec3d1.z);
-      this.playSound(this.getHitGroundSound(), 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
-      this.inGround = true;
-      this.arrowShake = 7;
-      this.setIsCritical(false);
-      this.setPierceLevel((byte)0);
-      this.setHitSound(SoundEvents.ENTITY_ARROW_HIT);
-      this.setShotFromCrossbow(false);
-      this.func_213870_w();
-      blockstate.onProjectileCollision(this.world, blockstate, blockraytraceresult, this);
-    }
-
-  }
-
-  private void func_213870_w() {
-    if (this.hitEntities != null) {
-      this.hitEntities.clear();
-    }
-
-    if (this.piercedEntities != null) {
-      this.piercedEntities.clear();
-    }
+  private void onImpactWithEntity(EntityRayTraceResult rayTraceResult) {
 
   }
 
@@ -669,7 +607,6 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     }
   }
 
-
   private final int MINIMUM_TIME_BEFORE_PICKUP_TICKS = 40;
   private final int LIFESPAN_BEFORE_DISAPPEAR_TICKS = 6000;
     /**
@@ -677,7 +614,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
      */
   public void onCollideWithPlayerInFlight(PlayerEntity entityIn) {
     // if this player is the thrower -
-    //   if a hand is free, then catch it.  If both hands are full, drop to the ground.
+    //   if a hand is free, then catch the boomerang.  If both hands are full, drop to the ground.
     // otherwise - ignore
     if (!this.world.isRemote) return;
     if (getThrower() != entityIn) return;
@@ -691,10 +628,9 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     if (handToCatch != null) {
       entityIn.setHeldItem(handToCatch, getItemStack());
       this.remove();
-
-      pickupDelay = MINIMUM_TIME_BEFORE_PICKUP_TICKS;
       return;
     }
+    pickupDelay = MINIMUM_TIME_BEFORE_PICKUP_TICKS;
     dataManager.set(IN_FLIGHT, false);
   }
 
@@ -702,15 +638,14 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
    * Collision with the player while not in flight
    */
   public void onCollideWithPlayerNotInFlight(PlayerEntity entityIn) {
-    if (!this.world.isRemote) {
-      ItemStack pickedUpBoomerang = new ItemStack(StartupCommon.boomerangItem);
+    if (this.world.isRemote) return;
+    if (pickupDelay > 0) return;
+    ItemStack pickedUpBoomerang = new ItemStack(StartupCommon.boomerangItem);
 
-      boolean successfullyPickedUp = entityIn.inventory.addItemStackToInventory(pickedUpBoomerang);
-      if (successfullyPickedUp) {
-        entityIn.onItemPickup(this, 1);
-        this.remove();
-      }
-
+    boolean successfullyPickedUp = entityIn.inventory.addItemStackToInventory(pickedUpBoomerang);
+    if (successfullyPickedUp) {
+      entityIn.onItemPickup(this, 1);
+      this.remove();
     }
   }
 
