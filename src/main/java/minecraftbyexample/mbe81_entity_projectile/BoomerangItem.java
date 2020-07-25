@@ -2,9 +2,7 @@ package minecraftbyexample.mbe81_entity_projectile;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
@@ -13,14 +11,22 @@ import java.util.Random;
 
 /**
  * Created by TGG on 24/06/2020.
+ *
+ * The boomerang is "tiered" similar to wood sword (vs stone sword, iron sword, etc)
+ * This lets us easily make the boomerang enchantable and repairable
  */
-public class BoomerangItem extends Item {
+public class BoomerangItem extends TieredItem {
 
   static private final int MAXIMUM_NUMBER_OF_BOOMERANGS = 1; // maximum stack size
 
   public BoomerangItem() {
-    super(new Item.Properties().maxStackSize(MAXIMUM_NUMBER_OF_BOOMERANGS).group(ItemGroup.COMBAT)
+    super(ItemTier.WOOD, new Item.Properties().maxStackSize(MAXIMUM_NUMBER_OF_BOOMERANGS).group(ItemGroup.COMBAT)
     );
+  }
+
+  @Override
+  boolean canApplyAtEnchantingTable(ItemStack stack, net.minecraft.enchantment.Enchantment enchantment) {
+    
   }
 
   /**

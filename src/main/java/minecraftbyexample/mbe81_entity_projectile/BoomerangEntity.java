@@ -3,11 +3,13 @@ package minecraftbyexample.mbe81_entity_projectile;
 import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import minecraftbyexample.usefultools.NBTtypesMBE;
+import minecraftbyexample.usefultools.SetBlockStateFlag;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -16,6 +18,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.entity.projectile.ProjectileHelper;
+import net.minecraft.item.AxeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -106,6 +109,8 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
   private BoomerangFlightPath boomerangFlightPath;
   private int pickupDelay = 0;
   private int ticksSpentNotInFlight;
+  private double damage = 2.0D;
+  private int knockbackStrength;
 
   // If you forget to override this method, the default vanilla method will be called.
   // This sends a vanilla spawn packet, which is then silently discarded when it reaches the client.
@@ -139,6 +144,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
   private final String PICKUP_DELAY_NBT = "pickupdelay";
   private final String FLIGHT_PATH_NBT = "flightpath";
   private final String ITEMSTACK_NBT = "Item";
+  private final String DAMAGE_NBT = "damage";
   public void writeAdditional(CompoundNBT compound) {
     if (this.throwerID != null) {
       compound.put("thrower", NBTUtil.writeUniqueId(this.throwerID));
@@ -149,6 +155,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     if (!this.getItemStack().isEmpty()) {
       compound.put(ITEMSTACK_NBT, this.getItemStack().write(new CompoundNBT()));
     }
+    compound.putDouble(DAMAGE_NBT, this.damage);
   }
 
   /** Read further NBT information to initialise the entity (after loading from disk or transmission from server)
@@ -165,6 +172,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     if (this.getItemStack().isEmpty()) {
       this.remove();
     }
+    damage = compound.getDouble(DAMAGE_NBT);
   }
 
   /**
@@ -443,57 +451,71 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     ++ticksSpentInFlight;
   }
 
+  // Called when the boomerang hits a block.
+  // If the block is weak, smash it and keep flying
+  // Otherwise, bounce off it and stop flying.
   private void onImpactWithBlock(BlockRayTraceResult rayTraceResult) {
 
-    pickupDelay = MINIMUM_TIME_BEFORE_PICKUP_TICKS;
-    dataManager.set(IN_FLIGHT, false);
-
-    BLOCK_WOOD_HIT
-    this.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.4F, 2.0F + this.rand.nextFloat() * 0.4F);
-
-
-    BlockState blockstate1 = worldIn.getBlockState(blockpos2);
-    TileEntity tileentity = blockstate1.hasTileEntity() ? worldIn.getTileEntity(blockpos2) : null;
-    Block.spawnDrops(blockstate1, worldIn, blockpos2, tileentity);
-    worldIn.setBlockState(blockpos2, Blocks.AIR.getDefaultState(), 18);
-
-AxeItem.getDestroySpeed
-    float f = state.getBlockHardness(worldIn, pos);
+    // is the block weak enough for the boomerang to smash through it?
+    //   the boomerang is modelled as a wooden axe
+    BlockPos blockPos = rayTraceResult.getPos();
+    World world = this.getEntityWorld();
+    BlockState blockState = world.getBlockState(blockPos);
+    float blockHardness = blockState.getBlockHardness(world, blockPos);
     ItemStack dummyAxe = new ItemStack(Items.WOODEN_AXE);
+    float destroySpeed = Items.WOODEN_AXE.getDestroySpeed(dummyAxe, blockState);
 
-    // if we hit an entity, apply an effect to it depending on the emoji mood
-    if (rayTraceResult.getType() == RayTraceResult.Type.ENTITY) {
-      EntityRayTraceResult entityRayTraceResult = (EntityRayTraceResult)rayTraceResult;
-      Entity entity = entityRayTraceResult.getEntity();
-      if (entity instanceof LivingEntity) {
-        LivingEntity livingEntity = (LivingEntity)entity;
-        Optional<EmojiItem.EmojiMood> mood = getMoodFromMyItem();
-        if (mood.isPresent()) {
-          EffectInstance effect = (mood.get() == EmojiItem.EmojiMood.HAPPY) ?
-                  new EffectInstance(Effects.REGENERATION, 100, 1) :
-                  new EffectInstance(Effects.POISON, 10, 0);
-          livingEntity.addPotionEffect(effect);
-        }
-      }
-    }
-
-    if (!this.world.isRemote) {
-      this.world.setEntityState(this, VANILLA_IMPACT_STATUS_ID);  // calls handleStatusUpdate which tells the client to render particles
-      this.remove();
+    if (destroySpeed < blockHardness) {  // block is too hard; make the boomerang bounce off and stop flying
+      stopFlightDueToBlockImpact(rayTraceResult);
+    } else { // smash block and keep flying
+      final boolean SPAWN_DROPS = true;
+      world.destroyBlock(blockPos, SPAWN_DROPS,null);
     }
   }
 
-  private void onImpactWithEntity(EntityRayTraceResult rayTraceResult) {
-
+  // richochet off a solid block and stop flying.
+  private void stopFlightDueToBlockImpact(BlockRayTraceResult rayTraceResult) {
+    pickupDelay = MINIMUM_TIME_BEFORE_PICKUP_TICKS;
+    dataManager.set(IN_FLIGHT, false);
+    this.playSound(SoundEvents.BLOCK_WOOD_HIT, 0.25F, 0.5F);
+    // make the boomerang ricochet off the face
+    Vec3d velocity = this.getMotion();
+    final double RICHOCHET_SPEED = 0.5; // amount of speed left after richochet
+    switch (rayTraceResult.getFace()) {
+      case EAST: {
+        if (velocity.getX() < 0) velocity = new Vec3d(-RICHOCHET_SPEED * velocity.getX(), velocity.getY(), velocity.getZ());
+        break;
+      }
+      case WEST: {
+        if (velocity.getX() > 0) velocity = new Vec3d(-RICHOCHET_SPEED * velocity.getX(), velocity.getY(), velocity.getZ());
+        break;
+      }
+      case NORTH: {
+        if (velocity.getZ() > 0) velocity = new Vec3d(velocity.getX(), velocity.getY(), -RICHOCHET_SPEED * velocity.getZ());
+        break;
+      }
+      case SOUTH: {
+        if (velocity.getZ() < 0) velocity = new Vec3d(velocity.getX(), velocity.getY(), -RICHOCHET_SPEED * velocity.getZ());
+        break;
+      }
+      case UP:      // shouldn't happen, but if it does- just "graze" the surface without bouncing off
+      case DOWN:{
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+    this.setMotion(velocity);
   }
 
   /**
    * Called when the arrow hits an entity
    */
-  protected void onEntityHit(EntityRayTraceResult p_213868_1_) {
-    Entity entity = p_213868_1_.getEntity();
-    float f = (float)this.getMotion().length();
-    int i = MathHelper.ceil(Math.max((double)f * this.damage, 0.0D));
+  private void onImpactWithEntity(EntityRayTraceResult rayTraceResult) {
+    Entity entity = rayTraceResult.getEntity();
+    float speed = (float)this.getMotion().length();
+    int i = MathHelper.ceil(Math.max((double)speed * this.damage, 0.0D));
     if (this.getPierceLevel() > 0) {
       if (this.piercedEntities == null) {
         this.piercedEntities = new IntOpenHashSet(5);
@@ -515,14 +537,14 @@ AxeItem.getDestroySpeed
       i += this.rand.nextInt(i / 2 + 2);
     }
 
-    Entity entity1 = this.getShooter();
+    Entity thrower = this.getThrower();
     DamageSource damagesource;
-    if (entity1 == null) {
-      damagesource = DamageSource.causeArrowDamage(this, this);
+    if (thrower == null) {
+      damagesource = DamageSource.causeThrownDamage(this, this);
     } else {
-      damagesource = DamageSource.causeArrowDamage(this, entity1);
-      if (entity1 instanceof LivingEntity) {
-        ((LivingEntity)entity1).setLastAttackedEntity(entity);
+      damagesource = DamageSource.causeThrownDamage(this, thrower);
+      if (thrower instanceof LivingEntity) {
+        ((LivingEntity)thrower).setLastAttackedEntity(entity);
       }
     }
 
@@ -550,22 +572,22 @@ AxeItem.getDestroySpeed
           }
         }
 
-        if (!this.world.isRemote && entity1 instanceof LivingEntity) {
-          EnchantmentHelper.applyThornEnchantments(livingentity, entity1);
-          EnchantmentHelper.applyArthropodEnchantments((LivingEntity)entity1, livingentity);
+        if (!this.world.isRemote && thrower instanceof LivingEntity) {
+          EnchantmentHelper.applyThornEnchantments(livingentity, thrower);
+          EnchantmentHelper.applyArthropodEnchantments((LivingEntity)thrower, livingentity);
         }
 
         this.arrowHit(livingentity);
-        if (entity1 != null && livingentity != entity1 && livingentity instanceof PlayerEntity && entity1 instanceof ServerPlayerEntity) {
-          ((ServerPlayerEntity)entity1).connection.sendPacket(new SChangeGameStatePacket(6, 0.0F));
+        if (thrower != null && livingentity != thrower && livingentity instanceof PlayerEntity && thrower instanceof ServerPlayerEntity) {
+          ((ServerPlayerEntity)thrower).connection.sendPacket(new SChangeGameStatePacket(6, 0.0F));
         }
 
         if (!entity.isAlive() && this.hitEntities != null) {
           this.hitEntities.add(livingentity);
         }
 
-        if (!this.world.isRemote && entity1 instanceof ServerPlayerEntity) {
-          ServerPlayerEntity serverplayerentity = (ServerPlayerEntity)entity1;
+        if (!this.world.isRemote && thrower instanceof ServerPlayerEntity) {
+          ServerPlayerEntity serverplayerentity = (ServerPlayerEntity)thrower;
           if (this.hitEntities != null && this.getShotFromCrossbow()) {
             CriteriaTriggers.KILLED_BY_CROSSBOW.trigger(serverplayerentity, this.hitEntities, this.hitEntities.size());
           } else if (!entity.isAlive() && this.getShotFromCrossbow()) {
@@ -688,4 +710,24 @@ AxeItem.getDestroySpeed
     return !entityToTest.isSpectator() && entityToTest.canBeCollidedWith()
             && !(entityToTest == this.thrower && this.ticksExisted <= INITIAL_NON_COLLISION_TICKS);
   }
+
+  public void setEnchantmentEffectsFromEntity(LivingEntity p_190547_1_, float p_190547_2_) {
+    int i = EnchantmentHelper.getMaxEnchantmentLevel(Enchantments.POWER, p_190547_1_);
+    int j = EnchantmentHelper.getMaxEnchantmentLevel(Enchantments.PUNCH, p_190547_1_);
+    this.setDamage((double)(p_190547_2_ * 2.0F) + this.rand.nextGaussian() * 0.25D + (double)((float)this.world.getDifficulty().getId() * 0.11F));
+    if (i > 0) {
+      this.setDamage(this.getDamage() + (double)i * 0.5D + 0.5D);
+    }
+
+    if (j > 0) {
+      this.setKnockbackStrength(j);
+    }
+
+    if (EnchantmentHelper.getMaxEnchantmentLevel(Enchantments.FLAME, p_190547_1_) > 0) {
+      this.setFire(100);
+    }
+
+  }
+
+
 }
