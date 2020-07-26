@@ -1,5 +1,6 @@
 package minecraftbyexample.mbe81_entity_projectile;
 
+import net.minecraft.enchantment.*;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
@@ -22,11 +23,26 @@ public class BoomerangItem extends TieredItem {
   public BoomerangItem() {
     super(ItemTier.WOOD, new Item.Properties().maxStackSize(MAXIMUM_NUMBER_OF_BOOMERANGS).group(ItemGroup.COMBAT)
     );
+
+    // Because we are extending a TieredItem, it automatically calculates the max # of uses (damage), repair material,
+    //   enchantability (etc) for us.
   }
 
+  private final Enchantment [] VALID_ENCHANTMENTS = {Enchantments.KNOCKBACK, Enchantments.FLAME,
+                                                     Enchantments.POWER, Enchantments.PUNCH,
+                                                     Enchantments.SMITE, Enchantments.BANE_OF_ARTHROPODS};
+  /**
+   * Which enchantments can be applied to the boomerang?
+   * @param stack
+   * @param enchantment
+   * @return
+   */
   @Override
-  boolean canApplyAtEnchantingTable(ItemStack stack, net.minecraft.enchantment.Enchantment enchantment) {
-    
+  public boolean canApplyAtEnchantingTable(ItemStack stack, net.minecraft.enchantment.Enchantment enchantment) {
+    for (Enchantment enchantmentToCheck : VALID_ENCHANTMENTS) {
+      if (enchantmentToCheck == enchantment) return true;
+    }
+    return false;
   }
 
   /**
