@@ -30,9 +30,11 @@ public class BoomerangItem extends TieredItem {
 
   private final Enchantment [] VALID_ENCHANTMENTS = {Enchantments.KNOCKBACK, Enchantments.FLAME,
                                                      Enchantments.POWER, Enchantments.PUNCH,
-                                                     Enchantments.SMITE, Enchantments.BANE_OF_ARTHROPODS};
+                                                     Enchantments.SMITE, Enchantments.BANE_OF_ARTHROPODS,
+                                                     Enchantments.SILK_TOUCH, Enchantments.EFFICIENCY, Enchantments.FORTUNE};
   /**
    * Which enchantments can be applied to the boomerang?
+   * We're implementing several related to entity damage, as well as others related to block harvesting
    * @param stack
    * @param enchantment
    * @return

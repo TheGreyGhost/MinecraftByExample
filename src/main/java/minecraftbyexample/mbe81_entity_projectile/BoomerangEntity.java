@@ -3,11 +3,10 @@ package minecraftbyexample.mbe81_entity_projectile;
 import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import minecraftbyexample.usefultools.NBTtypesMBE;
-import minecraftbyexample.usefultools.SetBlockStateFlag;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
@@ -18,8 +17,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.entity.projectile.ProjectileHelper;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
@@ -32,16 +29,11 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.play.server.SChangeGameStatePacket;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.stats.Stats;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.*;
-import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
@@ -51,9 +43,8 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by TGG on 24/06/2020.
@@ -92,6 +83,32 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
             maximumSidewaysDeflection, anticlockwise, flightSpeed);
   }
 
+  /**
+   * Copy relevant enchantments into member variables for ease of reference
+   * @param boomerangItemStack
+   */
+  private void copyEnchantmentData(ItemStack boomerangItemStack) {
+    boolean isEnchanted = boomerangItemStack.isEnchanted();
+
+    Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(boomerangItemStack);
+    float knockback1 = enchantments.getOrDefault(Enchantments.KNOCKBACK, 0) / (float)Enchantments.KNOCKBACK.getMaxLevel();
+    float knockback2 = enchantments.getOrDefault(Enchantments.PUNCH, 0) / (float)Enchantments.PUNCH.getMaxLevel();
+    knockbackLevel = Math.max(knockback1, knockback2);
+    float fire1 = 2* enchantments.getOrDefault(Enchantments.FLAME, 0)/ (float)Enchantments.FLAME.getMaxLevel();
+    float fire2 = enchantments.getOrDefault(Enchantments.FIRE_ASPECT, 0)/ (float)Enchantments.FIRE_ASPECT.getMaxLevel();
+    flameLevel = Math.max(fire1, fire2);
+    damageBoostLevel = enchantments.getOrDefault(Enchantments.POWER, 0)/ (float)Enchantments.POWER.getMaxLevel();
+
+    // add any "special damage" enchantment types to a dedicated list
+    List<Enchantment> specialDamageEnchantmentTypes = Arrays.asList(Enchantments.SMITE, Enchantments.BANE_OF_ARTHROPODS);
+    specialDamages = enchantments.entrySet().stream()
+            .filter(x -> specialDamageEnchantmentTypes.contains(x.getKey()))
+            .collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue()));
+
+              Enchantments.SILK_TOUCH, Enchantments.EFFICIENCY, Enchantments.FORTUNE};
+  }
+
+
   protected void registerData() {
     this.getDataManager().register(IN_FLIGHT, Boolean.TRUE);
     this.getDataManager().register(ITEMSTACK, ItemStack.EMPTY);
@@ -106,11 +123,17 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
   protected LivingEntity thrower;
   private UUID throwerID = null;
 
+  // member variables that need to be saved to record its state
   private BoomerangFlightPath boomerangFlightPath;
   private int pickupDelay = 0;
   private int ticksSpentNotInFlight;
   private double damage = 2.0D;
-  private int knockbackStrength;
+
+  // member variables that are regenerated from other information, hence don't need saving
+  private float knockbackLevel;  // 0.0 -> 1.0
+  private float flameLevel;      // 0.0 -> 1.0
+  private float damageBoostLevel;     // 0.0 -> 1.0
+  private Map<Enchantment, Integer> specialDamages = new HashMap<>();
 
   // If you forget to override this method, the default vanilla method will be called.
   // This sends a vanilla spawn packet, which is then silently discarded when it reaches the client.
@@ -121,7 +144,6 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
   public IPacket<?> createSpawnPacket() {
     return NetworkHooks.getEntitySpawningPacket(this);
   }
-
 
   private static final byte VANILLA_IMPACT_STATUS_ID = 3;
 
@@ -565,8 +587,8 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
           livingentity.setArrowCountInEntity(livingentity.getArrowCountInEntity() + 1);
         }
 
-        if (this.knockbackStrength > 0) {
-          Vec3d vec3d = this.getMotion().mul(1.0D, 0.0D, 1.0D).normalize().scale((double)this.knockbackStrength * 0.6D);
+        if (this.knockbackLevel > 0) {
+          Vec3d vec3d = this.getMotion().mul(1.0D, 0.0D, 1.0D).normalize().scale((double)this.knockbackLevel * 0.6D);
           if (vec3d.lengthSquared() > 0.0D) {
             livingentity.addVelocity(vec3d.x, 0.1D, vec3d.z);
           }
