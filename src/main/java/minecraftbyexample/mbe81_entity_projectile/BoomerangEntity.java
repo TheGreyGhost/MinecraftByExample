@@ -77,6 +77,8 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     if (thrower != null) {
       throwerID = thrower.getUniqueID();
     }
+    // datamanager parameters are automatically synchronised to the client
+
     dataManager.set(ITEMSTACK, boomerangItemStack);
     dataManager.set(IN_FLIGHT, true);
     boomerangFlightPath = new BoomerangFlightPath(startPosition, apexYaw, distanceToApex,
@@ -105,6 +107,10 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
             .filter(x -> specialDamageEnchantmentTypes.contains(x.getKey()))
             .collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue()));
 
+    silkTouch = 0 != enchantments.getOrDefault(Enchantments.SILK_TOUCH, 0);
+    efficiencyLevel = enchantments.getOrDefault(Enchantments.EFFICIENCY, 0)/ (float)Enchantments.EFFICIENCY.getMaxLevel();
+    fortuneLevel = enchantments.getOrDefault(Enchantments.FORTUNE, 0)/ (float)Enchantments.FORTUNE.getMaxLevel();
+
               Enchantments.SILK_TOUCH, Enchantments.EFFICIENCY, Enchantments.FORTUNE};
   }
 
@@ -125,7 +131,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
 
   // member variables that need to be saved to record its state
   private BoomerangFlightPath boomerangFlightPath;
-  private int pickupDelay = 0;
+  private int pickupDelay = 0;        // delay until
   private int ticksSpentNotInFlight;
   private double damage = 2.0D;
 
@@ -134,6 +140,11 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
   private float flameLevel;      // 0.0 -> 1.0
   private float damageBoostLevel;     // 0.0 -> 1.0
   private Map<Enchantment, Integer> specialDamages = new HashMap<>();
+  private boolean silkTouch;
+  private float efficiencyLevel; // 0.0 -> 1.0
+  private float fortuneLevel; // 0.0 -> 1.0
+
+  private boolean
 
   // If you forget to override this method, the default vanilla method will be called.
   // This sends a vanilla spawn packet, which is then silently discarded when it reaches the client.
