@@ -83,6 +83,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     dataManager.set(IN_FLIGHT, true);
     boomerangFlightPath = new BoomerangFlightPath(startPosition, apexYaw, distanceToApex,
             maximumSidewaysDeflection, anticlockwise, flightSpeed);
+    remainingMomentum = 1.0F;
   }
 
   /**
@@ -96,10 +97,10 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     float knockback1 = enchantments.getOrDefault(Enchantments.KNOCKBACK, 0) / (float)Enchantments.KNOCKBACK.getMaxLevel();
     float knockback2 = enchantments.getOrDefault(Enchantments.PUNCH, 0) / (float)Enchantments.PUNCH.getMaxLevel();
     knockbackLevel = Math.max(knockback1, knockback2);
-    float fire1 = 2* enchantments.getOrDefault(Enchantments.FLAME, 0)/ (float)Enchantments.FLAME.getMaxLevel();
-    float fire2 = enchantments.getOrDefault(Enchantments.FIRE_ASPECT, 0)/ (float)Enchantments.FIRE_ASPECT.getMaxLevel();
+    float fire1 = 2* enchantments.getOrDefault(Enchantments.FLAME, 0) / (float)Enchantments.FLAME.getMaxLevel();
+    float fire2 = enchantments.getOrDefault(Enchantments.FIRE_ASPECT, 0) / (float)Enchantments.FIRE_ASPECT.getMaxLevel();
     flameLevel = Math.max(fire1, fire2);
-    damageBoostLevel = enchantments.getOrDefault(Enchantments.POWER, 0)/ (float)Enchantments.POWER.getMaxLevel();
+    damageBoostLevel = enchantments.getOrDefault(Enchantments.POWER, 0) / (float)Enchantments.POWER.getMaxLevel();
 
     // add any "special damage" enchantment types to a dedicated list
     List<Enchantment> specialDamageEnchantmentTypes = Arrays.asList(Enchantments.SMITE, Enchantments.BANE_OF_ARTHROPODS);
@@ -110,10 +111,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     silkTouch = 0 != enchantments.getOrDefault(Enchantments.SILK_TOUCH, 0);
     efficiencyLevel = enchantments.getOrDefault(Enchantments.EFFICIENCY, 0)/ (float)Enchantments.EFFICIENCY.getMaxLevel();
     fortuneLevel = enchantments.getOrDefault(Enchantments.FORTUNE, 0)/ (float)Enchantments.FORTUNE.getMaxLevel();
-
-              Enchantments.SILK_TOUCH, Enchantments.EFFICIENCY, Enchantments.FORTUNE};
   }
-
 
   protected void registerData() {
     this.getDataManager().register(IN_FLIGHT, Boolean.TRUE);
@@ -131,9 +129,11 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
 
   // member variables that need to be saved to record its state
   private BoomerangFlightPath boomerangFlightPath;
-  private int pickupDelay = 0;        // delay until
+  private int pickupDelay = 0;        // delay until a non-in-flight boomerang can be picked up (in ticks)
   private int ticksSpentNotInFlight;
   private double damage = 2.0D;
+  private float remainingMomentum = 1.0F;  // the fraction of momentum remaining - reduced when harvesting blocks.
+                                           // the boomerang stops flying when this is reduced to zero
 
   // member variables that are regenerated from other information, hence don't need saving
   private float knockbackLevel;  // 0.0 -> 1.0
@@ -143,8 +143,6 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
   private boolean silkTouch;
   private float efficiencyLevel; // 0.0 -> 1.0
   private float fortuneLevel; // 0.0 -> 1.0
-
-  private boolean
 
   // If you forget to override this method, the default vanilla method will be called.
   // This sends a vanilla spawn packet, which is then silently discarded when it reaches the client.
@@ -178,6 +176,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
   private final String FLIGHT_PATH_NBT = "flightpath";
   private final String ITEMSTACK_NBT = "Item";
   private final String DAMAGE_NBT = "damage";
+  private final String MOMENTUM_NBT = "momentum";
   public void writeAdditional(CompoundNBT compound) {
     if (this.throwerID != null) {
       compound.put("thrower", NBTUtil.writeUniqueId(this.throwerID));
@@ -189,6 +188,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
       compound.put(ITEMSTACK_NBT, this.getItemStack().write(new CompoundNBT()));
     }
     compound.putDouble(DAMAGE_NBT, this.damage);
+    compound.putFloat(MOMENTUM_NBT, this.remainingMomentum);
   }
 
   /** Read further NBT information to initialise the entity (after loading from disk or transmission from server)
@@ -206,6 +206,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
       this.remove();
     }
     damage = compound.getDouble(DAMAGE_NBT);
+    remainingMomentum = compound.getFloat(MOMENTUM_NBT);
   }
 
   /**
@@ -262,10 +263,6 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
   public void tick() {
     super.tick();
 
-    // calculate the AxisAlignedBoundingBox which corresponds to movement of the boomerang:
-    //   this is the region of space that we have to check to see if we collide with anything
-
-    final float TICKS_PER_SECOND = 20F;
     boolean isInFlight = this.dataManager.get(IN_FLIGHT);
     if (isInFlight) {
       tickInFlight();
@@ -348,8 +345,8 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     this.isAirBorne |= this.handleWaterMovement();
     if (!this.world.isRemote) {
       double accelerationSquared = this.getMotion().subtract(initialVelocity).lengthSquared();
-      final double THRESHOLD_ACCELERATION_TO_BECOME_AIRBORNE = 0.1;
-      if (accelerationSquared > THRESHOLD_ACCELERATION_TO_BECOME_AIRBORNE * THRESHOLD_ACCELERATION_TO_BECOME_AIRBORNE) {
+      final double THRESHOLD_ACCELERATION_TO_TRIGGER_UPDATE = 0.1;
+      if (accelerationSquared > THRESHOLD_ACCELERATION_TO_TRIGGER_UPDATE * THRESHOLD_ACCELERATION_TO_TRIGGER_UPDATE) {
         this.isAirBorne = true;
       }
     }
@@ -382,7 +379,6 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
                    velocity.z * SIDEWAYS_FRICTION_FACTOR);
   }
 
-
   private void tickInFlight() {
     final float TICKS_PER_SECOND = 20.0F;
     Vec3d startPosition = this.getPositionVec();
@@ -406,7 +402,10 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
 //    }
 
     // Calculate the first object that the boomerang hits (if any)
-    // Trigger an appropriate effect on that object, and then we're no longer in flight.
+    // We use a "ray trace" to do this, which assumes that the boomerang has not height or width, i.e.
+    //  will not collide with any objects unless its centre point intersects it.
+    // The boomerang moves quite quickly so this is not likely to be visually distracting
+    // When we hit an object, trigger an appropriate effect on that object, and then we're no longer in flight.
     RayTraceResult raytraceresult = ProjectileHelper.rayTrace(this, aabbCollisionZone,
             this::canEntityBeCollidedWith, RayTraceContext.BlockMode.OUTLINE, true);
 
@@ -419,7 +418,6 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
         } else {
           if (!net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, raytraceresult)){
             this.onImpactWithBlock((BlockRayTraceResult)raytraceresult);
-            dataManager.set(IN_FLIGHT, false);
           }
         }
         break;
@@ -427,7 +425,6 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
       case ENTITY: {
         if (!net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, raytraceresult)){
           this.onImpactWithEntity((EntityRayTraceResult)raytraceresult);
-          dataManager.set(IN_FLIGHT, false);
         }
         break;
       }
@@ -496,13 +493,30 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     BlockState blockState = world.getBlockState(blockPos);
     float blockHardness = blockState.getBlockHardness(world, blockPos);
     ItemStack dummyAxe = new ItemStack(Items.WOODEN_AXE);
-    float destroySpeed = Items.WOODEN_AXE.getDestroySpeed(dummyAxe, blockState);
 
-    if (destroySpeed < blockHardness) {  // block is too hard; make the boomerang bounce off and stop flying
+    private boolean silkTouch;
+    private float fortuneLevel; // 0.0 -> 1.0
+
+
+    // typical destroy speeds:
+    //  1.0F default, 2.0F wooden axe on proper material
+    // typical hardnesses:
+    // 1.5 for stone, 0.6 for grass, 2.0 for logs, 0.2 for leaves
+
+    final float RATIO_AT_MINIMUM_EFFICIENCY = 1.0F;
+    final float RATIO_AT_MAXIMUM_EFFICIENCY = 32.0F;  // at max enchantment efficiency, harvesting is 32x more efficient
+    final float COEFFICIENT = (float)Math.log(RATIO_AT_MAXIMUM_EFFICIENCY / RATIO_AT_MINIMUM_EFFICIENCY);
+    float efficiency = RATIO_AT_MINIMUM_EFFICIENCY *
+                      (float)Math.exp(COEFFICIENT * efficiencyLevel);
+    float destroySpeed = Items.WOODEN_AXE.getDestroySpeed(dummyAxe, blockState);
+    float momentumLoss = (destroySpeed > 0.001F) ? blockHardness / destroySpeed / efficiency : 1.0F;
+
+    if (momentumLoss > remainingMomentum) {  // block is too hard; make the boomerang bounce off and stop flying
       stopFlightDueToBlockImpact(rayTraceResult);
     } else { // smash block and keep flying
       final boolean SPAWN_DROPS = true;
-      world.destroyBlock(blockPos, SPAWN_DROPS,null);
+      world.destroyBlock(blockPos, SPAWN_DROPS, null);
+      remainingMomentum -= momentumLoss;
     }
   }
 
