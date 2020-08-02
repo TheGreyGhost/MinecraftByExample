@@ -3,9 +3,12 @@ package minecraftbyexample.mbe81_entity_projectile;
 import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import minecraftbyexample.usefultools.NBTtypesMBE;
+import minecraftbyexample.usefultools.SetBlockStateFlag;
 import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.enchantment.DamageEnchantment;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
@@ -17,6 +20,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.entity.projectile.ProjectileHelper;
+import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
@@ -30,6 +34,7 @@ import net.minecraft.network.play.server.SChangeGameStatePacket;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
@@ -494,10 +499,6 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     float blockHardness = blockState.getBlockHardness(world, blockPos);
     ItemStack dummyAxe = new ItemStack(Items.WOODEN_AXE);
 
-    private boolean silkTouch;
-    private float fortuneLevel; // 0.0 -> 1.0
-
-
     // typical destroy speeds:
     //  1.0F default, 2.0F wooden axe on proper material
     // typical hardnesses:
@@ -514,8 +515,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     if (momentumLoss > remainingMomentum) {  // block is too hard; make the boomerang bounce off and stop flying
       stopFlightDueToBlockImpact(rayTraceResult);
     } else { // smash block and keep flying
-      final boolean SPAWN_DROPS = true;
-      world.destroyBlock(blockPos, SPAWN_DROPS, null);
+      harvestBlockWithItemDrops(world, blockPos);
       remainingMomentum -= momentumLoss;
     }
   }
@@ -560,108 +560,152 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
    * Called when the arrow hits an entity
    */
   private void onImpactWithEntity(EntityRayTraceResult rayTraceResult) {
-    Entity entity = rayTraceResult.getEntity();
+    Entity target = rayTraceResult.getEntity();
     float speed = (float)this.getMotion().length();
-    int i = MathHelper.ceil(Math.max((double)speed * this.damage, 0.0D));
-    if (this.getPierceLevel() > 0) {
-      if (this.piercedEntities == null) {
-        this.piercedEntities = new IntOpenHashSet(5);
-      }
+    int baseDamage = MathHelper.ceil(Math.max(speed * this.damage, 0.0D));
+    final float MAX_DAMAGE_BOOST_RATIO = 3.0F;  // at max power enchantment, add this much extra, eg 3 = add 300% extra damage
+    float damageBoost = baseDamage * (1.0F + damageBoostLevel * MAX_DAMAGE_BOOST_RATIO);
 
-      if (this.hitEntities == null) {
-        this.hitEntities = Lists.newArrayListWithCapacity(5);
+    float specialDamageRatio = 0;
+    if (!this.world.isRemote && target instanceof LivingEntity) {
+      LivingEntity targetLivingEntity = (LivingEntity)target;
+      for (Map.Entry<Enchantment, Integer> enchantment : specialDamages.entrySet()) {
+        if (enchantment.getKey() instanceof DamageEnchantment) {
+          DamageEnchantment damageEnchantment = (DamageEnchantment)enchantment;
+          specialDamageRatio += damageEnchantment.calcDamageByCreature(enchantment.getValue(), targetLivingEntity.getCreatureAttribute());
+        } else {
+          LOGGER.warn("Expected a DamageEnchantment but got instead:" + enchantment.getKey());
+        }
       }
-
-      if (this.piercedEntities.size() >= this.getPierceLevel() + 1) {
-        this.remove();
-        return;
-      }
-
-      this.piercedEntities.add(entity.getEntityId());
     }
+    float specialDamage = baseDamage * specialDamageRatio;
+    float totalDamage = baseDamage + damageBoost + specialDamage;
 
-    if (this.getIsCritical()) {
-      i += this.rand.nextInt(i / 2 + 2);
-    }
-
-    Entity thrower = this.getThrower();
+    LivingEntity thrower = this.getThrower();
     DamageSource damagesource;
     if (thrower == null) {
       damagesource = DamageSource.causeThrownDamage(this, this);
     } else {
       damagesource = DamageSource.causeThrownDamage(this, thrower);
-      if (thrower instanceof LivingEntity) {
-        ((LivingEntity)thrower).setLastAttackedEntity(entity);
-      }
+      thrower.setLastAttackedEntity(target);
     }
 
-    boolean flag = entity.getType() == EntityType.ENDERMAN;
-    int j = entity.getFireTimer();
-    if (this.isBurning() && !flag) {
-      entity.setFire(5);
+    boolean isEnderMan = target.getType() == EntityType.ENDERMAN;
+    int fireTimer = target.getFireTimer();
+
+    int burnTimeSeconds = 0;
+    if (this.isBurning()) burnTimeSeconds += 5;
+    final float BURN_TIME_SECONDS_AT_MAX_ENCHANTMENT = 8;
+    burnTimeSeconds += flameLevel * BURN_TIME_SECONDS_AT_MAX_ENCHANTMENT;
+
+    if (this.isBurning() && !isEnderMan) {
+      target.setFire(burnTimeSeconds);
     }
 
-    if (entity.attackEntityFrom(damagesource, (float)i)) {
-      if (flag) {
+    boolean entityTookDamage = target.attackEntityFrom(damagesource, totalDamage);
+
+    if (entityTookDamage) {
+      if (isEnderMan) {
         return;
       }
 
-      if (entity instanceof LivingEntity) {
-        LivingEntity livingentity = (LivingEntity)entity;
-        if (!this.world.isRemote && this.getPierceLevel() <= 0) {
-          livingentity.setArrowCountInEntity(livingentity.getArrowCountInEntity() + 1);
-        }
+      if (target instanceof LivingEntity) {
+        LivingEntity livingentity = (LivingEntity)target;
 
         if (this.knockbackLevel > 0) {
-          Vec3d vec3d = this.getMotion().mul(1.0D, 0.0D, 1.0D).normalize().scale((double)this.knockbackLevel * 0.6D);
-          if (vec3d.lengthSquared() > 0.0D) {
-            livingentity.addVelocity(vec3d.x, 0.1D, vec3d.z);
+          final float VERTICAL_KNOCKBACK = 0.1F;
+          final float KNOCKBACK_VELOCITY_AT_MAX_ENCHANTMENT = 1.2F;   // blocks per tick velocity
+          Vec3d knockbackVelocity = this.getMotion().mul(1.0D, 0.0D, 1.0D).normalize()
+                                        .scale(this.knockbackLevel * KNOCKBACK_VELOCITY_AT_MAX_ENCHANTMENT);
+          if (knockbackVelocity.lengthSquared() > 0.0D) {
+            livingentity.addVelocity(knockbackVelocity.x, VERTICAL_KNOCKBACK, knockbackVelocity.z);
           }
         }
 
         if (!this.world.isRemote && thrower instanceof LivingEntity) {
-          EnchantmentHelper.applyThornEnchantments(livingentity, thrower);
-          EnchantmentHelper.applyArthropodEnchantments((LivingEntity)thrower, livingentity);
-        }
-
-        this.arrowHit(livingentity);
-        if (thrower != null && livingentity != thrower && livingentity instanceof PlayerEntity && thrower instanceof ServerPlayerEntity) {
-          ((ServerPlayerEntity)thrower).connection.sendPacket(new SChangeGameStatePacket(6, 0.0F));
-        }
-
-        if (!entity.isAlive() && this.hitEntities != null) {
-          this.hitEntities.add(livingentity);
-        }
-
-        if (!this.world.isRemote && thrower instanceof ServerPlayerEntity) {
-          ServerPlayerEntity serverplayerentity = (ServerPlayerEntity)thrower;
-          if (this.hitEntities != null && this.getShotFromCrossbow()) {
-            CriteriaTriggers.KILLED_BY_CROSSBOW.trigger(serverplayerentity, this.hitEntities, this.hitEntities.size());
-          } else if (!entity.isAlive() && this.getShotFromCrossbow()) {
-            CriteriaTriggers.KILLED_BY_CROSSBOW.trigger(serverplayerentity, Arrays.asList(entity), 0);
+          for (Map.Entry<Enchantment, Integer> enchantment : specialDamages.entrySet()) {
+            if (enchantment.getKey() instanceof DamageEnchantment) {
+              DamageEnchantment damageEnchantment = (DamageEnchantment)enchantment;
+              damageEnchantment.onEntityDamaged(thrower, target, enchantment.getValue());
+            } else {
+              LOGGER.warn("Expected a DamageEnchantment but got instead:" + enchantment.getKey());
+            }
           }
         }
       }
-
-      this.playSound(this.hitSound, 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
-      if (this.getPierceLevel() <= 0) {
-        this.remove();
-      }
     } else {
-      entity.setFireTimer(j);
-      this.setMotion(this.getMotion().scale(-0.1D));
-      this.rotationYaw += 180.0F;
-      this.prevRotationYaw += 180.0F;
-      this.ticksInAir = 0;
-      if (!this.world.isRemote && this.getMotion().lengthSquared() < 1.0E-7D) {
-        if (this.pickupStatus == AbstractArrowEntity.PickupStatus.ALLOWED) {
-          this.entityDropItem(this.getArrowStack(), 0.1F);
-        }
+      target.setFireTimer(fireTimer);  // undo any flame effect we added
+    }
+    stopFlightDueToEntityImpact(, !entityTookDamage);
+  }
 
-        this.remove();
-      }
+  // stop flying after hitting an entity:
+  //  if the entity was vulnerable to the damage, drop the item
+  //  if the entity was invulnerable, bounce off
+  private void stopFlightDueToEntityImpact(EntityRayTraceResult rayTraceResult, boolean bounceOff) {
+    pickupDelay = MINIMUM_TIME_BEFORE_PICKUP_TICKS;
+    dataManager.set(IN_FLIGHT, false);
+
+    if (bounceOff) {
+      this.playSound(SoundEvents.BLOCK_WOOD_HIT, 0.25F, 0.5F);
+    } else {
+      this.playSound(SoundEvents.ENTITY_SLIME_SQUISH, 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));  // kind of like a meaty splat sound
     }
 
+    // make the boomerang ricochet off the entity
+    //  assume that the point of impact is at a circle around the centre of the entity
+    //  so that the boomerang bounces off as if it hit the rim of the circle
+
+    Entity target = rayTraceResult.getEntity();
+    Vec3d pointOfImpact = rayTraceResult.getHitVec();
+    Vec3d impactRadialPosition = pointOfImpact.subtract(target.getPositionVec());
+    todo up to here calculate bouncing off 
+    Vec3d velocity = this.getMotion();
+    final double RICHOCHET_SPEED = 0.5; // amount of speed left after richochet
+    switch (rayTraceResult.getFace()) {
+      case EAST: {
+        if (velocity.getX() < 0) velocity = new Vec3d(-RICHOCHET_SPEED * velocity.getX(), velocity.getY(), velocity.getZ());
+        break;
+      }
+      case WEST: {
+        if (velocity.getX() > 0) velocity = new Vec3d(-RICHOCHET_SPEED * velocity.getX(), velocity.getY(), velocity.getZ());
+        break;
+      }
+      case NORTH: {
+        if (velocity.getZ() > 0) velocity = new Vec3d(velocity.getX(), velocity.getY(), -RICHOCHET_SPEED * velocity.getZ());
+        break;
+      }
+      case SOUTH: {
+        if (velocity.getZ() < 0) velocity = new Vec3d(velocity.getX(), velocity.getY(), -RICHOCHET_SPEED * velocity.getZ());
+        break;
+      }
+      case UP:      // shouldn't happen, but if it does- just "graze" the surface without bouncing off
+      case DOWN:{
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+    this.setMotion(velocity);
+  }
+
+
+
+  // destroy this block and spawn the relevant item drops
+  //  copied from world.destroyBlock
+  private void harvestBlockWithItemDrops(World world, BlockPos blockPos) {
+    BlockState blockstate = world.getBlockState(blockPos);
+    if (blockstate.isAir(world, blockPos)) return;
+
+    IFluidState ifluidstate = world.getFluidState(blockPos);
+    final int EVENT_ID_BREAK_BLOCK_SOUND_AND_PARTICLES = 2001;
+    world.playEvent(EVENT_ID_BREAK_BLOCK_SOUND_AND_PARTICLES, blockPos, Block.getStateId(blockstate));
+    TileEntity tileentity = blockstate.hasTileEntity() ? world.getTileEntity(blockPos) : null;
+    Block.spawnDrops(blockstate, world, blockPos, tileentity, this, this.getItemStack());
+
+    int flags = SetBlockStateFlag.get(SetBlockStateFlag.BLOCK_UPDATE, SetBlockStateFlag.SEND_TO_CLIENTS);
+    world.setBlockState(blockPos, ifluidstate.getBlockState(), flags);
   }
 
   /** The item collided with a player
