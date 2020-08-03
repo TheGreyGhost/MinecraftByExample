@@ -21,6 +21,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.entity.projectile.ProjectileHelper;
 import net.minecraft.fluid.IFluidState;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
@@ -48,7 +49,9 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -89,6 +92,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     boomerangFlightPath = new BoomerangFlightPath(startPosition, apexYaw, distanceToApex,
             maximumSidewaysDeflection, anticlockwise, flightSpeed);
     remainingMomentum = 1.0F;
+    copyEnchantmentData(boomerangItemStack);
   }
 
   /**
@@ -159,18 +163,20 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     return NetworkHooks.getEntitySpawningPacket(this);
   }
 
-  private static final byte VANILLA_IMPACT_STATUS_ID = 3;
+  private static final byte VANILLA_ARROW_IMPACT_STATUS_ID = 0;
 
   /*   see https://wiki.vg/Entity_statuses
        make a cloud of particles at the impact point
    */
   @Override
   public void handleStatusUpdate(byte statusID) {
-    if (statusID == VANILLA_IMPACT_STATUS_ID) {
-      IParticleData particleData = this.makeParticle();
-
-      for(int i = 0; i < 8; ++i) {
-        this.world.addParticle(particleData, this.getPosX(), this.getPosY(), this.getPosZ(), 0.0D, 0.0D, 0.0D);
+    if (statusID == VANILLA_ARROW_IMPACT_STATUS_ID) {
+      final Color BROWN = new Color(165,42,42);
+      final double MAXIMUM_DEVIATION = 0.5;  // the scatter of the spawning position, as a proportion of the entity width
+      for(int i = 0; i < 20; ++i) {
+        this.world.addParticle(ParticleTypes.ENTITY_EFFECT,
+                this.getPosXRandom(MAXIMUM_DEVIATION), this.getPosYRandom(), this.getPosZRandom(MAXIMUM_DEVIATION),
+                BROWN.getRed() / 255.0, BROWN.getGreen() / 255.0, BROWN.getBlue() / 255.0);
       }
     }
   }
@@ -182,6 +188,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
   private final String ITEMSTACK_NBT = "Item";
   private final String DAMAGE_NBT = "damage";
   private final String MOMENTUM_NBT = "momentum";
+
   public void writeAdditional(CompoundNBT compound) {
     if (this.throwerID != null) {
       compound.put("thrower", NBTUtil.writeUniqueId(this.throwerID));
@@ -206,12 +213,14 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     pickupDelay = compound.getInt(PICKUP_DELAY_NBT);
     boomerangFlightPath.deserializeNBT(compound);
     CompoundNBT compoundnbt = compound.getCompound(ITEMSTACK_NBT);
-    this.setItemStack(ItemStack.read(compoundnbt));
+    ItemStack boomerangItemStack = ItemStack.read(compoundnbt);
+    this.setItemStack(boomerangItemStack);
     if (this.getItemStack().isEmpty()) {
       this.remove();
     }
     damage = compound.getDouble(DAMAGE_NBT);
     remainingMomentum = compound.getFloat(MOMENTUM_NBT);
+    copyEnchantmentData(boomerangItemStack);
   }
 
   /**
@@ -248,14 +257,11 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     }
   }
 
-
-  private Entity ignoreEntity = null;
-  private int ignoreEntityTime = 0;
   private int ticksSpentInFlight = 0;
 
-  private static boolean canBeCollidedWith(Entity entityToCheck) {
-    return !entityToCheck.isSpectator() && entityToCheck.canBeCollidedWith();
-  }
+//  private static boolean canBeCollidedWith(Entity entityToCheck) {
+//    return !entityToCheck.isSpectator() && entityToCheck.canBeCollidedWith();
+//  }
 
   /**
    * Called to update the entity's position/logic.
@@ -407,9 +413,10 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
 //    }
 
     // Calculate the first object that the boomerang hits (if any)
-    // We use a "ray trace" to do this, which assumes that the boomerang has not height or width, i.e.
+    // We use a "ray trace" to do this, which assumes that the boomerang has no height or width, i.e.
     //  will not collide with any objects unless its centre point intersects it.
     // The boomerang moves quite quickly so this is not likely to be visually distracting
+    // If this isn't accurate enough for your taste, you can look at Entity::move and Entity::getAllowedMovement
     // When we hit an object, trigger an appropriate effect on that object, and then we're no longer in flight.
     RayTraceResult raytraceresult = ProjectileHelper.rayTrace(this, aabbCollisionZone,
             this::canEntityBeCollidedWith, RayTraceContext.BlockMode.OUTLINE, true);
@@ -554,6 +561,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
       }
     }
     this.setMotion(velocity);
+    this.world.setEntityState(this, (byte)VANILLA_ARROW_IMPACT_STATUS_ID);
   }
 
   /**
@@ -636,7 +644,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     } else {
       target.setFireTimer(fireTimer);  // undo any flame effect we added
     }
-    stopFlightDueToEntityImpact(, !entityTookDamage);
+    stopFlightDueToEntityImpact(rayTraceResult, !entityTookDamage);
   }
 
   // stop flying after hitting an entity:
@@ -652,45 +660,32 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
       this.playSound(SoundEvents.ENTITY_SLIME_SQUISH, 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));  // kind of like a meaty splat sound
     }
 
-    // make the boomerang ricochet off the entity
-    //  assume that the point of impact is at a circle around the centre of the entity
-    //  so that the boomerang bounces off as if it hit the rim of the circle
+    Vec3d newVelocity;
+    if (bounceOff) {
+      // make the boomerang ricochet off the entity
+      //  assume that the point of impact is at a circle around the centre of the entity
+      //  so that the boomerang bounces off as if it hit the rim of the circle
 
-    Entity target = rayTraceResult.getEntity();
-    Vec3d pointOfImpact = rayTraceResult.getHitVec();
-    Vec3d impactRadialPosition = pointOfImpact.subtract(target.getPositionVec());
-    todo up to here calculate bouncing off 
-    Vec3d velocity = this.getMotion();
-    final double RICHOCHET_SPEED = 0.5; // amount of speed left after richochet
-    switch (rayTraceResult.getFace()) {
-      case EAST: {
-        if (velocity.getX() < 0) velocity = new Vec3d(-RICHOCHET_SPEED * velocity.getX(), velocity.getY(), velocity.getZ());
-        break;
-      }
-      case WEST: {
-        if (velocity.getX() > 0) velocity = new Vec3d(-RICHOCHET_SPEED * velocity.getX(), velocity.getY(), velocity.getZ());
-        break;
-      }
-      case NORTH: {
-        if (velocity.getZ() > 0) velocity = new Vec3d(velocity.getX(), velocity.getY(), -RICHOCHET_SPEED * velocity.getZ());
-        break;
-      }
-      case SOUTH: {
-        if (velocity.getZ() < 0) velocity = new Vec3d(velocity.getX(), velocity.getY(), -RICHOCHET_SPEED * velocity.getZ());
-        break;
-      }
-      case UP:      // shouldn't happen, but if it does- just "graze" the surface without bouncing off
-      case DOWN:{
-        break;
-      }
-      default: {
-        break;
-      }
+      Entity target = rayTraceResult.getEntity();
+      Vec3d pointOfImpact = rayTraceResult.getHitVec();
+      Vec3d impactRadialPosition = pointOfImpact.subtract(target.getPositionVec());
+
+      // some vector math to calculate the path when bouncing off
+      Vec3d boomerangVelocity = this.getMotion();
+      double radialProjectionLength = boomerangVelocity.dotProduct(impactRadialPosition) / impactRadialPosition.lengthSquared();
+      Vec3d radialComponent = impactRadialPosition.scale(radialProjectionLength);
+      Vec3d tangentialComponent = boomerangVelocity.subtract(radialComponent);
+      final double RICHOCHET_SPEED = 0.5; // amount of speed left after richochet
+      // the ricochet keeps the same tangential component and inverts the radial component
+      newVelocity = tangentialComponent.subtract(radialComponent);
+      newVelocity = newVelocity.scale(RICHOCHET_SPEED);
+    } else {
+      newVelocity = new Vec3d(0,0,0);
     }
-    this.setMotion(velocity);
+
+    this.setMotion(newVelocity);
+    this.world.setEntityState(this, (byte)VANILLA_ARROW_IMPACT_STATUS_ID);
   }
-
-
 
   // destroy this block and spawn the relevant item drops
   //  copied from world.destroyBlock
@@ -702,7 +697,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     final int EVENT_ID_BREAK_BLOCK_SOUND_AND_PARTICLES = 2001;
     world.playEvent(EVENT_ID_BREAK_BLOCK_SOUND_AND_PARTICLES, blockPos, Block.getStateId(blockstate));
     TileEntity tileentity = blockstate.hasTileEntity() ? world.getTileEntity(blockPos) : null;
-    Block.spawnDrops(blockstate, world, blockPos, tileentity, this, this.getItemStack());
+    Block.spawnDrops(blockstate, world, blockPos, tileentity, this, this.getItemStack());  // FORTUNE and SILK TOUCH enchantments affect drops
 
     int flags = SetBlockStateFlag.get(SetBlockStateFlag.BLOCK_UPDATE, SetBlockStateFlag.SEND_TO_CLIENTS);
     world.setBlockState(blockPos, ifluidstate.getBlockState(), flags);
@@ -776,14 +771,6 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     this.getDataManager().set(ITEMSTACK, stack);
   }
 
-  /**
-   * Gets the amount of gravity to apply to the thrown entity with each tick.
-   */
-  protected float getGravityVelocity() {
-    return 0.03F;
-  }
-
-
   @Override
   public void writeSpawnData(PacketBuffer buffer) {
     CompoundNBT nbt = boomerangFlightPath.serializeNBT();
@@ -801,24 +788,4 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     return !entityToTest.isSpectator() && entityToTest.canBeCollidedWith()
             && !(entityToTest == this.thrower && this.ticksExisted <= INITIAL_NON_COLLISION_TICKS);
   }
-
-  public void setEnchantmentEffectsFromEntity(LivingEntity p_190547_1_, float p_190547_2_) {
-    int i = EnchantmentHelper.getMaxEnchantmentLevel(Enchantments.POWER, p_190547_1_);
-    int j = EnchantmentHelper.getMaxEnchantmentLevel(Enchantments.PUNCH, p_190547_1_);
-    this.setDamage((double)(p_190547_2_ * 2.0F) + this.rand.nextGaussian() * 0.25D + (double)((float)this.world.getDifficulty().getId() * 0.11F));
-    if (i > 0) {
-      this.setDamage(this.getDamage() + (double)i * 0.5D + 0.5D);
-    }
-
-    if (j > 0) {
-      this.setKnockbackStrength(j);
-    }
-
-    if (EnchantmentHelper.getMaxEnchantmentLevel(Enchantments.FLAME, p_190547_1_) > 0) {
-      this.setFire(100);
-    }
-
-  }
-
-
 }

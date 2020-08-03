@@ -1,13 +1,17 @@
 package minecraftbyexample.mbe81_entity_projectile;
 
 import net.minecraft.enchantment.*;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.*;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.util.Random;
 
 /**
@@ -57,17 +61,33 @@ public class BoomerangItem extends TieredItem {
   public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity playerEntity, Hand hand) {
     ItemStack heldItem = playerEntity.getHeldItem(hand);
 
-    SoundEvent soundEvent = (mood == EmojiMood.HAPPY) ? SoundEvents.ENTITY_VILLAGER_YES : SoundEvents.ENTITY_VILLAGER_NO;
-
-    world.playSound(null, playerEntity.getPosX(), playerEntity.getPosY(), playerEntity.getPosZ(),
-            soundEvent, SoundCategory.NEUTRAL, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
     if (!world.isRemote) {
-      BoomerangEntity boomerangEntity = new BoomerangEntity(world, playerEntity,)
+      ItemStack thrownBoomerang = heldItem.copy();
+
+      start position
+      this(type, shooter.getPosX(), shooter.getPosYEye() - (double)0.1F, shooter.getPosZ(), worldIn);
+
+      public void shoot(Entity shooter, float pitch, float yaw, float p_184547_4_, float velocity, float inaccuracy) {
+        float f = -MathHelper.sin(yaw * ((float)Math.PI / 180F)) * MathHelper.cos(pitch * ((float)Math.PI / 180F));
+        float f1 = -MathHelper.sin(pitch * ((float)Math.PI / 180F));
+        float f2 = MathHelper.cos(yaw * ((float)Math.PI / 180F)) * MathHelper.cos(pitch * ((float)Math.PI / 180F));
+        this.shoot((double)f, (double)f1, (double)f2, velocity, inaccuracy);
+        this.setMotion(this.getMotion().add(shooter.getMotion().x, shooter.onGround ? 0.0D : shooter.getMotion().y, shooter.getMotion().z));
+      }
+
+      BoomerangEntity boomerangEntity = new BoomerangEntity(world, thrownBoomerang, playerEntity,
+              )
 
       // spawn the entity in the world
       world.addEntity(boomerangEntity);
     }
-
+  public BoomerangEntity(World world, ItemStack boomerangItemStack,
+            @Nullable LivingEntity thrower,
+            Vec3d startPosition,
+    float apexYaw, float distanceToApex,
+    float maximumSidewaysDeflection,
+    boolean anticlockwise,
+    float flightSpeed) {
     playerEntity.addStat(Stats.ITEM_USED.get(this));
     if (!playerEntity.abilities.isCreativeMode) {
       heldItem.shrink(1);
