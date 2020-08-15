@@ -63,19 +63,20 @@ public class BoomerangItem extends TieredItem {
 
     if (!world.isRemote) {
       ItemStack thrownBoomerang = heldItem.copy();
+      final double OFFSET_FROM_PLAYER_EYE = -0.1;
+      Vec3d startPosition = new Vec3d(playerEntity.getPosX(), playerEntity.getPosYEye() + OFFSET_FROM_PLAYER_EYE, playerEntity.getPosZ());
 
-      start position
-      this(type, shooter.getPosX(), shooter.getPosYEye() - (double)0.1F, shooter.getPosZ(), worldIn);
-
-      public void shoot(Entity shooter, float pitch, float yaw, float p_184547_4_, float velocity, float inaccuracy) {
-        float f = -MathHelper.sin(yaw * ((float)Math.PI / 180F)) * MathHelper.cos(pitch * ((float)Math.PI / 180F));
-        float f1 = -MathHelper.sin(pitch * ((float)Math.PI / 180F));
-        float f2 = MathHelper.cos(yaw * ((float)Math.PI / 180F)) * MathHelper.cos(pitch * ((float)Math.PI / 180F));
-        this.shoot((double)f, (double)f1, (double)f2, velocity, inaccuracy);
-        this.setMotion(this.getMotion().add(shooter.getMotion().x, shooter.onGround ? 0.0D : shooter.getMotion().y, shooter.getMotion().z));
-      }
+//      public void shoot(Entity shooter, float pitch, float yaw, float p_184547_4_, float velocity, float inaccuracy) {
+//        float f = -MathHelper.sin(yaw * ((float)Math.PI / 180F)) * MathHelper.cos(pitch * ((float)Math.PI / 180F));
+//        float f1 = -MathHelper.sin(pitch * ((float)Math.PI / 180F));
+//        float f2 = MathHelper.cos(yaw * ((float)Math.PI / 180F)) * MathHelper.cos(pitch * ((float)Math.PI / 180F));
+//        this.shoot((double)f, (double)f1, (double)f2, velocity, inaccuracy);
+//        this.setMotion(this.getMotion().add(shooter.getMotion().x, shooter.onGround ? 0.0D : shooter.getMotion().y, shooter.getMotion().z));
+//      }
 
       BoomerangEntity boomerangEntity = new BoomerangEntity(world, thrownBoomerang, playerEntity,
+              startPosition, playerEntity.getYaw(1.0F),
+
               )
 
       // spawn the entity in the world

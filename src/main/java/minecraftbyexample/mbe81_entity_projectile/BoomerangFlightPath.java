@@ -2,10 +2,14 @@ package minecraftbyexample.mbe81_entity_projectile;
 
 import minecraftbyexample.usefultools.CubicSpline;
 import minecraftbyexample.usefultools.UsefulFunctions;
+import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import javax.jws.soap.SOAPBinding;
@@ -38,19 +42,23 @@ import java.util.List;
  *
  * So I have used Excel to numerically integrate it (for a typical maximumSidewaysDeflection) and fit the data to a
  * cubic spline, which can be calculated very quickly.
+ *
+ * After calculating the position in a horizontal plane, we tilt the plane upwards to match the pitch.
+ *
  */
 public class BoomerangFlightPath implements INBTSerializable<CompoundNBT> {
 
   /**
    * @param startPoint  the spawn point of the flight path
    * @param apexYaw the yaw angle in degrees (compass direction of the apex relative to the thrower).  0 degrees is south and increases clockwise.
+   * @param apexPitch the pitch angle in degrees (elevation/declination of the apex relative to the thrower).  0 degrees is horizontal: -90 is up, 90 is down.
    * @param distanceToApex number of blocks to the apex of the flight path
    * @param maximumSidewaysDeflection maximum sideways deflection from the straight line from thrower to apex
    * @param anticlockwise is the flight path clockwise or anticlockwise
    * @param flightSpeed speed of the flight in blocks per second
    */
   public BoomerangFlightPath(Vec3d startPoint,
-                             float apexYaw, float distanceToApex,
+                             float apexYaw, float apexPitch, float distanceToApex,
                              float maximumSidewaysDeflection,
                              boolean anticlockwise,
                              float flightSpeed) {
@@ -84,9 +92,34 @@ public class BoomerangFlightPath implements INBTSerializable<CompoundNBT> {
 
     float x = flightPathX.interpolate(pathFraction);
     float z = flightPathZ.interpolate(pathFraction);
+    Vec3d horizontalPlanePosition = new Vec3d(x, 0, z);
+    Vec3d tiltedPosition = horizontalPlanePosition.rotatePitch()
     Vec3d retval = startPoint.add(x, 0, z);
     return retval;
   }
+
+    Quaternion quaternion = Vector3f.ZP.rotationDegrees(90.0F);
+    switch(this) {
+      case DOWN:
+        return Vector3f.XP.rotationDegrees(180.0F);
+      case UP:
+        return Quaternion.ONE.copy();
+      case NORTH:
+        quaternion.multiply(Vector3f.ZP.rotationDegrees(180.0F));
+        return quaternion;
+      case SOUTH:
+        return quaternion;
+      case WEST:
+        quaternion.multiply(Vector3f.ZP.rotationDegrees(90.0F));
+        return quaternion;
+      case EAST:
+      default:
+        quaternion.multiply(Vector3f.ZP.rotationDegrees(-90.0F));
+        return quaternion;
+    }
+  }
+
+
 
   // get the current yaw of the boomerang
   public float getYaw(double time) {
@@ -151,6 +184,7 @@ public class BoomerangFlightPath implements INBTSerializable<CompoundNBT> {
   private Vec3d startPoint;
   private float distanceToApex;
   private float apexYaw;
+  private float apexPitch;
   private float maximumSidewaysDeflection;
   private float flightDuration; // seconds
   private boolean anticlockwise;

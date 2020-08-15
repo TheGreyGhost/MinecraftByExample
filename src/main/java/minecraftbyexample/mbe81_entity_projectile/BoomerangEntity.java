@@ -680,9 +680,8 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
       newVelocity = tangentialComponent.subtract(radialComponent);
       newVelocity = newVelocity.scale(RICHOCHET_SPEED);
     } else {
-      newVelocity = new Vec3d(0,0,0);
+      newVelocity = new Vec3d(0, 0, 0);
     }
-
     this.setMotion(newVelocity);
     this.world.setEntityState(this, (byte)VANILLA_ARROW_IMPACT_STATUS_ID);
   }
