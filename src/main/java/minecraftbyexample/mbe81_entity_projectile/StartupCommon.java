@@ -27,7 +27,7 @@ public class StartupCommon
   public static BoomerangItem boomerangItem;
   public static EntityType<BoomerangEntity> boomerangEntityType;
 
-  // register the two different items- they both use the same class but each have a different mood
+  // register the two different EmojiItems- they both use the same class but each have a different mood
   @SubscribeEvent
   public static void onItemsRegistration(final RegistryEvent.Register<Item> itemRegisterEvent) {
     emojiItemHappy = new EmojiItem(EmojiItem.EmojiMood.HAPPY);
@@ -43,7 +43,7 @@ public class StartupCommon
     itemRegisterEvent.getRegistry().register(boomerangItem);
   }
 
-  // register our entity type
+  // register our entity types
   @SubscribeEvent
   public static void onEntityTypeRegistration(RegistryEvent.Register<EntityType<?>> entityTypeRegisterEvent) {
     emojiEntityType = EntityType.Builder.<EmojiEntity>create(EmojiEntity::new, EntityClassification.MISC)

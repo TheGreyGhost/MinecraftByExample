@@ -68,6 +68,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
    * @param boomerangItemStack the boomerang item being thrown
    * @param startPosition  the spawn point of the flight path
    * @param apexYaw the yaw angle in degrees (compass direction of the apex relative to the thrower).  0 degrees is south and increases clockwise.
+   * @param apexPitch the pitch angle in degrees (elevation/declination of the apex relative to the thrower).  0 degrees is horizontal: -90 is up, 90 is down.
    * @param distanceToApex number of blocks to the apex of the flight path
    * @param maximumSidewaysDeflection maximum sideways deflection from the straight line from thrower to apex
    * @param anticlockwise is the flight path clockwise or anticlockwise
@@ -76,7 +77,8 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
   public BoomerangEntity(World world, ItemStack boomerangItemStack,
                          @Nullable LivingEntity thrower,
                          Vec3d startPosition,
-                         float apexYaw, float distanceToApex,
+                         float apexYaw, float apexPitch,
+                         float distanceToApex,
                          float maximumSidewaysDeflection,
                          boolean anticlockwise,
                          float flightSpeed) {
@@ -89,7 +91,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
 
     dataManager.set(ITEMSTACK, boomerangItemStack);
     dataManager.set(IN_FLIGHT, true);
-    boomerangFlightPath = new BoomerangFlightPath(startPosition, apexYaw, distanceToApex,
+    boomerangFlightPath = new BoomerangFlightPath(startPosition, apexYaw, apexPitch, distanceToApex,
             maximumSidewaysDeflection, anticlockwise, flightSpeed);
     remainingMomentum = 1.0F;
     copyEnchantmentData(boomerangItemStack);
@@ -117,9 +119,10 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
             .filter(x -> specialDamageEnchantmentTypes.contains(x.getKey()))
             .collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue()));
 
-    silkTouch = 0 != enchantments.getOrDefault(Enchantments.SILK_TOUCH, 0);
     efficiencyLevel = enchantments.getOrDefault(Enchantments.EFFICIENCY, 0)/ (float)Enchantments.EFFICIENCY.getMaxLevel();
-    fortuneLevel = enchantments.getOrDefault(Enchantments.FORTUNE, 0)/ (float)Enchantments.FORTUNE.getMaxLevel();
+    // silkTouch and fortuneLevel are implemented using vanilla directly on the enchantment tags, so we don't need to extract them ourselves
+//    silkTouch = 0 != enchantments.getOrDefault(Enchantments.SILK_TOUCH, 0);
+//    fortuneLevel = enchantments.getOrDefault(Enchantments.FORTUNE, 0)/ (float)Enchantments.FORTUNE.getMaxLevel();
   }
 
   protected void registerData() {
@@ -149,9 +152,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
   private float flameLevel;      // 0.0 -> 1.0
   private float damageBoostLevel;     // 0.0 -> 1.0
   private Map<Enchantment, Integer> specialDamages = new HashMap<>();
-  private boolean silkTouch;
   private float efficiencyLevel; // 0.0 -> 1.0
-  private float fortuneLevel; // 0.0 -> 1.0
 
   // If you forget to override this method, the default vanilla method will be called.
   // This sends a vanilla spawn packet, which is then silently discarded when it reaches the client.

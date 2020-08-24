@@ -64,6 +64,7 @@ public class BoomerangFlightPath implements INBTSerializable<CompoundNBT> {
                              float flightSpeed) {
     this.startPoint = startPoint;
     this.apexYaw = apexYaw;
+    this.apexPitch = apexPitch;
     this.distanceToApex = distanceToApex;
     this.maximumSidewaysDeflection = maximumSidewaysDeflection;
     this.anticlockwise = anticlockwise;
@@ -91,35 +92,11 @@ public class BoomerangFlightPath implements INBTSerializable<CompoundNBT> {
     if (anticlockwise) pathFraction = 1 - pathFraction;
 
     float x = flightPathX.interpolate(pathFraction);
+    float y = flightPathY.interpolate(pathFraction);
     float z = flightPathZ.interpolate(pathFraction);
-    Vec3d horizontalPlanePosition = new Vec3d(x, 0, z);
-    Vec3d tiltedPosition = horizontalPlanePosition.rotatePitch()
-    Vec3d retval = startPoint.add(x, 0, z);
+    Vec3d retval = startPoint.add(x, y, z);
     return retval;
   }
-
-    Quaternion quaternion = Vector3f.ZP.rotationDegrees(90.0F);
-    switch(this) {
-      case DOWN:
-        return Vector3f.XP.rotationDegrees(180.0F);
-      case UP:
-        return Quaternion.ONE.copy();
-      case NORTH:
-        quaternion.multiply(Vector3f.ZP.rotationDegrees(180.0F));
-        return quaternion;
-      case SOUTH:
-        return quaternion;
-      case WEST:
-        quaternion.multiply(Vector3f.ZP.rotationDegrees(90.0F));
-        return quaternion;
-      case EAST:
-      default:
-        quaternion.multiply(Vector3f.ZP.rotationDegrees(-90.0F));
-        return quaternion;
-    }
-  }
-
-
 
   // get the current yaw of the boomerang
   public float getYaw(double time) {
@@ -141,8 +118,9 @@ public class BoomerangFlightPath implements INBTSerializable<CompoundNBT> {
     if (anticlockwise) pathFraction = 1 - pathFraction;
 
     float vx = flightPathX.interpolateFirstDerivative(pathFraction);
+    float vy = flightPathY.interpolateFirstDerivative(pathFraction);
     float vz = flightPathZ.interpolateFirstDerivative(pathFraction);
-    Vec3d retval = new Vec3d(vx, 0, vz);
+    Vec3d retval = new Vec3d(vx, vy, vz);
     return retval;
   }
 
@@ -155,6 +133,7 @@ public class BoomerangFlightPath implements INBTSerializable<CompoundNBT> {
     nbt.put(START_POINT_NBT, UsefulFunctions.serializeVec3d(startPoint));
     nbt.putFloat(DISTANCE_TO_APEX_NBT, distanceToApex);
     nbt.putFloat(APEX_YAW_NBT, apexYaw);
+    nbt.putFloat(APEX_PITCH_NBT, apexPitch);
     nbt.putFloat(MAXIMUM_SIDEWAYS_DEFLECTION_NBT, maximumSidewaysDeflection);
     nbt.putFloat(FLIGHT_DURATION_NBT, flightDuration);
     nbt.putBoolean(ANTICLOCKWISE_NBT, anticlockwise);
@@ -168,6 +147,7 @@ public class BoomerangFlightPath implements INBTSerializable<CompoundNBT> {
     startPoint = UsefulFunctions.deserializeVec3d(nbt, START_POINT_NBT);
     distanceToApex = nbt.getFloat(DISTANCE_TO_APEX_NBT);
     apexYaw = nbt.getFloat(APEX_YAW_NBT);
+    apexPitch = nbt.getFloat(APEX_PITCH_NBT);
     maximumSidewaysDeflection  = nbt.getFloat(MAXIMUM_SIDEWAYS_DEFLECTION_NBT);
     flightDuration = nbt.getFloat(FLIGHT_DURATION_NBT);
     anticlockwise = nbt.getBoolean(ANTICLOCKWISE_NBT);
@@ -177,6 +157,7 @@ public class BoomerangFlightPath implements INBTSerializable<CompoundNBT> {
   private final String START_POINT_NBT = "startpoint";
   private final String DISTANCE_TO_APEX_NBT = "distancetoapex";
   private final String APEX_YAW_NBT = "apexyaw";
+  private final String APEX_PITCH_NBT = "apexpitch";
   private final String MAXIMUM_SIDEWAYS_DEFLECTION_NBT = "maximumsidewaysdeflection";
   private final String FLIGHT_DURATION_NBT = "flightduration";
   private final String ANTICLOCKWISE_NBT = "anticlockwise";
@@ -190,32 +171,62 @@ public class BoomerangFlightPath implements INBTSerializable<CompoundNBT> {
   private boolean anticlockwise;
 
   private CubicSpline flightPathX;
+  private CubicSpline flightPathY;
   private CubicSpline flightPathZ;
 
   private void calculateFlightPath() {
     // in order to calculate the flight path, we take the
     // basic flight path coordinates, transform them to the correct shape:
-    //  1) scale the long axis to match the desired distance to the apex
-    //  2) scale the sidewaysdeflection axis to the desired sideways deflection
-    //  3) rotate around [0,0] based on the player's yaw (direction the player is facing)
+    //  1) scale the long axis (u coordinate) to match the desired distance to the apex
+    //  2) scale the sidewaysdeflection axis (v coordinate) to the desired sideways deflection
+    //  3) pitch up around the y axis to tilt the flight path to match the apexPitch
+    //  3) rotate around the y axis based on the player's yaw (direction the player is facing)
     // Then we fit a cubic spline to the points.
     // The anticlockwise/clockwise and the flightDuration are handled during the lookup, not in the fitted curve
 
     List<Float> tValues = new ArrayList<>();
     List<Float> xValues = new ArrayList<>();
+    List<Float> yValues = new ArrayList<>();
     List<Float> zValues = new ArrayList<>();
 
     for (float [] point : BASE_FLIGHT_PATH) {
       tValues.add(point[0]);
       float u = point[1] * distanceToApex;
       float v = point[2] * maximumSidewaysDeflection;
-      Vec3d offsetFromStart = new Vec3d(u, 0, v).rotateYaw(apexYaw);
+      Vec3d offsetFromStart = new Vec3d(u, 0, v).rotatePitch(apexPitch).rotateYaw(apexYaw);
       xValues.add((float)offsetFromStart.getX());
+      yValues.add((float)offsetFromStart.getY());
       zValues.add((float)offsetFromStart.getZ());
     }
     flightPathX = CubicSpline.createCubicSpline(tValues, xValues);
+    flightPathY = CubicSpline.createCubicSpline(tValues, yValues);
     flightPathZ = CubicSpline.createCubicSpline(tValues, zValues);
   }
+
+//  /**
+//   * For a given point in the xz plane [x, 0, z], pitch it upwards to have a tilted path.
+//   * i.e. if the player is looking horizontally when throwing, the flight path stays level (y = constant) throughout.
+//   * if the player is looking slightly up when throwing, with a pitch of -10 degrees, the flight path is tilted upwards
+//   *   at an angle of 10 degrees from the direction they are facing (yaw).
+//   *
+//   * The algorithm for this is:
+//   * 1) start with the point on the flight path in the xz plane [x, 0, z]
+//   * 2) rotate the point around the y-axis to remove the player's yaw, so that the flight path apex is pointing south.
+//   * 3) rotate the point around the x axis to tilt the path upwards by the pitch
+//   * 4) rotate the tilted point around the y-axis again, in the opposite direction, to return the apex to matching the player's yaw
+//   *
+//   * @param point the point on the flight path; y is ignored!
+//   * @param apexYaw the yaw angle in degrees (compass direction of the apex relative to the thrower).  0 degrees is south and increases clockwise.
+//   * @param apexPitch the pitch angle in degrees (elevation/declination of the apex relative to the thrower).  0 degrees is horizontal: -90 is up, 90 is down.
+//
+//   * @return the
+//   */
+//
+//  public Vec3d getTiltedPathPoint(Vec3d point, float apexYaw, float apexPitch) {
+//    Vec3d planePoint = new Vec3d(point.x, 0, point.z);
+//
+//  }
+//
 
   // the flight path consists of a few points, smoothly connected by a cubic spline.
   // The BASE_FLIGHT_PATH consists of a series of tuples: [path_fraction, lengthways_distance, sideways_distance]

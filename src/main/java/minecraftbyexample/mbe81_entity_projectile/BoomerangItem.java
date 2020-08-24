@@ -1,10 +1,14 @@
 package minecraftbyexample.mbe81_entity_projectile;
 
+import minecraftbyexample.usefultools.UsefulFunctions;
 import net.minecraft.enchantment.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.*;
 import net.minecraft.util.math.MathHelper;
@@ -52,16 +56,49 @@ public class BoomerangItem extends TieredItem {
   }
 
   /**
-   * Throw the projectile
-   * @param world
-   * @param playerEntity
-   * @param hand
-   * @return
+   * Called when the player stops using an Item (stops holding the right mouse button).
    */
-  public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity playerEntity, Hand hand) {
-    ItemStack heldItem = playerEntity.getHeldItem(hand);
+  public void onPlayerStoppedUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int timeLeft) {
 
-    if (!world.isRemote) {
+    if (!(entityLiving instanceof PlayerEntity)) return;
+    PlayerEntity playerEntity = (PlayerEntity)entityLiving;
+
+    final int MAX_CHARGEUP_TIME_TICKS = 20;
+    int ticksSpentChargingUp = this.getUseDuration(stack) - timeLeft;
+
+    final float MIN_FLIGHT_DISTANCE = 4;
+    final float MAX_FLIGHT_DISTANCE = 32;
+    float distanceToApex = (float)UsefulFunctions.interpolate_with_clipping(ticksSpentChargingUp,
+                                                                  0, MAX_CHARGEUP_TIME_TICKS,
+                                                                      MIN_FLIGHT_DISTANCE, MAX_FLIGHT_DISTANCE);
+    if (entityLiving.isPotionActive(Effects.STRENGTH)) {
+      distanceToApex *= 2;
+    }
+    final float SIDEWAYS_DEFLECTION_RATIO = 0.2F;
+    float sidewaysDeflection = distanceToApex * SIDEWAYS_DEFLECTION_RATIO;
+
+    final float MIN_FLIGHT_SPEED_BLOCKS_PER_SECOND = 4;
+    final float MAX_FLIGHT_SPEED_BLOCKS_PER_SECOND = 10;
+    float flightSpeedBPS = (float)UsefulFunctions.interpolate_with_clipping(ticksSpentChargingUp,
+            0, MAX_CHARGEUP_TIME_TICKS,
+            MIN_FLIGHT_SPEED_BLOCKS_PER_SECOND, MAX_FLIGHT_SPEED_BLOCKS_PER_SECOND);
+
+    if (entityLiving.isPotionActive(Effects.HASTE)) {
+      flightSpeedBPS *= 2;
+    }
+
+//    /**
+//     * Throw the projectile
+//     * @param world
+//     * @param playerEntity
+//     * @param hand
+//     * @return
+//     */
+//  public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity playerEntity, Hand hand) {
+//    ItemStack heldItem = playerEntity.getHeldItem(hand);
+    ItemStack heldItem = stack;
+
+    if (!worldIn.isRemote) {
       ItemStack thrownBoomerang = heldItem.copy();
       final double OFFSET_FROM_PLAYER_EYE = -0.1;
       Vec3d startPosition = new Vec3d(playerEntity.getPosX(), playerEntity.getPosYEye() + OFFSET_FROM_PLAYER_EYE, playerEntity.getPosZ());
@@ -73,29 +110,32 @@ public class BoomerangItem extends TieredItem {
 //        this.shoot((double)f, (double)f1, (double)f2, velocity, inaccuracy);
 //        this.setMotion(this.getMotion().add(shooter.getMotion().x, shooter.onGround ? 0.0D : shooter.getMotion().y, shooter.getMotion().z));
 //      }
+      boolean antiClockwisePath = Hand.OFF_HAND == playerEntity.getActiveHand();  // I think the off hand is always on the left?
 
-      BoomerangEntity boomerangEntity = new BoomerangEntity(world, thrownBoomerang, playerEntity,
-              startPosition, playerEntity.getYaw(1.0F),
-
-              )
+      BoomerangEntity boomerangEntity = new BoomerangEntity(worldIn, thrownBoomerang, playerEntity,
+              startPosition, playerEntity.getYaw(1.0F), playerEntity.getPitch(1.0F),
+              distanceToApex, sidewaysDeflection,
+              antiClockwisePath, flightSpeedBPS
+              );
 
       // spawn the entity in the world
-      world.addEntity(boomerangEntity);
+      worldIn.addEntity(boomerangEntity);
     }
-  public BoomerangEntity(World world, ItemStack boomerangItemStack,
-            @Nullable LivingEntity thrower,
-            Vec3d startPosition,
-    float apexYaw, float distanceToApex,
-    float maximumSidewaysDeflection,
-    boolean anticlockwise,
-    float flightSpeed) {
     playerEntity.addStat(Stats.ITEM_USED.get(this));
     if (!playerEntity.abilities.isCreativeMode) {
       heldItem.shrink(1);
     }
-
-    return ActionResult.resultSuccess(heldItem);
   }
 
+  public UseAction getUseAction(ItemStack stack) {
+    return UseAction.BLOCK; // or UseAction.BOW?
+  }
 
+  /**
+   * How long it takes to use or consume an item
+   */
+  public int getUseDuration(ItemStack stack) {
+    final int ARBITRARY_LONG_TIME = 72000;
+    return ARBITRARY_LONG_TIME;
+  }
 }

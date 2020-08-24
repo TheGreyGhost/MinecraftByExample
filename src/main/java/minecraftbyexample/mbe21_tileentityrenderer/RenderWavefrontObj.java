@@ -78,7 +78,7 @@ public class RenderWavefrontObj {
 
     Color artifactColour = tileEntityMBE21.getArtifactColour();
 
-    BlockState state = StartupCommon.blockMBE21.getDefaultState().with(BlockMBE21.USE_WAVERFRONT_OBJ_MODEL, true);
+    BlockState state = StartupCommon.blockMBE21.getDefaultState().with(BlockMBE21.USE_WAVEFRONT_OBJ_MODEL, true);
     BlockRendererDispatcher dispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
     IBakedModel model = dispatcher.getModelForState(state);
 

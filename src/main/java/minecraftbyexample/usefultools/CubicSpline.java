@@ -28,8 +28,9 @@ import java.util.List;
  * Typical usage:
  * 1) Create an array of points that you want to interpolate [t,x], where x is a function of t; for example
  *    a graph of x position over time.  Must be in ascending order of t.
- * 2) call createMonotoneCubicSpline to create the spline for those points [t,x]
+ * 2) call createCubicSpline to create the spline for those points [t,x]
  * 3) call interpolate to calculate the interpolated x for any given t
+ * 4) call interpolateFirstDerivative to calculate the first derivative of the interpolated x for any given t
  *
  */
 public class CubicSpline {

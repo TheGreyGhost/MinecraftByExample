@@ -40,6 +40,15 @@ public class StartupClientOnly
     }
   }
 
+  // I've written this out as an explicit implementation to make it clearer, but most folks would just use a lambda instead
+  private static class emojiRenderFactory implements IRenderFactory<EmojiEntity> {
+    @Override
+    public EntityRenderer<? super EmojiEntity> createRenderFor(EntityRendererManager manager) {
+      ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
+      return new SpriteRenderer<>(manager, itemRenderer);
+    }
+  }
+
 
 }
 

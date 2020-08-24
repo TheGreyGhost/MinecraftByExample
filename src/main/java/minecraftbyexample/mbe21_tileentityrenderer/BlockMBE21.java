@@ -38,7 +38,7 @@ public class BlockMBE21 extends Block
   {
     super(Block.Properties.create(Material.ROCK)
          );
-    BlockState defaultBlockState = this.stateContainer.getBaseState().with(USE_WAVERFRONT_OBJ_MODEL, false);
+    BlockState defaultBlockState = this.stateContainer.getBaseState().with(USE_WAVEFRONT_OBJ_MODEL, false);
     this.setDefaultState(defaultBlockState);
   }
 
@@ -98,7 +98,7 @@ public class BlockMBE21 extends Block
   }
 
   // Used for visuals only, as an easy way to get Forge to load the obj model used by the WaveFront render style
-  public static final IProperty<Boolean> USE_WAVERFRONT_OBJ_MODEL = BooleanProperty.create("use_wavefront_obj_model");
+  public static final IProperty<Boolean> USE_WAVEFRONT_OBJ_MODEL = BooleanProperty.create("use_wavefront_obj_model");
 
   /**
    * Defines the properties needed for the BlockState
@@ -106,7 +106,7 @@ public class BlockMBE21 extends Block
    */
   @Override
   protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-    builder.add(USE_WAVERFRONT_OBJ_MODEL);
+    builder.add(USE_WAVEFRONT_OBJ_MODEL);
   }
 
 
