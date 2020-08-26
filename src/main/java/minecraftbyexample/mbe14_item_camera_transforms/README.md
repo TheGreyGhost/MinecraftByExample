@@ -2,6 +2,7 @@
 
 When you create a custom item, you need to provide `ItemCameraTransforms` for it (the `display`) section in the item model json. 
 I suggest you use BlockBench (https://blockbench.net/) to help you with that.
+Alternatively this mod might also be helpful: [ItemTransformHelper](https://github.com/TheGreyGhost/ItemTransformHelper) 
 
 For background information on:
 

@@ -37,7 +37,7 @@ import static net.minecraftforge.client.model.SimpleModelTransform.IDENTITY;
  * Created by TheGreyGhost on 19/04/2015.
  * This class is used to customise the rendering of the altimeter block, based on the block it is copying.
  * It uses the IForgeBakedModel extension of IBakedModel to pass IModelData (the "GPS coordinates" to be copied) to the getQuads.
- * getQuads then uses this information construct a mod.
+ * getQuads then uses this information to construct a model.
  *
  * The Altimeter is composed of:
  * 1) A base model which is registered using the Altimeter Block (blockstates json) as normal

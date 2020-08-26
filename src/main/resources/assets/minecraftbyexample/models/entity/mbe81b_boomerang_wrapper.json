@@ -1,0 +1,12 @@
+{
+  "loader": "forge:obj",
+  "flip-v": true,
+  "ambientToFullbright": false,
+  "__comment": "flip-v may be required if your texture appears mirrored.  See OBJloader::read() for other flags.  currently the available options are",
+  "__comment1": "detectCullableFaces (default true) = try to convert faces to Directional Quads (EAST, WEST, etc) instead of just general quads",
+  "__comment2": "diffuseLighting (default false) = attempt to apply the direction-dependent lighting as per vanilla blocks.  Currently does nothing.",
+  "__comment3": "flipV (default false) = mirror the texture sheet top-->bottom (if your textures appear upside-down)",
+  "__comment4": "ambientToFullbright (default true) = always render at maximum world illumination (combinedLight) regardless of the actual skylight or blocklight present",
+  "__comment5": "materialLibraryOverrideLocation (default null) = use this path/filename for the material library file .mtl",
+  "model" : "minecraftbyexample:models/entity/mbe81b_boomerang.obj"
+}

@@ -67,5 +67,7 @@
 
   "item.minecraftbyexample.mbe81a_emoji_happy_registry_name": "MBE81a Throwable Emoji",
   "item.minecraftbyexample.mbe81a_emoji_grumpy_registry_name": "MBE81a Throwable Emoji",
-  "entity.minecraftbyexample.mbe81a_emoji_type_registry_name": "MBE81a Throwable Emoji"
+  "entity.minecraftbyexample.mbe81a_emoji_type_registry_name": "MBE81a Throwable Emoji",
+  "item.minecraftbyexample.mbe81b_boomerang_registry_name": "MBE81b Boomerang",
+  "entity.minecraftbyexample.mbe81b_boomerang_type_registry_name": "MBE81b Boomerang"
 }

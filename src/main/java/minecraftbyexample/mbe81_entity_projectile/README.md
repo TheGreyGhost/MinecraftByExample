@@ -25,7 +25,11 @@ If you forget any of these or get them incorrect, your code won't work and might
 
 -------BoomerangEntity (mbe81b) -------<br>
 If you use Blender to generate wavefront (obj) files, you need to make sure that all faces are either quads or triangles (no "n-gons" > 4).
-The easiest way to do that is to select all faces (in edit mode) then:
+If your obj file contains lines like this, you have a problem...
+f   60/7/2 150/8/2 157/9/2  15/10/2                 // 4 points = ok
+f 153/19/2 68/20/2 87/21/2 170/22/2                 // 4 points = ok
+f  75/1/1  150/2/1  60/3/1   11/4/1 59/5/1 151/6/1  // 6 points = will not render
+The easiest way to fix it is to select all faces (in edit mode) then:
 1) Triangulate faces; then
 2) Tris to Quads<br>
 
