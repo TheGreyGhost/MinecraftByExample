@@ -12,10 +12,46 @@
   "__comment3": "flipV (default false) = mirror the texture sheet top-->bottom (if your textures appear upside-down)",
   "__comment4": "ambientToFullbright (default true) = always render at maximum world illumination (combinedLight) regardless of the actual skylight or blocklight present",
   "__comment5": "materialLibraryOverrideLocation (default null) = use this path/filename for the material library file .mtl",
-  "overrides": [
-    { "predicate": { "chargefraction": 0.000 }, "model": "minecraftbyexample:item/mbe81b_boomerang_charge_0" },
-    { "predicate": { "chargefraction": 0.001 }, "model": "minecraftbyexample:item/mbe81b_boomerang_charge_1" },
-    { "predicate": { "chargefraction": 0.333 }, "model": "minecraftbyexample:item/mbe81b_boomerang_charge_2" },
-    { "predicate": { "chargefraction": 0.666 }, "model": "minecraftbyexample:item/mbe81b_boomerang_charge_3" }
-  ]
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [ 180, 0, 90 ],
+      "translation": [ 0.00, 3.50, -1.75 ],
+      "scale": [ 0.04, 0.04, 0.04]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [ 90, 0, 90 ],
+      "translation": [ 0.00, 3.50, -1.75 ],
+      "scale": [ 0.04, 0.04, 0.04]
+    },
+    "firstperson_righthand": {
+      "rotation": [ 188, 0, 90 ],
+      "translation": [ 0.00, 7.25, -2.25 ],
+      "scale": [ 0.05, 0.05, 0.05]
+    },
+    "firstperson_lefthand": {
+      "rotation": [ 90, 0, 90 ],
+      "translation": [ 0.00, 5.25, -2.25 ],
+      "scale": [ 0.05, 0.05, 0.05]
+    },
+    "gui": {
+      "rotation": [ 82, 0, 0 ],
+      "translation": [ 0.75, -1.00, 0.00 ],
+      "scale": [ 0.06, 0.06, 0.06]
+    },
+    "head": {
+      "rotation": [ 0, 0, 0 ],
+      "translation": [ 0.00, 0.00, 0.00 ],
+      "scale": [ 0.05, 0.05, 0.05]
+    },
+    "fixed": {
+      "rotation": [ 270, 162, 0 ],
+      "translation": [ 0.00, 0.00, 0.25 ],
+      "scale": [ 0.06, 0.06, 0.06]
+    },
+    "ground": {
+      "rotation": [ 90, 278, 0 ],
+      "translation": [ 0.00, 9.00, 0.00 ],
+      "scale": [ 0.05, 0.05, 0.05]
+    }
+  }
 }

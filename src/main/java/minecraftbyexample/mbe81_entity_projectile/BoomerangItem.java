@@ -1,5 +1,6 @@
 package minecraftbyexample.mbe81_entity_projectile;
 
+import minecraftbyexample.mbe12_item_nbt_animate.ItemNBTanimationTimer;
 import minecraftbyexample.usefultools.UsefulFunctions;
 import net.minecraft.enchantment.*;
 import net.minecraft.entity.Entity;
@@ -34,6 +35,30 @@ public class BoomerangItem extends TieredItem {
 
     // Because we are extending a TieredItem, it automatically calculates the max # of uses (damage), repair material,
     //   enchantability (etc) for us.
+
+    // We use a PropertyOverride for this item to change the appearance depending on the state of the property;
+    // In this case, the boomerang pulls back when the player holds the right button for longer.
+    // getChargeUpTime() is used as a lambda function to calculate the current chargefraction during rendering
+    this.addPropertyOverride(new ResourceLocation("chargefraction"), BoomerangItem::getChargeUpTime);
+  }
+
+  public static float getChargeUpTime(ItemStack stack, @Nullable World worldIn, @Nullable LivingEntity entityIn) {
+    final float IDLE_FRAME_INDEX = 0.0F;
+    final float FULLY_CHARGED_INDEX = 1.0F;
+    final int FULL_CHARGE_TICKS = 20;
+
+    if (worldIn == null && entityIn != null)  {
+      worldIn = entityIn.world;
+    }
+
+    if (entityIn == null || worldIn == null) return IDLE_FRAME_INDEX;
+    if (!entityIn.isHandActive()) {  // player isn't holding down the right mouse button, i.e. not charging
+      return IDLE_FRAME_INDEX;
+    }
+    int ticksInUse = stack.getUseDuration() - entityIn.getItemInUseCount();
+    return (float)UsefulFunctions.interpolate_with_clipping(
+            ticksInUse, 0, FULL_CHARGE_TICKS,
+            IDLE_FRAME_INDEX, FULLY_CHARGED_INDEX);
   }
 
   private final Enchantment [] VALID_ENCHANTMENTS = {Enchantments.KNOCKBACK, Enchantments.FLAME,
@@ -58,6 +83,7 @@ public class BoomerangItem extends TieredItem {
   /**
    * Called when the player stops using an Item (stops holding the right mouse button).
    */
+  @Override
   public void onPlayerStoppedUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int timeLeft) {
 
     if (!(entityLiving instanceof PlayerEntity)) return;
@@ -110,7 +136,10 @@ public class BoomerangItem extends TieredItem {
 //        this.shoot((double)f, (double)f1, (double)f2, velocity, inaccuracy);
 //        this.setMotion(this.getMotion().add(shooter.getMotion().x, shooter.onGround ? 0.0D : shooter.getMotion().y, shooter.getMotion().z));
 //      }
-      boolean antiClockwisePath = Hand.OFF_HAND == playerEntity.getActiveHand();  // I think the off hand is always on the left?
+      boolean mainHandIsActive = (Hand.MAIN_HAND == playerEntity.getActiveHand());
+      boolean playerIsLeftHander = HandSide.LEFT == playerEntity.getPrimaryHand();
+      boolean boomerangIsInLeftHand = (mainHandIsActive && playerIsLeftHander) || (!mainHandIsActive && !playerIsLeftHander);
+      boolean antiClockwisePath = boomerangIsInLeftHand;
 
       BoomerangEntity boomerangEntity = new BoomerangEntity(worldIn, thrownBoomerang, playerEntity,
               startPosition, playerEntity.getYaw(1.0F), playerEntity.getPitch(1.0F),
@@ -127,13 +156,26 @@ public class BoomerangItem extends TieredItem {
     }
   }
 
+  /**
+   * Called to trigger the item's "innate" right click behavior. To handle when this item is used on a Block, see
+   * {@link #onItemUse}.
+   */
+  @Override
+  public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
+    ItemStack itemstack = playerIn.getHeldItem(handIn);
+    playerIn.setActiveHand(handIn);
+    return ActionResult.resultConsume(itemstack);
+  }
+
+  @Override
   public UseAction getUseAction(ItemStack stack) {
-    return UseAction.BLOCK; // or UseAction.BOW?
+    return UseAction.NONE;
   }
 
   /**
    * How long it takes to use or consume an item
    */
+  @Override
   public int getUseDuration(ItemStack stack) {
     final int ARBITRARY_LONG_TIME = 72000;
     return ARBITRARY_LONG_TIME;

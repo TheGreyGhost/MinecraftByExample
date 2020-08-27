@@ -64,7 +64,7 @@ public class ItemNBTAnimate extends Item
   // what animation to use when the player holds the "use" button
   @Override
   public UseAction getUseAction(ItemStack stack) {
-    return UseAction.BLOCK;
+    return UseAction.NONE;
   }
 
   // how long the player needs to hold down the right button in order to activate the gem, in ticks (1 tick = 1/20 second)

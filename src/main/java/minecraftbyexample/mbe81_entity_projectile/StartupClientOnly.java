@@ -26,12 +26,11 @@ public class StartupClientOnly
    */
   @SubscribeEvent
   public static void onClientSetupEvent(FMLClientSetupEvent event) {
-    // Register the custom renderer for our entity
-    RenderingRegistry.registerEntityRenderingHandler(StartupCommon.emojiEntityType, new emojiRenderFactory());
+    // Register the custom renderer for each entity
     // I've written out the factory as an explicit implementation to make it clearer, but most folks would just use a lambda instead, eg
     //    RenderingRegistry.registerEntityRenderingHandler(StartupCommon.emojiEntityType,
     //            erm -> new SpriteRenderer<>(erm, Minecraft.getInstance().getItemRenderer()));
-
+    RenderingRegistry.registerEntityRenderingHandler(StartupCommon.emojiEntityType, new emojiRenderFactory());
     RenderingRegistry.registerEntityRenderingHandler(StartupCommon.boomerangEntityType, new BoomerangRenderFactory());
   }
 
