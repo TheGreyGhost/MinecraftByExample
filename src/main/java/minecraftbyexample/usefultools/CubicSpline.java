@@ -167,9 +167,16 @@ public class CubicSpline {
     // Perform cubic Hermite spline interpolation.
     float h = mT.get(i + 1) - mT.get(i);
     float u = (t - mT.get(i)) / h;
-    return ( 3*mM[i + 1] - 6*mX.get(i+1) +3*mM[i] + 6*mX.get(i)) * u * u +
-           (-2*mM[i + 1] + 6*mX.get(i+1) -4*mM[i] - 6*mX.get(i)) * u +
-            mM[i];
+    return ( 3*h*mM[i + 1] - 6*mX.get(i+1) + 3*h*mM[i] + 6*mX.get(i)) * u * u +
+           (-2*h*mM[i + 1] + 6*mX.get(i+1) - 4*h*mM[i] - 6*mX.get(i)) * u +
+            h*mM[i];
+
+//    // Perform cubic Hermite spline interpolation.
+//    float h = mT.get(i + 1) - mT.get(i);
+//    float u = (t - mT.get(i)) / h;
+//    return ( 3*mM[i + 1] - 6*mX.get(i+1) +3*mM[i] + 6*mX.get(i)) * u * u +
+//            (-2*mM[i + 1] + 6*mX.get(i+1) -4*mM[i] - 6*mX.get(i)) * u +
+//            mM[i];
   }
 
   // For debugging.

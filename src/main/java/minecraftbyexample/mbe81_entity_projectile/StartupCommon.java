@@ -1,12 +1,10 @@
 package minecraftbyexample.mbe81_entity_projectile;
 
-import minecraftbyexample.mbe10_item_simple.ItemSimple;
-import minecraftbyexample.mbe50_particle.FlameParticleType;
+import minecraftbyexample.mbe81_entity_projectile.testharness.ServerLifecycleEvents;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.projectile.SnowballEntity;
 import net.minecraft.item.Item;
-import net.minecraft.particles.ParticleType;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -61,6 +59,6 @@ public class StartupCommon
 
   @SubscribeEvent
   public static void onCommonSetupEvent(FMLCommonSetupEvent event) {
-    // not actually required for this example....
+    MinecraftForge.EVENT_BUS.register(ServerLifecycleEvents.class);  // used for our test harness code only; delete if you don't want that
   }
 }

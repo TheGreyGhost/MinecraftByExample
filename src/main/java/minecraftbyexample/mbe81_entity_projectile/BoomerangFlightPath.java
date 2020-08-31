@@ -189,11 +189,14 @@ public class BoomerangFlightPath implements INBTSerializable<CompoundNBT> {
     List<Float> yValues = new ArrayList<>();
     List<Float> zValues = new ArrayList<>();
 
+    float apexYawRadians = (float)(apexYaw * Math.PI / 180.0);
+    float apexPitchRadians = (float)(apexPitch * Math.PI / 180.0);
+
     for (float [] point : BASE_FLIGHT_PATH) {
       tValues.add(point[0]);
       float u = point[1] * distanceToApex;
-      float v = point[2] * maximumSidewaysDeflection;
-      Vec3d offsetFromStart = new Vec3d(u, 0, v).rotatePitch(apexPitch).rotateYaw(apexYaw);
+      float v = (point[2] / BASE_FLIGHT_PATH_MAX_SIDEWAYS_DEFLECTION) * maximumSidewaysDeflection;
+      Vec3d offsetFromStart = new Vec3d(u, 0, v).rotatePitch(apexPitchRadians).rotateYaw(apexYawRadians);
       xValues.add((float)offsetFromStart.getX());
       yValues.add((float)offsetFromStart.getY());
       zValues.add((float)offsetFromStart.getZ());
@@ -251,6 +254,7 @@ public class BoomerangFlightPath implements INBTSerializable<CompoundNBT> {
           {0.9F, 0.20F, -0.09F},
           {1.0F, 0.00F,  0.00F}
   };
+  private static final float BASE_FLIGHT_PATH_MAX_SIDEWAYS_DEFLECTION = 0.20F;
 
   private static final float BASE_FLIGHT_PATH_LENGTH = 2.26F;
 }

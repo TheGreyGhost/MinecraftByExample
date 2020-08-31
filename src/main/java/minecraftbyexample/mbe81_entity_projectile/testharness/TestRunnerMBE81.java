@@ -1,7 +1,6 @@
-package minecraftbyexample.mbe75_testing_framework;
+package minecraftbyexample.mbe81_entity_projectile.testharness;
 
 import minecraftbyexample.usefultools.debugging.DebugSettings;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.LadderBlock;
 import net.minecraft.command.CommandSource;
@@ -16,25 +15,21 @@ import org.apache.logging.log4j.Logger;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * Example test runner which is called when the player activate the ItemTestRunner
- * 1) runServerSideTest() is called on the server side, and
- * 2) runClientSideTest() is called on the client side
- * Has an example test of the ladder's behaviour.
- * Created by TGG on 4/01/2016.
+ * Test Runner for MBE81
  */
-public class TestRunner
+public class TestRunnerMBE81
 {
   public boolean runServerSideTest(World worldIn, PlayerEntity playerIn, int testNumber)
   {
     boolean success = false;
     switch (testNumber) {
-      case 1: {
-        success = test1(worldIn, playerIn);
+      case 8101: {
+        TestRunnerMBE81_8101 testRunner = new TestRunnerMBE81_8101();
+        success = testRunner.runTest(worldIn, playerIn, false);
         DebugSettings.resetDebugTest();
         break;
       }
-      default: {
-        LOGGER.error("Test Number " + testNumber + " does not exist on server side.");
+      default: {  // not intended for this TestRunner
         return false;
       }
     }
@@ -43,22 +38,11 @@ public class TestRunner
     return success;
   }
 
-  public boolean runClientSideTest(World worldIn, PlayerEntity playerIn, int testNumber)
-  {
-    boolean success = false;
-
-    switch (testNumber) {
-      case -1: {  // dummy (do nothing) - can never be called, just to prevent unreachable code compiler error
-        break;
-      }
-      default: {
-        LOGGER.error("Test Number " + testNumber + " does not exist on client side.");
-        return false;
-      }
+  public static boolean test(String failmessage, boolean result) {
+    if (!result) {
+      LOGGER.error("Test #" + failmessage + " failed.");
     }
-    LOGGER.error("Test Number " + testNumber + " called on client side:" + (success ? "success" : "failure"));
-
-    return success;
+    return result;
   }
 
   // dummy test: check the correct functioning of the ladder - to see which block it can stay attached to
@@ -117,7 +101,7 @@ public class TestRunner
    * @param location
    * @return
    */
-  private boolean teleportPlayerToTestRegion(PlayerEntity player, BlockPos location)
+  public boolean teleportPlayerToTestRegion(PlayerEntity player, BlockPos location)
   {
     if (!(player instanceof ServerPlayerEntity)) {
       throw new UnsupportedOperationException("teleport not supported on client side; server side only");
@@ -145,7 +129,7 @@ public class TestRunner
    * @param zCount >=1
    * @return true for success, false otherwise
    */
-  private boolean copyTestRegion(PlayerEntity player,
+  public boolean copyTestRegion(PlayerEntity player,
                                  BlockPos sourceOrigin, BlockPos destOrigin,
                                  int xCount, int yCount, int zCount)
   {

@@ -1,4 +1,4 @@
-package minecraftbyexample.mbe75_testing_framework;
+package minecraftbyexample.mbe81_entity_projectile.testharness;
 
 import minecraftbyexample.usefultools.debugging.DebugSettings;
 import net.minecraftforge.event.TickEvent;
@@ -11,7 +11,7 @@ import net.minecraftforge.fml.LogicalSide;
  *
  * /mbedebug test testnumber
  */
-public class DebugTestWatcher {
+public class DebugTestWatcherMBE81 {
   @SubscribeEvent
   public static void onServerTick(TickEvent.PlayerTickEvent event) {
     if (event.side != LogicalSide.SERVER) return;
@@ -20,5 +20,5 @@ public class DebugTestWatcher {
     if (testNumber == DebugSettings.NO_TEST_TRIGGERED) return;
     testRunner.runServerSideTest(event.player.world, event.player, testNumber);
   }
-  public static TestRunner testRunner = new TestRunner();
+  public static TestRunnerMBE81 testRunner = new TestRunnerMBE81();
 }

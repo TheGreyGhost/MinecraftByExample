@@ -18,6 +18,8 @@ import java.util.concurrent.locks.Lock;
  *    which can then be subsequently used for (eg) interactively adjusting rendering offsets in-game
  * 3) listAllDebugParameters() to be used for (eg) autocompletion suggestions
  *        is automatically populated when code sets or gets a name
+ * 4) getDebugTest or peekDebugTest
+ *    triggers a debug test
  *
  *  Also has parallel implementation for Vec3d instead of double.
  *
@@ -119,12 +121,29 @@ public class DebugSettings {
 
   /**
    * Returns a test number if one has been triggered.  resets after being called
+   * Beware - if you have multiple callers looking for debug tests using getDebugTest, only the first caller will ever find one.
    * @return the test number to execute, or NO_TEST_TRIGGERED if none triggered
    */
   public static synchronized int getDebugTest() {
     int value = debugTest;
     debugTest = NO_TEST_TRIGGERED;
     return value;
+  }
+
+  /**
+   * Returns a test number if one has been triggered.  does not reset after being called
+   * @return the test number to execute, or NO_TEST_TRIGGERED if none triggered
+   */
+  public static synchronized int peekDebugTest() {
+    int value = debugTest;
+    return value;
+  }
+
+  /**
+   * Resets the test trigger so it doesn't trigger again
+   */
+  public static synchronized void resetDebugTest() {
+    debugTest = NO_TEST_TRIGGERED;
   }
 
   public static final int NO_TEST_TRIGGERED = -1;
