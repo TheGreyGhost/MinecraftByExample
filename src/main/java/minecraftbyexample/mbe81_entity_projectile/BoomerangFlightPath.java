@@ -98,6 +98,10 @@ public class BoomerangFlightPath implements INBTSerializable<CompoundNBT> {
     return retval;
   }
 
+  public boolean hasReachedEndOfFlightPath(double time) {
+    return time >= flightDuration;
+  }
+
   // get the current yaw of the boomerang
   public float getYaw(double time) {
     // algorithm:

@@ -7,4 +7,8 @@ eg /mbedebug test 35<br>
 Tests:
 8100 = test all 
 8101 = test the BoomerangFlightPath class
+
+
+A number of DebugSettings are also used to assist debugging
+/mbedebug param mbe81b_notick 1   = stop the boomerang tick (freezes in place)
  

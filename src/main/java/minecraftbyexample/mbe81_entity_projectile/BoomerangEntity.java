@@ -1,10 +1,8 @@
 package minecraftbyexample.mbe81_entity_projectile;
 
-import com.google.common.collect.Lists;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import minecraftbyexample.usefultools.NBTtypesMBE;
 import minecraftbyexample.usefultools.SetBlockStateFlag;
-import net.minecraft.advancements.CriteriaTriggers;
+import minecraftbyexample.usefultools.debugging.DebugSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -17,11 +15,8 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.entity.projectile.ProjectileHelper;
 import net.minecraft.fluid.IFluidState;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
@@ -31,8 +26,6 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.network.play.server.SChangeGameStatePacket;
-import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
@@ -273,6 +266,9 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
    *    mechanics i.e. set motion (velocity) and let gravity act on the entity
    */
   public void tick() {
+    if (DebugSettings.getDebugParameter("mbe81b_notick").isPresent()) { // for debugging purposes only: freeze animation
+      return;
+    }
     super.tick();
 
     boolean isInFlight = this.dataManager.get(IN_FLIGHT);
@@ -394,7 +390,8 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
   private void tickInFlight() {
     final float TICKS_PER_SECOND = 20.0F;
     Vec3d startPosition = this.getPositionVec();
-    Vec3d endPosition = boomerangFlightPath.getPosition((ticksSpentInFlight + 1) / TICKS_PER_SECOND);
+    double timeSpentInFlight = (ticksSpentInFlight + 1) / TICKS_PER_SECOND;
+    Vec3d endPosition = boomerangFlightPath.getPosition(timeSpentInFlight);
     Vec3d motion = endPosition.subtract(startPosition);
     AxisAlignedBB aabbCollisionZone = this.getBoundingBox().expand(motion).grow(1.0D);
 
@@ -491,6 +488,11 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
                                //  eg a tripwire, or moving through a web
                                //  it doesn't mean that the boomerang has hit anything
 
+    // at the end of the pre-programmed flight path, convert to normal ballistic flight
+    //  will occur if the player has moved since throwing the boomerang
+    if (boomerangFlightPath.hasReachedEndOfFlightPath(timeSpentInFlight)) {
+      dataManager.set(IN_FLIGHT, false);
+    }
     ++ticksSpentInFlight;
   }
 
