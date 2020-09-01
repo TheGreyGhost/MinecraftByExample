@@ -25,8 +25,8 @@ public class TestRunnerMBE81_8101 {
     path3.deserializeNBT(nbt);
 
     boolean result = true;
-    result = result && TestRunnerMBE81.test("8101a", EqualsBuilder.reflectionEquals(path1, path2));
-    result = result && TestRunnerMBE81.test("8101b", EqualsBuilder.reflectionEquals(path1, path3));
+    result = TestRunnerMBE81.test(result, "8101a", EqualsBuilder.reflectionEquals(path1, path2, "flightPathX", "flightPathY", "flightPathZ" ));
+    result = TestRunnerMBE81.test(result, "8101b", EqualsBuilder.reflectionEquals(path1, path3, "flightPathX", "flightPathY", "flightPathZ"));
 
     // the following tests produce output which I then graph in Excel to ensure that the shape is correct.
 

@@ -177,9 +177,9 @@ public class BoomerangFlightPath implements INBTSerializable<CompoundNBT> {
   private void calculateFlightPath() {
     // in order to calculate the flight path, we take the
     // basic flight path coordinates, transform them to the correct shape:
-    //  1) scale the long axis (u coordinate) to match the desired distance to the apex
-    //  2) scale the sidewaysdeflection axis (v coordinate) to the desired sideways deflection
-    //  3) pitch up around the y axis to tilt the flight path to match the apexPitch
+    //  1) scale the long axis (longways coordinate) to match the desired distance to the apex
+    //  2) scale the sidewaysdeflection axis (sideways coordinate) to the desired sideways deflection
+    //  3) pitch up around the x axis to tilt the flight path to match the apexPitch
     //  3) rotate around the y axis based on the player's yaw (direction the player is facing)
     // Then we fit a cubic spline to the points.
     // The anticlockwise/clockwise and the flightDuration are handled during the lookup, not in the fitted curve
@@ -194,9 +194,9 @@ public class BoomerangFlightPath implements INBTSerializable<CompoundNBT> {
 
     for (float [] point : BASE_FLIGHT_PATH) {
       tValues.add(point[0]);
-      float u = point[1] * distanceToApex;
-      float v = (point[2] / BASE_FLIGHT_PATH_MAX_SIDEWAYS_DEFLECTION) * maximumSidewaysDeflection;
-      Vec3d offsetFromStart = new Vec3d(u, 0, v).rotatePitch(apexPitchRadians).rotateYaw(apexYawRadians);
+      float longways = point[1] * distanceToApex;
+      float sideways = (point[2] / BASE_FLIGHT_PATH_MAX_SIDEWAYS_DEFLECTION) * maximumSidewaysDeflection;
+      Vec3d offsetFromStart = new Vec3d(sideways, 0, longways).rotatePitch(-apexPitchRadians).rotateYaw(-apexYawRadians);
       xValues.add((float)offsetFromStart.getX());
       yValues.add((float)offsetFromStart.getY());
       zValues.add((float)offsetFromStart.getZ());

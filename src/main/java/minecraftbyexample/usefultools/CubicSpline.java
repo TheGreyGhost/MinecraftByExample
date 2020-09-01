@@ -15,6 +15,8 @@ package minecraftbyexample.usefultools;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import net.minecraft.util.math.MathHelper;
+
 import java.util.List;
 
 /**
@@ -147,21 +149,13 @@ public class CubicSpline {
     if (Float.isNaN(t)) {
       return t;
     }
-    if (t <= mT.get(0)) {
-      return mX.get(0);
-    }
-    if (t >= mT.get(n - 1)) {
-      return mX.get(n - 1);
-    }
+    t = MathHelper.clamp(t, mT.get(0), mT.get(n-1));
 
     // Find the index 'i' of the last point with smaller X.
     // We know this will be within the spline due to the boundary tests.
     int i = 0;
-    while (t >= mT.get(i + 1)) {
+    while (t > mT.get(i + 1)) {
       i += 1;
-      if (t == mT.get(i)) {
-        return mX.get(i);
-      }
     }
 
     // Perform cubic Hermite spline interpolation.
@@ -170,13 +164,6 @@ public class CubicSpline {
     return ( 3*h*mM[i + 1] - 6*mX.get(i+1) + 3*h*mM[i] + 6*mX.get(i)) * u * u +
            (-2*h*mM[i + 1] + 6*mX.get(i+1) - 4*h*mM[i] - 6*mX.get(i)) * u +
             h*mM[i];
-
-//    // Perform cubic Hermite spline interpolation.
-//    float h = mT.get(i + 1) - mT.get(i);
-//    float u = (t - mT.get(i)) / h;
-//    return ( 3*mM[i + 1] - 6*mX.get(i+1) +3*mM[i] + 6*mX.get(i)) * u * u +
-//            (-2*mM[i + 1] + 6*mX.get(i+1) -4*mM[i] - 6*mX.get(i)) * u +
-//            mM[i];
   }
 
   // For debugging.

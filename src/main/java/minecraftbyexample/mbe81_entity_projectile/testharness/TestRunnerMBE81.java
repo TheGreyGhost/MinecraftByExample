@@ -38,11 +38,16 @@ public class TestRunnerMBE81
     return success;
   }
 
-  public static boolean test(String failmessage, boolean result) {
-    if (!result) {
-      LOGGER.error("Test #" + failmessage + " failed.");
-    }
-    return result;
+  /**
+   * Prints success or failure of test
+   * @param resultChainIn
+   * @param failmessage
+   * @param result
+   * @return resultChainIn && result
+   */
+  public static boolean test(boolean resultChainIn, String failmessage, boolean result) {
+    LOGGER.error("Test #" + failmessage + (result ? " passed." : " failed."));
+    return resultChainIn && result;
   }
 
   // dummy test: check the correct functioning of the ladder - to see which block it can stay attached to

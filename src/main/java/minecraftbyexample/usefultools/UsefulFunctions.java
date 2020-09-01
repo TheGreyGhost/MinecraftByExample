@@ -54,12 +54,12 @@ public class UsefulFunctions
 
   /**
    * Creates a Vec3d from the given NBT tag
-   * @param nbt
-   * @param tagname
-   * @return
+   * @param nbt the Compound that holds the given tag
+   * @param tagname name of the tag that was used to save the Vec3d
+   * @return the new Vec3d
    */
   public static Vec3d deserializeVec3d(CompoundNBT nbt, String tagname) {
-    ListNBT listnbt = nbt.getList("Pos", NBTtypesMBE.DOUBLE_NBT_ID);
+    ListNBT listnbt = nbt.getList(tagname, NBTtypesMBE.DOUBLE_NBT_ID);
     Vec3d retval = new Vec3d(listnbt.getDouble(0), listnbt.getDouble(1), listnbt.getDouble(2));
     return retval;
   }
