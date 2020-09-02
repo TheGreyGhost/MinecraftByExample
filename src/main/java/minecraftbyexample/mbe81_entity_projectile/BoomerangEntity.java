@@ -266,12 +266,25 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
    *    mechanics i.e. set motion (velocity) and let gravity act on the entity
    */
   public void tick() {
+    Optional<Double> debugYaw = DebugSettings.getDebugParameter("mbe81b_yaw");
+    Optional<Double> debugPitch = DebugSettings.getDebugParameter("mbe81b_pitch");
+    if (debugYaw.isPresent()) {
+      this.rotationYaw = debugYaw.get().floatValue();
+      this.prevRotationYaw = this.rotationYaw;
+    }
+    if (debugPitch.isPresent()) {
+      this.rotationPitch = debugPitch.get().floatValue();
+      this.prevRotationPitch = this.rotationPitch;
+    }
     if (DebugSettings.getDebugParameter("mbe81b_notick").isPresent()) { // for debugging purposes only: freeze animation
       return;
     }
     super.tick();
 
     boolean isInFlight = this.dataManager.get(IN_FLIGHT);
+    if (DebugSettings.getDebugParameter("mbe81b_not_in_flight").isPresent()) {
+      this.dataManager.set(IN_FLIGHT, false);
+    }
     if (isInFlight) {
       tickInFlight();
     } else {

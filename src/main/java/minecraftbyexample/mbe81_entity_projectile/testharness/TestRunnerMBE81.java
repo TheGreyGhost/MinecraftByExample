@@ -50,6 +50,14 @@ public class TestRunnerMBE81
     return resultChainIn && result;
   }
 
+  /** Clear all DebugSettings used by the test runners
+   */
+  public static void clearAllDebugSettings() {
+    DebugSettings.clearDebugParameter("mbe81b_notick");
+
+  }
+
+
   // dummy test: check the correct functioning of the ladder - to see which block it can stay attached to
   // The test region contains a ladder attached to a stone block.  We then replace the stone with a different block and see
   //   whether the ladder remains or breaks appropriately; eg

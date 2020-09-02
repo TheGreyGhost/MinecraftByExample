@@ -1,30 +1,34 @@
 package minecraftbyexample.mbe81_entity_projectile.testharness;
 
 import minecraftbyexample.mbe81_entity_projectile.BoomerangEntity;
-import minecraftbyexample.mbe81_entity_projectile.BoomerangFlightPath;
 import minecraftbyexample.mbe81_entity_projectile.StartupCommon;
 import minecraftbyexample.usefultools.debugging.DebugSettings;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Hand;
-import net.minecraft.util.HandSide;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by TGG on 31/08/2020.
+ *
+ * Tests for:
+ * load/save of NBT
+ * ballistic path
+ * ballistic: movement underwater
+ * ballistic: movement in lava
+ *
+ * inflight: collision with solid objects - increasing numbers; three different hardnesses & observe bounce off.  Observe bounceoff in each direction
+ * inflight: collision with entity - observe damage(use breakpoint)
+ * inflight: in water adds trails
+ * test each enchantment
+ * entity bounce off test
+ * throw and catch: if either hand free, catch.  if both hands full, drop
  */
-public class TestRunnerMBE81_8102 {
+public class TestRunnerMBE81_8110 {
   public boolean runTest8102(World worldIn, PlayerEntity playerIn, boolean printFailedTestsOnly) {
     // spawn a stationary boomerang so we can see it rendering
     //  teleport the player to the observation point
