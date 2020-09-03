@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Logger;
  * entity bounce off test
  * throw and catch: if either hand free, catch.  if both hands full, drop
  */
-public class TestRunnerMBE81_8110 {
+public class TestRunnerMBE81b_C {
   public boolean runTest8102(World worldIn, PlayerEntity playerIn, boolean printFailedTestsOnly) {
     // spawn a stationary boomerang so we can see it rendering
     //  teleport the player to the observation point

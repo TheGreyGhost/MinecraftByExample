@@ -46,4 +46,8 @@ You may have incorrectly implemented createSpawnPacket for your Entity
 * My entity doesn't appear on the client; there is a renderinghandler not found error in the console<br>
 Your renderer is not registered properly. 
 
-
+Useful tips for debugging entity rendering:
+1) Does the entity exist on the client?  Put a breakpoint into YourEntity::tick()
+2) Press F3+B to show entity outline (hitbox) and facing direction
+3) WorldRenderer::updateCameraAndRender() breakpoint at the iprofiler.endStartSection("entities");
+--> entity is present, is associated with the correct renderer, is within the viewing frustrum, is at the [x,y,z] that you expect

@@ -246,17 +246,27 @@ public class BoomerangFlightPath implements INBTSerializable<CompoundNBT> {
   //  We then rotate and stretch the path so that it matches the direction that the player throws the boomerang
   //   as well as how far they throw it.
   private static final float [][] BASE_FLIGHT_PATH = {
-          {0.0F, 0.00F,  0.00F},
-          {0.1F, 0.20F,  0.09F},
-          {0.2F, 0.42F,  0.17F},
-          {0.3F, 0.64F,  0.20F},
-          {0.4F, 0.86F,  0.17F},
-          {0.5F, 1.00F,  0.0F},
-          {0.6F, 0.86F, -0.17F},
-          {0.7F, 0.64F, -0.20F},
-          {0.8F, 0.42F, -0.17F},
-          {0.9F, 0.20F, -0.09F},
-          {1.0F, 0.00F,  0.00F}
+          {0.00F, 0.000F,  0.000F},
+          {0.05F, 0.101F,  0.050F},
+          {0.10F, 0.204F,  0.094F},
+          {0.15F, 0.310F,  0.134F},
+          {0.20F, 0.419F,  0.166F},
+          {0.25F, 0.528F,  0.188F},
+          {0.30F, 0.643F,  0.200F},
+          {0.35F, 0.755F,  0.194F},
+          {0.40F, 0.864F,  0.165F},
+          {0.45F, 0.958F,  0.102F},
+          {0.50F, 1.000F,  0.000F},
+          {0.55F, 0.959F, -0.102F},
+          {0.60F, 0.867F, -0.165F},
+          {0.65F, 0.757F, -0.194F},
+          {0.70F, 0.643F, -0.200F},
+          {0.75F, 0.528F, -0.188F},
+          {0.80F, 0.419F, -0.166F},
+          {0.85F, 0.310F, -0.134F},
+          {0.90F, 0.204F, -0.094F},
+          {0.95F, 0.101F, -0.050F},
+          {1.00F, 0.000F,  0.000F}
   };
   private static final float BASE_FLIGHT_PATH_MAX_SIDEWAYS_DEFLECTION = 0.20F;
 

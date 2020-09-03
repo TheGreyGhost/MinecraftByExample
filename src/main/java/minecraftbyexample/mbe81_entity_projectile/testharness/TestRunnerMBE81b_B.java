@@ -4,6 +4,7 @@ import minecraftbyexample.mbe81_entity_projectile.BoomerangEntity;
 import minecraftbyexample.mbe81_entity_projectile.BoomerangFlightPath;
 import minecraftbyexample.mbe81_entity_projectile.StartupCommon;
 import minecraftbyexample.usefultools.debugging.DebugSettings;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -24,13 +25,23 @@ import java.util.List;
 /**
  * Created by TGG on 31/08/2020.
  */
-public class TestRunnerMBE81_8102 {
+public class TestRunnerMBE81b_B {
+
+  public boolean runTest(int test, World worldIn, PlayerEntity playerIn, boolean printFailedTestsOnly) {
+    if (test == 8102) return runTest8102(worldIn, playerIn, printFailedTestsOnly);
+    if (test == 8103) return runTest8103(worldIn, playerIn, printFailedTestsOnly);
+    if (test == 8104) return runTest8104(worldIn, playerIn, printFailedTestsOnly);
+    if (test == 8105) return runTest8105(worldIn, playerIn, printFailedTestsOnly);
+    if (test == 8106) return runTest8106(worldIn, playerIn, printFailedTestsOnly);
+    return false;
+  }
+
   public boolean runTest8102(World worldIn, PlayerEntity playerIn, boolean printFailedTestsOnly) {
     // spawn a stationary boomerang so we can see it rendering
     //  teleport the player to the observation point
     TestRunnerMBE81.clearAllDebugSettings();
     Vec3d START_POINT = new Vec3d(0, 200, 0);
-    Vec3d OBSERVER_POINT = new Vec3d(3, 200, 0);
+    Vec3d OBSERVER_POINT = new Vec3d(0, 200, 0);
     TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
 
     ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
@@ -145,6 +156,18 @@ public class TestRunnerMBE81_8102 {
             startPoint, apexYaw, apexPitch, distanceToApex,
             maximumSidewaysDeflection, anticlockwise, flightSpeed);
   }
+
+  private void junk() {
+//    if ( (this.renderManager.shouldRender(entity, clippinghelperimpl, d0, d1, d2)
+//            || entity.isRidingOrBeingRiddenBy(this.mc.player) )
+//        && (entity != activeRenderInfoIn.getRenderViewEntity()
+//            || activeRenderInfoIn.isThirdPerson()
+//            || activeRenderInfoIn.getRenderViewEntity() instanceof LivingEntity
+//            && ((LivingEntity)activeRenderInfoIn.getRenderViewEntity()).isSleeping())
+//        && (!(entity instanceof ClientPlayerEntity) || activeRenderInfoIn.getRenderViewEntity() == entity)
+//        ) {
+
+    }
 
   private static final Logger LOGGER = LogManager.getLogger();
 }

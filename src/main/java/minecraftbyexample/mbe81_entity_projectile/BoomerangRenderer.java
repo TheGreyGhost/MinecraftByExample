@@ -65,6 +65,14 @@ public class BoomerangRenderer extends EntityRenderer<BoomerangEntity> {
             MathHelper.lerp(partialTicks, boomerangEntity.prevRotationYaw, boomerangEntity.rotationYaw) - 90.0F) );
     matrixStack.rotate(Vector3f.ZP.rotationDegrees(
             MathHelper.lerp(partialTicks, boomerangEntity.prevRotationPitch, boomerangEntity.rotationPitch)) );
+    matrixStack.rotate(Vector3f.XP.rotationDegrees(
+            boomerangEntity.getEndOverEndRotation(partialTicks)) );
+
+
+//    final float Z_AXIS_ROTATION_TO_0YAW_0PITCH = -90;  // this is the rotation required to make our boomerang face the right way when yaw = 0 and pitch = 0
+//                                                       // (the model was created with the flat facing pointing upwards, but during flight the boomerang
+//
+//    matrixStack.rotate(Vector3f.ZP.rotationDegrees(Z_AXIS_ROTATION_TO_0YAW_0PITCH) );
 
     final float MODEL_SIZE_IN_ORIGINAL_COORDINATES = 14.0F;  // size of the wavefront model
     final float TARGET_SIZE_WHEN_RENDERED = 0.5F;  // desired size when rendered (in metres)

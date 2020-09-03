@@ -55,6 +55,7 @@ import java.util.stream.Collectors;
 public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnData {
   public BoomerangEntity(EntityType<? extends BoomerangEntity> entityType, World world) {
     super(entityType, world);
+
   }
 
   /** Create a new BoomerangEntity
@@ -82,6 +83,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     }
     // datamanager parameters are automatically synchronised to the client
 
+    this.setPosition(startPosition.getX(), startPosition.getY(), startPosition.getZ());
     dataManager.set(ITEMSTACK, boomerangItemStack);
     dataManager.set(IN_FLIGHT, true);
     boomerangFlightPath = new BoomerangFlightPath(startPosition, apexYaw, apexPitch, distanceToApex,
@@ -133,12 +135,14 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
   private UUID throwerID = null;
 
   // member variables that need to be saved to record its state
-  private BoomerangFlightPath boomerangFlightPath;
+  private BoomerangFlightPath boomerangFlightPath = new BoomerangFlightPath();  //dummy
   private int pickupDelay = 0;        // delay until a non-in-flight boomerang can be picked up (in ticks)
-  private int ticksSpentNotInFlight;
+  private int ticksSpentNotInFlight = 0;
   private double damage = 2.0D;
   private float remainingMomentum = 1.0F;  // the fraction of momentum remaining - reduced when harvesting blocks.
                                            // the boomerang stops flying when this is reduced to zero
+  private float endOverEndRotation = 0.0F;
+  private float prevEndOverEndRotation = 0.0F;
 
   // member variables that are regenerated from other information, hence don't need saving
   private float knockbackLevel;  // 0.0 -> 1.0
@@ -242,13 +246,13 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
   @OnlyIn(Dist.CLIENT)
   public void setVelocity(double x, double y, double z) {
     this.setMotion(x, y, z);
-    if (this.prevRotationPitch == 0.0F && this.prevRotationYaw == 0.0F) {
-      float f = MathHelper.sqrt(x * x + z * z);
-      this.rotationYaw = (float)(MathHelper.atan2(x, z) * (double)(180F / (float)Math.PI));
-      this.rotationPitch = (float)(MathHelper.atan2(y, (double)f) * (double)(180F / (float)Math.PI));
-      this.prevRotationYaw = this.rotationYaw;
-      this.prevRotationPitch = this.rotationPitch;
-    }
+//    if (this.prevRotationPitch == 0.0F && this.prevRotationYaw == 0.0F) {
+//      float f = MathHelper.sqrt(x * x + z * z);
+//      this.rotationYaw = (float)(MathHelper.atan2(x, z) * (double)(180F / (float)Math.PI));
+//      this.rotationPitch = (float)(MathHelper.atan2(y, (double)f) * (double)(180F / (float)Math.PI));
+//      this.prevRotationYaw = this.rotationYaw;
+//      this.prevRotationPitch = this.rotationPitch;
+//    }
   }
 
   private int ticksSpentInFlight = 0;
@@ -268,6 +272,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
   public void tick() {
     Optional<Double> debugYaw = DebugSettings.getDebugParameter("mbe81b_yaw");
     Optional<Double> debugPitch = DebugSettings.getDebugParameter("mbe81b_pitch");
+    Optional<Double> debugEndOverEndRotation = DebugSettings.getDebugParameter("mbe81b_endoverendrotation");
     if (debugYaw.isPresent()) {
       this.rotationYaw = debugYaw.get().floatValue();
       this.prevRotationYaw = this.rotationYaw;
@@ -275,6 +280,10 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     if (debugPitch.isPresent()) {
       this.rotationPitch = debugPitch.get().floatValue();
       this.prevRotationPitch = this.rotationPitch;
+    }
+    if (debugEndOverEndRotation.isPresent()) {
+      this.endOverEndRotation = debugEndOverEndRotation.get().floatValue();
+      this.prevEndOverEndRotation = this.endOverEndRotation;
     }
     if (DebugSettings.getDebugParameter("mbe81b_notick").isPresent()) { // for debugging purposes only: freeze animation
       return;
@@ -305,6 +314,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     this.prevPosX = this.getPosX();
     this.prevPosY = this.getPosY();
     this.prevPosZ = this.getPosZ();
+    this.prevEndOverEndRotation = this.endOverEndRotation;  // no spinning when not in flight
     Vec3d initialVelocity = this.getMotion();
     if (this.areEyesInFluid(FluidTags.WATER)) {
       this.applyFloatMotion();
@@ -456,7 +466,8 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
       }
     }
     this.rotationYaw = boomerangFlightPath.getYaw((ticksSpentInFlight + 1) / TICKS_PER_SECOND);
-    this.rotationPitch = 0;  // later - rotation  todo
+    this.rotationPitch = -90;  // the model has its flat face point up, but during flight it needs to be pointing sideways, which
+                               // corresponds to pitching it up by 90 degrees.
 
 //    this.rotationPitch = (float)(MathHelper.atan2(vec3d.y, (double)horizontalSpeed) * (double)(180F / (float)Math.PI));
 
@@ -479,6 +490,11 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     // smooth the rotations so that they're not abrupt / jerky
     this.rotationPitch = MathHelper.lerp(0.2F, this.prevRotationPitch, this.rotationPitch);
     this.rotationYaw = MathHelper.lerp(0.2F, this.prevRotationYaw, this.rotationYaw);
+
+    final float ROTATIONS_PER_SECOND = 2.0F;
+    final float DEGREES_PER_TICK = 360.0F * ROTATIONS_PER_SECOND / TICKS_PER_SECOND;
+    this.prevEndOverEndRotation = MathHelper.wrapDegrees(this.endOverEndRotation);
+    this.endOverEndRotation = this.prevEndOverEndRotation + DEGREES_PER_TICK;
 
     Vec3d newPosition = this.getPositionVec().add(motion);
 
@@ -770,6 +786,11 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
       entityIn.onItemPickup(this, 1);
       this.remove();
     }
+  }
+
+  public float getEndOverEndRotation(float partialTicks) {
+    float rawAngle = MathHelper.lerp(partialTicks, prevEndOverEndRotation, endOverEndRotation);
+    return MathHelper.wrapDegrees(rawAngle);
   }
 
   /**

@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by TGG on 31/08/2020.
  */
-public class TestRunnerMBE81_8101 {
+public class TestRunnerMBE81b_A {
   public boolean runTest(World worldIn, PlayerEntity playerIn, boolean printFailedTestsOnly) {
     // test a,b: create a path, serialise it, deserialise it, compare to original
     Vec3d START_POINT = new Vec3d(1, 2, 3);

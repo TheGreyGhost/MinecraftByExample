@@ -24,8 +24,14 @@ public class TestRunnerMBE81
     boolean success = false;
     switch (testNumber) {
       case 8101: {
-        TestRunnerMBE81_8101 testRunner = new TestRunnerMBE81_8101();
+        TestRunnerMBE81b_A testRunner = new TestRunnerMBE81b_A();
         success = testRunner.runTest(worldIn, playerIn, false);
+        DebugSettings.resetDebugTest();
+        break;
+      }
+      case 8102: case 8103: case 8104: case 8105: case 8106: {
+        TestRunnerMBE81b_B testRunner = new TestRunnerMBE81b_B();
+        success = testRunner.runTest(testNumber, worldIn, playerIn, false);
         DebugSettings.resetDebugTest();
         break;
       }
