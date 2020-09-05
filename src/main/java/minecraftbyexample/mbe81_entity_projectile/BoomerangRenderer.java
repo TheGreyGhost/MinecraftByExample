@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import minecraftbyexample.mbe21_tileentityrenderer.BlockMBE21;
 import minecraftbyexample.mbe21_tileentityrenderer.StartupCommon;
+import minecraftbyexample.usefultools.debugging.DebugSettings;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
@@ -65,14 +66,23 @@ public class BoomerangRenderer extends EntityRenderer<BoomerangEntity> {
             MathHelper.lerp(partialTicks, boomerangEntity.prevRotationYaw, boomerangEntity.rotationYaw) - 90.0F) );
     matrixStack.rotate(Vector3f.ZP.rotationDegrees(
             MathHelper.lerp(partialTicks, boomerangEntity.prevRotationPitch, boomerangEntity.rotationPitch)) );
-    matrixStack.rotate(Vector3f.XP.rotationDegrees(
+
+    // rotate the boomerang end-over-end
+    matrixStack.rotate(Vector3f.YP.rotationDegrees(
             boomerangEntity.getEndOverEndRotation(partialTicks)) );
 
-
-//    final float Z_AXIS_ROTATION_TO_0YAW_0PITCH = -90;  // this is the rotation required to make our boomerang face the right way when yaw = 0 and pitch = 0
-//                                                       // (the model was created with the flat facing pointing upwards, but during flight the boomerang
-//
-//    matrixStack.rotate(Vector3f.ZP.rotationDegrees(Z_AXIS_ROTATION_TO_0YAW_0PITCH) );
+    // 3D rotations roll/pitch/yaw are hard to get right.  The axis and correct order aren't obvious.
+    //  I've found it easiest to just test it interactively, using the DebugSettings method eg using the combinations below
+    //  but it's still quite awkward.
+//    matrixStack.rotate(Vector3f.XP.rotationDegrees(DebugSettings.getDebugParameter("xp1").orElse(0.0).floatValue()));
+//    matrixStack.rotate(Vector3f.YP.rotationDegrees(DebugSettings.getDebugParameter("yp1").orElse(0.0).floatValue()));
+//    matrixStack.rotate(Vector3f.ZP.rotationDegrees(DebugSettings.getDebugParameter("zp1").orElse(0.0).floatValue()));
+//    matrixStack.rotate(Vector3f.XP.rotationDegrees(DebugSettings.getDebugParameter("xp2").orElse(0.0).floatValue()));
+//    matrixStack.rotate(Vector3f.YP.rotationDegrees(DebugSettings.getDebugParameter("yp2").orElse(0.0).floatValue()));
+//    matrixStack.rotate(Vector3f.ZP.rotationDegrees(DebugSettings.getDebugParameter("zp2").orElse(0.0).floatValue()));
+//    matrixStack.rotate(Vector3f.XP.rotationDegrees(DebugSettings.getDebugParameter("xp3").orElse(0.0).floatValue()));
+//    matrixStack.rotate(Vector3f.YP.rotationDegrees(DebugSettings.getDebugParameter("yp3").orElse(0.0).floatValue()));
+//    matrixStack.rotate(Vector3f.ZP.rotationDegrees(DebugSettings.getDebugParameter("zp3").orElse(0.0).floatValue()));
 
     final float MODEL_SIZE_IN_ORIGINAL_COORDINATES = 14.0F;  // size of the wavefront model
     final float TARGET_SIZE_WHEN_RENDERED = 0.5F;  // desired size when rendered (in metres)

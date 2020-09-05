@@ -16,6 +16,9 @@ import net.minecraft.command.arguments.MessageArgument;
 import net.minecraft.command.arguments.Vec3Argument;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * Created by TGG on 11/02/2020.
  *
@@ -41,8 +44,7 @@ import net.minecraftforge.registries.ForgeRegistries;
  */
 public class MBEdebugCommand {
   public static void register(CommandDispatcher<CommandSource> dispatcher) {
-    if (haveRegistered) return;
-    haveRegistered = true;
+    if (dispatcher.findNode(Arrays.asList("mbedebug")) != null) return;
     LiteralArgumentBuilder<CommandSource> mbedebugCommand
       = Commands.literal("mbedebug")
             .then(Commands.literal("param")
@@ -92,6 +94,4 @@ public class MBEdebugCommand {
             );
     dispatcher.register(mbedebugCommand);
   }
-
-  private static boolean haveRegistered = false;
 }
