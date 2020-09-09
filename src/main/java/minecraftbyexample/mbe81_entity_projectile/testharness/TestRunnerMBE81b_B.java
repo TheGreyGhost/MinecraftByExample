@@ -4,6 +4,7 @@ import minecraftbyexample.mbe81_entity_projectile.BoomerangEntity;
 import minecraftbyexample.mbe81_entity_projectile.BoomerangFlightPath;
 import minecraftbyexample.mbe81_entity_projectile.StartupCommon;
 import minecraftbyexample.usefultools.debugging.DebugSettings;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -24,6 +25,12 @@ import java.util.List;
 
 /**
  * Created by TGG on 31/08/2020.
+ *
+ * tests of flight path:
+ * 2 = stationary to check rendering and angles
+ * 3 - 6 = different path shapes/directions
+ * 7 = underwater i.e. in water adds trails
+
  */
 public class TestRunnerMBE81b_B {
 
@@ -33,6 +40,7 @@ public class TestRunnerMBE81b_B {
     if (test == 8104) return runTest8104(worldIn, playerIn, printFailedTestsOnly);
     if (test == 8105) return runTest8105(worldIn, playerIn, printFailedTestsOnly);
     if (test == 8106) return runTest8106(worldIn, playerIn, printFailedTestsOnly);
+    if (test == 8107) return runTest8107(worldIn, playerIn, printFailedTestsOnly);
     return false;
   }
 
@@ -136,6 +144,29 @@ public class TestRunnerMBE81b_B {
     BoomerangEntity boomerangEntity = generateEntity("Entity8106", sb, worldIn, playerIn, thrownBoomerang,
             START_POINT,  0, 0,  10,
             2,  true, 1);
+    worldIn.addEntity(boomerangEntity);
+    LOGGER.error("Spawned Entity " + sb.toString());
+    return true;
+  }
+
+  public boolean runTest8107(World worldIn, PlayerEntity playerIn, boolean printFailedTestsOnly) {
+    // spawn a boomerang so we can watch its flight path.  right hand throw
+    //  teleport the player to the observation point if far away
+    TestRunnerMBE81.clearAllDebugSettings();
+    Vec3d START_POINT = new Vec3d(100, 200, 0);
+    Vec3d OBSERVER_POINT = new Vec3d(103, 200, 0);
+    BlockPos centre = new BlockPos(100, 199, 0);
+    TestRunnerMBE81.createBasin(playerIn, centre, 10, 1, Blocks.WATER.getDefaultState());
+
+    if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
+      TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
+    }
+    ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
+
+    StringBuilder sb = new StringBuilder();
+    BoomerangEntity boomerangEntity = generateEntity("Entity8107", sb, worldIn, playerIn, thrownBoomerang,
+            START_POINT, 90, 0, 10,
+            2,  false, 4);
     worldIn.addEntity(boomerangEntity);
     LOGGER.error("Spawned Entity " + sb.toString());
     return true;

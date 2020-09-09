@@ -3,6 +3,7 @@ package minecraftbyexample.mbe81_entity_projectile.testharness;
 import minecraftbyexample.mbe81_entity_projectile.BoomerangEntity;
 import minecraftbyexample.mbe81_entity_projectile.StartupCommon;
 import minecraftbyexample.usefultools.debugging.DebugSettings;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -16,39 +17,109 @@ import org.apache.logging.log4j.Logger;
  * Created by TGG on 31/08/2020.
  *
  * Tests for:
- * load/save of NBT
  * ballistic path
  * ballistic: movement underwater
  * ballistic: movement in lava
  *
  * inflight: collision with solid objects - increasing numbers; three different hardnesses & observe bounce off.  Observe bounceoff in each direction
  * inflight: collision with entity - observe damage(use breakpoint)
- * inflight: in water adds trails
  * test each enchantment
  * entity bounce off test
  * throw and catch: if either hand free, catch.  if both hands full, drop
  */
 public class TestRunnerMBE81b_C {
-  public boolean runTest8102(World worldIn, PlayerEntity playerIn, boolean printFailedTestsOnly) {
-    // spawn a stationary boomerang so we can see it rendering
+  public boolean runTest8110(World worldIn, PlayerEntity playerIn, boolean printFailedTestsOnly) {
+    // ballistic movement: drop from a height and bounce
     //  teleport the player to the observation point
     TestRunnerMBE81.clearAllDebugSettings();
-    Vec3d START_POINT = new Vec3d(0, 200, 0);
-    Vec3d OBSERVER_POINT = new Vec3d(3, 200, 0);
+    Vec3d START_POINT = new Vec3d(200, 210, 0);
+    Vec3d OBSERVER_POINT = new Vec3d(203, 200, 0);
     TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
+
+    BlockPos centre = new BlockPos(200, 199, 0);
+    TestRunnerMBE81.createBasin(playerIn, centre, 10, 1, Blocks.AIR.getDefaultState());
+    DebugSettings.setDebugParameter("mbe81b_not_in_flight", 1);
 
     ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
 
-    DebugSettings.setDebugParameter("mbe81b_notick", 1);
     StringBuilder sb = new StringBuilder();
-    BoomerangEntity boomerangEntity = generateEntity("Entity8102", sb, worldIn, playerIn, thrownBoomerang,
-            START_POINT,90,   0,  10,
-            2,  false, 4);
+    BoomerangEntity boomerangEntity = generateEntity("Entity8110", sb, worldIn, playerIn, thrownBoomerang,
+            START_POINT, 90, 0,  10,
+            2,  false, 1);
     worldIn.addEntity(boomerangEntity);
     LOGGER.error("Spawned Entity " + sb.toString());
-    LOGGER.error("Use /mbedebug param mbe81b_yaw  and /mbedebug param mbe81b_pitch to adjust the rendering interactively.");
     return true;
   }
+
+  public boolean runTest8111(World worldIn, PlayerEntity playerIn, boolean printFailedTestsOnly) {
+    // ballistic movement: drop from a height with sideways motion and bounce
+    //  teleport the player to the observation point
+    TestRunnerMBE81.clearAllDebugSettings();
+    Vec3d START_POINT = new Vec3d(200, 204, 100);
+    Vec3d OBSERVER_POINT = new Vec3d(203, 200, 100);
+    TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
+
+    BlockPos centre = new BlockPos(200, 199, 100);
+    TestRunnerMBE81.createBasin(playerIn, centre, 10, 1, Blocks.AIR.getDefaultState());
+    DebugSettings.setDebugParameter("mbe81b_not_in_flight", 1);
+
+    ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
+
+    StringBuilder sb = new StringBuilder();
+    BoomerangEntity boomerangEntity = generateEntity("Entity8111", sb, worldIn, playerIn, thrownBoomerang,
+            START_POINT, 90, 0,  10,
+            2,  false, 10);
+    worldIn.addEntity(boomerangEntity);
+    LOGGER.error("Spawned Entity " + sb.toString());
+    return true;
+  }
+
+  public boolean runTest8112(World worldIn, PlayerEntity playerIn, boolean printFailedTestsOnly) {
+    // ballistic movement: drop from a height into water
+    //  teleport the player to the observation point
+    TestRunnerMBE81.clearAllDebugSettings();
+    Vec3d START_POINT = new Vec3d(200, 210, 200);
+    Vec3d OBSERVER_POINT = new Vec3d(203, 200, 200);
+    TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
+
+    BlockPos centre = new BlockPos(200, 199, 200);
+    TestRunnerMBE81.createBasin(playerIn, centre, 10, 3, Blocks.WATER.getDefaultState());
+    DebugSettings.setDebugParameter("mbe81b_not_in_flight", 1);
+
+    ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
+
+    StringBuilder sb = new StringBuilder();
+    BoomerangEntity boomerangEntity = generateEntity("Entity8112", sb, worldIn, playerIn, thrownBoomerang,
+            START_POINT, 90, 0,  10,
+            2,  false, 1);
+    worldIn.addEntity(boomerangEntity);
+    LOGGER.error("Spawned Entity " + sb.toString());
+    return true;
+  }
+
+  public boolean runTest8113(World worldIn, PlayerEntity playerIn, boolean printFailedTestsOnly) {
+    // ballistic movement: drop from a height and bounce
+    //  teleport the player to the observation point
+    TestRunnerMBE81.clearAllDebugSettings();
+    Vec3d START_POINT = new Vec3d(200, 210, 300);
+    Vec3d OBSERVER_POINT = new Vec3d(203, 200, 300);
+    TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
+
+    BlockPos centre = new BlockPos(200, 199, 300);
+    TestRunnerMBE81.createBasin(playerIn, centre, 10, 3, Blocks.LAVA.getDefaultState());
+    DebugSettings.setDebugParameter("mbe81b_not_in_flight", 1);
+
+    ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
+
+    StringBuilder sb = new StringBuilder();
+    BoomerangEntity boomerangEntity = generateEntity("Entity8113", sb, worldIn, playerIn, thrownBoomerang,
+            START_POINT, 90, 0,  10,
+            2,  false, 1);
+    worldIn.addEntity(boomerangEntity);
+    LOGGER.error("Spawned Entity " + sb.toString());
+    return true;
+  }
+
 
   public boolean runTest8103(World worldIn, PlayerEntity playerIn, boolean printFailedTestsOnly) {
     // spawn a boomerang so we can watch its flight path.  Flat path, no yaw

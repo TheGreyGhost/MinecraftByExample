@@ -1,6 +1,7 @@
 package minecraftbyexample.mbe81_entity_projectile.testharness;
 
 import minecraftbyexample.usefultools.debugging.DebugSettings;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.LadderBlock;
 import net.minecraft.command.CommandSource;
@@ -29,7 +30,7 @@ public class TestRunnerMBE81
         DebugSettings.resetDebugTest();
         break;
       }
-      case 8102: case 8103: case 8104: case 8105: case 8106: {
+      case 8102: case 8103: case 8104: case 8105: case 8106: case 8107:{
         TestRunnerMBE81b_B testRunner = new TestRunnerMBE81b_B();
         success = testRunner.runTest(testNumber, worldIn, playerIn, false);
         DebugSettings.resetDebugTest();
@@ -183,6 +184,22 @@ public class TestRunnerMBE81
       return false;
     }
     return (success != 0);
+  }
+
+  /*
+  Create a square basin (eg of water or lava)
+   */
+  public static void createBasin(PlayerEntity player, BlockPos centre, int radius, int depth, BlockState fillBlock) {
+    World world = player.getEntityWorld();
+    for (int y = 0; y <= depth; ++y) {
+      for (int x = -radius; x <= radius; ++x) {
+        for (int z = -radius; z <= radius; ++z) {
+          boolean atedge = y == 0 || x == -radius || x == radius || z == -radius || z == radius;
+          world.setBlockState(new BlockPos(x + centre.getX(), y + centre.getY(), z + centre.getZ()),
+                  atedge ? Blocks.STONE.getDefaultState() : fillBlock);
+        }
+      }
+    }
   }
 
   private static final Logger LOGGER = LogManager.getLogger();
