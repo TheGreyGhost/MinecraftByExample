@@ -9,6 +9,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -47,7 +48,7 @@ public class TestRunnerMBE81b_C {
             START_POINT, 90, 0,  10,
             2,  false, 1);
     worldIn.addEntity(boomerangEntity);
-    LOGGER.error("Spawned Entity " + sb.toString());
+    LOGGER.error("Spawned Entity " + sb.toString() + ": drop from a height and bounce");
     return true;
   }
 
@@ -70,7 +71,7 @@ public class TestRunnerMBE81b_C {
             START_POINT, 90, 0,  10,
             2,  false, 10);
     worldIn.addEntity(boomerangEntity);
-    LOGGER.error("Spawned Entity " + sb.toString());
+    LOGGER.error("Spawned Entity " + sb.toString() + ": drop from a height with sideways motion and bounce");
     return true;
   }
 
@@ -93,12 +94,12 @@ public class TestRunnerMBE81b_C {
             START_POINT, 90, 0,  10,
             2,  false, 1);
     worldIn.addEntity(boomerangEntity);
-    LOGGER.error("Spawned Entity " + sb.toString());
+    LOGGER.error("Spawned Entity " + sb.toString() + ": drop from a height into water: should bob up and down");
     return true;
   }
 
   public boolean runTest8113(World worldIn, PlayerEntity playerIn, boolean printFailedTestsOnly) {
-    // ballistic movement: drop from a height and bounce
+    // ballistic movement: drop from a height into lava
     //  teleport the player to the observation point
     TestRunnerMBE81.clearAllDebugSettings();
     Vec3d START_POINT = new Vec3d(200, 210, 300);
@@ -116,92 +117,117 @@ public class TestRunnerMBE81b_C {
             START_POINT, 90, 0,  10,
             2,  false, 1);
     worldIn.addEntity(boomerangEntity);
-    LOGGER.error("Spawned Entity " + sb.toString());
+    LOGGER.error("Spawned Entity " + sb.toString() + ": drop from a height into lava: should bounce around on the surface");
     return true;
   }
 
-
-  public boolean runTest8103(World worldIn, PlayerEntity playerIn, boolean printFailedTestsOnly) {
-    // spawn a boomerang so we can watch its flight path.  Flat path, no yaw
+  public boolean runTest8114(World worldIn, PlayerEntity playerIn, boolean printFailedTestsOnly) {
+    // spawn a boomerang and watch it smash through a line of blocks until it loses all momentum and bounces off
     //  teleport the player to the observation point if far away
     TestRunnerMBE81.clearAllDebugSettings();
-    Vec3d START_POINT = new Vec3d(0, 200, 0);
-    Vec3d OBSERVER_POINT = new Vec3d(3, 200, 0);
+    Vec3d START_POINT = new Vec3d(0, 200, 1000);
+    Vec3d OBSERVER_POINT = new Vec3d(3, 200, 1000);
 
     if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
     ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
+    TestRunnerMBE81.createLine(playerIn, new BlockPos(4, 200, 1000), 10, new Vec3i(4, 0, 0), Blocks.ACACIA_WOOD.getDefaultState());
 
     StringBuilder sb = new StringBuilder();
-    BoomerangEntity boomerangEntity = generateEntity("Entity8103", sb, worldIn, playerIn, thrownBoomerang,
-            START_POINT,  0, 0,  10,
-            2,  false, 1);
+    BoomerangEntity boomerangEntity = generateEntity("Entity8114", sb, worldIn, playerIn, thrownBoomerang,
+            START_POINT,  -90, 0,  100,
+            0,  false, 1);
     worldIn.addEntity(boomerangEntity);
-    LOGGER.error("Spawned Entity " + sb.toString());
+    LOGGER.error("Spawned Entity " + sb.toString() + ": break through blocks moving east");
     return true;
   }
 
-  public boolean runTest8104(World worldIn, PlayerEntity playerIn, boolean printFailedTestsOnly) {
-    // spawn a boomerang so we can watch its flight path.  60 degree yaw
+  public boolean runTest8115(World worldIn, PlayerEntity playerIn, boolean printFailedTestsOnly) {
+    // spawn a boomerang and watch it smash through a line of blocks until it loses all momentum and bounces off
     //  teleport the player to the observation point if far away
     TestRunnerMBE81.clearAllDebugSettings();
-    Vec3d START_POINT = new Vec3d(0, 200, 0);
-    Vec3d OBSERVER_POINT = new Vec3d(3, 200, 0);
+    Vec3d START_POINT = new Vec3d(0, 200, 1100);
+    Vec3d OBSERVER_POINT = new Vec3d(3, 200, 1100);
 
     if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
     ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
+    TestRunnerMBE81.createLine(playerIn, new BlockPos(-4, 200, 1100), 10, new Vec3i(-4, 0, 0), Blocks.ACACIA_WOOD.getDefaultState());
 
     StringBuilder sb = new StringBuilder();
-    BoomerangEntity boomerangEntity = generateEntity("Entity8104", sb, worldIn, playerIn, thrownBoomerang,
-            START_POINT,  60, 0,  10,
-            2,  false, 1);
+    BoomerangEntity boomerangEntity = generateEntity("Entity8115", sb, worldIn, playerIn, thrownBoomerang,
+            START_POINT,  90, 0,  100,
+            0,  false, 1);
     worldIn.addEntity(boomerangEntity);
-    LOGGER.error("Spawned Entity " + sb.toString());
+    LOGGER.error("Spawned Entity " + sb.toString() + ": break through blocks moving west");
     return true;
   }
 
-  public boolean runTest8105(World worldIn, PlayerEntity playerIn, boolean printFailedTestsOnly) {
-    // spawn a boomerang so we can watch its flight path.  pitched path
+  public boolean runTest8116(World worldIn, PlayerEntity playerIn, boolean printFailedTestsOnly) {
+    // spawn a boomerang and watch it smash through a line of blocks until it loses all momentum and bounces off
     //  teleport the player to the observation point if far away
     TestRunnerMBE81.clearAllDebugSettings();
-    Vec3d START_POINT = new Vec3d(0, 200, 0);
-    Vec3d OBSERVER_POINT = new Vec3d(3, 200, 0);
+    Vec3d START_POINT = new Vec3d(0, 200, 1200);
+    Vec3d OBSERVER_POINT = new Vec3d(3, 200, 1200);
 
     if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
     ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
+    TestRunnerMBE81.createLine(playerIn, new BlockPos(0, 200, 1204), 10, new Vec3i(0, 0, 4), Blocks.ACACIA_WOOD.getDefaultState());
 
     StringBuilder sb = new StringBuilder();
-    BoomerangEntity boomerangEntity = generateEntity("Entity8105", sb, worldIn, playerIn, thrownBoomerang,
-            START_POINT,  0, -30,  10,
-            2,  false, 1);
+    BoomerangEntity boomerangEntity = generateEntity("Entity8116", sb, worldIn, playerIn, thrownBoomerang,
+            START_POINT,  0, 0,  100,
+            0,  false, 1);
     worldIn.addEntity(boomerangEntity);
-    LOGGER.error("Spawned Entity " + sb.toString());
+    LOGGER.error("Spawned Entity " + sb.toString() + ": break through blocks moving south");
     return true;
   }
 
-  public boolean runTest8106(World worldIn, PlayerEntity playerIn, boolean printFailedTestsOnly) {
-    // spawn a boomerang so we can watch its flight path.  right hand throw
+  public boolean runTest8117(World worldIn, PlayerEntity playerIn, boolean printFailedTestsOnly) {
+    // spawn a boomerang and watch it smash through a line of blocks until it loses all momentum and bounces off
     //  teleport the player to the observation point if far away
     TestRunnerMBE81.clearAllDebugSettings();
-    Vec3d START_POINT = new Vec3d(0, 200, 0);
-    Vec3d OBSERVER_POINT = new Vec3d(3, 200, 0);
+    Vec3d START_POINT = new Vec3d(0, 200, 1300);
+    Vec3d OBSERVER_POINT = new Vec3d(3, 200, 1300);
 
     if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
     ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
+    TestRunnerMBE81.createLine(playerIn, new BlockPos(4, 200, 1300), 10, new Vec3i(0, 0, -4), Blocks.ACACIA_WOOD.getDefaultState());
 
     StringBuilder sb = new StringBuilder();
-    BoomerangEntity boomerangEntity = generateEntity("Entity8106", sb, worldIn, playerIn, thrownBoomerang,
-            START_POINT,  0, 0,  10,
-            2,  true, 1);
+    BoomerangEntity boomerangEntity = generateEntity("Entity8117", sb, worldIn, playerIn, thrownBoomerang,
+            START_POINT,  180, 0,  100,
+            0,  false, 1);
     worldIn.addEntity(boomerangEntity);
-    LOGGER.error("Spawned Entity " + sb.toString());
+    LOGGER.error("Spawned Entity " + sb.toString() + ": break through blocks moving north");
+    return true;
+  }
+
+  public boolean runTest8118(World worldIn, PlayerEntity playerIn, boolean printFailedTestsOnly) {
+    // spawn a boomerang and watch it smash through a line of blocks until it loses all momentum and bounces off
+    //  teleport the player to the observation point if far away
+    TestRunnerMBE81.clearAllDebugSettings();
+    Vec3d START_POINT = new Vec3d(0, 200, 1400);
+    Vec3d OBSERVER_POINT = new Vec3d(3, 200, 1400);
+
+    if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
+      TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
+    }
+    ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
+    TestRunnerMBE81.createLine(playerIn, new BlockPos(4, 200, 1000), 10, new Vec3i(4, 0, 0), Blocks.IRON_ORE.getDefaultState());
+
+    StringBuilder sb = new StringBuilder();
+    BoomerangEntity boomerangEntity = generateEntity("Entity8118", sb, worldIn, playerIn, thrownBoomerang,
+            START_POINT,  -90, 0,  100,
+            0,  false, 1);
+    worldIn.addEntity(boomerangEntity);
+    LOGGER.error("Spawned Entity " + sb.toString() + ": break through iron blocks");
     return true;
   }
 

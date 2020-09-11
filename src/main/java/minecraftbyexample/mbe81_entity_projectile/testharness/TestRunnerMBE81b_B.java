@@ -82,7 +82,7 @@ public class TestRunnerMBE81b_B {
             START_POINT,  0, 0,  10,
             2,  false, 1);
     worldIn.addEntity(boomerangEntity);
-    LOGGER.error("Spawned Entity " + sb.toString());
+    LOGGER.error("Spawned Entity " + sb.toString() + ": watch flight path: flat, no yaw");
     return true;
   }
 
@@ -103,7 +103,7 @@ public class TestRunnerMBE81b_B {
             START_POINT,  60, 0,  10,
             2,  false, 1);
     worldIn.addEntity(boomerangEntity);
-    LOGGER.error("Spawned Entity " + sb.toString());
+    LOGGER.error("Spawned Entity " + sb.toString()+ ": watch flight path: flat, 60 degree yaw");
     return true;
   }
 
@@ -124,7 +124,7 @@ public class TestRunnerMBE81b_B {
             START_POINT,  0, -30,  10,
             2,  false, 1);
     worldIn.addEntity(boomerangEntity);
-    LOGGER.error("Spawned Entity " + sb.toString());
+    LOGGER.error("Spawned Entity " + sb.toString()+ ": watch flight path: pitch 30 degree up, no yaw");
     return true;
   }
 
@@ -145,12 +145,12 @@ public class TestRunnerMBE81b_B {
             START_POINT,  0, 0,  10,
             2,  true, 1);
     worldIn.addEntity(boomerangEntity);
-    LOGGER.error("Spawned Entity " + sb.toString());
+    LOGGER.error("Spawned Entity " + sb.toString()+ ": watch flight path: flat, no yaw, right hand throw");
     return true;
   }
 
   public boolean runTest8107(World worldIn, PlayerEntity playerIn, boolean printFailedTestsOnly) {
-    // spawn a boomerang so we can watch its flight path.  right hand throw
+    // spawn a boomerang so we can watch its flight path.
     //  teleport the player to the observation point if far away
     TestRunnerMBE81.clearAllDebugSettings();
     Vec3d START_POINT = new Vec3d(100, 200, 0);
@@ -168,7 +168,7 @@ public class TestRunnerMBE81b_B {
             START_POINT, 90, 0, 10,
             2,  false, 4);
     worldIn.addEntity(boomerangEntity);
-    LOGGER.error("Spawned Entity " + sb.toString());
+    LOGGER.error("Spawned Entity " + sb.toString()+ ": watch flight path: flat, 90 yaw, 4 blocks per second");
     return true;
   }
 

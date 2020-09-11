@@ -30,7 +30,6 @@ public class TestRunner
     switch (testNumber) {
       case 1: {
         success = test1(worldIn, playerIn);
-        DebugSettings.resetDebugTest();
         break;
       }
       default: {

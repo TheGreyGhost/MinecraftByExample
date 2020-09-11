@@ -16,7 +16,7 @@ public class DebugTestWatcherMBE81 {
   public static void onServerTick(TickEvent.PlayerTickEvent event) {
     if (event.side != LogicalSide.SERVER) return;
 
-    int testNumber = DebugSettings.peekDebugTest();
+    int testNumber = DebugSettings.getDebugTest(8100, 8199);
     if (testNumber == DebugSettings.NO_TEST_TRIGGERED) return;
     testRunner.runServerSideTest(event.player.world, event.player, testNumber);
   }

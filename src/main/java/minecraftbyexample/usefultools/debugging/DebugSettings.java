@@ -18,7 +18,7 @@ import java.util.concurrent.locks.Lock;
  *    which can then be subsequently used for (eg) interactively adjusting rendering offsets in-game
  * 3) listAllDebugParameters() to be used for (eg) autocompletion suggestions
  *        is automatically populated when code sets or gets a name
- * 4) getDebugTest or peekDebugTest
+ * 4) getDebugTest
  *    triggers a debug test
  *
  *  Also has parallel implementation for Vec3d instead of double.
@@ -120,30 +120,26 @@ public class DebugSettings {
   }
 
   /**
-   * Returns a test number if one has been triggered.  resets after being called
-   * Beware - if you have multiple callers looking for debug tests using getDebugTest, only the first caller will ever find one.
+   * Checks the specified range of test numbers and returns the currently triggered test number if it lies within the checked range.
+   * If the currently triggered test lies within the checked range, it is reset
+   * Beware - if you have multiple callers looking for debug tests in the same range using getDebugTest, only the first caller will ever find one.
+   *
+   * eg:
+   * 1) caller calls setDebugTest(65)
+   * 2a) getDebugTest(0, 10) returns NO_TEST_TRIGGERED
+   * 2b) getDebugTest(60, 65) returns NO_TEST_TRIGGERED
+   * 2c) getDebugTest(60, 66) returns 65
+   * 2d) calling getDebugTest(60, 66) for a second time now returns NO_TEST_TRIGGERED
+   *
+   * @param testNumberMin lowest test number to check
+   * @param  testNumberMaxPlusOne highest test number to check plus one
    * @return the test number to execute, or NO_TEST_TRIGGERED if none triggered
    */
-  public static synchronized int getDebugTest() {
+  public static synchronized int getDebugTest(int testNumberMin, int testNumberMaxPlusOne) {
+    if (debugTest < testNumberMin || debugTest >= testNumberMaxPlusOne) return NO_TEST_TRIGGERED;
     int value = debugTest;
     debugTest = NO_TEST_TRIGGERED;
     return value;
-  }
-
-  /**
-   * Returns a test number if one has been triggered.  does not reset after being called
-   * @return the test number to execute, or NO_TEST_TRIGGERED if none triggered
-   */
-  public static synchronized int peekDebugTest() {
-    int value = debugTest;
-    return value;
-  }
-
-  /**
-   * Resets the test trigger so it doesn't trigger again
-   */
-  public static synchronized void resetDebugTest() {
-    debugTest = NO_TEST_TRIGGERED;
   }
 
   public static final int NO_TEST_TRIGGERED = -1;

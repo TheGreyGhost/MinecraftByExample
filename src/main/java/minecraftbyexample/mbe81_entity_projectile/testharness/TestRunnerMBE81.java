@@ -9,6 +9,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,13 +28,11 @@ public class TestRunnerMBE81
       case 8101: {
         TestRunnerMBE81b_A testRunner = new TestRunnerMBE81b_A();
         success = testRunner.runTest(worldIn, playerIn, false);
-        DebugSettings.resetDebugTest();
         break;
       }
       case 8102: case 8103: case 8104: case 8105: case 8106: case 8107:{
         TestRunnerMBE81b_B testRunner = new TestRunnerMBE81b_B();
         success = testRunner.runTest(testNumber, worldIn, playerIn, false);
-        DebugSettings.resetDebugTest();
         break;
       }
       default: {  // not intended for this TestRunner
@@ -201,6 +200,18 @@ public class TestRunnerMBE81
       }
     }
   }
+
+  /*  create a line of regularly-spaced blocks
+ */
+  public static void createLine(PlayerEntity player, BlockPos start, int count, Vec3i delta, BlockState blockState) {
+    World world = player.getEntityWorld();
+    BlockPos currentPos = start;
+    for (int i = 0; i < count; ++i) {
+       world.setBlockState(currentPos, blockState);
+      currentPos = currentPos.add(delta);
+    }
+  }
+
 
   private static final Logger LOGGER = LogManager.getLogger();
 }
