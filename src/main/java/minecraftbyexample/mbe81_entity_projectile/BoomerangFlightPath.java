@@ -1,5 +1,6 @@
 package minecraftbyexample.mbe81_entity_projectile;
 
+import com.google.common.base.Preconditions;
 import minecraftbyexample.usefultools.CubicSpline;
 import minecraftbyexample.usefultools.UsefulFunctions;
 import net.minecraft.client.renderer.Quaternion;
@@ -70,10 +71,12 @@ public class BoomerangFlightPath implements INBTSerializable<CompoundNBT> {
     this.anticlockwise = anticlockwise;
     this.flightDuration = BASE_FLIGHT_PATH_LENGTH * distanceToApex / flightSpeed;
     calculateFlightPath();
+    initialised = true;
   }
 
   public BoomerangFlightPath(CompoundNBT nbt) {
     deserializeNBT(nbt);
+    initialised = true;
   }
 
   /**
@@ -88,6 +91,7 @@ public class BoomerangFlightPath implements INBTSerializable<CompoundNBT> {
   // calculate the current position on the flight path
   // time in seconds
   public Vec3d getPosition(double time) {
+//    Preconditions.checkState(initialised);
     float pathFraction = (float)MathHelper.clamp(time, 0, flightDuration) / flightDuration;
     if (anticlockwise) pathFraction = 1 - pathFraction;
 
@@ -104,6 +108,7 @@ public class BoomerangFlightPath implements INBTSerializable<CompoundNBT> {
 
   // get the current yaw of the boomerang
   public float getYaw(double time) {
+//    Preconditions.checkState(initialised);
     // algorithm:
     // 1) calculate the current velocity
     // 2) convert the velocity to a direction (yaw)
@@ -118,6 +123,7 @@ public class BoomerangFlightPath implements INBTSerializable<CompoundNBT> {
   // the velocity is the derivative of the position:
   //
   public Vec3d getVelocity(double time) {
+//    Preconditions.checkState(initialised);
     float pathFraction = (float)MathHelper.clamp(time, 0, flightDuration) / flightDuration;
     if (anticlockwise) pathFraction = 1 - pathFraction;
 
@@ -177,6 +183,8 @@ public class BoomerangFlightPath implements INBTSerializable<CompoundNBT> {
   private CubicSpline flightPathX;
   private CubicSpline flightPathY;
   private CubicSpline flightPathZ;
+
+  private boolean initialised = false;
 
   private void calculateFlightPath() {
     // in order to calculate the flight path, we take the

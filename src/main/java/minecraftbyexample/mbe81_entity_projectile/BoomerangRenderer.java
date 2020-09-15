@@ -63,7 +63,7 @@ public class BoomerangRenderer extends EntityRenderer<BoomerangEntity> {
 
     // rotate to match the pitch and yaw.  Smooth out the motion by interpolating between the "tick" frames using the partialTicks
     matrixStack.rotate(Vector3f.YP.rotationDegrees(
-            MathHelper.lerp(partialTicks, boomerangEntity.prevRotationYaw, boomerangEntity.rotationYaw) - 90.0F) );
+            -1 * (MathHelper.lerp(partialTicks, boomerangEntity.prevRotationYaw, boomerangEntity.rotationYaw) - 90.0F)) );
     matrixStack.rotate(Vector3f.ZP.rotationDegrees(
             MathHelper.lerp(partialTicks, boomerangEntity.prevRotationPitch, boomerangEntity.rotationPitch)) );
 

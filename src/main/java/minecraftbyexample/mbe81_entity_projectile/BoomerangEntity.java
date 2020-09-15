@@ -39,6 +39,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.NetworkHooks;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -55,7 +57,6 @@ import java.util.stream.Collectors;
 public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnData {
   public BoomerangEntity(EntityType<? extends BoomerangEntity> entityType, World world) {
     super(entityType, world);
-
   }
 
   /** Create a new BoomerangEntity
@@ -90,6 +91,13 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
             maximumSidewaysDeflection, anticlockwise, flightSpeed);
     remainingMomentum = 1.0F;
     copyEnchantmentData(boomerangItemStack);
+    rotationYaw = boomerangFlightPath.getYaw(0);
+    rotationPitch = -90;  // the model has its flat face point up, but during flight it needs to be pointing sideways, which
+                          // corresponds to pitching it up by 90 degrees.
+    endOverEndRotation = 0;
+    prevRotationYaw = rotationYaw;
+    prevRotationPitch = rotationPitch;
+    prevEndOverEndRotation = endOverEndRotation;
   }
 
   /**
@@ -123,6 +131,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
   protected void registerData() {
     this.getDataManager().register(IN_FLIGHT, Boolean.TRUE);
     this.getDataManager().register(ITEMSTACK, ItemStack.EMPTY);
+    this.getDataManager().register(TICKS_SPENT_IN_FLIGHT, 0);
   }
 
     // Is this boomerang in flight?  (true = yes, false = no (it has hit something and is now acting like a discarded item))
@@ -131,12 +140,15 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     // What ItemStack was used to throw the boomerang?
   private static final DataParameter<ItemStack> ITEMSTACK = EntityDataManager.createKey(BoomerangEntity.class, DataSerializers.ITEMSTACK);
 
+  private static final DataParameter<Integer> TICKS_SPENT_IN_FLIGHT = EntityDataManager.createKey(BoomerangEntity.class, DataSerializers.VARINT);
+
   protected LivingEntity thrower;
   private UUID throwerID = null;
 
   // member variables that need to be saved to record its state
   private BoomerangFlightPath boomerangFlightPath = new BoomerangFlightPath();  //dummy
   private int pickupDelay = 0;        // delay until a non-in-flight boomerang can be picked up (in ticks)
+  private int ticksSpentInFlight = 0;
   private int ticksSpentNotInFlight = 0;
   private double damage = 2.0D;
   private float remainingMomentum = 1.0F;  // the fraction of momentum remaining - reduced when harvesting blocks.
@@ -181,6 +193,8 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
 
   private final String THROWER_NBT = "thrower";
   private final String IN_FLIGHT_NBT = "inflight";
+  private final String TICKS_IN_FLIGHT_NBT = "ticksinflight";
+  private final String TICKS_NOT_IN_FLIGHT_NBT = "ticksnotinflight";
   private final String PICKUP_DELAY_NBT = "pickupdelay";
   private final String FLIGHT_PATH_NBT = "flightpath";
   private final String ITEMSTACK_NBT = "Item";
@@ -191,14 +205,20 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     if (this.throwerID != null) {
       compound.put("thrower", NBTUtil.writeUniqueId(this.throwerID));
     }
-    compound.putBoolean(IN_FLIGHT_NBT, this.dataManager.get(IN_FLIGHT));
+ //   compound.putBoolean(IN_FLIGHT_NBT, this.dataManager.get(IN_FLIGHT));
     compound.putInt(PICKUP_DELAY_NBT, pickupDelay);
+ //   compound.putInt(TICKS_IN_FLIGHT_NBT, ticksSpentInFlight);
+    compound.putInt(TICKS_NOT_IN_FLIGHT_NBT, ticksSpentNotInFlight);
+
     compound.put(FLIGHT_PATH_NBT, boomerangFlightPath.serializeNBT());
     if (!this.getItemStack().isEmpty()) {
       compound.put(ITEMSTACK_NBT, this.getItemStack().write(new CompoundNBT()));
     }
     compound.putDouble(DAMAGE_NBT, this.damage);
     compound.putFloat(MOMENTUM_NBT, this.remainingMomentum);
+    if (Double.isNaN(this.getPosX())) { //todo remove
+      int i = 1;
+    }
   }
 
   /** Read further NBT information to initialise the entity (after loading from disk or transmission from server)
@@ -209,7 +229,10 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
       this.throwerID = NBTUtil.readUniqueId(compound.getCompound(THROWER_NBT));
     }
     pickupDelay = compound.getInt(PICKUP_DELAY_NBT);
-    boomerangFlightPath.deserializeNBT(compound);
+//    ticksSpentInFlight = compound.getInt(TICKS_IN_FLIGHT_NBT);
+    ticksSpentNotInFlight = compound.getInt(TICKS_NOT_IN_FLIGHT_NBT);
+
+    boomerangFlightPath.deserializeNBT(compound.getCompound(FLIGHT_PATH_NBT));
     CompoundNBT compoundnbt = compound.getCompound(ITEMSTACK_NBT);
     ItemStack boomerangItemStack = ItemStack.read(compoundnbt);
     this.setItemStack(boomerangItemStack);
@@ -241,10 +264,24 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
   }
 
   /**
+   * Sets a target for the client to interpolate towards over the next few ticks
+   */
+  @OnlyIn(Dist.CLIENT)
+  public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int posRotationIncrements, boolean teleport) {
+    boolean isInFlight = this.dataManager.get(IN_FLIGHT);
+    if (isInFlight) return;   // if we are in flight, the client tick will force the position, yaw and pitch every tick
+
+    // otherwise, update position and rotation to match the server
+    this.setPosition(x, y, z);
+    this.setRotation(yaw, pitch);
+  }
+
+  /**
    * Updates the entity motion clientside, called by packets from the server
    */
   @OnlyIn(Dist.CLIENT)
   public void setVelocity(double x, double y, double z) {
+    LOGGER.info("setVelocity:" + x + ", " + y + ", " + z);
     this.setMotion(x, y, z);
 //    if (this.prevRotationPitch == 0.0F && this.prevRotationYaw == 0.0F) {
 //      float f = MathHelper.sqrt(x * x + z * z);
@@ -254,8 +291,6 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
 //      this.prevRotationPitch = this.rotationPitch;
 //    }
   }
-
-  private int ticksSpentInFlight = 0;
 
 //  private static boolean canBeCollidedWith(Entity entityToCheck) {
 //    return !entityToCheck.isSpectator() && entityToCheck.canBeCollidedWith();
@@ -413,9 +448,18 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
   private void tickInFlight() {
     final float TICKS_PER_SECOND = 20.0F;
     Vec3d startPosition = this.getPositionVec();
+    if (Double.isNaN(startPosition.getY())) { //todo remove
+      int i = 1;
+    }
     double timeSpentInFlight = (ticksSpentInFlight + 1) / TICKS_PER_SECOND;
     Vec3d endPosition = boomerangFlightPath.getPosition(timeSpentInFlight);
+    if (Double.isNaN(endPosition.getY())) { //todo remove
+      int i = 1;
+    }
     Vec3d motion = endPosition.subtract(startPosition);
+    if (Double.isNaN(motion.getY())) { //todo remove
+      int i = 1;
+    }
     AxisAlignedBB aabbCollisionZone = this.getBoundingBox().expand(motion).grow(1.0D);
 
 //    List<Entity> possibleCollisions = this.world.getEntitiesInAABBexcluding(this,
@@ -465,11 +509,12 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
         break;
       }
     }
+    StringBuilder sb = new StringBuilder();
+    sb.append("rotationYaw1:" + this.rotationYaw);
     this.rotationYaw = boomerangFlightPath.getYaw((ticksSpentInFlight + 1) / TICKS_PER_SECOND);
+    sb.append(" rotationYaw2:" + this.rotationYaw);
     this.rotationPitch = -90;  // the model has its flat face point up, but during flight it needs to be pointing sideways, which
                                // corresponds to pitching it up by 90 degrees.
-
-//    this.rotationPitch = (float)(MathHelper.atan2(vec3d.y, (double)horizontalSpeed) * (double)(180F / (float)Math.PI));
 
     // ensure proper wraparound to avoid jerkiness due to partialTick interpolation when rendering
 
@@ -486,10 +531,13 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     while(this.rotationYaw - this.prevRotationYaw >= 180.0F) {
       this.prevRotationYaw += 360.0F;
     }
+    sb.append(" rotationYaw3:" + this.rotationYaw);
 
     // smooth the rotations so that they're not abrupt / jerky
     this.rotationPitch = MathHelper.lerp(0.2F, this.prevRotationPitch, this.rotationPitch);
     this.rotationYaw = MathHelper.lerp(0.2F, this.prevRotationYaw, this.rotationYaw);
+    sb.append(" rotationYaw4:" + this.rotationYaw);
+    LOGGER.info(sb.toString());
 
     final float ROTATIONS_PER_SECOND = 2.0F;
     final float DEGREES_PER_TICK = 360.0F * ROTATIONS_PER_SECOND / TICKS_PER_SECOND;
@@ -512,6 +560,10 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     }
 
     this.setMotion(motion);
+    if (Double.isNaN(this.getMotion().getY())) { //todo remove
+      int i = 1;
+    }
+
     this.setPosition(newPosition.getX(), newPosition.getY(), newPosition.getZ());
     this.doBlockCollisions();  // "collision" just means that the boomerang has entered this block's space
                                //  eg a tripwire, or moving through a web
@@ -824,4 +876,5 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     return !entityToTest.isSpectator() && entityToTest.canBeCollidedWith()
             && !(entityToTest == this.thrower && this.ticksExisted <= INITIAL_NON_COLLISION_TICKS);
   }
+  private static final Logger LOGGER = LogManager.getLogger();
 }

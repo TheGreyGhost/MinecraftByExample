@@ -50,7 +50,11 @@ public class TestRunnerMBE81b_B {
     TestRunnerMBE81.clearAllDebugSettings();
     Vec3d START_POINT = new Vec3d(0, 200, 0);
     Vec3d OBSERVER_POINT = new Vec3d(0, 200, 0);
+
     TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
+
+    BlockPos CENTRE_POS = new BlockPos(0, 199, 0);
+    TestRunnerMBE81.generateChessboard(playerIn, CENTRE_POS, 12);
 
     ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
 
@@ -69,12 +73,15 @@ public class TestRunnerMBE81b_B {
     // spawn a boomerang so we can watch its flight path.  Flat path, no yaw
     //  teleport the player to the observation point if far away
     TestRunnerMBE81.clearAllDebugSettings();
-    Vec3d START_POINT = new Vec3d(0, 200, 0);
+    Vec3d START_POINT = new Vec3d(0, 201, 0);
     Vec3d OBSERVER_POINT = new Vec3d(3, 200, 0);
 
     if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
+    BlockPos CENTRE_POS = new BlockPos(0, 199, 0);
+    TestRunnerMBE81.generateChessboard(playerIn, CENTRE_POS, 12);
+
     ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
 
     StringBuilder sb = new StringBuilder();
@@ -90,12 +97,14 @@ public class TestRunnerMBE81b_B {
     // spawn a boomerang so we can watch its flight path.  60 degree yaw
     //  teleport the player to the observation point if far away
     TestRunnerMBE81.clearAllDebugSettings();
-    Vec3d START_POINT = new Vec3d(0, 200, 0);
+    Vec3d START_POINT = new Vec3d(0, 201, 0);
     Vec3d OBSERVER_POINT = new Vec3d(3, 200, 0);
 
     if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
+    BlockPos CENTRE_POS = new BlockPos(0, 199, 0);
+    TestRunnerMBE81.generateChessboard(playerIn, CENTRE_POS, 12);
     ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
 
     StringBuilder sb = new StringBuilder();
@@ -111,12 +120,14 @@ public class TestRunnerMBE81b_B {
     // spawn a boomerang so we can watch its flight path.  pitched path
     //  teleport the player to the observation point if far away
     TestRunnerMBE81.clearAllDebugSettings();
-    Vec3d START_POINT = new Vec3d(0, 200, 0);
+    Vec3d START_POINT = new Vec3d(0, 201, 0);
     Vec3d OBSERVER_POINT = new Vec3d(3, 200, 0);
 
     if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
+    BlockPos CENTRE_POS = new BlockPos(0, 199, 0);
+    TestRunnerMBE81.generateChessboard(playerIn, CENTRE_POS, 12);
     ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
 
     StringBuilder sb = new StringBuilder();
@@ -132,12 +143,14 @@ public class TestRunnerMBE81b_B {
     // spawn a boomerang so we can watch its flight path.  right hand throw
     //  teleport the player to the observation point if far away
     TestRunnerMBE81.clearAllDebugSettings();
-    Vec3d START_POINT = new Vec3d(0, 200, 0);
+    Vec3d START_POINT = new Vec3d(0, 201, 0);
     Vec3d OBSERVER_POINT = new Vec3d(3, 200, 0);
 
     if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
+    BlockPos CENTRE_POS = new BlockPos(0, 199, 0);
+    TestRunnerMBE81.generateChessboard(playerIn, CENTRE_POS, 12);
     ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
 
     StringBuilder sb = new StringBuilder();
@@ -153,7 +166,7 @@ public class TestRunnerMBE81b_B {
     // spawn a boomerang so we can watch its flight path.
     //  teleport the player to the observation point if far away
     TestRunnerMBE81.clearAllDebugSettings();
-    Vec3d START_POINT = new Vec3d(100, 200, 0);
+    Vec3d START_POINT = new Vec3d(100, 201, 0);
     Vec3d OBSERVER_POINT = new Vec3d(103, 200, 0);
     BlockPos centre = new BlockPos(100, 199, 0);
     TestRunnerMBE81.createBasin(playerIn, centre, 10, 1, Blocks.WATER.getDefaultState());

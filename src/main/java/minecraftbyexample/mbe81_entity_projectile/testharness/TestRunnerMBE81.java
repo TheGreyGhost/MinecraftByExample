@@ -1,6 +1,7 @@
 package minecraftbyexample.mbe81_entity_projectile.testharness;
 
 import minecraftbyexample.usefultools.debugging.DebugSettings;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.LadderBlock;
@@ -9,6 +10,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
@@ -209,6 +211,19 @@ public class TestRunnerMBE81
     for (int i = 0; i < count; ++i) {
        world.setBlockState(currentPos, blockState);
       currentPos = currentPos.add(delta);
+    }
+  }
+
+  /* create a chessboard of colours
+   */
+  public static void generateChessboard(PlayerEntity player, BlockPos centre, int radius) {
+    Block[] blockStates = {Blocks.GREEN_WOOL, Blocks.BLACK_WOOL, Blocks.BLUE_WOOL, Blocks.WHITE_WOOL};
+    World world = player.getEntityWorld();
+    for (int x = -radius; x <= radius; ++x) {
+      for (int z = -radius; z <= radius; ++z) {
+        BlockState blockColour =  blockStates[Math.floorMod(x+z, 4)].getDefaultState();
+        world.setBlockState(new BlockPos(x + centre.getX(), centre.getY(), z + centre.getZ()), blockColour);
+      }
     }
   }
 
