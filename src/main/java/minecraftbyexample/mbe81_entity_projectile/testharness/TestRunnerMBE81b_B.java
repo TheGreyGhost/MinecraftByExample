@@ -169,7 +169,7 @@ public class TestRunnerMBE81b_B {
     Vec3d START_POINT = new Vec3d(100, 201, 0);
     Vec3d OBSERVER_POINT = new Vec3d(103, 200, 0);
     BlockPos centre = new BlockPos(100, 199, 0);
-    TestRunnerMBE81.createBasin(playerIn, centre, 10, 1, Blocks.WATER.getDefaultState());
+    TestRunnerMBE81.createBasin(playerIn, centre, 10, 3, Blocks.WATER.getDefaultState());
 
     if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
@@ -178,7 +178,7 @@ public class TestRunnerMBE81b_B {
 
     StringBuilder sb = new StringBuilder();
     BoomerangEntity boomerangEntity = generateEntity("Entity8107", sb, worldIn, playerIn, thrownBoomerang,
-            START_POINT, 90, 0, 10,
+            START_POINT, 90, 0, 7,
             2,  false, 4);
     worldIn.addEntity(boomerangEntity);
     LOGGER.error("Spawned Entity " + sb.toString()+ ": watch flight path: flat, 90 yaw, 4 blocks per second");

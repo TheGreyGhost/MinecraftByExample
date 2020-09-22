@@ -57,13 +57,16 @@ public class BoomerangRenderer extends EntityRenderer<BoomerangEntity> {
 
     IBakedModel boomerangModel = Minecraft.getInstance().getModelManager().getModel(BOOMERANG_MODEL_RESOURCE_LOCATION);
 
-    LOGGER.info("method entityYaw:" + entityYaw + ", entity rotationYaw:" + boomerangEntity.rotationYaw);
+//    LOGGER.info("method entityYaw:" + entityYaw + ", entity rotationYaw:" + boomerangEntity.rotationYaw);
     matrixStack.push();
     MatrixStack.Entry currentMatrix = matrixStack.getLast();
 
-    // rotate to match the pitch and yaw.  Smooth out the motion by interpolating between the "tick" frames using the partialTicks
-    matrixStack.rotate(Vector3f.YP.rotationDegrees(
-            -1 * (MathHelper.lerp(partialTicks, boomerangEntity.prevRotationYaw, boomerangEntity.rotationYaw) - 90.0F)) );
+    // rotate to match the pitch and yaw.
+    // Smooth out the motion by interpolating between the "tick" frames using the partialTicks
+    float directionOfMotion = MathHelper.lerp(partialTicks, boomerangEntity.prevRotationYaw, boomerangEntity.rotationYaw);
+    float directionOfBoomerangTopFace = directionOfMotion + (boomerangEntity.isRightHandThrown() ? 90 : -90);
+
+    matrixStack.rotate(Vector3f.YP.rotationDegrees(-1 * directionOfBoomerangTopFace));
     matrixStack.rotate(Vector3f.ZP.rotationDegrees(
             MathHelper.lerp(partialTicks, boomerangEntity.prevRotationPitch, boomerangEntity.rotationPitch)) );
 

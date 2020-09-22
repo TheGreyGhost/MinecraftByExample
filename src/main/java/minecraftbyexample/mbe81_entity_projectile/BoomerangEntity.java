@@ -66,7 +66,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
    * @param apexPitch the pitch angle in degrees (elevation/declination of the apex relative to the thrower).  0 degrees is horizontal: -90 is up, 90 is down.
    * @param distanceToApex number of blocks to the apex of the flight path
    * @param maximumSidewaysDeflection maximum sideways deflection from the straight line from thrower to apex
-   * @param anticlockwise is the flight path clockwise or anticlockwise
+   * @param rightHandThrown was thrown using right hand?
    * @param flightSpeed speed of the flight in blocks per second
    */
   public BoomerangEntity(World world, ItemStack boomerangItemStack,
@@ -75,7 +75,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
                          float apexYaw, float apexPitch,
                          float distanceToApex,
                          float maximumSidewaysDeflection,
-                         boolean anticlockwise,
+                         boolean rightHandThrown,
                          float flightSpeed) {
     super(StartupCommon.boomerangEntityType, world);
     this.thrower = thrower;
@@ -88,7 +88,8 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     dataManager.set(ITEMSTACK, boomerangItemStack);
     dataManager.set(IN_FLIGHT, true);
     boomerangFlightPath = new BoomerangFlightPath(startPosition, apexYaw, apexPitch, distanceToApex,
-            maximumSidewaysDeflection, anticlockwise, flightSpeed);
+            maximumSidewaysDeflection, rightHandThrown, flightSpeed);
+    this.rightHandThrown = rightHandThrown;
     remainingMomentum = 1.0F;
     copyEnchantmentData(boomerangItemStack);
     rotationYaw = boomerangFlightPath.getYaw(0);
@@ -131,7 +132,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
   protected void registerData() {
     this.getDataManager().register(IN_FLIGHT, Boolean.TRUE);
     this.getDataManager().register(ITEMSTACK, ItemStack.EMPTY);
-    this.getDataManager().register(TICKS_SPENT_IN_FLIGHT, 0);
+//    this.getDataManager().register(TICKS_SPENT_IN_FLIGHT, 0);
   }
 
     // Is this boomerang in flight?  (true = yes, false = no (it has hit something and is now acting like a discarded item))
@@ -140,13 +141,14 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     // What ItemStack was used to throw the boomerang?
   private static final DataParameter<ItemStack> ITEMSTACK = EntityDataManager.createKey(BoomerangEntity.class, DataSerializers.ITEMSTACK);
 
-  private static final DataParameter<Integer> TICKS_SPENT_IN_FLIGHT = EntityDataManager.createKey(BoomerangEntity.class, DataSerializers.VARINT);
+//  private static final DataParameter<Integer> TICKS_SPENT_IN_FLIGHT = EntityDataManager.createKey(BoomerangEntity.class, DataSerializers.VARINT);
 
   protected LivingEntity thrower;
   private UUID throwerID = null;
 
   // member variables that need to be saved to record its state
   private BoomerangFlightPath boomerangFlightPath = new BoomerangFlightPath();  //dummy
+  private boolean rightHandThrown = false;  // which hand was used to throw?
   private int pickupDelay = 0;        // delay until a non-in-flight boomerang can be picked up (in ticks)
   private int ticksSpentInFlight = 0;
   private int ticksSpentNotInFlight = 0;
@@ -197,6 +199,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
   private final String TICKS_NOT_IN_FLIGHT_NBT = "ticksnotinflight";
   private final String PICKUP_DELAY_NBT = "pickupdelay";
   private final String FLIGHT_PATH_NBT = "flightpath";
+  private final String RIGHT_HAND_THROWN_NBT = "righthandthrown";
   private final String ITEMSTACK_NBT = "Item";
   private final String DAMAGE_NBT = "damage";
   private final String MOMENTUM_NBT = "momentum";
@@ -205,15 +208,16 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     if (this.throwerID != null) {
       compound.put("thrower", NBTUtil.writeUniqueId(this.throwerID));
     }
- //   compound.putBoolean(IN_FLIGHT_NBT, this.dataManager.get(IN_FLIGHT));
+    compound.putBoolean(IN_FLIGHT_NBT, this.dataManager.get(IN_FLIGHT));
     compound.putInt(PICKUP_DELAY_NBT, pickupDelay);
- //   compound.putInt(TICKS_IN_FLIGHT_NBT, ticksSpentInFlight);
+    compound.putInt(TICKS_IN_FLIGHT_NBT, ticksSpentInFlight);
     compound.putInt(TICKS_NOT_IN_FLIGHT_NBT, ticksSpentNotInFlight);
 
     compound.put(FLIGHT_PATH_NBT, boomerangFlightPath.serializeNBT());
     if (!this.getItemStack().isEmpty()) {
       compound.put(ITEMSTACK_NBT, this.getItemStack().write(new CompoundNBT()));
     }
+    compound.putBoolean(RIGHT_HAND_THROWN_NBT, rightHandThrown);
     compound.putDouble(DAMAGE_NBT, this.damage);
     compound.putFloat(MOMENTUM_NBT, this.remainingMomentum);
     if (Double.isNaN(this.getPosX())) { //todo remove
@@ -228,8 +232,10 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     if (compound.contains(THROWER_NBT, NBTtypesMBE.COMPOUND_NBT_ID)) {
       this.throwerID = NBTUtil.readUniqueId(compound.getCompound(THROWER_NBT));
     }
+    boolean isInFlight = compound.getBoolean(IN_FLIGHT_NBT);
+    this.dataManager.set(IN_FLIGHT, isInFlight);
     pickupDelay = compound.getInt(PICKUP_DELAY_NBT);
-//    ticksSpentInFlight = compound.getInt(TICKS_IN_FLIGHT_NBT);
+    ticksSpentInFlight = compound.getInt(TICKS_IN_FLIGHT_NBT);
     ticksSpentNotInFlight = compound.getInt(TICKS_NOT_IN_FLIGHT_NBT);
 
     boomerangFlightPath.deserializeNBT(compound.getCompound(FLIGHT_PATH_NBT));
@@ -239,6 +245,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     if (this.getItemStack().isEmpty()) {
       this.remove();
     }
+    rightHandThrown = compound.getBoolean(RIGHT_HAND_THROWN_NBT);
     damage = compound.getDouble(DAMAGE_NBT);
     remainingMomentum = compound.getFloat(MOMENTUM_NBT);
     copyEnchantmentData(boomerangItemStack);
@@ -263,6 +270,10 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     return this.thrower;
   }
 
+  public boolean isRightHandThrown() {
+    return rightHandThrown;
+  }
+
   /**
    * Sets a target for the client to interpolate towards over the next few ticks
    */
@@ -281,7 +292,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
    */
   @OnlyIn(Dist.CLIENT)
   public void setVelocity(double x, double y, double z) {
-    LOGGER.info("setVelocity:" + x + ", " + y + ", " + z);
+//    LOGGER.info("setVelocity:" + x + ", " + y + ", " + z);
     this.setMotion(x, y, z);
 //    if (this.prevRotationPitch == 0.0F && this.prevRotationYaw == 0.0F) {
 //      float f = MathHelper.sqrt(x * x + z * z);
@@ -509,10 +520,10 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
         break;
       }
     }
-    StringBuilder sb = new StringBuilder();
-    sb.append("rotationYaw1:" + this.rotationYaw);
+//    StringBuilder sb = new StringBuilder();
+//    sb.append("rotationYaw1:" + this.rotationYaw);
     this.rotationYaw = boomerangFlightPath.getYaw((ticksSpentInFlight + 1) / TICKS_PER_SECOND);
-    sb.append(" rotationYaw2:" + this.rotationYaw);
+//    sb.append(" rotationYaw2:" + this.rotationYaw);
     this.rotationPitch = -90;  // the model has its flat face point up, but during flight it needs to be pointing sideways, which
                                // corresponds to pitching it up by 90 degrees.
 
@@ -531,13 +542,13 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     while(this.rotationYaw - this.prevRotationYaw >= 180.0F) {
       this.prevRotationYaw += 360.0F;
     }
-    sb.append(" rotationYaw3:" + this.rotationYaw);
+//    sb.append(" rotationYaw3:" + this.rotationYaw);
 
     // smooth the rotations so that they're not abrupt / jerky
     this.rotationPitch = MathHelper.lerp(0.2F, this.prevRotationPitch, this.rotationPitch);
     this.rotationYaw = MathHelper.lerp(0.2F, this.prevRotationYaw, this.rotationYaw);
-    sb.append(" rotationYaw4:" + this.rotationYaw);
-    LOGGER.info(sb.toString());
+//    sb.append(" rotationYaw4:" + this.rotationYaw);
+//    LOGGER.info(sb.toString());
 
     final float ROTATIONS_PER_SECOND = 2.0F;
     final float DEGREES_PER_TICK = 360.0F * ROTATIONS_PER_SECOND / TICKS_PER_SECOND;
@@ -859,16 +870,29 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     this.getDataManager().set(ITEMSTACK, stack);
   }
 
+  // When the client entity is spawned (in response to a packet from the server), we need to send it two extra pieces of information
+  // 1) The boomerang flight path information
+  // 2) The number of ticks that the entity has spent in flight.
+  // Why is this necessary?
+  // Because when the entity is first created, or when it is loaded from disk (using NBT), the client does not receive all of the
+  //   information that the server does.
+  // Some of the information is synchronised by vanilla (DataManager variables, position, motion, yaw+pitch), but anything else
+  //  must be transmitted by us.
+
   @Override
   public void writeSpawnData(PacketBuffer buffer) {
     CompoundNBT nbt = boomerangFlightPath.serializeNBT();
     buffer.writeCompoundTag(nbt);
+    buffer.writeInt(ticksSpentInFlight);
+    buffer.writeBoolean(rightHandThrown);
   }
 
   @Override
   public void readSpawnData(PacketBuffer additionalData) {
     CompoundNBT nbt = additionalData.readCompoundTag();
     boomerangFlightPath.deserializeNBT(nbt);
+    ticksSpentInFlight = additionalData.readInt();
+    rightHandThrown = additionalData.readBoolean();
   }
 
   private final int INITIAL_NON_COLLISION_TICKS = 2;
