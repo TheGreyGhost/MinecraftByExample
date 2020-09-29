@@ -37,6 +37,11 @@ public class TestRunnerMBE81
         success = testRunner.runTest(testNumber, worldIn, playerIn, false);
         break;
       }
+      case 8110: case 8111: case 8112: case 8113: case 8114: case 8115: case 8116: case 8117: case 8118: case 8119: case 8120: case 8121: {
+        TestRunnerMBE81b_C testRunner = new TestRunnerMBE81b_C();
+        success = testRunner.runTest(testNumber, worldIn, playerIn, false);
+        break;
+      }
       default: {  // not intended for this TestRunner
         return false;
       }
@@ -62,9 +67,8 @@ public class TestRunnerMBE81
    */
   public static void clearAllDebugSettings() {
     DebugSettings.clearDebugParameter("mbe81b_notick");
-
+    DebugSettings.clearDebugParameter("mbe81b_not_in_flight");
   }
-
 
   // dummy test: check the correct functioning of the ladder - to see which block it can stay attached to
   // The test region contains a ladder attached to a stone block.  We then replace the stone with a different block and see

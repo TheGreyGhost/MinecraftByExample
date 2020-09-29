@@ -61,17 +61,26 @@ public class BoomerangRenderer extends EntityRenderer<BoomerangEntity> {
     matrixStack.push();
     MatrixStack.Entry currentMatrix = matrixStack.getLast();
 
-    // rotate to match the pitch and yaw.
-    // Smooth out the motion by interpolating between the "tick" frames using the partialTicks
+    // rotate to set the pitch and yaw correctly.
+    // For an entity like an arrow, the pitch is the up/down direction angle, and the yaw is the heading (eg north, east, etc)
+    // The boomerang is a bit different because it is flipping end-over-end.
+    // The three rotations required are (see also boomerang_rotations.png):
+    // 1) The "end over end" rotation of the spinning boomerang
+    // 2) The 90 degree rotation ("pitch") so that the top face of the boomerang is pointing in the correct up/down direction
+    //    (the model has its top face pointing directly up, but in flight it needs to point sideways)
+    // 3) The "yaw" which is the direction that the boomerang is heading in.
+    // 3D rotations roll/pitch/yaw are hard to get right.  The axis and correct order aren't obvious unless you're a lot smarter than I am.
+
+    // We must also smooth out the motion by interpolating between the "tick" frames using the partialTicks
     float directionOfMotion = MathHelper.lerp(partialTicks, boomerangEntity.prevRotationYaw, boomerangEntity.rotationYaw);
     float directionOfBoomerangTopFace = directionOfMotion + (boomerangEntity.isRightHandThrown() ? 90 : -90);
 
-    matrixStack.rotate(Vector3f.YP.rotationDegrees(-1 * directionOfBoomerangTopFace));
-    matrixStack.rotate(Vector3f.ZP.rotationDegrees(
+    matrixStack.rotate(Vector3f.YP.rotationDegrees(-1 * directionOfBoomerangTopFace));        // yaw
+    matrixStack.rotate(Vector3f.ZP.rotationDegrees(                                                   // pitch
             MathHelper.lerp(partialTicks, boomerangEntity.prevRotationPitch, boomerangEntity.rotationPitch)) );
 
     // rotate the boomerang end-over-end
-    matrixStack.rotate(Vector3f.YP.rotationDegrees(
+    matrixStack.rotate(Vector3f.YP.rotationDegrees(                                       // end-over-end
             boomerangEntity.getEndOverEndRotation(partialTicks)) );
 
     // 3D rotations roll/pitch/yaw are hard to get right.  The axis and correct order aren't obvious.

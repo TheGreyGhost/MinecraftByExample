@@ -4,6 +4,7 @@ import minecraftbyexample.mbe81_entity_projectile.BoomerangEntity;
 import minecraftbyexample.mbe81_entity_projectile.StartupCommon;
 import minecraftbyexample.usefultools.debugging.DebugSettings;
 import net.minecraft.block.Blocks;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -23,19 +24,41 @@ import org.apache.logging.log4j.Logger;
  * ballistic: movement in lava
  *
  * inflight: collision with solid objects - increasing numbers; three different hardnesses & observe bounce off.  Observe bounceoff in each direction
+ * inflight: test enchantments - efficiency, silk touch, haste
+ *
+ *
  * inflight: collision with entity - observe damage(use breakpoint)
  * test each enchantment
  * entity bounce off test
  * throw and catch: if either hand free, catch.  if both hands full, drop
  */
 public class TestRunnerMBE81b_C {
+
+  public boolean runTest(int test, World worldIn, PlayerEntity playerIn, boolean printFailedTestsOnly) {
+    if (test == 8110) return runTest8110(worldIn, playerIn, printFailedTestsOnly);
+    if (test == 8111) return runTest8111(worldIn, playerIn, printFailedTestsOnly);
+    if (test == 8112) return runTest8112(worldIn, playerIn, printFailedTestsOnly);
+    if (test == 8113) return runTest8113(worldIn, playerIn, printFailedTestsOnly);
+    if (test == 8114) return runTest8114(worldIn, playerIn, printFailedTestsOnly);
+    if (test == 8115) return runTest8115(worldIn, playerIn, printFailedTestsOnly);
+    if (test == 8116) return runTest8116(worldIn, playerIn, printFailedTestsOnly);
+    if (test == 8117) return runTest8117(worldIn, playerIn, printFailedTestsOnly);
+    if (test == 8118) return runTest8118(worldIn, playerIn, printFailedTestsOnly);
+    if (test == 8119) return runTest8119(worldIn, playerIn, printFailedTestsOnly);
+    if (test == 8120) return runTest8120(worldIn, playerIn, printFailedTestsOnly);
+//    if (test == 8121) return runTest8118(worldIn, playerIn, printFailedTestsOnly);
+    return false;
+  }
+
   public boolean runTest8110(World worldIn, PlayerEntity playerIn, boolean printFailedTestsOnly) {
     // ballistic movement: drop from a height and bounce
     //  teleport the player to the observation point
     TestRunnerMBE81.clearAllDebugSettings();
     Vec3d START_POINT = new Vec3d(200, 210, 0);
     Vec3d OBSERVER_POINT = new Vec3d(203, 200, 0);
-    TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
+    if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
+      TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
+    }
 
     BlockPos centre = new BlockPos(200, 199, 0);
     TestRunnerMBE81.createBasin(playerIn, centre, 10, 1, Blocks.AIR.getDefaultState());
@@ -58,7 +81,9 @@ public class TestRunnerMBE81b_C {
     TestRunnerMBE81.clearAllDebugSettings();
     Vec3d START_POINT = new Vec3d(200, 204, 100);
     Vec3d OBSERVER_POINT = new Vec3d(203, 200, 100);
-    TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
+    if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
+      TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
+    }
 
     BlockPos centre = new BlockPos(200, 199, 100);
     TestRunnerMBE81.createBasin(playerIn, centre, 10, 1, Blocks.AIR.getDefaultState());
@@ -79,9 +104,11 @@ public class TestRunnerMBE81b_C {
     // ballistic movement: drop from a height into water
     //  teleport the player to the observation point
     TestRunnerMBE81.clearAllDebugSettings();
-    Vec3d START_POINT = new Vec3d(200, 210, 200);
+    Vec3d START_POINT = new Vec3d(200, 202, 200);
     Vec3d OBSERVER_POINT = new Vec3d(203, 200, 200);
-    TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
+    if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
+      TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
+    }
 
     BlockPos centre = new BlockPos(200, 199, 200);
     TestRunnerMBE81.createBasin(playerIn, centre, 10, 3, Blocks.WATER.getDefaultState());
@@ -102,9 +129,11 @@ public class TestRunnerMBE81b_C {
     // ballistic movement: drop from a height into lava
     //  teleport the player to the observation point
     TestRunnerMBE81.clearAllDebugSettings();
-    Vec3d START_POINT = new Vec3d(200, 210, 300);
-    Vec3d OBSERVER_POINT = new Vec3d(203, 200, 300);
-    TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
+    Vec3d START_POINT = new Vec3d(200, 204, 300);
+    Vec3d OBSERVER_POINT = new Vec3d(203, 204, 300);
+    if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
+      TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
+    }
 
     BlockPos centre = new BlockPos(200, 199, 300);
     TestRunnerMBE81.createBasin(playerIn, centre, 10, 3, Blocks.LAVA.getDefaultState());
@@ -125,14 +154,15 @@ public class TestRunnerMBE81b_C {
     // spawn a boomerang and watch it smash through a line of blocks until it loses all momentum and bounces off
     //  teleport the player to the observation point if far away
     TestRunnerMBE81.clearAllDebugSettings();
-    Vec3d START_POINT = new Vec3d(0, 200, 1000);
+    Vec3d START_POINT = new Vec3d(0.5, 200.5, 1000.5);
     Vec3d OBSERVER_POINT = new Vec3d(3, 200, 1000);
 
     if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
     ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
-    TestRunnerMBE81.createLine(playerIn, new BlockPos(4, 200, 1000), 10, new Vec3i(4, 0, 0), Blocks.ACACIA_WOOD.getDefaultState());
+    TestRunnerMBE81.createLine(playerIn, new BlockPos(4, 200, 1000), 10, new Vec3i(4, 0, 0), Blocks.ACACIA_LEAVES.getDefaultState());
+
 
     StringBuilder sb = new StringBuilder();
     BoomerangEntity boomerangEntity = generateEntity("Entity8114", sb, worldIn, playerIn, thrownBoomerang,
@@ -147,7 +177,7 @@ public class TestRunnerMBE81b_C {
     // spawn a boomerang and watch it smash through a line of blocks until it loses all momentum and bounces off
     //  teleport the player to the observation point if far away
     TestRunnerMBE81.clearAllDebugSettings();
-    Vec3d START_POINT = new Vec3d(0, 200, 1100);
+    Vec3d START_POINT = new Vec3d(0.5, 200.5, 1100.5);
     Vec3d OBSERVER_POINT = new Vec3d(3, 200, 1100);
 
     if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
@@ -159,7 +189,7 @@ public class TestRunnerMBE81b_C {
     StringBuilder sb = new StringBuilder();
     BoomerangEntity boomerangEntity = generateEntity("Entity8115", sb, worldIn, playerIn, thrownBoomerang,
             START_POINT,  90, 0,  100,
-            0,  false, 1);
+            0,  false, 10);
     worldIn.addEntity(boomerangEntity);
     LOGGER.error("Spawned Entity " + sb.toString() + ": break through blocks moving west");
     return true;
@@ -169,7 +199,7 @@ public class TestRunnerMBE81b_C {
     // spawn a boomerang and watch it smash through a line of blocks until it loses all momentum and bounces off
     //  teleport the player to the observation point if far away
     TestRunnerMBE81.clearAllDebugSettings();
-    Vec3d START_POINT = new Vec3d(0, 200, 1200);
+    Vec3d START_POINT = new Vec3d(0.5, 200.5, 1200.5);
     Vec3d OBSERVER_POINT = new Vec3d(3, 200, 1200);
 
     if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
@@ -181,7 +211,7 @@ public class TestRunnerMBE81b_C {
     StringBuilder sb = new StringBuilder();
     BoomerangEntity boomerangEntity = generateEntity("Entity8116", sb, worldIn, playerIn, thrownBoomerang,
             START_POINT,  0, 0,  100,
-            0,  false, 1);
+            0,  false, 10);
     worldIn.addEntity(boomerangEntity);
     LOGGER.error("Spawned Entity " + sb.toString() + ": break through blocks moving south");
     return true;
@@ -191,19 +221,19 @@ public class TestRunnerMBE81b_C {
     // spawn a boomerang and watch it smash through a line of blocks until it loses all momentum and bounces off
     //  teleport the player to the observation point if far away
     TestRunnerMBE81.clearAllDebugSettings();
-    Vec3d START_POINT = new Vec3d(0, 200, 1300);
+    Vec3d START_POINT = new Vec3d(0.5, 200.5, 1300.5);
     Vec3d OBSERVER_POINT = new Vec3d(3, 200, 1300);
 
     if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
     ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
-    TestRunnerMBE81.createLine(playerIn, new BlockPos(4, 200, 1300), 10, new Vec3i(0, 0, -4), Blocks.ACACIA_WOOD.getDefaultState());
+    TestRunnerMBE81.createLine(playerIn, new BlockPos(0, 200, 1296), 10, new Vec3i(0, 0, -4), Blocks.ACACIA_WOOD.getDefaultState());
 
     StringBuilder sb = new StringBuilder();
     BoomerangEntity boomerangEntity = generateEntity("Entity8117", sb, worldIn, playerIn, thrownBoomerang,
             START_POINT,  180, 0,  100,
-            0,  false, 1);
+            0,  false, 10);
     worldIn.addEntity(boomerangEntity);
     LOGGER.error("Spawned Entity " + sb.toString() + ": break through blocks moving north");
     return true;
@@ -213,21 +243,67 @@ public class TestRunnerMBE81b_C {
     // spawn a boomerang and watch it smash through a line of blocks until it loses all momentum and bounces off
     //  teleport the player to the observation point if far away
     TestRunnerMBE81.clearAllDebugSettings();
-    Vec3d START_POINT = new Vec3d(0, 200, 1400);
+    Vec3d START_POINT = new Vec3d(0.5, 200.5, 1400.5);
     Vec3d OBSERVER_POINT = new Vec3d(3, 200, 1400);
 
     if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
     ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
-    TestRunnerMBE81.createLine(playerIn, new BlockPos(4, 200, 1000), 10, new Vec3i(4, 0, 0), Blocks.IRON_ORE.getDefaultState());
+    TestRunnerMBE81.createLine(playerIn, new BlockPos(4, 200, 1400), 10, new Vec3i(4, 0, 0), Blocks.IRON_ORE.getDefaultState());
 
     StringBuilder sb = new StringBuilder();
     BoomerangEntity boomerangEntity = generateEntity("Entity8118", sb, worldIn, playerIn, thrownBoomerang,
             START_POINT,  -90, 0,  100,
-            0,  false, 1);
+            0,  false, 10);
     worldIn.addEntity(boomerangEntity);
     LOGGER.error("Spawned Entity " + sb.toString() + ": break through iron blocks");
+    return true;
+  }
+
+  public boolean runTest8119(World worldIn, PlayerEntity playerIn, boolean printFailedTestsOnly) {
+    // spawn a boomerang and watch it smash through a line of blocks until it loses all momentum and bounces off
+    //  teleport the player to the observation point if far away
+    TestRunnerMBE81.clearAllDebugSettings();
+    Vec3d START_POINT = new Vec3d(0.5, 200.5, 1500.5);
+    Vec3d OBSERVER_POINT = new Vec3d(3, 200, 1500);
+
+    if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
+      TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
+    }
+    ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
+    thrownBoomerang.addEnchantment(Enchantments.EFFICIENCY, 5);
+    TestRunnerMBE81.createLine(playerIn, new BlockPos(4, 200, 1500), 10, new Vec3i(4, 0, 0), Blocks.ACACIA_WOOD.getDefaultState());
+
+    StringBuilder sb = new StringBuilder();
+    BoomerangEntity boomerangEntity = generateEntity("Entity8118", sb, worldIn, playerIn, thrownBoomerang,
+            START_POINT,  -90, 0,  100,
+            0,  false, 10);
+    worldIn.addEntity(boomerangEntity);
+    LOGGER.error("Spawned Entity " + sb.toString() + ": break through wood blocks with greater efficiency");
+    return true;
+  }
+
+  public boolean runTest8120(World worldIn, PlayerEntity playerIn, boolean printFailedTestsOnly) {
+    // spawn a boomerang and watch it smash through a line of blocks until it loses all momentum and bounces off
+    //  teleport the player to the observation point if far away
+    TestRunnerMBE81.clearAllDebugSettings();
+    Vec3d START_POINT = new Vec3d(0.5, 200.5, 1600.5);
+    Vec3d OBSERVER_POINT = new Vec3d(3, 200, 1600);
+
+    if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
+      TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
+    }
+    ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
+    thrownBoomerang.addEnchantment(Enchantments.SILK_TOUCH, 1);
+    TestRunnerMBE81.createLine(playerIn, new BlockPos(4, 200, 1600), 10, new Vec3i(4, 0, 0), Blocks.GLASS.getDefaultState());
+
+    StringBuilder sb = new StringBuilder();
+    BoomerangEntity boomerangEntity = generateEntity("Entity8118", sb, worldIn, playerIn, thrownBoomerang,
+            START_POINT,  -90, 0,  100,
+            0,  false, 10);
+    worldIn.addEntity(boomerangEntity);
+    LOGGER.error("Spawned Entity " + sb.toString() + ": break through glass blocks with silk touch");
     return true;
   }
 

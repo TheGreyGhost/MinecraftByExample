@@ -181,7 +181,7 @@ public class TestRunnerMBE81b_B {
             START_POINT, 90, 0, 7,
             2,  false, 4);
     worldIn.addEntity(boomerangEntity);
-    LOGGER.error("Spawned Entity " + sb.toString()+ ": watch flight path: flat, 90 yaw, 4 blocks per second");
+    LOGGER.error("Spawned Entity " + sb.toString()+ ": watch flight path through water: flat, 90 yaw, 4 blocks per second");
     return true;
   }
 
