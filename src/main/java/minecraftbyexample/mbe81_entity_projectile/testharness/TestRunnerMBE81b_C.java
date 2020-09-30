@@ -24,13 +24,7 @@ import org.apache.logging.log4j.Logger;
  * ballistic: movement in lava
  *
  * inflight: collision with solid objects - increasing numbers; three different hardnesses & observe bounce off.  Observe bounceoff in each direction
- * inflight: test enchantments - efficiency, silk touch, haste
- *
- *
- * inflight: collision with entity - observe damage(use breakpoint)
- * test each enchantment
- * entity bounce off test
- * throw and catch: if either hand free, catch.  if both hands full, drop
+ * inflight: test enchantments - efficiency, silk touch
  */
 public class TestRunnerMBE81b_C {
 

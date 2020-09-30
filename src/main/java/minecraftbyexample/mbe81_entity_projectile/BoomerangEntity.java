@@ -689,14 +689,22 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
   }
 
   /**
-   * Called when the arrow hits an entity
+   * Called when the boomerang hits an entity
    */
   private void onImpactWithEntity(EntityRayTraceResult rayTraceResult) {
     Entity target = rayTraceResult.getEntity();
-    float speed = (float)this.getMotion().length();
-    int baseDamage = MathHelper.ceil(Math.max(speed * this.damage, 0.0D));
+    float speed = (float)this.getMotion().length() * 20;  // speed in blocks per second
+    final float SPEED_FOR_MINIMUM_DAMAGE = 2.0f; // blocks per second
+    final float SPEED_FOR_MAXIMUM_DAMAGE = 20.0f; // blocks per second
+    final float DAMAGE_MULTIPLIER_FOR_MINIMUM_SPEED = 0.25F;
+    final float DAMAGE_MULTIPLIER_FOR_MAXIMUM_SPEED = 2.0F;
+
+    float speedMultiplierForDamage = (float)UsefulFunctions.interpolate_with_clipping(speed,
+            SPEED_FOR_MINIMUM_DAMAGE, SPEED_FOR_MAXIMUM_DAMAGE,
+            DAMAGE_MULTIPLIER_FOR_MINIMUM_SPEED, DAMAGE_MULTIPLIER_FOR_MAXIMUM_SPEED);
+    int baseDamage = MathHelper.ceil(Math.max(speedMultiplierForDamage * this.damage, 0.0D));
     final float MAX_DAMAGE_BOOST_RATIO = 3.0F;  // at max power enchantment, add this much extra, eg 3 = add 300% extra damage
-    float damageBoost = baseDamage * (1.0F + damageBoostLevel * MAX_DAMAGE_BOOST_RATIO);
+    float damageBoost = baseDamage * damageBoostLevel * MAX_DAMAGE_BOOST_RATIO;
 
     float specialDamageRatio = 0;
     if (!this.world.isRemote && target instanceof LivingEntity) {
@@ -871,7 +879,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
   public void onCollideWithPlayerNotInFlight(PlayerEntity entityIn) {
     if (this.world.isRemote) return;
     if (pickupDelay > 0) return;
-    ItemStack pickedUpBoomerang = new ItemStack(StartupCommon.boomerangItem);
+    ItemStack pickedUpBoomerang = this.getItemStack();
 
     boolean successfullyPickedUp = entityIn.inventory.addItemStackToInventory(pickedUpBoomerang);
     if (successfullyPickedUp) {

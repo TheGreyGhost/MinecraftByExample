@@ -1,16 +1,20 @@
 package minecraftbyexample.mbe81_entity_projectile.testharness;
 
+import minecraftbyexample.mbe81_entity_projectile.BoomerangEntity;
 import minecraftbyexample.usefultools.debugging.DebugSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.LadderBlock;
 import net.minecraft.command.CommandSource;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.passive.PigEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
@@ -205,6 +209,22 @@ public class TestRunnerMBE81
         }
       }
     }
+  }
+
+  /*
+    Spawn a pig on top of a block
+ */
+  public static void createPig(PlayerEntity player, Vec3d spawnpoint) {
+    World world = player.getEntityWorld();
+
+    world.setBlockState(new BlockPos(spawnpoint.x, spawnpoint.y-1, spawnpoint.z),
+                        Blocks.STONE.getDefaultState());
+
+    PigEntity pigEntity = new PigEntity(EntityType.PIG, world);
+    pigEntity.setPosition(spawnpoint.x, spawnpoint.y, spawnpoint.z);
+
+    // spawn the entity in the world
+    world.addEntity(pigEntity);
   }
 
   /*  create a line of regularly-spaced blocks
