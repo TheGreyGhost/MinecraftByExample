@@ -7,18 +7,21 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.LadderBlock;
 import net.minecraft.command.CommandSource;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.item.ArmorStandEntity;
+import net.minecraft.entity.item.minecart.MinecartEntity;
+import net.minecraft.entity.monster.HuskEntity;
 import net.minecraft.entity.passive.PigEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -41,8 +44,13 @@ public class TestRunnerMBE81
         success = testRunner.runTest(testNumber, worldIn, playerIn, false);
         break;
       }
-      case 8110: case 8111: case 8112: case 8113: case 8114: case 8115: case 8116: case 8117: case 8118: case 8119: case 8120: case 8121: {
+      case 8110: case 8111: case 8112: case 8113: case 8114: case 8115: case 8116: case 8117: case 8118: case 8119: case 8120: {
         TestRunnerMBE81b_C testRunner = new TestRunnerMBE81b_C();
+        success = testRunner.runTest(testNumber, worldIn, playerIn, false);
+        break;
+      }
+      case 8121: case 8122: case 8123: case 8124: case 8125: case 8126: case 8127: case 8128: case 8129: case 8130: {
+        TestRunnerMBE81b_D testRunner = new TestRunnerMBE81b_D();
         success = testRunner.runTest(testNumber, worldIn, playerIn, false);
         break;
       }
@@ -212,10 +220,13 @@ public class TestRunnerMBE81
   }
 
   /*
-    Spawn a pig on top of a block
+    Spawn a pig on top of a block, if no nearby pig already
  */
   public static void createPig(PlayerEntity player, Vec3d spawnpoint) {
     World world = player.getEntityWorld();
+    AxisAlignedBB aabb = new AxisAlignedBB(spawnpoint.subtract(1, 1, 1), spawnpoint.add(1,1,1));
+    List<Entity> nearbyPigs = world.getEntitiesWithinAABB(PigEntity.class, aabb);
+    if (!nearbyPigs.isEmpty()) return;
 
     world.setBlockState(new BlockPos(spawnpoint.x, spawnpoint.y-1, spawnpoint.z),
                         Blocks.STONE.getDefaultState());
@@ -226,6 +237,64 @@ public class TestRunnerMBE81
     // spawn the entity in the world
     world.addEntity(pigEntity);
   }
+
+  /*
+  Spawn a husk on top of a block, if there isn't one nearby already
+*/
+  public static void createHusk(PlayerEntity player, Vec3d spawnpoint) {
+    World world = player.getEntityWorld();
+    AxisAlignedBB aabb = new AxisAlignedBB(spawnpoint.subtract(1, 1, 1), spawnpoint.add(1,1,1));
+    List<Entity> nearbyHusks = world.getEntitiesWithinAABB(HuskEntity.class, aabb);
+    if (!nearbyHusks.isEmpty()) return;
+
+    world.setBlockState(new BlockPos(spawnpoint.x, spawnpoint.y-1, spawnpoint.z),
+            Blocks.STONE.getDefaultState());
+
+    HuskEntity huskEntity = new HuskEntity(EntityType.HUSK, world);
+    huskEntity.setPosition(spawnpoint.x, spawnpoint.y, spawnpoint.z);
+
+    // spawn the entity in the world
+    world.addEntity(huskEntity);
+  }
+
+  /*
+  Spawn an invulnerable armor stand on top of a block, if there isn't one nearby already
+*/
+  public static void createArmorStand(PlayerEntity player, Vec3d spawnpoint) {
+    World world = player.getEntityWorld();
+    AxisAlignedBB aabb = new AxisAlignedBB(spawnpoint.subtract(1, 1, 1), spawnpoint.add(1,1,1));
+    List<Entity> nearbyArmorStands = world.getEntitiesWithinAABB(ArmorStandEntity.class, aabb);
+    if (!nearbyArmorStands.isEmpty()) return;
+
+    world.setBlockState(new BlockPos(spawnpoint.x, spawnpoint.y-1, spawnpoint.z),
+            Blocks.STONE.getDefaultState());
+
+    ArmorStandEntity armorStandEntity = new ArmorStandEntity(EntityType.ARMOR_STAND, world);
+    armorStandEntity.setPosition(spawnpoint.x, spawnpoint.y, spawnpoint.z);
+    armorStandEntity.setInvulnerable(true);
+    // spawn the entity in the world
+    world.addEntity(armorStandEntity);
+  }
+
+  /*
+  Spawn an invulnerable armor stand on top of a block, if there isn't one nearby already
+*/
+  public static void createMinecart(PlayerEntity player, Vec3d spawnpoint) {
+    World world = player.getEntityWorld();
+    AxisAlignedBB aabb = new AxisAlignedBB(spawnpoint.subtract(1, 1, 1), spawnpoint.add(1,1,1));
+    List<Entity> nearbyArmorStands = world.getEntitiesWithinAABB(ArmorStandEntity.class, aabb);
+    if (!nearbyArmorStands.isEmpty()) return;
+
+    world.setBlockState(new BlockPos(spawnpoint.x, spawnpoint.y-1, spawnpoint.z),
+            Blocks.STONE.getDefaultState());
+
+    MinecartEntity minecartEntity = new MinecartEntity(EntityType.MINECART, world);
+    minecartEntity.setPosition(spawnpoint.x, spawnpoint.y, spawnpoint.z);
+    minecartEntity.setInvulnerable(true);
+    // spawn the entity in the world
+    world.addEntity(minecartEntity);
+  }
+
 
   /*  create a line of regularly-spaced blocks
  */

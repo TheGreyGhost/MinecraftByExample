@@ -40,7 +40,6 @@ public class TestRunnerMBE81b_C {
     if (test == 8118) return runTest8118(worldIn, playerIn, printFailedTestsOnly);
     if (test == 8119) return runTest8119(worldIn, playerIn, printFailedTestsOnly);
     if (test == 8120) return runTest8120(worldIn, playerIn, printFailedTestsOnly);
-//    if (test == 8121) return runTest8118(worldIn, playerIn, printFailedTestsOnly);
     return false;
   }
 

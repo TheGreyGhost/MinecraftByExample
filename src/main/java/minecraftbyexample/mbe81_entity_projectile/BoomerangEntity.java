@@ -548,6 +548,8 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
       }
     }
 
+    if (!this.dataManager.get(IN_FLIGHT_DMP)) return;  // if no longer in flight due to collision; exit immediately
+
     this.rotationYaw = boomerangFlightPath.getYaw((ticksSpentInFlight + 1) / TICKS_PER_SECOND);
     this.rotationPitch = -90;  // the model has its flat face pointing up, but during flight it needs to be pointing sideways, which
                                // corresponds to pitching it up by 90 degrees.
@@ -689,7 +691,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
   }
 
   /**
-   * Called when the boomerang hits an entity
+   * Called when the boomerang in flight hits an entity
    */
   private void onImpactWithEntity(EntityRayTraceResult rayTraceResult) {
     Entity target = rayTraceResult.getEntity();
@@ -706,12 +708,13 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     final float MAX_DAMAGE_BOOST_RATIO = 3.0F;  // at max power enchantment, add this much extra, eg 3 = add 300% extra damage
     float damageBoost = baseDamage * damageBoostLevel * MAX_DAMAGE_BOOST_RATIO;
 
+    // special enchantments (eg BANE OF ARTHROPODS) cause extra damage to some creature types
     float specialDamageRatio = 0;
     if (!this.world.isRemote && target instanceof LivingEntity) {
       LivingEntity targetLivingEntity = (LivingEntity)target;
       for (Map.Entry<Enchantment, Integer> enchantment : specialDamages.entrySet()) {
         if (enchantment.getKey() instanceof DamageEnchantment) {
-          DamageEnchantment damageEnchantment = (DamageEnchantment)enchantment;
+          DamageEnchantment damageEnchantment = (DamageEnchantment)(enchantment.getKey());
           specialDamageRatio += damageEnchantment.calcDamageByCreature(enchantment.getValue(), targetLivingEntity.getCreatureAttribute());
         } else {
           LOGGER.warn("Expected a DamageEnchantment but got instead:" + enchantment.getKey());
@@ -738,7 +741,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     final float BURN_TIME_SECONDS_AT_MAX_ENCHANTMENT = 8;
     burnTimeSeconds += flameLevel * BURN_TIME_SECONDS_AT_MAX_ENCHANTMENT;
 
-    if (this.isBurning() && !isEnderMan) {
+    if (burnTimeSeconds > 0 && !isEnderMan) {
       target.setFire(burnTimeSeconds);
     }
 
@@ -762,10 +765,11 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
           }
         }
 
+          // special enchantments (eg BANE OF ARTHROPODS) apply an effect as well as extra damage
         if (!this.world.isRemote && thrower instanceof LivingEntity) {
           for (Map.Entry<Enchantment, Integer> enchantment : specialDamages.entrySet()) {
             if (enchantment.getKey() instanceof DamageEnchantment) {
-              DamageEnchantment damageEnchantment = (DamageEnchantment)enchantment;
+              DamageEnchantment damageEnchantment = (DamageEnchantment)(enchantment.getKey());
               damageEnchantment.onEntityDamaged(thrower, target, enchantment.getValue());
             } else {
               LOGGER.warn("Expected a DamageEnchantment but got instead:" + enchantment.getKey());
@@ -776,7 +780,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     } else {
       target.setFireTimer(fireTimer);  // undo any flame effect we added
     }
-    stopFlightDueToEntityImpact(rayTraceResult, !entityTookDamage);
+    stopFlightDueToEntityImpact(rayTraceResult, target.isInvulnerable());
   }
 
   // stop flying after hitting an entity:
@@ -804,12 +808,18 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
 
       // some vector math to calculate the path when bouncing off
       Vec3d boomerangVelocity = this.getMotion();
-      double radialProjectionLength = boomerangVelocity.dotProduct(impactRadialPosition) / impactRadialPosition.lengthSquared();
-      Vec3d radialComponent = impactRadialPosition.scale(radialProjectionLength);
-      Vec3d tangentialComponent = boomerangVelocity.subtract(radialComponent);
+      double impactRadiusSq = impactRadialPosition.lengthSquared();
       final double RICHOCHET_SPEED = 0.5; // amount of speed left after richochet
-      // the ricochet keeps the same tangential component and inverts the radial component
-      newVelocity = tangentialComponent.subtract(radialComponent);
+
+      if (impactRadiusSq > 0.001) {
+        double radialProjectionLength = boomerangVelocity.dotProduct(impactRadialPosition) / impactRadiusSq;
+        Vec3d radialComponent = impactRadialPosition.scale(radialProjectionLength);
+        Vec3d tangentialComponent = boomerangVelocity.subtract(radialComponent);
+        // the ricochet keeps the same tangential component and inverts the radial component
+        newVelocity = tangentialComponent.subtract(radialComponent);
+      } else {
+        newVelocity = boomerangVelocity.inverse();
+      }
       newVelocity = newVelocity.scale(RICHOCHET_SPEED);
     } else {
       newVelocity = new Vec3d(0, 0, 0);
