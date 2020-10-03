@@ -17,7 +17,11 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 /**
  * Created by TGG on 24/06/2020.
@@ -61,8 +65,9 @@ public class BoomerangItem extends TieredItem {
             IDLE_FRAME_INDEX, FULLY_CHARGED_INDEX);
   }
 
-  private final Enchantment [] VALID_ENCHANTMENTS = {Enchantments.KNOCKBACK, Enchantments.FLAME,
-                                                     Enchantments.POWER, Enchantments.PUNCH,
+  private final Enchantment [] VALID_ENCHANTMENTS = {Enchantments.KNOCKBACK, Enchantments.PUNCH,
+                                                     Enchantments.FLAME, Enchantments.FIRE_ASPECT,
+                                                     Enchantments.POWER,
                                                      Enchantments.SMITE, Enchantments.BANE_OF_ARTHROPODS,
                                                      Enchantments.SILK_TOUCH, Enchantments.EFFICIENCY, Enchantments.FORTUNE};
   /**
@@ -93,7 +98,7 @@ public class BoomerangItem extends TieredItem {
     int ticksSpentChargingUp = this.getUseDuration(stack) - timeLeft;
 
     final float MIN_FLIGHT_DISTANCE = 4;
-    final float MAX_FLIGHT_DISTANCE = 32;
+    final float MAX_FLIGHT_DISTANCE = 20;
     float distanceToApex = (float)UsefulFunctions.interpolate_with_clipping(ticksSpentChargingUp,
                                                                   0, MAX_CHARGEUP_TIME_TICKS,
                                                                       MIN_FLIGHT_DISTANCE, MAX_FLIGHT_DISTANCE);
@@ -139,7 +144,7 @@ public class BoomerangItem extends TieredItem {
       boolean mainHandIsActive = (Hand.MAIN_HAND == playerEntity.getActiveHand());
       boolean playerIsLeftHander = HandSide.LEFT == playerEntity.getPrimaryHand();
       boolean boomerangIsInLeftHand = (mainHandIsActive && playerIsLeftHander) || (!mainHandIsActive && !playerIsLeftHander);
-      boolean antiClockwisePath = boomerangIsInLeftHand;
+      boolean antiClockwisePath = !boomerangIsInLeftHand;
 
       BoomerangEntity boomerangEntity = new BoomerangEntity(worldIn, thrownBoomerang, playerEntity,
               startPosition, playerEntity.getYaw(1.0F), playerEntity.getPitch(1.0F),
