@@ -56,11 +56,8 @@ import java.util.stream.Collectors;
  * Heavily based on the vanilla SnowballEntity, ThrowableEntity, and AbstractArrowEntity
  */
 public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnData {
-  public BoomerangEntity(EntityType<? extends BoomerangEntity> entityType, World world) {
-    super(entityType, world);
-  }
 
-  /** Create a new BoomerangEntity
+  /** Create a new BoomerangEntity (initial server creation only)
    * @param boomerangItemStack the boomerang item being thrown
    * @param startPosition  the spawn point of the flight path
    * @param apexYaw the yaw angle in degrees (compass direction of the apex relative to the thrower).  0 degrees is south and increases clockwise.
@@ -115,71 +112,12 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     prevEndOverEndRotation = endOverEndRotation;
   }
 
-  /**
-   * Copy relevant enchantments into member variables for ease of reference
-   * @param boomerangItemStack
-   */
-  private void copyEnchantmentData(ItemStack boomerangItemStack) {
-    boolean isEnchanted = boomerangItemStack.isEnchanted();
-
-    Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(boomerangItemStack);
-    float knockback1 = enchantments.getOrDefault(Enchantments.KNOCKBACK, 0) / (float)Enchantments.KNOCKBACK.getMaxLevel();
-    float knockback2 = enchantments.getOrDefault(Enchantments.PUNCH, 0) / (float)Enchantments.PUNCH.getMaxLevel();
-    knockbackLevel = Math.max(knockback1, knockback2);
-    float fire1 = 2* enchantments.getOrDefault(Enchantments.FLAME, 0) / (float)Enchantments.FLAME.getMaxLevel();
-    float fire2 = enchantments.getOrDefault(Enchantments.FIRE_ASPECT, 0) / (float)Enchantments.FIRE_ASPECT.getMaxLevel();
-    flameLevel = Math.max(fire1, fire2);
-    damageBoostLevel = enchantments.getOrDefault(Enchantments.POWER, 0) / (float)Enchantments.POWER.getMaxLevel();
-
-    // add any "special damage" enchantment types to a dedicated list
-    List<Enchantment> specialDamageEnchantmentTypes = Arrays.asList(Enchantments.SMITE, Enchantments.BANE_OF_ARTHROPODS);
-    specialDamages = enchantments.entrySet().stream()
-            .filter(x -> specialDamageEnchantmentTypes.contains(x.getKey()))
-            .collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue()));
-
-    efficiencyLevel = enchantments.getOrDefault(Enchantments.EFFICIENCY, 0)/ (float)Enchantments.EFFICIENCY.getMaxLevel();
-    // silkTouch and fortuneLevel are implemented using vanilla directly on the enchantment tags, so we don't need to extract them ourselves
-//    silkTouch = 0 != enchantments.getOrDefault(Enchantments.SILK_TOUCH, 0);
-//    fortuneLevel = enchantments.getOrDefault(Enchantments.FORTUNE, 0)/ (float)Enchantments.FORTUNE.getMaxLevel();
+  // Used on the server when reloading from disk, and on the client in response to a spawn packet from the server
+  // a) On the server: after initial construction, readAdditional() will be called
+  // b) On the client: after initial construction, readSpawnData() will be called
+  public BoomerangEntity(EntityType<? extends BoomerangEntity> entityType, World world) {
+    super(entityType, world);
   }
-
-  protected void registerData() {
-    this.getDataManager().register(IN_FLIGHT_DMP, Boolean.TRUE);
-    this.getDataManager().register(ITEMSTACK_DMP, ItemStack.EMPTY);
-    this.getDataManager().register(MOMENTUM_DMP, 0.0F);
-  }
-
-    // Is this boomerang in flight?  (true = yes, false = no (it has hit something and is now acting like a discarded item))
-  private static final DataParameter<Boolean> IN_FLIGHT_DMP =
-          EntityDataManager.createKey(BoomerangEntity.class, DataSerializers.BOOLEAN);
-    // What ItemStack was used to throw the boomerang?
-  private static final DataParameter<ItemStack> ITEMSTACK_DMP = EntityDataManager.createKey(BoomerangEntity.class, DataSerializers.ITEMSTACK);
-
-  private static final DataParameter<Float> MOMENTUM_DMP = EntityDataManager.createKey(BoomerangEntity.class, DataSerializers.FLOAT);
-
-//  private static final DataParameter<Integer> TICKS_SPENT_IN_FLIGHT = EntityDataManager.createKey(BoomerangEntity.class, DataSerializers.VARINT);
-
-  protected LivingEntity thrower;
-  private UUID throwerID = null;
-
-  // member variables that need to be saved to record its state
-  private BoomerangFlightPath boomerangFlightPath = new BoomerangFlightPath();  //dummy
-  private boolean rightHandThrown = false;  // which hand was used to throw?
-  private int pickupDelay = 0;        // delay until a non-in-flight boomerang can be picked up (in ticks)
-  private int ticksSpentInFlight = 0;
-  private int ticksSpentNotInFlight = 0;
-  private double damage = 2.0D;
-//  private float remainingMomentum = 1.0F;  // the fraction of momentum remaining - reduced when harvesting blocks.
-//                                           // the boomerang stops flying when this is reduced to zero
-  private float endOverEndRotation = 0.0F;
-  private float prevEndOverEndRotation = 0.0F;
-
-  // member variables that are regenerated from other information, hence don't need saving
-  private float knockbackLevel;  // 0.0 -> 1.0
-  private float flameLevel;      // 0.0 -> 1.0
-  private float damageBoostLevel;     // 0.0 -> 1.0
-  private Map<Enchantment, Integer> specialDamages = new HashMap<>();
-  private float efficiencyLevel; // 0.0 -> 1.0
 
   // If you forget to override this method, the default vanilla method will be called.
   // This sends a vanilla spawn packet, which is then silently discarded when it reaches the client.
@@ -191,23 +129,88 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     return NetworkHooks.getEntitySpawningPacket(this);
   }
 
-  private static final byte VANILLA_ARROW_IMPACT_STATUS_ID = 0;
+  // ------------------methods to setup the entity's state -----------------------------------------------
+  // Each entity has three types of data:
+  //  a) server-only member variables which are not synchronised to the client
+  //  b) server member variables which are synchronised to the client through the initial spawn packet, but are not
+  //      synchronised again; this is achieved using writeSpawnData() and readSpawnData()
+  //  c) server member variables which are continually synchronised to the client through update packets; this is
+  //     achieved using the DataManager and DataParameters
 
-  /*   see https://wiki.vg/Entity_statuses
-       make a cloud of particles at the impact point
-   */
+
+  // ----- member variables that do not need synchronisation, either because
+  //         a) they're not used on the client; or
+  //         b) they're generated by the client from other information
+
+  protected LivingEntity thrower;
+  private UUID throwerID = null;
+
+  // member variables that need to be saved to record its state
+  private int pickupDelay = 0;        // delay until a non-in-flight boomerang can be picked up (in ticks)
+  private int ticksSpentNotInFlight = 0;
+  private double damage = 2.0D;
+  private float endOverEndRotation = 0.0F;
+  private float prevEndOverEndRotation = 0.0F;
+
+  // member variables that are regenerated from other information, hence don't need saving
+  // record information about enchantments placed on the boomerang
+  private float knockbackLevel;  // 0.0 -> 1.0
+  private float flameLevel;      // 0.0 -> 1.0
+  private float damageBoostLevel;     // 0.0 -> 1.0
+  private Map<Enchantment, Integer> specialDamages = new HashMap<>();
+  private float efficiencyLevel; // 0.0 -> 1.0
+
+  // ---------- member variables which are synchronised to the client at client spawn only
+
+  // When the client entity is spawned (in response to a packet from the server), we need to send it three extra pieces of information
+  // 1) The boomerang flight path information
+  // 2) The number of ticks that the entity has spent in flight (i.e. if we saved a game when the boomerang was in the middle of its
+  //     flight, then when we spawn after reload, this number of ticks will not be zero.)
+  // 3) which hand was used to throw the boomerang
+  // Why is this necessary?
+  // Because when the entity is first created, or when it is loaded from disk (using NBT), the client does not receive all of the
+  //   information that the server does.
+  // Some of the information is synchronised by vanilla (DataManager variables, position, motion, yaw+pitch), but anything else
+  //  must be transmitted by us.
+
+  private BoomerangFlightPath boomerangFlightPath = new BoomerangFlightPath();  //dummy
+  private boolean rightHandThrown = false;  // which hand was used to throw?
+  private int ticksSpentInFlight = 0;
+
   @Override
-  public void handleStatusUpdate(byte statusID) {
-    if (statusID == VANILLA_ARROW_IMPACT_STATUS_ID) {
-      final Color BROWN = new Color(165,42,42);
-      final double MAXIMUM_DEVIATION = 0.5;  // the scatter of the spawning position, as a proportion of the entity width
-      for(int i = 0; i < 20; ++i) {
-        this.world.addParticle(ParticleTypes.ENTITY_EFFECT,
-                this.getPosXRandom(MAXIMUM_DEVIATION), this.getPosYRandom(), this.getPosZRandom(MAXIMUM_DEVIATION),
-                BROWN.getRed() / 255.0, BROWN.getGreen() / 255.0, BROWN.getBlue() / 255.0);
-      }
-    }
+  public void writeSpawnData(PacketBuffer buffer) {
+    CompoundNBT nbt = boomerangFlightPath.serializeNBT();
+    buffer.writeCompoundTag(nbt);
+    buffer.writeInt(ticksSpentInFlight);
+    buffer.writeBoolean(rightHandThrown);
   }
+
+  @Override
+  public void readSpawnData(PacketBuffer additionalData) {
+    CompoundNBT nbt = additionalData.readCompoundTag();
+    boomerangFlightPath.deserializeNBT(nbt);
+    ticksSpentInFlight = additionalData.readInt();
+    rightHandThrown = additionalData.readBoolean();
+  }
+
+
+  // ------------- member variables which are synchronised continuously
+
+  protected void registerData() {
+    this.getDataManager().register(IN_FLIGHT_DMP, Boolean.TRUE);
+    this.getDataManager().register(ITEMSTACK_DMP, ItemStack.EMPTY);
+    this.getDataManager().register(MOMENTUM_DMP, 0.0F);
+  }
+
+  // Is this boomerang in flight?  (true = yes, false = no (it has hit something and is now acting like a discarded item))
+  private static final DataParameter<Boolean> IN_FLIGHT_DMP = EntityDataManager.createKey(BoomerangEntity.class, DataSerializers.BOOLEAN);
+  // What ItemStack was used to throw the boomerang?
+  private static final DataParameter<ItemStack> ITEMSTACK_DMP = EntityDataManager.createKey(BoomerangEntity.class, DataSerializers.ITEMSTACK);
+  // How much momentum does the boomerang have left?
+  private static final DataParameter<Float> MOMENTUM_DMP = EntityDataManager.createKey(BoomerangEntity.class, DataSerializers.FLOAT);
+
+
+  //----------------- load/save the entity to/from NBT (used when saving & loading the game to disk)
 
   private final String THROWER_NBT = "thrower";
   private final String IN_FLIGHT_NBT = "inflight";
@@ -241,7 +244,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     }
   }
 
-  /** Read further NBT information to initialise the entity (after loading from disk or transmission from server)
+  /** Read further NBT information to initialise the entity (after loading from disk)
    */
   public void readAdditional(CompoundNBT compound) {
     this.thrower = null;
@@ -266,6 +269,63 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     this.dataManager.set(MOMENTUM_DMP, compound.getFloat(MOMENTUM_NBT));
     copyEnchantmentData(boomerangItemStack);
   }
+
+
+  /**
+   * Copy relevant enchantments into member variables for ease of reference
+   * @param boomerangItemStack
+   */
+  private void copyEnchantmentData(ItemStack boomerangItemStack) {
+    boolean isEnchanted = boomerangItemStack.isEnchanted();
+
+    Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(boomerangItemStack);
+    float knockback1 = enchantments.getOrDefault(Enchantments.KNOCKBACK, 0) / (float)Enchantments.KNOCKBACK.getMaxLevel();
+    float knockback2 = enchantments.getOrDefault(Enchantments.PUNCH, 0) / (float)Enchantments.PUNCH.getMaxLevel();
+    knockbackLevel = Math.max(knockback1, knockback2);
+    float fire1 = 2* enchantments.getOrDefault(Enchantments.FLAME, 0) / (float)Enchantments.FLAME.getMaxLevel();
+    float fire2 = enchantments.getOrDefault(Enchantments.FIRE_ASPECT, 0) / (float)Enchantments.FIRE_ASPECT.getMaxLevel();
+    flameLevel = Math.max(fire1, fire2);
+    damageBoostLevel = enchantments.getOrDefault(Enchantments.POWER, 0) / (float)Enchantments.POWER.getMaxLevel();
+
+    // add any "special damage" enchantment types to a dedicated list
+    List<Enchantment> specialDamageEnchantmentTypes = Arrays.asList(Enchantments.SMITE, Enchantments.BANE_OF_ARTHROPODS);
+    specialDamages = enchantments.entrySet().stream()
+            .filter(x -> specialDamageEnchantmentTypes.contains(x.getKey()))
+            .collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue()));
+
+    efficiencyLevel = enchantments.getOrDefault(Enchantments.EFFICIENCY, 0)/ (float)Enchantments.EFFICIENCY.getMaxLevel();
+    // silkTouch and fortuneLevel are implemented using vanilla directly on the enchantment tags, so we don't need to extract them ourselves
+//    silkTouch = 0 != enchantments.getOrDefault(Enchantments.SILK_TOUCH, 0);
+//    fortuneLevel = enchantments.getOrDefault(Enchantments.FORTUNE, 0)/ (float)Enchantments.FORTUNE.getMaxLevel();
+  }
+
+  //-------------------------------------
+
+
+  private static final byte VANILLA_ARROW_IMPACT_STATUS_ID = 0;
+
+  /*   see https://wiki.vg/Entity_statuses
+       make a cloud of particles at the impact point
+   */
+  @Override
+  public void handleStatusUpdate(byte statusID) {
+    if (statusID == VANILLA_ARROW_IMPACT_STATUS_ID) {
+      final Color BROWN = new Color(165,42,42);
+      final double MAXIMUM_DEVIATION = 0.5;  // the scatter of the spawning position, as a proportion of the entity width
+      for(int i = 0; i < 20; ++i) {
+        this.world.addParticle(ParticleTypes.ENTITY_EFFECT,
+                this.getPosXRandom(MAXIMUM_DEVIATION), this.getPosYRandom(), this.getPosZRandom(MAXIMUM_DEVIATION),
+                BROWN.getRed() / 255.0, BROWN.getGreen() / 255.0, BROWN.getBlue() / 255.0);
+      }
+    }
+  }
+
+
+  COMMENTING UP TO HERE
+
+
+
+
 
   /**
    * Who threw this boomerang?
@@ -917,32 +977,6 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     this.getDataManager().set(ITEMSTACK_DMP, stack);
   }
 
-  // When the client entity is spawned (in response to a packet from the server), we need to send it three extra pieces of information
-  // 1) The boomerang flight path information
-  // 2) The number of ticks that the entity has spent in flight.
-  // 3) which hand was used to throw the boomerang
-  // Why is this necessary?
-  // Because when the entity is first created, or when it is loaded from disk (using NBT), the client does not receive all of the
-  //   information that the server does.
-  // Some of the information is synchronised by vanilla (DataManager variables, position, motion, yaw+pitch), but anything else
-  //  must be transmitted by us.
-
-  @Override
-  public void writeSpawnData(PacketBuffer buffer) {
-    CompoundNBT nbt = boomerangFlightPath.serializeNBT();
-    buffer.writeCompoundTag(nbt);
-    buffer.writeInt(ticksSpentInFlight);
-    buffer.writeBoolean(rightHandThrown);
-
-  }
-
-  @Override
-  public void readSpawnData(PacketBuffer additionalData) {
-    CompoundNBT nbt = additionalData.readCompoundTag();
-    boomerangFlightPath.deserializeNBT(nbt);
-    ticksSpentInFlight = additionalData.readInt();
-    rightHandThrown = additionalData.readBoolean();
-  }
 
   private final int INITIAL_NON_COLLISION_TICKS = 2;
   private boolean canEntityBeCollidedWith(Entity entityToTest) {

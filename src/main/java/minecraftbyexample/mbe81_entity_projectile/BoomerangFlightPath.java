@@ -23,13 +23,22 @@ import java.util.List;
  * This class models the flight path of the boomerang.
  * It calculates the position[x,y,z] of the boomerang at a given time after throwing.
  * It also calculates the direction that the top of the boomerang is facing (the yaw)
- * It uses parametric calculation of the [x,y,z] to do these calculations.
- * see boomerang_flight_path.png for an illustration of the path
- * (In real life, boomerangs fly in a circle, but the teardrop looks better).
-
+ *
  * Normally, minecraft entities use velocity calculations for this purpose.  But that doesn't work well for the
  *   boomerang flight path because it curves in a complex way.
  *
+ * Instead, the flight path is stored as a cubic spline (see google) - and every tick, the boomerang is moved to the
+ *   appropriate position on the pre-calculated flight path.  Unlike normal minecraft projectiles, the velocity is not
+ *   used to calculate positions.
+ *
+ * A cubic spline is used because it is very useful for drawing a smooth line between
+ *   points; i.e. you specify (eg) ten points [x,y,z] that lie on your desired flight path, then use the cubic spline to
+ *   smoothly interpolate between them.
+ *
+ * The original flight path of the boomerang is based on parametric calculation of [x,y,z] as a function of "theta"
+ * see boomerang_flight_path.png for an illustration of the path
+ * (In real life, boomerangs fly in a circle, but the teardrop looks better).
+
  * The parametric equation for the unscaled teardrop shape is
  * x = 0.5*(1 - cos(theta))
  * y = A*sin(theta)*sin(theta/2)
@@ -44,7 +53,13 @@ import java.util.List;
  * So I have used Excel to numerically integrate it (for a typical maximumSidewaysDeflection) and fit the data to a
  * cubic spline, which can be calculated very quickly.
  *
- * After calculating the position in a horizontal plane, we tilt the plane upwards to match the pitch.
+ * After calculating the position in a horizontal plane, we tilt the plane upwards to match the pitch, using vector maths.
+ *
+ * TYpical usage:
+ * 1) Initialise the BoomerangFlightPath() with the relevant parameters (speed, direction, etc)
+ * 2) Each tick, use getPosition(currentTime), getVelocity(currentTime), getYaw(currentTime) to retrieve the position, velocity, and yaw
+ * 3) hasReachEndOfFlightPath(currentTime) can be used to determine if the flight is finished
+ * 4) the flight path can be saved to/from NBT using serializeNBT() and   deserializeNBT()
  *
  */
 public class BoomerangFlightPath implements INBTSerializable<CompoundNBT> {
@@ -54,8 +69,8 @@ public class BoomerangFlightPath implements INBTSerializable<CompoundNBT> {
    * @param apexYaw the yaw angle in degrees (compass direction of the apex relative to the thrower).  0 degrees is south and increases clockwise.
    * @param apexPitch the pitch angle in degrees (elevation/declination of the apex relative to the thrower).  0 degrees is horizontal: -90 is up, 90 is down.
    * @param distanceToApex number of blocks to the apex of the flight path
-   * @param maximumSidewaysDeflection maximum sideways deflection from the straight line from thrower to apex
-   * @param anticlockwise is the flight path clockwise or anticlockwise
+   * @param maximumSidewaysDeflection maximum sideways deflection from the straight line joining the thrower and the apex
+   * @param anticlockwise is the flight path clockwise or anticlockwise?
    * @param flightSpeed speed of the flight in blocks per second
    */
   public BoomerangFlightPath(Vec3d startPoint,

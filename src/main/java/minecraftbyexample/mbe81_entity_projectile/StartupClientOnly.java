@@ -62,6 +62,8 @@ public class StartupClientOnly
     ModelLoader.addSpecialModel(BoomerangRenderer.BOOMERANG_MODEL_RESOURCE_LOCATION);
   }
 
+  // the commented-out code below is useful if you want to manually track your entity models yourself instead of treating them as blocks
+
 //  /**
 //   * Indicate to vanilla that it should load and bake the given model, even if no blocks or
 //   * items use it. This is useful if e.g. you have baked models only for entity renderers.

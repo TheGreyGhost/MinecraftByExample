@@ -25,6 +25,8 @@ import java.awt.*;
 
 /**
  * Created by TGG on 24/08/2020.
+ *
+ * Used to render your BoomerangEntity
  */
 public class BoomerangRenderer extends EntityRenderer<BoomerangEntity> {
 
@@ -39,8 +41,7 @@ public class BoomerangRenderer extends EntityRenderer<BoomerangEntity> {
     return AtlasTexture.LOCATION_BLOCKS_TEXTURE;
     // we're returning this texture because the model has been stitched into the texture sheet for block models
     // Normally entities have their own ResourceLocation (TextureAtlasSprite) which is not stitched together.
-    //  If you manually add your model using ModelRegistryEvent event and ModelBakeEvent, then you need to provide
-    //  the correct ResourceLocation here.
+    // See vanilla for examples; eg DragonFireballRenderer
   }
 
   /**
@@ -57,7 +58,6 @@ public class BoomerangRenderer extends EntityRenderer<BoomerangEntity> {
 
     IBakedModel boomerangModel = Minecraft.getInstance().getModelManager().getModel(BOOMERANG_MODEL_RESOURCE_LOCATION);
 
-//    LOGGER.info("method entityYaw:" + entityYaw + ", entity rotationYaw:" + boomerangEntity.rotationYaw);
     matrixStack.push();
     MatrixStack.Entry currentMatrix = matrixStack.getLast();
 
@@ -66,12 +66,18 @@ public class BoomerangRenderer extends EntityRenderer<BoomerangEntity> {
     // The boomerang is a bit different because it is flipping end-over-end.
     // The three rotations required are (see also boomerang_rotations.png):
     // 1) The "end over end" rotation of the spinning boomerang
-    // 2) The 90 degree rotation ("pitch") so that the top face of the boomerang is pointing in the correct up/down direction
+    // 2) The 90 degree rotation ("pitch") so that the top face of the boomerang is pointing in the correct elevation (pitch)
     //    (the model has its top face pointing directly up, but in flight it needs to point sideways)
     // 3) The "yaw" which is the direction that the boomerang is heading in.
     // 3D rotations roll/pitch/yaw are hard to get right.  The axis and correct order aren't obvious unless you're a lot smarter than I am.
 
-    // We must also smooth out the motion by interpolating between the "tick" frames using the partialTicks
+    // We must also smooth out the motion by linearly interpolating between the "tick" frames using the partialTicks
+    // i.e. if we are rendering at 80 frames a second, then render is called four times between ticks.
+    // If the yaw changes from 50 degrees to 58 degrees during the tick, then the four yaw values are
+    // first call: partialTick = 0 --> yaw = 50
+    // second call : partialTick = 0.25 -> yaw is 25% of the way from 50 to 58, i.e. 52 degrees
+    // third call: partialTick = 0.5 -> yaw = 54 degrees
+    // fourth call: partialTick = 0.75 -> yaw = 56 degrees
     float directionOfMotion = MathHelper.lerp(partialTicks, boomerangEntity.prevRotationYaw, boomerangEntity.rotationYaw);
     float directionOfBoomerangTopFace = directionOfMotion + (boomerangEntity.isRightHandThrown() ? 90 : -90);
 
@@ -86,6 +92,7 @@ public class BoomerangRenderer extends EntityRenderer<BoomerangEntity> {
     // 3D rotations roll/pitch/yaw are hard to get right.  The axis and correct order aren't obvious.
     //  I've found it easiest to just test it interactively, using the DebugSettings method eg using the combinations below
     //  but it's still quite awkward.
+    //  See the DebugSettings class for further information on how to interactively set these parameters
 //    matrixStack.rotate(Vector3f.XP.rotationDegrees(DebugSettings.getDebugParameter("xp1").orElse(0.0).floatValue()));
 //    matrixStack.rotate(Vector3f.YP.rotationDegrees(DebugSettings.getDebugParameter("yp1").orElse(0.0).floatValue()));
 //    matrixStack.rotate(Vector3f.ZP.rotationDegrees(DebugSettings.getDebugParameter("zp1").orElse(0.0).floatValue()));

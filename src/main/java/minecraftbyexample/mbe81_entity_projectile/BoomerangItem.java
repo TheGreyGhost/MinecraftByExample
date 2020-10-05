@@ -41,11 +41,20 @@ public class BoomerangItem extends TieredItem {
     //   enchantability (etc) for us.
 
     // We use a PropertyOverride for this item to change the appearance depending on the state of the property;
-    // In this case, the boomerang pulls back when the player holds the right button for longer.
+    // In this case, the boomerang moves gradually higher when the player holds the right button for longer.
     // getChargeUpTime() is used as a lambda function to calculate the current chargefraction during rendering
+    // See the mbe81b_boomerang_charge_0.json, mbe81b_boomerang_charge_1.json, etc to see how this is done.
+    //  See also mbe12 for a more-detailed explanation
     this.addPropertyOverride(new ResourceLocation("chargefraction"), BoomerangItem::getChargeUpTime);
   }
 
+  /**
+   * Returns the amount of time that the boomerang has been charging up (player has been holding down the right mouse button)
+   * @param stack
+   * @param worldIn
+   * @param entityIn
+   * @return 0.0 = not charged at all --> 1.0 = fully charged
+   */
   public static float getChargeUpTime(ItemStack stack, @Nullable World worldIn, @Nullable LivingEntity entityIn) {
     final float IDLE_FRAME_INDEX = 0.0F;
     final float FULLY_CHARGED_INDEX = 1.0F;
@@ -63,26 +72,6 @@ public class BoomerangItem extends TieredItem {
     return (float)UsefulFunctions.interpolate_with_clipping(
             ticksInUse, 0, FULL_CHARGE_TICKS,
             IDLE_FRAME_INDEX, FULLY_CHARGED_INDEX);
-  }
-
-  private final Enchantment [] VALID_ENCHANTMENTS = {Enchantments.KNOCKBACK, Enchantments.PUNCH,
-                                                     Enchantments.FLAME, Enchantments.FIRE_ASPECT,
-                                                     Enchantments.POWER,
-                                                     Enchantments.SMITE, Enchantments.BANE_OF_ARTHROPODS,
-                                                     Enchantments.SILK_TOUCH, Enchantments.EFFICIENCY, Enchantments.FORTUNE};
-  /**
-   * Which enchantments can be applied to the boomerang?
-   * We're implementing several related to entity damage, as well as others related to block harvesting
-   * @param stack
-   * @param enchantment
-   * @return
-   */
-  @Override
-  public boolean canApplyAtEnchantingTable(ItemStack stack, net.minecraft.enchantment.Enchantment enchantment) {
-    for (Enchantment enchantmentToCheck : VALID_ENCHANTMENTS) {
-      if (enchantmentToCheck == enchantment) return true;
-    }
-    return false;
   }
 
   /**
@@ -118,15 +107,6 @@ public class BoomerangItem extends TieredItem {
       flightSpeedBPS *= 2;
     }
 
-//    /**
-//     * Throw the projectile
-//     * @param world
-//     * @param playerEntity
-//     * @param hand
-//     * @return
-//     */
-//  public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity playerEntity, Hand hand) {
-//    ItemStack heldItem = playerEntity.getHeldItem(hand);
     ItemStack heldItem = stack;
 
     if (!worldIn.isRemote) {
@@ -134,13 +114,6 @@ public class BoomerangItem extends TieredItem {
       final double OFFSET_FROM_PLAYER_EYE = -0.1;
       Vec3d startPosition = new Vec3d(playerEntity.getPosX(), playerEntity.getPosYEye() + OFFSET_FROM_PLAYER_EYE, playerEntity.getPosZ());
 
-//      public void shoot(Entity shooter, float pitch, float yaw, float p_184547_4_, float velocity, float inaccuracy) {
-//        float f = -MathHelper.sin(yaw * ((float)Math.PI / 180F)) * MathHelper.cos(pitch * ((float)Math.PI / 180F));
-//        float f1 = -MathHelper.sin(pitch * ((float)Math.PI / 180F));
-//        float f2 = MathHelper.cos(yaw * ((float)Math.PI / 180F)) * MathHelper.cos(pitch * ((float)Math.PI / 180F));
-//        this.shoot((double)f, (double)f1, (double)f2, velocity, inaccuracy);
-//        this.setMotion(this.getMotion().add(shooter.getMotion().x, shooter.onGround ? 0.0D : shooter.getMotion().y, shooter.getMotion().z));
-//      }
       boolean mainHandIsActive = (Hand.MAIN_HAND == playerEntity.getActiveHand());
       boolean playerIsLeftHander = HandSide.LEFT == playerEntity.getPrimaryHand();
       boolean boomerangIsInLeftHand = (mainHandIsActive && playerIsLeftHander) || (!mainHandIsActive && !playerIsLeftHander);
@@ -155,8 +128,10 @@ public class BoomerangItem extends TieredItem {
       // spawn the entity in the world
       worldIn.addEntity(boomerangEntity);
     }
+
     playerEntity.addStat(Stats.ITEM_USED.get(this));
-    if (!playerEntity.abilities.isCreativeMode) {
+    final boolean REMOVE_FROM_HAND_EVEN_WHEN_IN_CREATIVE = true;
+    if (!playerEntity.abilities.isCreativeMode || REMOVE_FROM_HAND_EVEN_WHEN_IN_CREATIVE) {
       heldItem.shrink(1);
     }
   }
@@ -184,5 +159,27 @@ public class BoomerangItem extends TieredItem {
   public int getUseDuration(ItemStack stack) {
     final int ARBITRARY_LONG_TIME = 72000;
     return ARBITRARY_LONG_TIME;
+  }
+
+  //-----------------------------------
+
+  private final Enchantment [] VALID_ENCHANTMENTS = {Enchantments.KNOCKBACK, Enchantments.PUNCH,
+          Enchantments.FLAME, Enchantments.FIRE_ASPECT,
+          Enchantments.POWER,
+          Enchantments.SMITE, Enchantments.BANE_OF_ARTHROPODS,
+          Enchantments.SILK_TOUCH, Enchantments.EFFICIENCY, Enchantments.FORTUNE};
+  /**
+   * Which enchantments can be applied to the boomerang?
+   * We're implementing several related to entity damage, as well as others related to block harvesting
+   * @param stack
+   * @param enchantment
+   * @return
+   */
+  @Override
+  public boolean canApplyAtEnchantingTable(ItemStack stack, net.minecraft.enchantment.Enchantment enchantment) {
+    for (Enchantment enchantmentToCheck : VALID_ENCHANTMENTS) {
+      if (enchantmentToCheck == enchantment) return true;
+    }
+    return false;
   }
 }

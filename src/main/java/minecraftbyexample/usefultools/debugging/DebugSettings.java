@@ -29,6 +29,10 @@ import java.util.concurrent.locks.Lock;
  *    read from either the client or the server side.  There are no network messages to synchronise debug settings
  *    between the server and multiple clients.
  *
+ *  In MinecraftByExample, DebugSettings is used in conjunction with the following classes:
+ *  MBEdebugCommand, which is registered in a FMLServerStartingEvent
+ *
+ *
  */
 public class DebugSettings {
 

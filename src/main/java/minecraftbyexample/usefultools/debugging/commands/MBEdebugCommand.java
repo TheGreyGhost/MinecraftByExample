@@ -41,6 +41,9 @@ import java.util.Arrays;
  *      /mbedebug test 34
  *    which a subsequent code can check for
  *      int testNumber = Debugsettings.getDebugTest(); if (test != 0) runTest(testNumber);
+ *
+ * Must be registered in FMLServerStartingEvent;
+ *
  */
 public class MBEdebugCommand {
   public static void register(CommandDispatcher<CommandSource> dispatcher) {

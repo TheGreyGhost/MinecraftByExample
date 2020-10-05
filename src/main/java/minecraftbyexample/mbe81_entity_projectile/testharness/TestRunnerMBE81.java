@@ -82,56 +82,6 @@ public class TestRunnerMBE81
     DebugSettings.clearDebugParameter("mbe81b_not_in_flight");
   }
 
-  // dummy test: check the correct functioning of the ladder - to see which block it can stay attached to
-  // The test region contains a ladder attached to a stone block.  We then replace the stone with a different block and see
-  //   whether the ladder remains or breaks appropriately; eg
-  // testA - replace with wood
-  // testB - replace with a glass block
-  // testC - replace with diamond block
-  private boolean test1(World worldIn, PlayerEntity playerIn)
-  {
-    BlockPos sourceRegionOrigin = new BlockPos(0, 204, 0);
-    final int SOURCE_REGION_SIZE_X = 4;
-    final int SOURCE_REGION_SIZE_Y = 2;
-    final int SOURCE_REGION_SIZE_Z = 3;
-
-    // put a stone block with attached ladder in the middle of our test region
-    worldIn.setBlockState(sourceRegionOrigin.add(1, 0, 1), Blocks.STONE.getDefaultState());
-    worldIn.setBlockState(sourceRegionOrigin.add(2, 0, 1),
-                            Blocks.LADDER.getDefaultState().with(LadderBlock.FACING, Direction.EAST));
-
-    BlockPos testRegionOriginA = new BlockPos(5, 204, 0);
-    BlockPos testRegionOriginB = new BlockPos(10, 204, 0);
-    BlockPos testRegionOriginC = new BlockPos(15, 204, 0);
-
-    // place a nearby block for the player to stand on, then teleport the player there, so you can watch
-    worldIn.setBlockState(testRegionOriginA.south(5).down(), Blocks.STONE.getDefaultState());
-    teleportPlayerToTestRegion(playerIn, testRegionOriginA.south(5));
-
-    // copy the test block to the destination region
-    copyTestRegion(playerIn, sourceRegionOrigin, testRegionOriginA,
-                          SOURCE_REGION_SIZE_X, SOURCE_REGION_SIZE_Y, SOURCE_REGION_SIZE_Z);
-    copyTestRegion(playerIn, sourceRegionOrigin, testRegionOriginB,
-                          SOURCE_REGION_SIZE_X, SOURCE_REGION_SIZE_Y, SOURCE_REGION_SIZE_Z);
-    copyTestRegion(playerIn, sourceRegionOrigin, testRegionOriginC,
-                          SOURCE_REGION_SIZE_X, SOURCE_REGION_SIZE_Y, SOURCE_REGION_SIZE_Z);
-
-    boolean success = true;
-    // testA: replace stone with wood; ladder should remain
-    worldIn.setBlockState(testRegionOriginA.add(1, 0, 1), Blocks.ACACIA_LOG.getDefaultState());
-    success &= worldIn.getBlockState(testRegionOriginA.add(2, 0, 1)).getBlock() == Blocks.LADDER;
-
-    // testB: replace stone with glass; ladder should be destroyed
-    worldIn.setBlockState(testRegionOriginB.add(1, 0, 1), Blocks.COBWEB.getDefaultState());
-    success &= worldIn.getBlockState(testRegionOriginB.add(2, 0, 1)).getBlock() == Blocks.AIR;
-
-    // testC: replace stone with diamond block; ladder should remain
-    worldIn.setBlockState(testRegionOriginC.add(1, 0, 1), Blocks.STONE_SLAB.getDefaultState());
-    success &= worldIn.getBlockState(testRegionOriginC.add(2, 0, 1)).getBlock() == Blocks.LADDER;
-
-    return success;
-  }
-
   /**
    * Teleport the player to the test region (so you can see the results of the test)
    * @param player
