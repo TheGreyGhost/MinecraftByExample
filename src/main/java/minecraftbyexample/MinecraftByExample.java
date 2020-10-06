@@ -44,6 +44,11 @@ import org.apache.logging.log4j.Level;
      Most of the time, you'll only ever need the Registry events (to register your blocks, items, etc), the FMLCommonSetupEvent, and perhaps the FMLClientSetupEvent
  */
 
+todo:
+test in dedicated server
+check blender and blockbench boomerang models
+test distance and damage gameplay ok
+
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(MinecraftByExample.MODID)
 public class MinecraftByExample {

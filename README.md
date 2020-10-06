@@ -1,7 +1,5 @@
 MinecraftByExample [1.15.2]
 ==================
-** Work in Progress **
-
 The purpose of MinecraftByExample is to give simple working examples of the important concepts in Minecraft and Forge. If you're anything like me, a good code example is worth several screens of waffling explanation, and can very quickly explain the key concepts.  I also find it much easier to adapt and debug something that already works, than to have to synthesize something from scratch and spend hours trying to discover the missing bit of information I didn't know about.
 
 I've tried to keep the code simple and obvious and to resist the urge to be clever. The examples might not be the most efficient or succinct implementation, I've deliberately left the optimization to you.
@@ -79,9 +77,6 @@ See [here](https://greyminecraftcoder.blogspot.com/2020/05/minecraft-by-example.
 ### Capabilities
   - [MBE65][65] - define new Capabilities and attach them to vanilla objects 
 
-### Configuration GUI
-  - X [MBE70][70] - configuration file linked to the "mod options" button GUI on the mods list screen
-
 ### Testing tools
   - [MBE75][75] - a tool to help you automate testing of your classes in-game.
 
@@ -148,8 +143,6 @@ Head over [here][more_help] if this didn't make sense to you (check comments for
 [60]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe60_network_messages
 
 [65]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe65_capability
-
-[70]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe70_configuration
 
 [75]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/src/main/java/minecraftbyexample/mbe75_testing_framework
 

@@ -152,7 +152,36 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
   private float endOverEndRotation = 0.0F;
   private float prevEndOverEndRotation = 0.0F;
 
-  // member variables that are regenerated from other information, hence don't need saving
+  /**
+   * Used by the renderer; similar to vanilla getYaw() and getPitch()
+   * @param partialTicks
+   * @return
+   */
+  public float getEndOverEndRotation(float partialTicks) {
+    float rawAngle = MathHelper.lerp(partialTicks, prevEndOverEndRotation, endOverEndRotation);
+    return MathHelper.wrapDegrees(rawAngle);
+  }
+
+  /**
+   * Who threw this boomerang?
+   * @return
+   */
+  @Nullable
+  public LivingEntity getThrower() {
+    if ((this.thrower == null || this.thrower.removed)
+            && this.throwerID != null
+            && this.world instanceof ServerWorld) {
+      Entity entity = ((ServerWorld)this.world).getEntityByUuid(this.throwerID);
+      if (entity instanceof LivingEntity) {
+        this.thrower = (LivingEntity)entity;
+      } else {
+        this.thrower = null;
+      }
+    }
+    return this.thrower;
+  }
+
+  // ---------- member variables that are regenerated from other information, hence don't need saving
   // record information about enchantments placed on the boomerang
   private float knockbackLevel;  // 0.0 -> 1.0
   private float flameLevel;      // 0.0 -> 1.0
@@ -193,6 +222,9 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     rightHandThrown = additionalData.readBoolean();
   }
 
+  public boolean isRightHandThrown() {
+    return rightHandThrown;
+  }
 
   // ------------- member variables which are synchronised continuously
 
@@ -209,6 +241,19 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
   // How much momentum does the boomerang have left?
   private static final DataParameter<Float> MOMENTUM_DMP = EntityDataManager.createKey(BoomerangEntity.class, DataSerializers.FLOAT);
 
+  /**
+   * Gets the boomerang item that was used to throw this boomerangEntity
+   */
+  public ItemStack getItemStack() {
+    return this.getDataManager().get(ITEMSTACK_DMP);
+  }
+
+  /**
+   * Sets the boomerang item that was used to throw this boomerangEntity
+   */
+  public void setItemStack(ItemStack stack) {
+    this.getDataManager().set(ITEMSTACK_DMP, stack);
+  }
 
   //----------------- load/save the entity to/from NBT (used when saving & loading the game to disk)
 
@@ -239,9 +284,6 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     compound.putBoolean(RIGHT_HAND_THROWN_NBT, rightHandThrown);
     compound.putDouble(DAMAGE_NBT, this.damage);
     compound.putFloat(MOMENTUM_NBT, this.dataManager.get(MOMENTUM_DMP));
-    if (Double.isNaN(this.getPosX())) { //todo remove
-      int i = 1;
-    }
   }
 
   /** Read further NBT information to initialise the entity (after loading from disk)
@@ -269,7 +311,6 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     this.dataManager.set(MOMENTUM_DMP, compound.getFloat(MOMENTUM_NBT));
     copyEnchantmentData(boomerangItemStack);
   }
-
 
   /**
    * Copy relevant enchantments into member variables for ease of reference
@@ -299,99 +340,18 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
 //    fortuneLevel = enchantments.getOrDefault(Enchantments.FORTUNE, 0)/ (float)Enchantments.FORTUNE.getMaxLevel();
   }
 
-  //-------------------------------------
-
-
-  private static final byte VANILLA_ARROW_IMPACT_STATUS_ID = 0;
-
-  /*   see https://wiki.vg/Entity_statuses
-       make a cloud of particles at the impact point
-   */
-  @Override
-  public void handleStatusUpdate(byte statusID) {
-    if (statusID == VANILLA_ARROW_IMPACT_STATUS_ID) {
-      final Color BROWN = new Color(165,42,42);
-      final double MAXIMUM_DEVIATION = 0.5;  // the scatter of the spawning position, as a proportion of the entity width
-      for(int i = 0; i < 20; ++i) {
-        this.world.addParticle(ParticleTypes.ENTITY_EFFECT,
-                this.getPosXRandom(MAXIMUM_DEVIATION), this.getPosYRandom(), this.getPosZRandom(MAXIMUM_DEVIATION),
-                BROWN.getRed() / 255.0, BROWN.getGreen() / 255.0, BROWN.getBlue() / 255.0);
-      }
-    }
-  }
-
-
-  COMMENTING UP TO HERE
-
-
-
-
-
-  /**
-   * Who threw this boomerang?
-   * @return
-   */
-  @Nullable
-  public LivingEntity getThrower() {
-    if ((this.thrower == null || this.thrower.removed)
-            && this.throwerID != null
-            && this.world instanceof ServerWorld) {
-      Entity entity = ((ServerWorld)this.world).getEntityByUuid(this.throwerID);
-      if (entity instanceof LivingEntity) {
-        this.thrower = (LivingEntity)entity;
-      } else {
-        this.thrower = null;
-      }
-    }
-    return this.thrower;
-  }
-
-  public boolean isRightHandThrown() {
-    return rightHandThrown;
-  }
-
-  /**
-   * Sets a target for the client to interpolate towards over the next few ticks
-   */
-  @OnlyIn(Dist.CLIENT)
-  public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int posRotationIncrements, boolean teleport) {
-    boolean isInFlight = this.dataManager.get(IN_FLIGHT_DMP);
-    if (isInFlight) return;   // if we are in flight, the client tick will force the position, yaw and pitch every tick
-
-    // otherwise, update position and rotation to match the server
-    this.setPosition(x, y, z);
-    this.setRotation(yaw, pitch);
-  }
-
-  /**
-   * Updates the entity motion clientside, called by packets from the server
-   */
-  @OnlyIn(Dist.CLIENT)
-  public void setVelocity(double x, double y, double z) {
-//    LOGGER.info("setVelocity:" + x + ", " + y + ", " + z);
-    this.setMotion(x, y, z);
-//    if (this.prevRotationPitch == 0.0F && this.prevRotationYaw == 0.0F) {
-//      float f = MathHelper.sqrt(x * x + z * z);
-//      this.rotationYaw = (float)(MathHelper.atan2(x, z) * (double)(180F / (float)Math.PI));
-//      this.rotationPitch = (float)(MathHelper.atan2(y, (double)f) * (double)(180F / (float)Math.PI));
-//      this.prevRotationYaw = this.rotationYaw;
-//      this.prevRotationPitch = this.rotationPitch;
-//    }
-  }
-
-//  private static boolean canBeCollidedWith(Entity entityToCheck) {
-//    return !entityToCheck.isSpectator() && entityToCheck.canBeCollidedWith();
-//  }
+  //-------update of entity position & state, every tick ------------------------------
 
   /**
    * Called to update the entity's position/logic.
    * We are using some unusual logic to create the particular flight path that we want:
    *
    * 1) If the boomerang is in flight, every tick we force the entity position to a defined position on the curve.
-   * 2) If the boomerang is not in flight (has hit something and is falling to the ground), then we use vanilla
+   * 2) If the boomerang is not in flight (eg has hit something and is falling to the ground), then we use vanilla
    *    mechanics i.e. set motion (velocity) and let gravity act on the entity
    */
   public void tick() {
+    // debugging helpers; see DebugSettings for usage instructions
     Optional<Double> debugYaw = DebugSettings.getDebugParameter("mbe81b_yaw");
     Optional<Double> debugPitch = DebugSettings.getDebugParameter("mbe81b_pitch");
     Optional<Double> debugEndOverEndRotation = DebugSettings.getDebugParameter("mbe81b_endoverendrotation");
@@ -410,7 +370,10 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     if (DebugSettings.getDebugParameter("mbe81b_notick").isPresent()) { // for debugging purposes only: freeze animation
       return;
     }
-    super.tick();
+
+    // -------
+
+    super.tick();  // base logic shared by all entities
 
     boolean isInFlight = this.dataManager.get(IN_FLIGHT_DMP);
     if (DebugSettings.getDebugParameter("mbe81b_not_in_flight").isPresent()) {
@@ -424,21 +387,21 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
   }
 
   /**
-   * Once the boomerang has hit something, it stops flying and just drops as if it were an item
+   * This method controls the position and state for the boomerang when it is no longer in flight-
+   * eg once the boomerang has hit something, it stops flying and just drops as if it were an item
    * Code copied from ItemEntity
    */
   private void tickNotInFlight() {
-    if (this.pickupDelay > 0) {
+    if (this.pickupDelay > 0) {   // there is a short delay before the player can pick the item up
       --this.pickupDelay;
     }
 
-    // apply buoyancy if underwater, or gravity acceleration if out of water
     this.prevPosX = this.getPosX();
     this.prevPosY = this.getPosY();
     this.prevPosZ = this.getPosZ();
     this.prevEndOverEndRotation = this.endOverEndRotation;  // no spinning when not in flight
 
-    // when not in flight, gradually rotate the boomerang back so that it is lying flat.
+    // when not in flight, gradually rotate the boomerang towards its "lying flat" position.  See boomerang_rotations.png
     if (Math.abs(this.rotationPitch) > 1 ) {
       final float DEGREES_PER_TICK = 2.0F;
       this.rotationPitch -= (this.rotationPitch > 0) ? DEGREES_PER_TICK : -DEGREES_PER_TICK;
@@ -446,6 +409,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
       this.rotationPitch = 0;
     }
 
+    // apply buoyancy if underwater, or gravity acceleration if out of water
     Vec3d initialVelocity = this.getMotion();
     if (this.areEyesInFluid(FluidTags.WATER)) {
       this.applyFloatMotion();
@@ -458,7 +422,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     // "noClip" is confusingly named.  It actually means "this entity is already colliding with a block before it has moved on this tick"
     //  If this is true, then we just push the entity out of the block in a suitable direction, and the move method doesn't check for
     //   collisions again on this tick.
-    if (this.world.isRemote) {
+    if (this.world.isRemote) {  // not on client
       this.noClip = false;
     } else {
       this.noClip = !this.world.hasNoCollisions(this);
@@ -468,12 +432,13 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     }
 
     // move the item and adjust its speed
+    // check for collisions with other objects (blocks, entities)
     final float THRESHOLD_HORIZONTAL_SPEED = 1E-5F;// below this speed, there is negligible horizontal speed
     if (!this.onGround
             || horizontalMag(this.getMotion()) > THRESHOLD_HORIZONTAL_SPEED
             || (this.ticksExisted + this.getEntityId()) % 4 == 0) {  // check for movement at least every fourth tick
       Vec3d previousMotion = this.getMotion();
-      this.move(MoverType.SELF, this.getMotion());
+      this.move(MoverType.SELF, this.getMotion());  // move and check for collisions
       final float FRICTION_FACTOR = 0.98F;
       float horizontalfrictionFactor = FRICTION_FACTOR;
 
@@ -486,11 +451,10 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
       if (this.onGround) {
         final double BOUNCE_MULTIPLIER = -0.5;
         this.setMotion(this.getMotion().getX(), previousMotion.getY()*BOUNCE_MULTIPLIER, this.getMotion().getZ());
-//        this.setMotion(this.getMotion().mul(1.0, BOUNCE_MULTIPLIER, 1.0));
       }
     }
 
-    // check if we're in lava, bounce around if we are
+    // check if we're in lava, bounce around randomly if we are
     boolean blockPositionHasChanged = MathHelper.floor(this.prevPosX) != MathHelper.floor(this.getPosX())
                      || MathHelper.floor(this.prevPosY) != MathHelper.floor(this.getPosY())
                      || MathHelper.floor(this.prevPosZ) != MathHelper.floor(this.getPosZ());
@@ -504,7 +468,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
       }
     }
 
-    // isAirBorne is poorly named.  it should actually be "has entity accelerated significantly?"
+    // isAirBorne is poorly named.  it actually means "has the entity accelerated significantly?"
     //  if true, it prompts the server to send an immediate entity update to the client
     this.isAirBorne |= this.handleWaterMovement();
     if (!this.world.isRemote) {
@@ -524,7 +488,6 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     if (item.isEmpty()) {
       this.remove();
     }
-
   }
 
   /** called when underwater: apply upwards acceleration if currently moving slower than maximum upwards speed
@@ -543,46 +506,33 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
                    velocity.z * SIDEWAYS_FRICTION_FACTOR);
   }
 
+  /**
+   * This method controls the position and state for the boomerang when it is flying and is following a predetermined
+   *   flight path
+   */
   private void tickInFlight() {
+
+    // manually calculate the new position on the flight path
     final float TICKS_PER_SECOND = 20.0F;
     Vec3d startPosition = this.getPositionVec();
-    if (Double.isNaN(startPosition.getY())) { //todo remove
-      int i = 1;
-    }
     double timeSpentInFlight = (ticksSpentInFlight + 1) / TICKS_PER_SECOND;
     Vec3d endPosition = boomerangFlightPath.getPosition(timeSpentInFlight);
-    if (Double.isNaN(endPosition.getY())) { //todo remove
-      int i = 1;
-    }
     Vec3d motion = endPosition.subtract(startPosition);
-    if (Double.isNaN(motion.getY())) { //todo remove
-      int i = 1;
-    }
-    AxisAlignedBB aabbCollisionZone = this.getBoundingBox().expand(motion).grow(1.0D);
 
-//    List<Entity> possibleCollisions = this.world.getEntitiesInAABBexcluding(this,
-//            axisalignedbb, BoomerangEntity::canBeCollidedWith);
-//    for (Entity entity : possibleCollisions) {
-//      if (entity == this.ignoreEntity) {
-//        ++this.ignoreEntityTime;
-//        break;
-//      }
-//
-//      if (this.thrower != null && this.ticksExisted < 2 && this.ignoreEntity == null) {
-//        this.ignoreEntity = entity;
-//        this.ignoreEntityTime = 3;
-//        break;
-//      }
-//    }
+    // check for collisions with other objects (blocks or entities)
+
+    AxisAlignedBB aabbCollisionZone = this.getBoundingBox().expand(motion).grow(1.0D);
 
     // Calculate the first object that the boomerang hits (if any)
     // We use a "ray trace" to do this, which assumes that the boomerang has no height or width, i.e.
     //  will not collide with any objects unless its centre point intersects it.
     // The boomerang moves quite quickly so this is not likely to be visually distracting
     // If this isn't accurate enough for your taste, you can look at Entity::move and Entity::getAllowedMovement
+    // see vanilla code for alternative collision detection methods; ThrowableEntity, AbstractArrowEntity; Entity::move
     // When we hit an object, trigger an appropriate effect on that object, and then we're no longer in flight.
+    final boolean CHECK_ENTITY_COLLISION = true;
     RayTraceResult raytraceresult = ProjectileHelper.rayTrace(this, aabbCollisionZone,
-            this::canEntityBeCollidedWith, RayTraceContext.BlockMode.OUTLINE, true);
+            this::canEntityBeCollidedWith, RayTraceContext.BlockMode.OUTLINE, CHECK_ENTITY_COLLISION);
 
     switch (raytraceresult.getType()) {
       case BLOCK: {
@@ -607,8 +557,9 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
         break;
       }
     }
-
     if (!this.dataManager.get(IN_FLIGHT_DMP)) return;  // if no longer in flight due to collision; exit immediately
+
+    // adjust the yaw, pitch, and end-over-end rotation, for animation purposes
 
     this.rotationYaw = boomerangFlightPath.getYaw((ticksSpentInFlight + 1) / TICKS_PER_SECOND);
     this.rotationPitch = -90;  // the model has its flat face pointing up, but during flight it needs to be pointing sideways, which
@@ -629,7 +580,6 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     while(this.rotationYaw - this.prevRotationYaw >= 180.0F) {
       this.prevRotationYaw += 360.0F;
     }
-
 
     // smooth the rotations so that they're not abrupt / jerky
     this.rotationPitch = MathHelper.lerp(0.2F, this.prevRotationPitch, this.rotationPitch);
@@ -657,17 +607,13 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     }
 
     this.setMotion(motion);
-    if (Double.isNaN(this.getMotion().getY())) { //todo remove
-      int i = 1;
-    }
-
     this.setPosition(newPosition.getX(), newPosition.getY(), newPosition.getZ());
     this.doBlockCollisions();  // "collision" just means that the boomerang has entered this block's space
                                //  eg a tripwire, or moving through a web
                                //  it doesn't mean that the boomerang has hit anything
 
     // at the end of the pre-programmed flight path, convert to normal ballistic flight
-    //  will occur if the player has moved since throwing the boomerang
+    //  this will occur if the player has moved since throwing the boomerang
     if (boomerangFlightPath.hasReachedEndOfFlightPath(timeSpentInFlight)) {
       dataManager.set(IN_FLIGHT_DMP, false);
     }
@@ -680,7 +626,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
   private void onImpactWithBlock(BlockRayTraceResult rayTraceResult) {
 
     // is the block weak enough for the boomerang to smash through it?
-    //   the boomerang is modelled as a wooden axe
+    //   the boomerang is modelled as a wooden axe for the purposes of tool effectiveness
     BlockPos blockPos = rayTraceResult.getPos();
     World world = this.getEntityWorld();
     BlockState blockState = world.getBlockState(blockPos);
@@ -701,8 +647,6 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     float destroySpeed = Items.WOODEN_AXE.getDestroySpeed(dummyAxe, blockState);
     float momentumLoss = (destroySpeed > 0.001F) ? blockHardness / destroySpeed / efficiency : 1.0F;
     float remainingMomentum = this.dataManager.get(MOMENTUM_DMP);
-
-    LOGGER.info("momentum before:" + remainingMomentum + ", momentumLoss:" + momentumLoss);
 
     if (momentumLoss > remainingMomentum) {  // block is too hard; make the boomerang bounce off and stop flying
       stopFlightDueToBlockImpact(rayTraceResult);
@@ -766,7 +710,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
             DAMAGE_MULTIPLIER_FOR_MINIMUM_SPEED, DAMAGE_MULTIPLIER_FOR_MAXIMUM_SPEED);
     int baseDamage = MathHelper.ceil(Math.max(speedMultiplierForDamage * this.damage, 0.0D));
     final float MAX_DAMAGE_BOOST_RATIO = 3.0F;  // at max power enchantment, add this much extra, eg 3 = add 300% extra damage
-    float damageBoost = baseDamage * damageBoostLevel * MAX_DAMAGE_BOOST_RATIO;
+    float damageBoost = baseDamage * damageBoostLevel * MAX_DAMAGE_BOOST_RATIO; //damageBoostLevel = 0.0 --> 1.0
 
     // special enchantments (eg BANE OF ARTHROPODS) cause extra damage to some creature types
     float specialDamageRatio = 0;
@@ -793,13 +737,13 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
       thrower.setLastAttackedEntity(target);
     }
 
-    boolean isEnderMan = target.getType() == EntityType.ENDERMAN;
+    boolean isEnderMan = target.getType() == EntityType.ENDERMAN;  // endermen are immune to effects? copied from vanilla
     int fireTimer = target.getFireTimer();
 
     int burnTimeSeconds = 0;
     if (this.isBurning()) burnTimeSeconds += 5;
     final float BURN_TIME_SECONDS_AT_MAX_ENCHANTMENT = 8;
-    burnTimeSeconds += flameLevel * BURN_TIME_SECONDS_AT_MAX_ENCHANTMENT;
+    burnTimeSeconds += flameLevel * BURN_TIME_SECONDS_AT_MAX_ENCHANTMENT;  // flame level is 0.0 -> 1.0
 
     if (burnTimeSeconds > 0 && !isEnderMan) {
       target.setFire(burnTimeSeconds);
@@ -825,7 +769,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
           }
         }
 
-          // special enchantments (eg BANE OF ARTHROPODS) apply an effect as well as extra damage
+          // special enchantments (eg BANE OF ARTHROPODS) apply an effect (eg slow) as well as extra damage
         if (!this.world.isRemote && thrower instanceof LivingEntity) {
           for (Map.Entry<Enchantment, Integer> enchantment : specialDamages.entrySet()) {
             if (enchantment.getKey() instanceof DamageEnchantment) {
@@ -904,6 +848,14 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     world.setBlockState(blockPos, ifluidstate.getBlockState(), flags);
   }
 
+  private final int INITIAL_NON_COLLISION_TICKS = 2;
+  private boolean canEntityBeCollidedWith(Entity entityToTest) {
+    return !entityToTest.isSpectator() && entityToTest.canBeCollidedWith()
+            && !(entityToTest == this.thrower && this.ticksExisted <= INITIAL_NON_COLLISION_TICKS);
+  }
+
+  //  ------------ What happens when the entity collides with the player?
+
   /** The item collided with a player
    * @param entityIn
    */
@@ -921,11 +873,11 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     /**
      * Collision with the player while still in flight
      */
-  public void onCollideWithPlayerInFlight(PlayerEntity entityIn) {
+  private void onCollideWithPlayerInFlight(PlayerEntity entityIn) {
     // if this player is the thrower -
-    //   if a hand is free, then catch the boomerang.  If both hands are full, drop to the ground.
+    //   if either hand is free, then catch the boomerang.  If both hands are full, drop to the ground.
     // otherwise - ignore
-    if (!this.world.isRemote) return;
+    if (!this.world.isRemote) return;  // server only
     if (getThrower() != entityIn) return;
 
     Hand handToCatch = null;
@@ -946,7 +898,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
   /**
    * Collision with the player while not in flight
    */
-  public void onCollideWithPlayerNotInFlight(PlayerEntity entityIn) {
+  private void onCollideWithPlayerNotInFlight(PlayerEntity entityIn) {
     if (this.world.isRemote) return;
     if (pickupDelay > 0) return;
     ItemStack pickedUpBoomerang = this.getItemStack();
@@ -958,30 +910,50 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     }
   }
 
-  public float getEndOverEndRotation(float partialTicks) {
-    float rawAngle = MathHelper.lerp(partialTicks, prevEndOverEndRotation, endOverEndRotation);
-    return MathHelper.wrapDegrees(rawAngle);
+  // ------ some miscellaneous vanilla overrides
+
+  private static final byte VANILLA_ARROW_IMPACT_STATUS_ID = 0;
+
+  /*   see https://wiki.vg/Entity_statuses
+       make a cloud of particles at the impact point
+   */
+  @Override
+  public void handleStatusUpdate(byte statusID) {
+    if (statusID == VANILLA_ARROW_IMPACT_STATUS_ID) {
+      final Color BROWN = new Color(165,42,42);
+      final double MAXIMUM_DEVIATION = 0.5;  // the scatter of the spawning position, as a proportion of the entity width
+      for(int i = 0; i < 20; ++i) {
+        this.world.addParticle(ParticleTypes.ENTITY_EFFECT,
+                this.getPosXRandom(MAXIMUM_DEVIATION), this.getPosYRandom(), this.getPosZRandom(MAXIMUM_DEVIATION),
+                BROWN.getRed() / 255.0, BROWN.getGreen() / 255.0, BROWN.getBlue() / 255.0);
+      }
+    }
   }
 
   /**
-   * Gets the boomerang item that was used to throw this boomerangEntity
+   * Sets a target position for the client to interpolate towards over the next few ticks
+   * For normal projectiles, this is important in order to make sure that the client stays in sync with the server
    */
-  public ItemStack getItemStack() {
-    return this.getDataManager().get(ITEMSTACK_DMP);
+  @OnlyIn(Dist.CLIENT)
+  @Override
+  public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int posRotationIncrements, boolean teleport) {
+    boolean isInFlight = this.dataManager.get(IN_FLIGHT_DMP);
+    if (isInFlight) return;   // if we are in flight, the client tick will force the position, yaw and pitch every tick so we
+    // don't need to set it here; i.e. just ignore it
+
+    // otherwise, update position and rotation to match the server
+    this.setPosition(x, y, z);
+    this.setRotation(yaw, pitch);
   }
 
   /**
-   * Sets the boomerang item that was used to throw this boomerangEntity
+   * Updates the entity motion clientside, called by packets from the server
    */
-  public void setItemStack(ItemStack stack) {
-    this.getDataManager().set(ITEMSTACK_DMP, stack);
+  @OnlyIn(Dist.CLIENT)
+  @Override
+  public void setVelocity(double x, double y, double z) {
+    this.setMotion(x, y, z);
   }
 
-
-  private final int INITIAL_NON_COLLISION_TICKS = 2;
-  private boolean canEntityBeCollidedWith(Entity entityToTest) {
-    return !entityToTest.isSpectator() && entityToTest.canBeCollidedWith()
-            && !(entityToTest == this.thrower && this.ticksExisted <= INITIAL_NON_COLLISION_TICKS);
-  }
   private static final Logger LOGGER = LogManager.getLogger();
 }
