@@ -47,7 +47,7 @@ f   60/7/2 150/8/2 157/9/2  15/10/2                 // 4 points = ok<br>
 f 153/19/2 68/20/2 87/21/2 170/22/2                 // 4 points = ok<br>
 f  75/1/1  150/2/1  60/3/1   11/4/1 59/5/1 151/6/1  // 6 points = will not render<br>
 The easiest way to fix it is to select all faces (in edit mode) then:<br>
-1) Triangulate faces; then<br>
+1) Triangulate faces; then
 2) Tris to Quads<br>
 <br>
 Google is your friend here!<br>
