@@ -36,26 +36,26 @@ The usage is as follows:
 5) If the flight path of the boomerang is interrupted, eg a) it hits something; or b) the player has moved and does not catch it;  then the boomerang changes to "not in flight" mode and behaves like a thrown object (falls to the ground)
 6) If the boomerang hits a block, it breaks the block.  Each time it breaks a block, it loses some of its momentum.  When the boomerang has no momentum left, it stops flying (bounces off the block).
 7) If the boomerang hits an entity, it causes damage to the entity and stops flying (bounces off)
-
-The entity can be enchanted with a number of different enchantments similar to bows, arrows, weapons.
-   
-The model for the BoomerangEntity is a wavefront object;  Blockbench is also suitable for generating obj files.
-
-If you use Blender to generate wavefront (obj) files, you need to make sure that all faces are either quads or triangles (no "n-gons" > 4).
-If your obj file contains lines like this, you have a problem...
-f   60/7/2 150/8/2 157/9/2  15/10/2                 // 4 points = ok
-f 153/19/2 68/20/2 87/21/2 170/22/2                 // 4 points = ok
-f  75/1/1  150/2/1  60/3/1   11/4/1 59/5/1 151/6/1  // 6 points = will not render
-The easiest way to fix it is to select all faces (in edit mode) then:
-1) Triangulate faces; then
+<br>
+The entity can be enchanted with a number of different enchantments similar to bows, arrows, weapons.<br>
+<br>
+The model for the BoomerangEntity is a wavefront object;  Blockbench is also suitable for generating obj files.<br>
+<br>
+If you use Blender to generate wavefront (obj) files, you need to make sure that all faces are either quads or triangles (no "n-gons" > 4).<br>
+If your obj file contains lines like this, you have a problem...<br>
+f   60/7/2 150/8/2 157/9/2  15/10/2                 // 4 points = ok<br>
+f 153/19/2 68/20/2 87/21/2 170/22/2                 // 4 points = ok<br>
+f  75/1/1  150/2/1  60/3/1   11/4/1 59/5/1 151/6/1  // 6 points = will not render<br>
+The easiest way to fix it is to select all faces (in edit mode) then:<br>
+1) Triangulate faces; then<br>
 2) Tris to Quads<br>
-
-Google is your friend here!
-
-Alternatively you can use BlockBench in "entity model" and export it as wavefront.
-
-Personally I find BlockBench easier to use when making the "blocky" style of minecraft models, and it's much easier to learn than Blender. 
-
+<br>
+Google is your friend here!<br>
+<br>
+Alternatively you can use BlockBench in "entity model" and export it as wavefront.<br>
+<br>
+Personally I find BlockBench easier to use when making the "blocky" style of minecraft models, and it's much easier to learn than Blender. <br>
+<br>
 The pieces you need to understand are located in:
 
 * `StartupClientOnly`, `StartupCommon`
