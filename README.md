@@ -29,9 +29,6 @@ If you are updating from previous forge versions, you will probably find [this l
 If you use IntelliJ, you might find these [xml mapping files][mapfiles] useful too
 
 ## List of examples
-
-** examples marked with "x" haven't been converted yet **
-
 See [here](https://greyminecraftcoder.blogspot.com/2020/05/minecraft-by-example.html) for pictures of what each example looks like in-game.
 
 ### Blocks
@@ -166,7 +163,7 @@ Head over [here][more_help] if this didn't make sense to you (check comments for
 [version1-14-4]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-14-4-partial
 [versionupdates]: https://gist.github.com/williewillus/353c872bcf1a6ace9921189f6100d09a
 [versionupdates1-15]:https://gist.github.com/williewillus/30d7e3f775fe93c503bddf054ef3f93e
-[mapfiles]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/miscellaneous
+[mapfiles]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/miscellaneous/name_remappings
 
 With thanks to these helpful folks:
 alvaropp, 
