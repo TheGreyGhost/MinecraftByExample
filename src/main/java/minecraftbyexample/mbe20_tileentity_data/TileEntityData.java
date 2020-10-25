@@ -75,9 +75,9 @@ public class TileEntityData extends TileEntity implements ITickableTileEntity {
   /* Populates this TileEntity with information from the tag, used by vanilla to transmit from server to client
  */
   @Override
-  public void handleUpdateTag(CompoundNBT tag)
+  public void handleUpdateTag(BlockState blockState, CompoundNBT parentNBTTagCompound)
   {
-    this.read(tag);
+    this.func_230337_a_(blockState, parentNBTTagCompound);   //todo deobs
   }
 
   // This is where you save any data that you don't want to lose when the tile entity unloads
@@ -138,9 +138,9 @@ public class TileEntityData extends TileEntity implements ITickableTileEntity {
 
 	// This is where you load the data that you saved in writeToNBT
 	@Override
-	public void read(CompoundNBT parentNBTTagCompound)
+	public void func_230337_a_(BlockState blockState, CompoundNBT parentNBTTagCompound)
 	{
-		super.read(parentNBTTagCompound); // The super call is required to load the tiles location
+    super.func_230337_a_(blockState, parentNBTTagCompound);   //todo deobs
 
 		// important rule: never trust the data you read from NBT, make sure it can't cause a crash
 

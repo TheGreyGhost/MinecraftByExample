@@ -1,0 +1,4 @@
+Note of method changes from 1-15-2 to 1-16-3
+(MCP 20200514-1.15.1 to MCP 20200514-1.16)
+IForgeTileEntity::handleUpdateTag() signature change
+TileEntity::read -->  func_230337_a_(BlockState p_230337_1_, CompoundNBT p_230337_2_)
