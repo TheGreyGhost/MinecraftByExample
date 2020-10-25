@@ -9,8 +9,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.world.IBlockDisplayReader;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.ILightReader;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -35,7 +35,7 @@ public class BlockAltimeter extends Block {
   }
 
   // Return the GPS coordinates of this block
-  public static Optional<GPScoordinate> getGPScoordinate(@Nonnull ILightReader world, @Nonnull BlockPos blockPos) {
+  public static Optional<GPScoordinate> getGPScoordinate(@Nonnull IBlockDisplayReader world, @Nonnull BlockPos blockPos) {
     GPScoordinate gpsCoordinate = new GPScoordinate();
     gpsCoordinate.altitude = blockPos.getY();
 

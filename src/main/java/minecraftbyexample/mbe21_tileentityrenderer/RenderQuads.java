@@ -6,8 +6,8 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec2f;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.*;
+import net.minecraft.util.math.vector.Vector2f;
 
 import java.awt.*;
 
@@ -76,7 +76,7 @@ public class RenderQuads {
     Matrix3f matrixNormal = matrixStack.getLast().getNormal();  // retrieves the current transformation matrix for the normal vector
 
     // we use the whole texture
-    Vec2f bottomLeftUV = new Vec2f(0.0F, 1.0F);
+    Vector2f bottomLeftUV = new Vector2f(0.0F, 1.0F);
     float UVwidth = 1.0F;
     float UVheight = 1.0F;
 
@@ -108,7 +108,7 @@ public class RenderQuads {
     private static void addFace(Direction whichFace,
                                 Matrix4f matrixPos, Matrix3f matrixNormal, IVertexBuilder renderBuffer,
                                 Color color, Vector3d centrePos, float width, float height,
-                                Vec2f bottomLeftUV, float texUwidth, float texVheight,
+                                Vector2f bottomLeftUV, float texUwidth, float texVheight,
                                 int lightmapValue) {
     // the Direction class has a bunch of methods which can help you rotate quads
     //  I've written the calculations out long hand, and based them on a centre position, to make it clearer what
@@ -184,10 +184,10 @@ public class RenderQuads {
 
     // texture coordinates are "upside down" relative to the face
     // eg bottom left = [U min, V max]
-    Vec2f bottomLeftUVpos = new Vec2f(bottomLeftUV.x, bottomLeftUV.y);
-    Vec2f bottomRightUVpos = new Vec2f(bottomLeftUV.x + texUwidth, bottomLeftUV.y);
-    Vec2f topLeftUVpos = new Vec2f(bottomLeftUV.x + texUwidth, bottomLeftUV.y + texVheight);
-    Vec2f topRightUVpos = new Vec2f(bottomLeftUV.x, bottomLeftUV.y + texVheight);
+    Vector2f bottomLeftUVpos = new Vector2f(bottomLeftUV.x, bottomLeftUV.y);
+    Vector2f bottomRightUVpos = new Vector2f(bottomLeftUV.x + texUwidth, bottomLeftUV.y);
+    Vector2f topLeftUVpos = new Vector2f(bottomLeftUV.x + texUwidth, bottomLeftUV.y + texVheight);
+    Vector2f topRightUVpos = new Vector2f(bottomLeftUV.x, bottomLeftUV.y + texVheight);
 
     Vector3f normalVector = whichFace.toVector3f();  // gives us the normal to the face
 
@@ -209,7 +209,7 @@ public class RenderQuads {
    */
   private static void addQuad(Matrix4f matrixPos, Matrix3f matrixNormal, IVertexBuilder renderBuffer,
                               Vector3f blpos, Vector3f brpos, Vector3f trpos, Vector3f tlpos,
-                              Vec2f blUVpos, Vec2f brUVpos, Vec2f trUVpos, Vec2f tlUVpos,
+                              Vector2f blUVpos, Vector2f brUVpos, Vector2f trUVpos, Vector2f tlUVpos,
                               Vector3f normalVector, Color color, int lightmapValue) {
     addQuadVertex(matrixPos, matrixNormal, renderBuffer, blpos, blUVpos, normalVector, color, lightmapValue);
     addQuadVertex(matrixPos, matrixNormal, renderBuffer, brpos, brUVpos, normalVector, color, lightmapValue);
@@ -219,7 +219,7 @@ public class RenderQuads {
 
   // suitable for vertexbuilders using the DefaultVertexFormats.ENTITY format
   private static void addQuadVertex(Matrix4f matrixPos, Matrix3f matrixNormal, IVertexBuilder renderBuffer,
-                                    Vector3f pos, Vec2f texUV,
+                                    Vector3f pos, Vector2f texUV,
                                     Vector3f normalVector, Color color, int lightmapValue) {
     renderBuffer.pos(matrixPos, pos.getX(), pos.getY(), pos.getZ()) // position coordinate
             .color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha())        // color

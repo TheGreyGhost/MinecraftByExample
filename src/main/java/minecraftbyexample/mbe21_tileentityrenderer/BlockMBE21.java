@@ -7,7 +7,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.block.BlockRenderType;
@@ -98,7 +98,7 @@ public class BlockMBE21 extends Block
   }
 
   // Used for visuals only, as an easy way to get Forge to load the obj model used by the WaveFront render style
-  public static final IProperty<Boolean> USE_WAVEFRONT_OBJ_MODEL = BooleanProperty.create("use_wavefront_obj_model");
+  public static final Property<Boolean> USE_WAVEFRONT_OBJ_MODEL = BooleanProperty.create("use_wavefront_obj_model");
 
   /**
    * Defines the properties needed for the BlockState

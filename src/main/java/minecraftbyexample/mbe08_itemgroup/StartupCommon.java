@@ -1,6 +1,5 @@
 package minecraftbyexample.mbe08_itemgroup;
 
-import net.minecraft.block.BedrockBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.*;
@@ -34,7 +33,7 @@ public class StartupCommon
 //  An item can be listed on multiple tabs by overriding Item.getCreativeTabs()
 //  A block can only be listed on one tab, unless you give it a custom ItemBlock which overrides .getCreativeTabs()
     Block.Properties properties = Block.Properties.create(Material.ROCK);
-    testBlock = new BedrockBlock(properties);
+    testBlock = new Block(properties);
     testBlock.setRegistryName("mbe08_itemgroup_block_registry_name");
     blockRegisterEvent.getRegistry().register(testBlock);
   }

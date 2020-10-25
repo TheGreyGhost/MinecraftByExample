@@ -3,7 +3,6 @@ package minecraftbyexample.usefultools.debugging.commands;
 import minecraftbyexample.usefultools.debugging.DebugSettings;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.Vec2f;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;

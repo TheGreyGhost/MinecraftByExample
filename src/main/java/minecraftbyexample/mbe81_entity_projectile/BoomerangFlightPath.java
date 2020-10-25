@@ -2,8 +2,6 @@ package minecraftbyexample.mbe81_entity_projectile;
 
 import minecraftbyexample.usefultools.CubicSpline;
 import minecraftbyexample.usefultools.UsefulFunctions;
-import net.minecraft.client.renderer.Quaternion;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;

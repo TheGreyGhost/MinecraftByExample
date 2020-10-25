@@ -12,13 +12,13 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import minecraftbyexample.usefultools.debugging.DebugSettings;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3i;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -105,15 +105,15 @@ public class TestModel extends Model {
     public Vector3f PARENT_CORNER = new Vector3f(-8.0F, -8.0F, -8.0F);
     public Vector3f PARENT_ROTATION_POINT = new Vector3f(0.0F,0.0F,0.0F);
     public Vector3f PARENT_ROTATION_ANGLE = new Vector3f(0.0F, 0.0F, 0.0F);
-    public net.minecraft.util.math.Vec3i PARENT_TEXTURE_ORIGIN = new net.minecraft.util.math.Vec3i(0, 0, 0);
-    public net.minecraft.util.math.Vec3i PARENT_BLOCK_DIMENSIONS = new net.minecraft.util.math.Vec3i(16, 16, 16);
+    public Vector3i PARENT_TEXTURE_ORIGIN = new Vector3i(0, 0, 0);
+    public Vector3i PARENT_BLOCK_DIMENSIONS = new Vector3i(16, 16, 16);
     public Double PARENT_DELTA = 0.0;
 
     public Vector3f CHILD_CORNER = new Vector3f(-0.5F, -1.5F, -1.0F);
     public Vector3f CHILD_ROTATION_POINT = new Vector3f(0.0F,0.0F,0.0F);
     public Vector3f CHILD_ROTATION_ANGLE = new Vector3f(0.0F, 0.0F, 0.0F);
-    public net.minecraft.util.math.Vec3i CHILD_TEXTURE_ORIGIN = new net.minecraft.util.math.Vec3i(0, 0, 0);
-    public net.minecraft.util.math.Vec3i CHILD_BLOCK_DIMENSIONS = new net.minecraft.util.math.Vec3i(1, 3, 2);
+    public Vector3i CHILD_TEXTURE_ORIGIN = new Vector3i(0, 0, 0);
+    public Vector3i CHILD_BLOCK_DIMENSIONS = new Vector3i(1, 3, 2);
     public Double CHILD_DELTA = 0.0;
 
     public Double USE_ENTITY_MODEL_TRANSFORMATIONS = 1D;  // less than 0.5 means don't apply vanilla's entity model transformations (scale, translate by 1.5)
@@ -186,7 +186,7 @@ public class TestModel extends Model {
       DebugSettings.setDebugParameterVec3d("model_active", vec3dWorldPos);
     }
 
-    public void updateFromDebugSettingsIfActive(Vec3i worldPos) {
+    public void updateFromDebugSettingsIfActive(Vector3i worldPos) {
       Optional<Vector3d> activeModel = DebugSettings.getDebugParameterVec3d("model_active");
       Vector3d worldPosVec3d = new Vector3d(worldPos.getX(), worldPos.getY(), worldPos.getZ());
 
@@ -274,24 +274,24 @@ public class TestModel extends Model {
 
     private static class Vec3iSetting
     {
-      public Vec3iSetting(String name, Vec3i defaultValue) {
+      public Vec3iSetting(String name, Vector3i defaultValue) {
         this.name = name;
         this.value = defaultValue;
       }
 
-      public Vec3i get() {return value;}
+      public Vector3i get() {return value;}
 
       public void updateFromDebugSettings() {
         Optional<Vector3d> debugValue = DebugSettings.getDebugParameterVec3d(name);
         if (debugValue.isPresent()) {
-          value = new Vec3i((int) debugValue.get().x, (int) debugValue.get().y, (int) debugValue.get().z);
+          value = new Vector3i((int) debugValue.get().x, (int) debugValue.get().y, (int) debugValue.get().z);
         }
       }
 
       public void updateFromNBT(CompoundNBT nbt) {
         try {
           CompoundNBT nbtVec3i = nbt.getCompound(name);
-          value = new Vec3i(nbtVec3i.getInt("x"), nbtVec3i.getInt("y"), nbtVec3i.getInt("z"));
+          value = new Vector3i(nbtVec3i.getInt("x"), nbtVec3i.getInt("y"), nbtVec3i.getInt("z"));
         } catch (Exception e) {  // ignore all errors
         }
       }
@@ -307,7 +307,7 @@ public class TestModel extends Model {
       public void clearDebugSetting() {DebugSettings.clearDebugParameterVec3d(name);}
 
       private String name;
-      private Vec3i value;
+      private Vector3i value;
     }
 
     private static class DoubleSetting

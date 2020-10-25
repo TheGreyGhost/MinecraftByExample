@@ -17,7 +17,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileHelper;
-import net.minecraft.fluid.IFluidState;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
@@ -841,7 +841,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     BlockState blockstate = world.getBlockState(blockPos);
     if (blockstate.isAir(world, blockPos)) return;
 
-    IFluidState ifluidstate = world.getFluidState(blockPos);
+    FluidState ifluidstate = world.getFluidState(blockPos);
     final int EVENT_ID_BREAK_BLOCK_SOUND_AND_PARTICLES = 2001;
     world.playEvent(EVENT_ID_BREAK_BLOCK_SOUND_AND_PARTICLES, blockPos, Block.getStateId(blockstate));
     TileEntity tileentity = blockstate.hasTileEntity() ? world.getTileEntity(blockPos) : null;

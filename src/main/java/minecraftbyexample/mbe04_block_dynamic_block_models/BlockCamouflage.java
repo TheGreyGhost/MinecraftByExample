@@ -6,7 +6,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ILightReader;
+import net.minecraft.world.IBlockDisplayReader;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -43,7 +43,7 @@ public class BlockCamouflage extends Block {
   // 4) If still a tie, look again for spans on both sides, counting adjacent camouflage block as a span
   // 5) If still a tie, in decreasing order of preference: NORTH, SOUTH, EAST, WEST, DOWN, UP
   // 6) If no suitable adjacent block, return Empty
-  public static Optional<BlockState> selectBestAdjacentBlock(@Nonnull ILightReader world, @Nonnull BlockPos blockPos)
+  public static Optional<BlockState> selectBestAdjacentBlock(@Nonnull IBlockDisplayReader world, @Nonnull BlockPos blockPos)
   {
     TreeMap<Direction, BlockState> adjacentSolidBlocks = new TreeMap<Direction, BlockState>();
 

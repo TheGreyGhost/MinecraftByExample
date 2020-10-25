@@ -11,10 +11,10 @@ package minecraftbyexample.mbe21_tileentityrenderer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3i;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
@@ -59,23 +59,23 @@ public class ModelHourglass extends Model {
 
     final Vector3f TOP_POS = new Vector3f(-3.0F, -6.5F, -3.0F);
     final Pair<Integer, Integer> TOP_TEXTURE_ORIGIN = Pair.of(20, 0);
-		final Vec3i TOP_SIZE = new Vec3i(6, 1, 6);
+		final Vector3i TOP_SIZE = new Vector3i(6, 1, 6);
 
     final Vector3f BOTTOM_POS = new Vector3f(-3.0F, 5.5F, -3.0F);
     final Pair<Integer, Integer> BOTTOM_TEXTURE_ORIGIN = Pair.of(20, 7);
-    final Vec3i BOTTOM_SIZE = new Vec3i(6, 1, 6);
+    final Vector3i BOTTOM_SIZE = new Vector3i(6, 1, 6);
 
     final Vector3f RING_POS = new Vector3f(-1.5F, -0.5F, -1.5F);
     final Pair<Integer, Integer> RING_TEXTURE_ORIGIN = Pair.of(0, 20);
-    final Vec3i RING_SIZE = new Vec3i(3, 1, 3);
+    final Vector3i RING_SIZE = new Vector3i(3, 1, 3);
 
     final Vector3f TOP_GLASS_POS = new Vector3f(-2.5F, -5.5F, -2.5F);
     final Pair<Integer, Integer> TOP_GLASS_TEXTURE_ORIGIN = Pair.of(0, 0);
-    final Vec3i TOP_GLASS_SIZE = new Vec3i(5, 5, 5);
+    final Vector3i TOP_GLASS_SIZE = new Vector3i(5, 5, 5);
 
     final Vector3f BOTTOM_GLASS_POS = new Vector3f(-2.5F, 0.5F, -2.5F);
     final Pair<Integer, Integer> BOTTOM_GLASS_TEXTURE_ORIGIN = Pair.of(0, 10);
-    final Vec3i BOTTOM_GLASS_SIZE = new Vec3i(5, 5, 5);
+    final Vector3i BOTTOM_GLASS_SIZE = new Vector3i(5, 5, 5);
 
     solidParts = new ModelRenderer(this);
 		solidParts.setTextureOffset(TOP_TEXTURE_ORIGIN.getLeft(), TOP_TEXTURE_ORIGIN.getRight());
@@ -113,7 +113,7 @@ public class ModelHourglass extends Model {
 
     final Vector3f UPPER_SAND_POS = new Vector3f(-2, -5, -2);
     final Pair<Integer, Integer> UPPER_SAND_TEXTURE_ORIGIN = Pair.of(20, 14);
-    final Vec3i UPPER_SAND_SIZE = new Vec3i(4, 4, 4);
+    final Vector3i UPPER_SAND_SIZE = new Vector3i(4, 4, 4);
 
     upperSand = new ModelRenderer(this);
     upperSand.setTextureOffset(UPPER_SAND_TEXTURE_ORIGIN.getLeft(), UPPER_SAND_TEXTURE_ORIGIN.getRight());
@@ -124,7 +124,7 @@ public class ModelHourglass extends Model {
 
     final Vector3f LOWER_SAND_POS = new Vector3f(-2, 1, -2);
     final Pair<Integer, Integer> LOWER_SAND_TEXTURE_ORIGIN = Pair.of(20, 14);
-    final Vec3i LOWER_SAND_SIZE = new Vec3i(4, 4, 4);
+    final Vector3i LOWER_SAND_SIZE = new Vector3i(4, 4, 4);
 
     lowerSand = new ModelRenderer(this, LOWER_SAND_TEXTURE_ORIGIN.getLeft(), LOWER_SAND_TEXTURE_ORIGIN.getRight());
     lowerSand.addBox(LOWER_SAND_POS.getX(), LOWER_SAND_POS.getY(), LOWER_SAND_POS.getZ(),
@@ -134,7 +134,7 @@ public class ModelHourglass extends Model {
 
     final Vector3f NECK_SAND_POS = new Vector3f(-0.5F, -1.5F, -0.5F);  // protrudes slightly into the larger sand
     final Pair<Integer, Integer> NECK_SAND_TEXTURE_ORIGIN = Pair.of(24, 14);
-    final Vec3i NECK_SAND_SIZE = new Vec3i(1, 3, 1);
+    final Vector3i NECK_SAND_SIZE = new Vector3i(1, 3, 1);
 
     neckSand = new ModelRenderer(this, NECK_SAND_TEXTURE_ORIGIN.getLeft(), NECK_SAND_TEXTURE_ORIGIN.getRight());
     neckSand.addBox(NECK_SAND_POS.getX(), NECK_SAND_POS.getY(), NECK_SAND_POS.getZ(),

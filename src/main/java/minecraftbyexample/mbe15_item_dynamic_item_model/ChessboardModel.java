@@ -1,19 +1,12 @@
 package minecraftbyexample.mbe15_item_dynamic_item_model;
 
-import com.google.common.collect.ImmutableList;
-import minecraftbyexample.mbe04_block_dynamic_block_models.BlockAltimeter;
-import minecraftbyexample.mbe04_block_dynamic_block_models.BlockCamouflage;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ILightReader;
-import net.minecraftforge.client.extensions.IForgeBakedModel;
+import net.minecraft.world.IBlockDisplayReader;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.data.ModelDataMap;
-import net.minecraftforge.client.model.data.ModelProperty;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -96,7 +89,7 @@ public class ChessboardModel implements IBakedModel {
   // This is a forge extension that is expected for blocks only.
   @Override
   @Nonnull
-  public IModelData getModelData(@Nonnull ILightReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
+  public IModelData getModelData(@Nonnull IBlockDisplayReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
   {
     throw new AssertionError("ChessboardModel::getModelData should never be called");
   }

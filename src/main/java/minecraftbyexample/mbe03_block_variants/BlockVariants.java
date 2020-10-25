@@ -5,8 +5,8 @@ import minecraftbyexample.usefultools.SetBlockStateFlag;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
@@ -88,7 +88,7 @@ public class BlockVariants extends Block implements IWaterLoggable
     World world = blockItemUseContext.getWorld();
     BlockPos blockPos = blockItemUseContext.getPos();
 
-    IFluidState fluidLevelOfCurrentBlock = world.getFluidState(blockPos);
+    FluidState fluidLevelOfCurrentBlock = world.getFluidState(blockPos);
     boolean blockContainsWater = fluidLevelOfCurrentBlock.getFluid() == Fluids.WATER;  // getFluid returns EMPTY if no fluid
 
     Direction direction = blockItemUseContext.getPlacementHorizontalFacing();  // north, east, south, or west
@@ -170,7 +170,7 @@ public class BlockVariants extends Block implements IWaterLoggable
    * @return
    */
   @Override
-  public IFluidState getFluidState(BlockState state) {
+  public FluidState getFluidState(BlockState state) {
     return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : Fluids.EMPTY.getDefaultState();
   }
 
@@ -183,7 +183,7 @@ public class BlockVariants extends Block implements IWaterLoggable
    * @return true for success, false for failure
    */
   @Override
-  public boolean receiveFluid(IWorld world, BlockPos blockPos, BlockState blockState, IFluidState fluidState) {
+  public boolean receiveFluid(IWorld world, BlockPos blockPos, BlockState blockState, FluidState fluidState) {
     if (world.isRemote()) return false; // only perform on the server
     // if block is waterlogged already, or the fluid isn't water, return without doing anything.
     if (fluidState.getFluid() != Fluids.WATER) return false;

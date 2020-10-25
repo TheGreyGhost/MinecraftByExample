@@ -10,7 +10,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -154,7 +154,7 @@ public class TestRunnerMBE81b_C {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
     ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
-    TestRunnerMBE81.createLine(playerIn, new BlockPos(4, 200, 1000), 10, new Vec3i(4, 0, 0), Blocks.ACACIA_LEAVES.getDefaultState());
+    TestRunnerMBE81.createLine(playerIn, new BlockPos(4, 200, 1000), 10, new Vector3i(4, 0, 0), Blocks.ACACIA_LEAVES.getDefaultState());
 
 
     StringBuilder sb = new StringBuilder();
@@ -177,7 +177,7 @@ public class TestRunnerMBE81b_C {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
     ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
-    TestRunnerMBE81.createLine(playerIn, new BlockPos(-4, 200, 1100), 10, new Vec3i(-4, 0, 0), Blocks.ACACIA_WOOD.getDefaultState());
+    TestRunnerMBE81.createLine(playerIn, new BlockPos(-4, 200, 1100), 10, new Vector3i(-4, 0, 0), Blocks.ACACIA_WOOD.getDefaultState());
 
     StringBuilder sb = new StringBuilder();
     BoomerangEntity boomerangEntity = generateEntity("Entity8115", sb, worldIn, playerIn, thrownBoomerang,
@@ -199,7 +199,7 @@ public class TestRunnerMBE81b_C {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
     ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
-    TestRunnerMBE81.createLine(playerIn, new BlockPos(0, 200, 1204), 10, new Vec3i(0, 0, 4), Blocks.ACACIA_WOOD.getDefaultState());
+    TestRunnerMBE81.createLine(playerIn, new BlockPos(0, 200, 1204), 10, new Vector3i(0, 0, 4), Blocks.ACACIA_WOOD.getDefaultState());
 
     StringBuilder sb = new StringBuilder();
     BoomerangEntity boomerangEntity = generateEntity("Entity8116", sb, worldIn, playerIn, thrownBoomerang,
@@ -221,7 +221,7 @@ public class TestRunnerMBE81b_C {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
     ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
-    TestRunnerMBE81.createLine(playerIn, new BlockPos(0, 200, 1296), 10, new Vec3i(0, 0, -4), Blocks.ACACIA_WOOD.getDefaultState());
+    TestRunnerMBE81.createLine(playerIn, new BlockPos(0, 200, 1296), 10, new Vector3i(0, 0, -4), Blocks.ACACIA_WOOD.getDefaultState());
 
     StringBuilder sb = new StringBuilder();
     BoomerangEntity boomerangEntity = generateEntity("Entity8117", sb, worldIn, playerIn, thrownBoomerang,
@@ -243,7 +243,7 @@ public class TestRunnerMBE81b_C {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
     ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
-    TestRunnerMBE81.createLine(playerIn, new BlockPos(4, 200, 1400), 10, new Vec3i(4, 0, 0), Blocks.IRON_ORE.getDefaultState());
+    TestRunnerMBE81.createLine(playerIn, new BlockPos(4, 200, 1400), 10, new Vector3i(4, 0, 0), Blocks.IRON_ORE.getDefaultState());
 
     StringBuilder sb = new StringBuilder();
     BoomerangEntity boomerangEntity = generateEntity("Entity8118", sb, worldIn, playerIn, thrownBoomerang,
@@ -266,7 +266,7 @@ public class TestRunnerMBE81b_C {
     }
     ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
     thrownBoomerang.addEnchantment(Enchantments.EFFICIENCY, 5);
-    TestRunnerMBE81.createLine(playerIn, new BlockPos(4, 200, 1500), 10, new Vec3i(4, 0, 0), Blocks.ACACIA_WOOD.getDefaultState());
+    TestRunnerMBE81.createLine(playerIn, new BlockPos(4, 200, 1500), 10, new Vector3i(4, 0, 0), Blocks.ACACIA_WOOD.getDefaultState());
 
     StringBuilder sb = new StringBuilder();
     BoomerangEntity boomerangEntity = generateEntity("Entity8118", sb, worldIn, playerIn, thrownBoomerang,
@@ -289,7 +289,7 @@ public class TestRunnerMBE81b_C {
     }
     ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
     thrownBoomerang.addEnchantment(Enchantments.SILK_TOUCH, 1);
-    TestRunnerMBE81.createLine(playerIn, new BlockPos(4, 200, 1600), 10, new Vec3i(4, 0, 0), Blocks.GLASS.getDefaultState());
+    TestRunnerMBE81.createLine(playerIn, new BlockPos(4, 200, 1600), 10, new Vector3i(4, 0, 0), Blocks.GLASS.getDefaultState());
 
     StringBuilder sb = new StringBuilder();
     BoomerangEntity boomerangEntity = generateEntity("Entity8118", sb, worldIn, playerIn, thrownBoomerang,

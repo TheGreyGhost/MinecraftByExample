@@ -15,6 +15,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -246,7 +247,7 @@ public class TestRunnerMBE81
 
   /*  create a line of regularly-spaced blocks
  */
-  public static void createLine(PlayerEntity player, BlockPos start, int count, Vec3i delta, BlockState blockState) {
+  public static void createLine(PlayerEntity player, BlockPos start, int count, Vector3i delta, BlockState blockState) {
     World world = player.getEntityWorld();
     BlockPos currentPos = start;
     for (int i = 0; i < count; ++i) {

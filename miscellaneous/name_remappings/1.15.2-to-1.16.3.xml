@@ -3,4 +3,14 @@
 	<name value="1.15.2-to-1.16.3.csv" />
 	<description value="1.15.2-to-1.16.3.csv" />
 	<entry oldName="net.minecraft.util.math.Vec3d" newName="net.minecraft.util.math.Vector3d" type="class" />
+    <entry oldName="net.minecraft.fluid.IFluidState" newName="net.minecraft.fluid.FluidState" type="class" />
+    <entry oldName="net.minecraft.world.ILightReader" newName="net.minecraft.world.IBlockDisplayReader" type="class" />
+    <entry oldName="net.minecraft.client.renderer.Vector3f" newName="net.minecraft.util.math.vector.Vector3f" type="class" />
+    <entry oldName="net.minecraft.client.renderer.Matrix4f" newName="net.minecraft.util.math.vector.Matrix4f" type="class" />
+    <entry oldName="net.minecraft.state.IProperty" newName="net.minecraft.state.Property" type="class" />
+    <entry oldName="net.minecraft.util.math.Vec3i" newName="net.minecraft.util.math.vector.Vector3i" type="class" />
+    <entry oldName="net.minecraft.util.math.Vec2f" newName="net.minecraft.util.math.vector.Vector2f" type="class" />
+    <entry oldName="net.minecraft.client.renderer.Matrix3f" newName="net.minecraft.util.math.vector.Matrix3f" type="class" />
+    <entry oldName="net.minecraft.client.renderer.Quaternion" newName="net.minecraft.util.math.vector.Quaternion" type="class" />
+    <entry oldName="net.minecraft.world.dimension.DimensionType" newName="net.minecraft.world.DimensionType" type="class" />
 </migrationMap>

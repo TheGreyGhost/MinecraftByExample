@@ -7,7 +7,6 @@ import minecraftbyexample.usefultools.UsefulFunctions;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.state.DirectionProperty;

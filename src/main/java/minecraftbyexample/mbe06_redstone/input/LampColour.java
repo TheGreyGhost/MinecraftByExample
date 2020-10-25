@@ -2,9 +2,8 @@ package minecraftbyexample.mbe06_redstone.input;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.color.IBlockColor;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ILightReader;
+import net.minecraft.world.IBlockDisplayReader;
 
 /**
  * Created by TGG on 17/08/2016.
@@ -31,7 +30,7 @@ public class LampColour implements IBlockColor {
    * @return an RGB colour (to be multiplied by the texture colours)
    */
   @Override
-  public int getColor(BlockState blockState, ILightReader iLightReader, BlockPos blockPos, int tintIndex) {
+  public int getColor(BlockState blockState, IBlockDisplayReader iLightReader, BlockPos blockPos, int tintIndex) {
       int rgbColour = BlockRedstoneColouredLamp.getRGBlampColour(blockState);
       return rgbColour;
   }
