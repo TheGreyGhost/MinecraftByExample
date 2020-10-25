@@ -4,9 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import minecraftbyexample.usefultools.RenderTypeHelper;
 import net.minecraft.client.renderer.*;
-import net.minecraft.util.math.Vec3d;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import net.minecraft.util.math.vector.Vector3d;
 
 import java.awt.*;
 
@@ -27,7 +25,7 @@ public class RenderLines  {
     // The tetrahedron-drawing method draws the tetrahedron in a cube region from [0,0,0] to [1,1,1] but we want it
     //   to be in the block one above this, i.e. from [0,1,0] to [1,2,1],
     //   so we need to translate up by one block, i.e. by [0,1,0]
-    final Vec3d TRANSLATION_OFFSET = new Vec3d(0, 1, 0);
+    final Vector3d TRANSLATION_OFFSET = new Vector3d(0, 1, 0);
 
     matrixStack.push(); // push the current transformation matrix + normals matrix
     matrixStack.translate(TRANSLATION_OFFSET.x,TRANSLATION_OFFSET.y,TRANSLATION_OFFSET.z); // translate
@@ -46,13 +44,13 @@ public class RenderLines  {
   private static void drawTetrahedronWireframe(MatrixStack matrixStack, IRenderTypeBuffer renderBuffers,
                                                Color color) {
 
-      final Vec3d [] BASE_VERTICES = {
-              new Vec3d(0, 1, 0),
-              new Vec3d(1, 1, 0),
-              new Vec3d(1, 1, 1),
-              new Vec3d(0, 1, 1),
+      final Vector3d[] BASE_VERTICES = {
+              new Vector3d(0, 1, 0),
+              new Vector3d(1, 1, 0),
+              new Vector3d(1, 1, 1),
+              new Vector3d(0, 1, 1),
       };
-      final Vec3d APEX_VERTEX = new Vec3d(0.5, 0, 0.5);
+      final Vector3d APEX_VERTEX = new Vector3d(0.5, 0, 0.5);
 
     IVertexBuilder vertexBuilderLines = renderBuffers.getBuffer(RenderTypeHelper.MBE_LINE_DEPTH_WRITING_ON);
     // Note that, although RenderType.getLines() might appear to be suitable, it leads to weird rendering if used in
@@ -70,7 +68,7 @@ public class RenderLines  {
     drawLine(matrixPos, vertexBuilderLines, color, BASE_VERTICES[BASE_VERTICES.length - 1], BASE_VERTICES[0]);
 
     // draw the sides (from the corners of the base to the apex)
-    for (Vec3d baseVertex : BASE_VERTICES) {
+    for (Vector3d baseVertex : BASE_VERTICES) {
       drawLine(matrixPos, vertexBuilderLines, color, APEX_VERTEX, baseVertex);
     }
   }
@@ -84,7 +82,7 @@ public class RenderLines  {
    */
   private static void drawLine(Matrix4f matrixPos, IVertexBuilder renderBuffer,
                                Color color,
-                               Vec3d startVertex, Vec3d endVertex) {
+                               Vector3d startVertex, Vector3d endVertex) {
     renderBuffer.pos(matrixPos, (float) startVertex.getX(), (float) startVertex.getY(), (float) startVertex.getZ())
             .color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha())   // there is also a version for floats (0 -> 1)
             .endVertex();

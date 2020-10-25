@@ -2,7 +2,7 @@ package minecraftbyexample.mbe60_network_messages;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,14 +27,14 @@ import java.util.Random;
  */
 public class AirstrikeMessageToServer
 {
-  public AirstrikeMessageToServer(Projectile i_projectile, Vec3d i_targetCoordinates)
+  public AirstrikeMessageToServer(Projectile i_projectile, Vector3d i_targetCoordinates)
   {
     projectile = i_projectile;
     targetCoordinates = i_targetCoordinates;
     messageIsValid = true;
   }
 
-  public Vec3d getTargetCoordinates() {
+  public Vector3d getTargetCoordinates() {
     return targetCoordinates;
   }
 
@@ -65,7 +65,7 @@ public class AirstrikeMessageToServer
       double x = buf.readDouble();
       double y = buf.readDouble();
       double z = buf.readDouble();
-      retval.targetCoordinates = new Vec3d(x, y, z);
+      retval.targetCoordinates = new Vector3d(x, y, z);
 
       // these methods may also be of use for your code:
       // for Itemstacks - ByteBufUtils.readItemStack()
@@ -148,7 +148,7 @@ public class AirstrikeMessageToServer
                                                   + ", targetCoordinates=" + String.valueOf(targetCoordinates) + "]";
   }
 
-  private Vec3d targetCoordinates;
+  private Vector3d targetCoordinates;
   private Projectile projectile;
   private boolean messageIsValid;
 

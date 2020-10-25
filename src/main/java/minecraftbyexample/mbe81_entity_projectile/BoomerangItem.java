@@ -1,27 +1,17 @@
 package minecraftbyexample.mbe81_entity_projectile;
 
-import minecraftbyexample.mbe12_item_nbt_animate.ItemNBTanimationTimer;
 import minecraftbyexample.usefultools.UsefulFunctions;
 import net.minecraft.enchantment.*;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
-import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.*;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.stream.Collectors;
 
 /**
  * Created by TGG on 24/06/2020.
@@ -112,7 +102,7 @@ public class BoomerangItem extends TieredItem {
     if (!worldIn.isRemote) {
       ItemStack thrownBoomerang = heldItem.copy();
       final double OFFSET_FROM_PLAYER_EYE = -0.1;
-      Vec3d startPosition = new Vec3d(playerEntity.getPosX(), playerEntity.getPosYEye() + OFFSET_FROM_PLAYER_EYE, playerEntity.getPosZ());
+      Vector3d startPosition = new Vector3d(playerEntity.getPosX(), playerEntity.getPosYEye() + OFFSET_FROM_PLAYER_EYE, playerEntity.getPosZ());
 
       boolean mainHandIsActive = (Hand.MAIN_HAND == playerEntity.getActiveHand());
       boolean playerIsLeftHander = HandSide.LEFT == playerEntity.getPrimaryHand();

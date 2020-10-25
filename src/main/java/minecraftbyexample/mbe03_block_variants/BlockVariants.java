@@ -14,15 +14,13 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -136,23 +134,23 @@ public class BlockVariants extends Block implements IWaterLoggable
 
   // the position of the post changes depending on the direction that the sign is facing.
 
-  private static final Vec3d POST_MIN_CORNER_N = new Vec3d(7.0, 0.0, 7.0);
-  private static final Vec3d POST_MAX_CORNER_N = new Vec3d(8.0, 14.0, 8.0);
+  private static final Vector3d POST_MIN_CORNER_N = new Vector3d(7.0, 0.0, 7.0);
+  private static final Vector3d POST_MAX_CORNER_N = new Vector3d(8.0, 14.0, 8.0);
   private static final VoxelShape POST_SHAPE_N = Block.makeCuboidShape(POST_MIN_CORNER_N.getX(), POST_MIN_CORNER_N.getY(), POST_MIN_CORNER_N.getZ(),
                                                                        POST_MAX_CORNER_N.getX(), POST_MAX_CORNER_N.getY(), POST_MAX_CORNER_N.getZ());
 
-  private static final Vec3d POST_MIN_CORNER_E = new Vec3d(8.0, 0.0, 7.0);
-  private static final Vec3d POST_MAX_CORNER_E = new Vec3d(9.0, 14.0, 8.0);
+  private static final Vector3d POST_MIN_CORNER_E = new Vector3d(8.0, 0.0, 7.0);
+  private static final Vector3d POST_MAX_CORNER_E = new Vector3d(9.0, 14.0, 8.0);
   private static final VoxelShape POST_SHAPE_E = Block.makeCuboidShape(POST_MIN_CORNER_E.getX(), POST_MIN_CORNER_E.getY(), POST_MIN_CORNER_E.getZ(),
                                                                        POST_MAX_CORNER_E.getX(), POST_MAX_CORNER_E.getY(), POST_MAX_CORNER_E.getZ());
 
-  private static final Vec3d POST_MIN_CORNER_S = new Vec3d(8.0, 0.0, 8.0);
-  private static final Vec3d POST_MAX_CORNER_S = new Vec3d(9.0, 14.0, 9.0);
+  private static final Vector3d POST_MIN_CORNER_S = new Vector3d(8.0, 0.0, 8.0);
+  private static final Vector3d POST_MAX_CORNER_S = new Vector3d(9.0, 14.0, 9.0);
   private static final VoxelShape POST_SHAPE_S = Block.makeCuboidShape(POST_MIN_CORNER_S.getX(), POST_MIN_CORNER_S.getY(), POST_MIN_CORNER_S.getZ(),
           POST_MAX_CORNER_S.getX(), POST_MAX_CORNER_S.getY(), POST_MAX_CORNER_S.getZ());
 
-  private static final Vec3d POST_MIN_CORNER_W = new Vec3d(7.0, 0.0, 8.0);
-  private static final Vec3d POST_MAX_CORNER_W = new Vec3d(8.0, 14.0, 9.0);
+  private static final Vector3d POST_MIN_CORNER_W = new Vector3d(7.0, 0.0, 8.0);
+  private static final Vector3d POST_MAX_CORNER_W = new Vector3d(8.0, 14.0, 9.0);
   private static final VoxelShape POST_SHAPE_W = Block.makeCuboidShape(POST_MIN_CORNER_W.getX(), POST_MIN_CORNER_W.getY(), POST_MIN_CORNER_W.getZ(),
                                                                        POST_MAX_CORNER_W.getX(), POST_MAX_CORNER_W.getY(), POST_MAX_CORNER_W.getZ());
 

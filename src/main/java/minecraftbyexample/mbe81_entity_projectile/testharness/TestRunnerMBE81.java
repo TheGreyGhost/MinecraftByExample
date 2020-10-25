@@ -1,11 +1,9 @@
 package minecraftbyexample.mbe81_entity_projectile.testharness;
 
-import minecraftbyexample.mbe81_entity_projectile.BoomerangEntity;
 import minecraftbyexample.usefultools.debugging.DebugSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.LadderBlock;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -15,8 +13,8 @@ import net.minecraft.entity.monster.HuskEntity;
 import net.minecraft.entity.passive.PigEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.Direction;
 import net.minecraft.util.math.*;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -172,7 +170,7 @@ public class TestRunnerMBE81
   /*
     Spawn a pig on top of a block, if no nearby pig already
  */
-  public static void createPig(PlayerEntity player, Vec3d spawnpoint) {
+  public static void createPig(PlayerEntity player, Vector3d spawnpoint) {
     World world = player.getEntityWorld();
     AxisAlignedBB aabb = new AxisAlignedBB(spawnpoint.subtract(1, 1, 1), spawnpoint.add(1,1,1));
     List<Entity> nearbyPigs = world.getEntitiesWithinAABB(PigEntity.class, aabb);
@@ -191,7 +189,7 @@ public class TestRunnerMBE81
   /*
   Spawn a husk on top of a block, if there isn't one nearby already
 */
-  public static void createHusk(PlayerEntity player, Vec3d spawnpoint) {
+  public static void createHusk(PlayerEntity player, Vector3d spawnpoint) {
     World world = player.getEntityWorld();
     AxisAlignedBB aabb = new AxisAlignedBB(spawnpoint.subtract(1, 1, 1), spawnpoint.add(1,1,1));
     List<Entity> nearbyHusks = world.getEntitiesWithinAABB(HuskEntity.class, aabb);
@@ -210,7 +208,7 @@ public class TestRunnerMBE81
   /*
   Spawn an invulnerable armor stand on top of a block, if there isn't one nearby already
 */
-  public static void createArmorStand(PlayerEntity player, Vec3d spawnpoint) {
+  public static void createArmorStand(PlayerEntity player, Vector3d spawnpoint) {
     World world = player.getEntityWorld();
     AxisAlignedBB aabb = new AxisAlignedBB(spawnpoint.subtract(1, 1, 1), spawnpoint.add(1,1,1));
     List<Entity> nearbyArmorStands = world.getEntitiesWithinAABB(ArmorStandEntity.class, aabb);
@@ -229,7 +227,7 @@ public class TestRunnerMBE81
   /*
   Spawn an invulnerable armor stand on top of a block, if there isn't one nearby already
 */
-  public static void createMinecart(PlayerEntity player, Vec3d spawnpoint) {
+  public static void createMinecart(PlayerEntity player, Vector3d spawnpoint) {
     World world = player.getEntityWorld();
     AxisAlignedBB aabb = new AxisAlignedBB(spawnpoint.subtract(1, 1, 1), spawnpoint.add(1,1,1));
     List<Entity> nearbyArmorStands = world.getEntitiesWithinAABB(ArmorStandEntity.class, aabb);

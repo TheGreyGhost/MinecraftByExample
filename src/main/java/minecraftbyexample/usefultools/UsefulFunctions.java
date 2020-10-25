@@ -3,7 +3,7 @@ package minecraftbyexample.usefultools;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.DoubleNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 /**
  * User: The Grey Ghost
@@ -35,16 +35,16 @@ public class UsefulFunctions
     return y1 + xFraction * (y2 - y1);
   }
 
-  public static Vec3d scalarMultiply(Vec3d source, double multiplier)
+  public static Vector3d scalarMultiply(Vector3d source, double multiplier)
   {
-    return new Vec3d(source.x * multiplier, source.y * multiplier, source.z * multiplier);
+    return new Vector3d(source.x * multiplier, source.y * multiplier, source.z * multiplier);
   }
 
 
   /***
    * creates a NBT list from the Vec3d passed to this function
    */
-  public static ListNBT serializeVec3d(Vec3d vec3d) {
+  public static ListNBT serializeVec3d(Vector3d vec3d) {
     ListNBT listnbt = new ListNBT();
     listnbt.add(DoubleNBT.valueOf(vec3d.x));
     listnbt.add(DoubleNBT.valueOf(vec3d.y));
@@ -58,9 +58,9 @@ public class UsefulFunctions
    * @param tagname name of the tag that was used to save the Vec3d
    * @return the new Vec3d
    */
-  public static Vec3d deserializeVec3d(CompoundNBT nbt, String tagname) {
+  public static Vector3d deserializeVec3d(CompoundNBT nbt, String tagname) {
     ListNBT listnbt = nbt.getList(tagname, NBTtypesMBE.DOUBLE_NBT_ID);
-    Vec3d retval = new Vec3d(listnbt.getDouble(0), listnbt.getDouble(1), listnbt.getDouble(2));
+    Vector3d retval = new Vector3d(listnbt.getDouble(0), listnbt.getDouble(1), listnbt.getDouble(2));
     return retval;
   }
 }

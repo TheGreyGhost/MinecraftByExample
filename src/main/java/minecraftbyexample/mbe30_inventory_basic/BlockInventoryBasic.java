@@ -6,21 +6,14 @@ import net.minecraft.block.ContainerBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.tileentity.CampfireTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.block.BlockRenderType;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
@@ -133,8 +126,8 @@ public class BlockInventoryBasic extends ContainerBlock
     return CHEST_SHAPE;
   }
 
-  private static final Vec3d CHEST_MIN_CORNER = new Vec3d(1.0, 0.0, 1.0);
-  private static final Vec3d CHEST_MAX_CORNER = new Vec3d(15.0, 8.0, 15.0);
+  private static final Vector3d CHEST_MIN_CORNER = new Vector3d(1.0, 0.0, 1.0);
+  private static final Vector3d CHEST_MAX_CORNER = new Vector3d(15.0, 8.0, 15.0);
   private static final VoxelShape CHEST_SHAPE = Block.makeCuboidShape(
           CHEST_MIN_CORNER.getX(), CHEST_MIN_CORNER.getY(), CHEST_MIN_CORNER.getZ(),
           CHEST_MAX_CORNER.getX(), CHEST_MAX_CORNER.getY(), CHEST_MAX_CORNER.getZ());

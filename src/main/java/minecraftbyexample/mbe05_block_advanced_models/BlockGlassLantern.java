@@ -15,7 +15,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
@@ -98,11 +98,11 @@ public class BlockGlassLantern extends Block
   // ------ code to implement the game-logic shape of the block (not the physical appearance)
 
   // for this model, we're making the shape match the block model exactly
-  private static final Vec3d BASE_MIN_CORNER = new Vec3d(5.0, 0.0, 5.0);
-  private static final Vec3d BASE_MAX_CORNER = new Vec3d(11.0, 7.0, 11.0);
+  private static final Vector3d BASE_MIN_CORNER = new Vector3d(5.0, 0.0, 5.0);
+  private static final Vector3d BASE_MAX_CORNER = new Vector3d(11.0, 7.0, 11.0);
 
-  private static final Vec3d LID_MIN_CORNER = new Vec3d(6.0, 7.0, 6.0);
-  private static final Vec3d LID_MAX_CORNER = new Vec3d(10.0, 9.0, 10.0);
+  private static final Vector3d LID_MIN_CORNER = new Vector3d(6.0, 7.0, 6.0);
+  private static final Vector3d LID_MAX_CORNER = new Vector3d(10.0, 9.0, 10.0);
 
   private static final VoxelShape NON_HANGING_BASE_SHAPE =
           Block.makeCuboidShape(BASE_MIN_CORNER.x, BASE_MIN_CORNER.y, BASE_MIN_CORNER.z, BASE_MAX_CORNER.x, BASE_MAX_CORNER.y, BASE_MAX_CORNER.z);

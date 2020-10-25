@@ -3,7 +3,7 @@ package minecraftbyexample.mbe81_entity_projectile.testharness;
 import minecraftbyexample.mbe81_entity_projectile.BoomerangFlightPath;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.logging.log4j.LogManager;
@@ -18,7 +18,7 @@ import java.util.List;
 public class TestRunnerMBE81b_A {
   public boolean runTest(World worldIn, PlayerEntity playerIn, boolean printFailedTestsOnly) {
     // test a,b: create a path, serialise it, deserialise it, compare to original
-    Vec3d START_POINT = new Vec3d(1, 2, 3);
+    Vector3d START_POINT = new Vector3d(1, 2, 3);
     BoomerangFlightPath path1 = new BoomerangFlightPath(START_POINT, 90, 0, 10, 1, false, 4);
     CompoundNBT nbt = path1.serializeNBT();
     BoomerangFlightPath path2 = new BoomerangFlightPath(nbt);
@@ -54,7 +54,7 @@ public class TestRunnerMBE81b_A {
 
     for (BoomerangFlightPath bfp : bfps) {
       for (float time = 0; time < 10 * 2.5 / 4; time += 0.1) {
-        Vec3d vec3d = bfp.getPosition(time);
+        Vector3d vec3d = bfp.getPosition(time);
         sbPos.append(String.format("%.2f, %.3f, %.3f, %.3f\n", time, vec3d.x, vec3d.y, vec3d.z));
         sbYaw.append(String.format("%.2f, %.0f\n", time, bfp.getYaw(time)));
         vec3d = bfp.getVelocity(time);
@@ -70,7 +70,7 @@ public class TestRunnerMBE81b_A {
 
   public static BoomerangFlightPath generatePath(String name,
                              StringBuilder sb,
-                             Vec3d startPoint,
+                             Vector3d startPoint,
                              float apexYaw, float apexPitch, float distanceToApex,
                              float maximumSidewaysDeflection,
                              boolean anticlockwise,

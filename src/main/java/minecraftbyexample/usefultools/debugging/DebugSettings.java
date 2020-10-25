@@ -1,9 +1,8 @@
 package minecraftbyexample.usefultools.debugging;
 
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 import java.util.*;
-import java.util.concurrent.locks.Lock;
 
 /**
  * Created by TGG on 29/06/2015.
@@ -66,7 +65,7 @@ public class DebugSettings {
 
   //-----------
 
-  public static synchronized void setDebugParameterVec3d(String parameterName, Vec3d value) {
+  public static synchronized void setDebugParameterVec3d(String parameterName, Vector3d value) {
     debugParameterVec3ds.put(parameterName, Optional.of(value));
   }
 
@@ -79,8 +78,8 @@ public class DebugSettings {
    * @param parameterName
    * @return
    */
-  public static synchronized Optional<Vec3d> getDebugParameterVec3d(String parameterName) {
-    Optional<Vec3d> value = debugParameterVec3ds.get(parameterName);
+  public static synchronized Optional<Vector3d> getDebugParameterVec3d(String parameterName) {
+    Optional<Vector3d> value = debugParameterVec3ds.get(parameterName);
     if (value == null) {
       debugParameterVec3ds.put(parameterName, Optional.empty());
       return Optional.empty();
@@ -92,7 +91,7 @@ public class DebugSettings {
     return debugParameterVec3ds.keySet();
   }
 
-  private static HashMap<String, Optional<Vec3d>> debugParameterVec3ds = new HashMap<>();
+  private static HashMap<String, Optional<Vector3d>> debugParameterVec3ds = new HashMap<>();
 
   //-----------
 

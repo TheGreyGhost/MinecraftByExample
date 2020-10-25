@@ -34,6 +34,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.*;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
@@ -69,7 +70,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
    */
   public BoomerangEntity(World world, ItemStack boomerangItemStack,
                          @Nullable LivingEntity thrower,
-                         Vec3d startPosition,
+                         Vector3d startPosition,
                          float apexYaw, float apexPitch,
                          float distanceToApex,
                          float maximumSidewaysDeflection,
@@ -410,7 +411,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     }
 
     // apply buoyancy if underwater, or gravity acceleration if out of water
-    Vec3d initialVelocity = this.getMotion();
+    Vector3d initialVelocity = this.getMotion();
     if (this.areEyesInFluid(FluidTags.WATER)) {
       this.applyFloatMotion();
     } else if (!this.hasNoGravity()) {
@@ -437,7 +438,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     if (!this.onGround
             || horizontalMag(this.getMotion()) > THRESHOLD_HORIZONTAL_SPEED
             || (this.ticksExisted + this.getEntityId()) % 4 == 0) {  // check for movement at least every fourth tick
-      Vec3d previousMotion = this.getMotion();
+      Vector3d previousMotion = this.getMotion();
       this.move(MoverType.SELF, this.getMotion());  // move and check for collisions
       final float FRICTION_FACTOR = 0.98F;
       float horizontalfrictionFactor = FRICTION_FACTOR;
@@ -493,7 +494,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
   /** called when underwater: apply upwards acceleration if currently moving slower than maximum upwards speed
    */
   private void applyFloatMotion() {
-    Vec3d velocity = this.getMotion();
+    Vector3d velocity = this.getMotion();
     final double SIDEWAYS_FRICTION_FACTOR = 0.99;
     final double MAXIMUM_UPWARDS_VELOCITY = 0.06;    // blocks per tick
     final double ACCELERATION_DUE_TO_BUOYANCY = 0.0005;  // blocks per tick squared
@@ -514,10 +515,10 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
 
     // manually calculate the new position on the flight path
     final float TICKS_PER_SECOND = 20.0F;
-    Vec3d startPosition = this.getPositionVec();
+    Vector3d startPosition = this.getPositionVec();
     double timeSpentInFlight = (ticksSpentInFlight + 1) / TICKS_PER_SECOND;
-    Vec3d endPosition = boomerangFlightPath.getPosition(timeSpentInFlight);
-    Vec3d motion = endPosition.subtract(startPosition);
+    Vector3d endPosition = boomerangFlightPath.getPosition(timeSpentInFlight);
+    Vector3d motion = endPosition.subtract(startPosition);
 
     // check for collisions with other objects (blocks or entities)
 
@@ -590,16 +591,16 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     this.prevEndOverEndRotation = MathHelper.wrapDegrees(this.endOverEndRotation);
     this.endOverEndRotation = this.prevEndOverEndRotation + DEGREES_PER_TICK;
 
-    Vec3d newPosition = this.getPositionVec().add(motion);
+    Vector3d newPosition = this.getPositionVec().add(motion);
 
     // if flying through water, add bubbles but don't slow the boomerang down (unrealistic I guess, but making it slow down in water
     //   would add extra complexity to the code and it's complicated enough already!)
     if (this.isInWater()) {
       for (int i = 0; i < 4; ++i) {
         final float TRAIL_DISTANCE_FACTOR = 0.5F;
-        Vec3d distanceBackFromNewPosition = motion.scale(TRAIL_DISTANCE_FACTOR);
-        Vec3d verticalDispersion = new Vec3d(0, 0.4 * (rand.nextFloat() - 0.5), 0);
-        Vec3d bubbleSpawnPosition = newPosition.subtract(distanceBackFromNewPosition).add(verticalDispersion);
+        Vector3d distanceBackFromNewPosition = motion.scale(TRAIL_DISTANCE_FACTOR);
+        Vector3d verticalDispersion = new Vector3d(0, 0.4 * (rand.nextFloat() - 0.5), 0);
+        Vector3d bubbleSpawnPosition = newPosition.subtract(distanceBackFromNewPosition).add(verticalDispersion);
         this.world.addParticle(ParticleTypes.BUBBLE,
                 bubbleSpawnPosition.getX(), bubbleSpawnPosition.getY(), bubbleSpawnPosition.getZ(),
                 motion.getX(), motion.getY(), motion.getZ());
@@ -663,23 +664,23 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     dataManager.set(IN_FLIGHT_DMP, false);
     this.playSound(SoundEvents.BLOCK_WOOD_HIT, 0.25F, 0.5F);
     // make the boomerang ricochet off the face
-    Vec3d velocity = this.getMotion();
+    Vector3d velocity = this.getMotion();
     final double RICHOCHET_SPEED = 0.5; // amount of speed left after richochet
     switch (rayTraceResult.getFace()) {
       case EAST: {
-        if (velocity.getX() < 0) velocity = new Vec3d(-RICHOCHET_SPEED * velocity.getX(), velocity.getY(), velocity.getZ());
+        if (velocity.getX() < 0) velocity = new Vector3d(-RICHOCHET_SPEED * velocity.getX(), velocity.getY(), velocity.getZ());
         break;
       }
       case WEST: {
-        if (velocity.getX() > 0) velocity = new Vec3d(-RICHOCHET_SPEED * velocity.getX(), velocity.getY(), velocity.getZ());
+        if (velocity.getX() > 0) velocity = new Vector3d(-RICHOCHET_SPEED * velocity.getX(), velocity.getY(), velocity.getZ());
         break;
       }
       case NORTH: {
-        if (velocity.getZ() > 0) velocity = new Vec3d(velocity.getX(), velocity.getY(), -RICHOCHET_SPEED * velocity.getZ());
+        if (velocity.getZ() > 0) velocity = new Vector3d(velocity.getX(), velocity.getY(), -RICHOCHET_SPEED * velocity.getZ());
         break;
       }
       case SOUTH: {
-        if (velocity.getZ() < 0) velocity = new Vec3d(velocity.getX(), velocity.getY(), -RICHOCHET_SPEED * velocity.getZ());
+        if (velocity.getZ() < 0) velocity = new Vector3d(velocity.getX(), velocity.getY(), -RICHOCHET_SPEED * velocity.getZ());
         break;
       }
       case UP:      // shouldn't happen, but if it does- just "graze" the surface without bouncing off
@@ -764,7 +765,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
         if (this.knockbackLevel > 0) {
           final float VERTICAL_KNOCKBACK = 0.1F;
           final float KNOCKBACK_VELOCITY_AT_MAX_ENCHANTMENT = 1.2F;   // blocks per tick velocity
-          Vec3d knockbackVelocity = this.getMotion().mul(1.0D, 0.0D, 1.0D).normalize()
+          Vector3d knockbackVelocity = this.getMotion().mul(1.0D, 0.0D, 1.0D).normalize()
                                         .scale(this.knockbackLevel * KNOCKBACK_VELOCITY_AT_MAX_ENCHANTMENT);
           if (knockbackVelocity.lengthSquared() > 0.0D) {
             livingentity.addVelocity(knockbackVelocity.x, VERTICAL_KNOCKBACK, knockbackVelocity.z);
@@ -802,25 +803,25 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
       this.playSound(SoundEvents.ENTITY_SLIME_SQUISH, 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));  // kind of like a meaty splat sound
     }
 
-    Vec3d newVelocity;
+    Vector3d newVelocity;
     if (bounceOff) {
       // make the boomerang ricochet off the entity
       //  assume that the point of impact is at a circle around the centre of the entity
       //  so that the boomerang bounces off as if it hit the rim of the circle
 
       Entity target = rayTraceResult.getEntity();
-      Vec3d pointOfImpact = rayTraceResult.getHitVec();
-      Vec3d impactRadialPosition = pointOfImpact.subtract(target.getPositionVec());
+      Vector3d pointOfImpact = rayTraceResult.getHitVec();
+      Vector3d impactRadialPosition = pointOfImpact.subtract(target.getPositionVec());
 
       // some vector math to calculate the path when bouncing off
-      Vec3d boomerangVelocity = this.getMotion();
+      Vector3d boomerangVelocity = this.getMotion();
       double impactRadiusSq = impactRadialPosition.lengthSquared();
       final double RICHOCHET_SPEED = 0.5; // amount of speed left after richochet
 
       if (impactRadiusSq > 0.001) {
         double radialProjectionLength = boomerangVelocity.dotProduct(impactRadialPosition) / impactRadiusSq;
-        Vec3d radialComponent = impactRadialPosition.scale(radialProjectionLength);
-        Vec3d tangentialComponent = boomerangVelocity.subtract(radialComponent);
+        Vector3d radialComponent = impactRadialPosition.scale(radialProjectionLength);
+        Vector3d tangentialComponent = boomerangVelocity.subtract(radialComponent);
         // the ricochet keeps the same tangential component and inverts the radial component
         newVelocity = tangentialComponent.subtract(radialComponent);
       } else {
@@ -828,7 +829,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
       }
       newVelocity = newVelocity.scale(RICHOCHET_SPEED);
     } else {
-      newVelocity = new Vec3d(0, 0, 0);
+      newVelocity = new Vector3d(0, 0, 0);
     }
     this.setMotion(newVelocity);
     this.world.setEntityState(this, (byte)VANILLA_ARROW_IMPACT_STATUS_ID);

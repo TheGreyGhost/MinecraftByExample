@@ -1,5 +1,7 @@
-MinecraftByExample [1.15.2]
+MinecraftByExample [1.16.3]
 ==================
+*** update to 1.16.3 is a work in progress; for earlier versions see below ***
+
 The purpose of MinecraftByExample is to give simple working examples of the important concepts in Minecraft and Forge. If you're anything like me, a good code example is worth several screens of waffling explanation, and can very quickly explain the key concepts.  I also find it much easier to adapt and debug something that already works, than to have to synthesize something from scratch and spend hours trying to discover the missing bit of information I didn't know about.
 
 I've tried to keep the code simple and obvious and to resist the urge to be clever. The examples might not be the most efficient or succinct implementation, I've deliberately left the optimization to you.
@@ -24,6 +26,7 @@ If you want more information and explanatory text about the concepts, the follow
  - MBE for Forge 1.11.2: [1-11-2final][version1-11-2]
  - MBE for Forge 1.12.2: [1-12-2final][version1-12-2]
  - MBE for Forge 1.14.4: [1-14-4partial][version1-14-4] (partially updated only)
+ - MBE for Forge 1.15.2: [1-15-2][version1-15-2] 
 
 If you are updating from previous forge versions, you will probably find [this link][versionupdates] and [this link][versionupdates1-15] very helpful.  For better or for worse, MCP decided to rename a very large number of classes (eg all Blocks Blockxxx --> xxxxBlock, etc) so this might save you a stack of time.
 If you use IntelliJ, you might find these [xml mapping files][mapfiles] useful too
@@ -161,6 +164,7 @@ Head over [here][more_help] if this didn't make sense to you (check comments for
 [version1-11-2]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-11-2-final
 [version1-12-2]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-12-2-final
 [version1-14-4]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-14-4-partial
+[version1-15-2]: https://github.com/TheGreyGhost/MinecraftByExample/tree/1-15-2-final
 [versionupdates]: https://gist.github.com/williewillus/353c872bcf1a6ace9921189f6100d09a
 [versionupdates1-15]:https://gist.github.com/williewillus/30d7e3f775fe93c503bddf054ef3f93e
 [mapfiles]: https://github.com/TheGreyGhost/MinecraftByExample/tree/master/miscellaneous/name_remappings

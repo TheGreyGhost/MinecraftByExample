@@ -9,7 +9,7 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.client.model.data.EmptyModelData;
 
 import java.awt.*;
@@ -39,15 +39,15 @@ public class RenderWavefrontObj {
                                         int combinedLight, int combinedOverlay) {
 
     // the gem model lies within a box from [-0.5, -1, -0.5] to [0.5, 1, 0.5]
-    final Vec3d OBJ_MODEL_SIZE = new Vec3d(1, 2, 1);
-    final Vec3d OBJ_MODEL_BOTTOM_APEX = new Vec3d(0, -1, 0);
+    final Vector3d OBJ_MODEL_SIZE = new Vector3d(1, 2, 1);
+    final Vector3d OBJ_MODEL_BOTTOM_APEX = new Vector3d(0, -1, 0);
 
     // When the TER::render method is called, the origin [0,0,0] is at the current [x,y,z] of the block being rendered.
     // We want the gem to be hovering with its bottom apex ([0,-1,0] in model space) touching the middle of the top of the hopper
-    final Vec3d HOPPER_MIDDLE_OF_TOP = new Vec3d(0.5, 11.0/16.0, 0.5);
+    final Vector3d HOPPER_MIDDLE_OF_TOP = new Vector3d(0.5, 11.0/16.0, 0.5);
 
     // We also want the gem to be scaled down so that it is half a block high
-    final Vec3d WORLD_MODEL_SIZE = new Vec3d(0.25, 0.5, 0.25);
+    final Vector3d WORLD_MODEL_SIZE = new Vector3d(0.25, 0.5, 0.25);
 
     double scaleX, scaleY, scaleZ;
     final boolean SCALE_EVENLY_BASED_ON_Y = true;
@@ -62,12 +62,12 @@ public class RenderWavefrontObj {
     }
 
     // must convert our model space size to world space before translating
-    final Vec3d OBJ_MODEL_BOTTOM_APEX_WORLD_SPACE = new Vec3d(OBJ_MODEL_BOTTOM_APEX.getX() * scaleX,
+    final Vector3d OBJ_MODEL_BOTTOM_APEX_WORLD_SPACE = new Vector3d(OBJ_MODEL_BOTTOM_APEX.getX() * scaleX,
             OBJ_MODEL_BOTTOM_APEX.getY() * scaleY,
             OBJ_MODEL_BOTTOM_APEX.getZ() * scaleZ);
 
     // translate model origin from [0,0,0] up to HOPPER_MIDDLE_OF_TOP and then further to place the apex in the right place
-    final Vec3d TRANSLATION_OFFSET = HOPPER_MIDDLE_OF_TOP.subtract(OBJ_MODEL_BOTTOM_APEX_WORLD_SPACE);
+    final Vector3d TRANSLATION_OFFSET = HOPPER_MIDDLE_OF_TOP.subtract(OBJ_MODEL_BOTTOM_APEX_WORLD_SPACE);
 
     matrixStack.push(); // push the current transformation matrix + normals matrix
     matrixStack.translate(TRANSLATION_OFFSET.x,TRANSLATION_OFFSET.y,TRANSLATION_OFFSET.z); // translate to put the gem in the right place
@@ -129,8 +129,8 @@ public class RenderWavefrontObj {
     ClientPlayerEntity player = Minecraft.getInstance().player;
     BlockPos blockPos = tileEntityMBE21.getPos();
     if (player != null && blockPos != null) {
-      Vec3d pedestalCentre = new Vec3d(blockPos).add(0.5, 1.0, 0.5);
-      Vec3d playerFeet = player.getPositionVec();
+      Vector3d pedestalCentre = new Vector3d(blockPos).add(0.5, 1.0, 0.5);
+      Vector3d playerFeet = player.getPositionVec();
       playerDistance = playerFeet.distanceTo(pedestalCentre);
     }
 
@@ -170,8 +170,8 @@ public class RenderWavefrontObj {
     ClientPlayerEntity player = Minecraft.getInstance().player;
     BlockPos blockPos = tileEntityMBE21.getPos();
     if (player != null && blockPos != null) {
-      Vec3d pedestalCentre = new Vec3d(blockPos).add(0.5, 1.0, 0.5);
-      Vec3d playerFeet = player.getPositionVec();
+      Vector3d pedestalCentre = new Vector3d(blockPos).add(0.5, 1.0, 0.5);
+      Vector3d playerFeet = player.getPositionVec();
       playerDistance = playerFeet.distanceTo(pedestalCentre);
     }
 

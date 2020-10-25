@@ -17,7 +17,7 @@ import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.Vec3i;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -171,12 +171,12 @@ public class TestModel extends Model {
       return retval;
     }
 
-    public void makeThisModelActive(Vec3d worldPos) {
+    public void makeThisModelActive(Vector3d worldPos) {
       DebugSettings.setDebugParameterVec3d("model_active", worldPos);
     }
 
     public void makeThisModelActive(BlockPos worldPos) {
-      Vec3d vec3dWorldPos = new Vec3d(worldPos.getX(), worldPos.getY(), worldPos.getZ());
+      Vector3d vec3dWorldPos = new Vector3d(worldPos.getX(), worldPos.getY(), worldPos.getZ());
       DebugSettings.clearDebugParameterVec3d("model_active");
 
       for (Vector3fSetting entry : vector3fSettings.values()) entry.clearDebugSetting();
@@ -187,8 +187,8 @@ public class TestModel extends Model {
     }
 
     public void updateFromDebugSettingsIfActive(Vec3i worldPos) {
-      Optional<Vec3d> activeModel = DebugSettings.getDebugParameterVec3d("model_active");
-      Vec3d worldPosVec3d = new Vec3d(worldPos.getX(), worldPos.getY(), worldPos.getZ());
+      Optional<Vector3d> activeModel = DebugSettings.getDebugParameterVec3d("model_active");
+      Vector3d worldPosVec3d = new Vector3d(worldPos.getX(), worldPos.getY(), worldPos.getZ());
 
       if (!activeModel.isPresent() || worldPosVec3d.distanceTo(activeModel.get()) > 0.1) return;
       for (Vector3fSetting entry : vector3fSettings.values()) entry.updateFromDebugSettings();
@@ -244,7 +244,7 @@ public class TestModel extends Model {
       public Vector3f get() {return value;}
       
       public void updateFromDebugSettings() {
-        Optional<Vec3d> debugValue = DebugSettings.getDebugParameterVec3d(name);
+        Optional<Vector3d> debugValue = DebugSettings.getDebugParameterVec3d(name);
         if (debugValue.isPresent()) {
           value = new Vector3f((float) debugValue.get().x, (float) debugValue.get().y, (float) debugValue.get().z);
         }
@@ -282,7 +282,7 @@ public class TestModel extends Model {
       public Vec3i get() {return value;}
 
       public void updateFromDebugSettings() {
-        Optional<Vec3d> debugValue = DebugSettings.getDebugParameterVec3d(name);
+        Optional<Vector3d> debugValue = DebugSettings.getDebugParameterVec3d(name);
         if (debugValue.isPresent()) {
           value = new Vec3i((int) debugValue.get().x, (int) debugValue.get().y, (int) debugValue.get().z);
         }

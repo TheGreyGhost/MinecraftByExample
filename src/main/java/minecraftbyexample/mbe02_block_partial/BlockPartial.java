@@ -5,7 +5,7 @@ import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -28,10 +28,10 @@ import net.minecraft.world.IBlockReader;
 public class BlockPartial extends Block {
 
     // for this model, we're making the shape match the block model exactly - see assets\minecraftbyexample\models\block\mbe02_block_partial_model.json
-  private static final Vec3d BASE_MIN_CORNER = new Vec3d(2.0, 0.0, 0.0);
-  private static final Vec3d BASE_MAX_CORNER = new Vec3d(14.0, 1.0, 16.0);
-  private static final Vec3d PILLAR_MIN_CORNER = new Vec3d(7.0, 1.0, 6.0);
-  private static final Vec3d PILLAR_MAX_CORNER = new Vec3d(9.0, 8.0, 10.0);
+  private static final Vector3d BASE_MIN_CORNER = new Vector3d(2.0, 0.0, 0.0);
+  private static final Vector3d BASE_MAX_CORNER = new Vector3d(14.0, 1.0, 16.0);
+  private static final Vector3d PILLAR_MIN_CORNER = new Vector3d(7.0, 1.0, 6.0);
+  private static final Vector3d PILLAR_MAX_CORNER = new Vector3d(9.0, 8.0, 10.0);
 
   private static final VoxelShape BASE = Block.makeCuboidShape(BASE_MIN_CORNER.getX(), BASE_MIN_CORNER.getY(), BASE_MIN_CORNER.getZ(),
                                                                BASE_MAX_CORNER.getX(), BASE_MAX_CORNER.getY(), BASE_MAX_CORNER.getZ());

@@ -1,23 +1,16 @@
 package minecraftbyexample.mbe60_network_messages;
 
-import jdk.nashorn.internal.ir.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.item.TNTEntity;
-import net.minecraft.entity.passive.SnowGolemEntity;
-import net.minecraft.entity.passive.PigEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.entity.projectile.EggEntity;
 import net.minecraft.entity.projectile.FireballEntity;
-import net.minecraft.entity.projectile.SnowballEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
@@ -29,8 +22,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Random;
 import java.util.function.Supplier;
-
-import static net.minecraft.entity.EntityType.FIREBALL;
 
 /**
  * The MessageHandlerOnServer is used to process the network message once it has arrived on the Server side.
@@ -110,7 +101,7 @@ public class MessageHandlerOnServer {
       double xOffset = (random.nextDouble() * 2 - 1) * MAX_HORIZONTAL_SPREAD;
       double zOffset = (random.nextDouble() * 2 - 1) * MAX_HORIZONTAL_SPREAD;
       double yOffset = RELEASE_HEIGHT_ABOVE_TARGET + (random.nextDouble() * 2 - 1) * MAX_VERTICAL_SPREAD;
-      Vec3d releasePoint = message.getTargetCoordinates().add(xOffset, yOffset, zOffset);
+      Vector3d releasePoint = message.getTargetCoordinates().add(xOffset, yOffset, zOffset);
 
       EntityType entityType = message.getProjectile().getEntityType();
 

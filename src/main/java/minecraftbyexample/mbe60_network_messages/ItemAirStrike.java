@@ -6,12 +6,10 @@ import net.minecraft.item.*;
 import net.minecraft.util.*;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -38,7 +36,7 @@ public class ItemAirStrike extends Item
     if (!context.getWorld().isRemote) {  // don't execute on the server side!
       return ActionResultType.PASS;
     }
-    Vec3d targetLocation = context.getHitVec();
+    Vector3d targetLocation = context.getHitVec();
     callAirstrikeOnTarget(targetLocation);
     return ActionResultType.SUCCESS;  // tell caller we have processed the click
   }
@@ -54,18 +52,18 @@ public class ItemAirStrike extends Item
 
     // target a location in the direction that the player is looking
     final float PARTIAL_TICKS = 1.0F;
-    Vec3d playerLook = playerIn.getLookVec();
-    Vec3d playerFeetPosition = playerIn.getEyePosition(PARTIAL_TICKS).subtract(0, playerIn.getEyeHeight(), 0);
+    Vector3d playerLook = playerIn.getLookVec();
+    Vector3d playerFeetPosition = playerIn.getEyePosition(PARTIAL_TICKS).subtract(0, playerIn.getEyeHeight(), 0);
     final double TARGET_DISTANCE = 6.0;
     final double HEIGHT_ABOVE_FEET = 0.1;
-    Vec3d targetPosition = playerFeetPosition.add(playerLook.x * TARGET_DISTANCE, HEIGHT_ABOVE_FEET,
+    Vector3d targetPosition = playerFeetPosition.add(playerLook.x * TARGET_DISTANCE, HEIGHT_ABOVE_FEET,
                                                        playerLook.z * TARGET_DISTANCE);
     callAirstrikeOnTarget(targetPosition);
     return new ActionResult(ActionResultType.SUCCESS, itemStackIn);
   }
 
   // send a network message to the server to bombard the target location with a random projectile
-  public void callAirstrikeOnTarget(Vec3d targetPosition)
+  public void callAirstrikeOnTarget(Vector3d targetPosition)
   {
     AirstrikeMessageToServer.Projectile projectile = AirstrikeMessageToServer.Projectile.getRandom();
 

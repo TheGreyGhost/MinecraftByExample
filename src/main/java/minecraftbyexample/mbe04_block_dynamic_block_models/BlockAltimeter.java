@@ -3,12 +3,10 @@ package minecraftbyexample.mbe04_block_dynamic_block_models;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
-import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
@@ -55,8 +53,8 @@ public class BlockAltimeter extends Block {
     float bearingToOrigin;   // points towards the origin [x=0, z=0]- in degrees clockwise from north
   }
 
-  private static final Vec3d BASE_MIN_CORNER = new Vec3d(1.5, 0.0, 1.5);
-  private static final Vec3d BASE_MAX_CORNER = new Vec3d(14.5, 10.0, 14.5);
+  private static final Vector3d BASE_MIN_CORNER = new Vector3d(1.5, 0.0, 1.5);
+  private static final Vector3d BASE_MAX_CORNER = new Vector3d(14.5, 10.0, 14.5);
 
   private static final VoxelShape BASE = Block.makeCuboidShape(BASE_MIN_CORNER.getX(), BASE_MIN_CORNER.getY(), BASE_MIN_CORNER.getZ(),
           BASE_MAX_CORNER.getX(), BASE_MAX_CORNER.getY(), BASE_MAX_CORNER.getZ());

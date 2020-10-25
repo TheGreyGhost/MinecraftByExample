@@ -19,7 +19,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.*;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -78,9 +78,9 @@ public class ItemElementalCrossbowAir extends CrossbowItem {  // need to extend 
          ICrossbowUser crossbowUser = (ICrossbowUser)livingEntity;
          crossbowUser.shoot(crossbowUser.getAttackTarget(), crossbowItemStack, abstractArrowEntity, yawAngle);
        } else {
-         Vec3d headVerticalAxis = livingEntity.getUpVector(1.0F);
+         Vector3d headVerticalAxis = livingEntity.getUpVector(1.0F);
          Quaternion rotationAboutHeadVerticalAxis = new Quaternion(new Vector3f(headVerticalAxis), yawAngle, true);
-         Vec3d lookVector = livingEntity.getLook(1.0F);
+         Vector3d lookVector = livingEntity.getLook(1.0F);
          Vector3f lookVector3f = new Vector3f(lookVector);
          lookVector3f.transform(rotationAboutHeadVerticalAxis);
          abstractArrowEntity.shoot(lookVector3f.getX(), lookVector3f.getY(), lookVector3f.getZ(), speed, inaccuracy);

@@ -10,18 +10,11 @@ package minecraftbyexample.mbe21_tileentityrenderer;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import minecraftbyexample.usefultools.debugging.DebugSettings;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
-import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.Random;
 
@@ -52,7 +45,7 @@ public class RenderModelHourglass  {
     // The model is defined centred on [0,0,0], so if we drew it at the current render origin, its centre would be
     // at the corner of the block, sunk halfway into the ground and overlapping into the adjacent blocks.
     // We want it to hover above the centre of the hopper base, so we need to translate up and across to the desired position
-    final Vec3d TRANSLATION_OFFSET = new Vec3d(0.5, 1.5, 0.5);
+    final Vector3d TRANSLATION_OFFSET = new Vector3d(0.5, 1.5, 0.5);
     matrixStack.translate(TRANSLATION_OFFSET.x, TRANSLATION_OFFSET.y, TRANSLATION_OFFSET.z); // translate
 
     // we use an animation timer to manipulate the render, with a "random" offset added to the animation timer based on

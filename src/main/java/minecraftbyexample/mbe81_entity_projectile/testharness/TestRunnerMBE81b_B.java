@@ -1,27 +1,18 @@
 package minecraftbyexample.mbe81_entity_projectile.testharness;
 
 import minecraftbyexample.mbe81_entity_projectile.BoomerangEntity;
-import minecraftbyexample.mbe81_entity_projectile.BoomerangFlightPath;
 import minecraftbyexample.mbe81_entity_projectile.StartupCommon;
 import minecraftbyexample.usefultools.debugging.DebugSettings;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Hand;
-import net.minecraft.util.HandSide;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by TGG on 31/08/2020.
@@ -48,8 +39,8 @@ public class TestRunnerMBE81b_B {
     // spawn a stationary boomerang so we can see it rendering
     //  teleport the player to the observation point
     TestRunnerMBE81.clearAllDebugSettings();
-    Vec3d START_POINT = new Vec3d(0, 200, 0);
-    Vec3d OBSERVER_POINT = new Vec3d(0, 200, 0);
+    Vector3d START_POINT = new Vector3d(0, 200, 0);
+    Vector3d OBSERVER_POINT = new Vector3d(0, 200, 0);
 
     TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
 
@@ -73,8 +64,8 @@ public class TestRunnerMBE81b_B {
     // spawn a boomerang so we can watch its flight path.  Flat path, no yaw
     //  teleport the player to the observation point if far away
     TestRunnerMBE81.clearAllDebugSettings();
-    Vec3d START_POINT = new Vec3d(0, 201, 0);
-    Vec3d OBSERVER_POINT = new Vec3d(3, 200, 0);
+    Vector3d START_POINT = new Vector3d(0, 201, 0);
+    Vector3d OBSERVER_POINT = new Vector3d(3, 200, 0);
 
     if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
@@ -97,8 +88,8 @@ public class TestRunnerMBE81b_B {
     // spawn a boomerang so we can watch its flight path.  60 degree yaw
     //  teleport the player to the observation point if far away
     TestRunnerMBE81.clearAllDebugSettings();
-    Vec3d START_POINT = new Vec3d(0, 201, 0);
-    Vec3d OBSERVER_POINT = new Vec3d(3, 200, 0);
+    Vector3d START_POINT = new Vector3d(0, 201, 0);
+    Vector3d OBSERVER_POINT = new Vector3d(3, 200, 0);
 
     if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
@@ -120,8 +111,8 @@ public class TestRunnerMBE81b_B {
     // spawn a boomerang so we can watch its flight path.  pitched path
     //  teleport the player to the observation point if far away
     TestRunnerMBE81.clearAllDebugSettings();
-    Vec3d START_POINT = new Vec3d(0, 201, 0);
-    Vec3d OBSERVER_POINT = new Vec3d(3, 200, 0);
+    Vector3d START_POINT = new Vector3d(0, 201, 0);
+    Vector3d OBSERVER_POINT = new Vector3d(3, 200, 0);
 
     if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
@@ -143,8 +134,8 @@ public class TestRunnerMBE81b_B {
     // spawn a boomerang so we can watch its flight path.  right hand throw
     //  teleport the player to the observation point if far away
     TestRunnerMBE81.clearAllDebugSettings();
-    Vec3d START_POINT = new Vec3d(0, 201, 0);
-    Vec3d OBSERVER_POINT = new Vec3d(3, 200, 0);
+    Vector3d START_POINT = new Vector3d(0, 201, 0);
+    Vector3d OBSERVER_POINT = new Vector3d(3, 200, 0);
 
     if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
@@ -166,8 +157,8 @@ public class TestRunnerMBE81b_B {
     // spawn a boomerang so we can watch its flight path.
     //  teleport the player to the observation point if far away
     TestRunnerMBE81.clearAllDebugSettings();
-    Vec3d START_POINT = new Vec3d(100, 201, 0);
-    Vec3d OBSERVER_POINT = new Vec3d(103, 200, 0);
+    Vector3d START_POINT = new Vector3d(100, 201, 0);
+    Vector3d OBSERVER_POINT = new Vector3d(103, 200, 0);
     BlockPos centre = new BlockPos(100, 199, 0);
     TestRunnerMBE81.createBasin(playerIn, centre, 10, 3, Blocks.WATER.getDefaultState());
 
@@ -188,7 +179,7 @@ public class TestRunnerMBE81b_B {
   public static BoomerangEntity generateEntity(String name,
                              StringBuilder sb,
                              World world, LivingEntity livingEntity, ItemStack boomerangItemStack,
-                             Vec3d startPoint,
+                             Vector3d startPoint,
                              float apexYaw, float apexPitch, float distanceToApex,
                              float maximumSidewaysDeflection,
                              boolean anticlockwise,

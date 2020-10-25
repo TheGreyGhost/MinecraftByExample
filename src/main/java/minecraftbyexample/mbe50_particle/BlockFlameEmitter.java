@@ -1,16 +1,13 @@
 package minecraftbyexample.mbe50_particle;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.monster.MonsterEntity;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
@@ -40,10 +37,10 @@ public class BlockFlameEmitter extends Block
 
   // for this model, we're making the shape match the block model exactly
   //    - see assets\minecraftbyexample\models\block\mbe50_block_flame_emitter_model.json
-  private static final Vec3d BASE_MIN_CORNER = new Vec3d(2.0, 0.0, 0.0);
-  private static final Vec3d BASE_MAX_CORNER = new Vec3d(14.0, 1.0, 16.0);
-  private static final Vec3d PILLAR_MIN_CORNER = new Vec3d(7.0, 1.0, 6.0);
-  private static final Vec3d PILLAR_MAX_CORNER = new Vec3d(9.0, 8.0, 10.0);
+  private static final Vector3d BASE_MIN_CORNER = new Vector3d(2.0, 0.0, 0.0);
+  private static final Vector3d BASE_MAX_CORNER = new Vector3d(14.0, 1.0, 16.0);
+  private static final Vector3d PILLAR_MIN_CORNER = new Vector3d(7.0, 1.0, 6.0);
+  private static final Vector3d PILLAR_MAX_CORNER = new Vector3d(9.0, 8.0, 10.0);
 
   private static final VoxelShape BASE = Block.makeCuboidShape(BASE_MIN_CORNER.getX(), BASE_MIN_CORNER.getY(), BASE_MIN_CORNER.getZ(),
           BASE_MAX_CORNER.getX(), BASE_MAX_CORNER.getY(), BASE_MAX_CORNER.getZ());
@@ -118,9 +115,9 @@ public class BlockFlameEmitter extends Block
       zpos += POSITION_WOBBLE_AMOUNT * (rand.nextDouble() - 0.5);
 
       MonsterEntity mobTarget = getNearestTargetableMob(worldIn, xpos, ypos, zpos);
-      Vec3d fireballDirection;
+      Vector3d fireballDirection;
       if (mobTarget == null) { // no target: fire straight upwards
-        fireballDirection = new Vec3d(0.0, 1.0, 0.0);
+        fireballDirection = new Vector3d(0.0, 1.0, 0.0);
       } else {  // otherwise: aim at the mob
         // the direction that the fireball needs to travel is calculated from the starting point (the pole) and the
         //   end point (the mob's eyes).  A bit of googling on vector maths will show you that you calculate this by

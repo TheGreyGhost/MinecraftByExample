@@ -1,10 +1,11 @@
-The xml files can be used in IntelliJ IDEA to rename classes from earlier versions of Forge to later versions.  Doesn't do method or field renames.
+These xml files can be used in IntelliJ IDEA to rename packages or classes from earlier versions of Forge to later versions.  Doesn't do method or field renames.
 To use:
 # Drop the XML file into your Intellij migrations directory.
 #   This is usually <USER FOLDER>/.IdeaIC2018.3/config/migrations/ or similar.
 #   If that file doesn't exist, use Refactor->Migration to create a new dummy migration with a distinctive name and then
 #   search your user folder for it.
 # Restart IntelliJ, then do Ctrl+Shift+A (to select all source code) -> Migrate -> Select the XML -> Run -> Do refactor
+# MAKE SURE TO EXCLUDE THE miscellaneous\name_remappings folder, otherwise it will search-and-replace inside your xml files as well!
 
 Taken from the following on 27 Jan 2020:
 https://gist.github.com/williewillus/353c872bcf1a6ace9921189f6100d09a
@@ -13,6 +14,8 @@ https://gist.github.com/williewillus/2dfc945b7b7fdb69cc3ff830072d22fe
 
 converted using the python script
 https://github.com/ModCoderPack/MCPBot-Issues/tree/master/bin
+
+I haven't found anything online for mapping from 1.14 or 1.15 to 1.16, but I have created one by hand for 1.15.2 to 1.16.3 which will cover many of the common changes.
 
 -----------------------
 Other potential useful renames (from 1.12.2 to 1.14.4)

@@ -2,24 +2,16 @@ package minecraftbyexample.mbe81_entity_projectile.testharness;
 
 import minecraftbyexample.mbe81_entity_projectile.BoomerangEntity;
 import minecraftbyexample.mbe81_entity_projectile.StartupCommon;
-import minecraftbyexample.usefultools.debugging.DebugSettings;
-import net.minecraft.block.Blocks;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by TGG on 31/08/2020.
@@ -51,13 +43,13 @@ public class TestRunnerMBE81b_D {
     // collide with an entity
     //  teleport the player to the observation point
     TestRunnerMBE81.clearAllDebugSettings();
-    Vec3d START_POINT = new Vec3d(0, 200.5, 2000.5);
-    Vec3d OBSERVER_POINT = new Vec3d(3, 200, 2003);
+    Vector3d START_POINT = new Vector3d(0, 200.5, 2000.5);
+    Vector3d OBSERVER_POINT = new Vector3d(3, 200, 2003);
     if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
 
-    Vec3d spawnpoint = new Vec3d(5, 200, 2000);
+    Vector3d spawnpoint = new Vector3d(5, 200, 2000);
     TestRunnerMBE81.createPig(playerIn, spawnpoint);
 
     ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
@@ -75,13 +67,13 @@ public class TestRunnerMBE81b_D {
     // collide with an entity
     //  teleport the player to the observation point
     TestRunnerMBE81.clearAllDebugSettings();
-    Vec3d START_POINT = new Vec3d(0, 200.5, 2100.5);
-    Vec3d OBSERVER_POINT = new Vec3d(3, 200, 2103);
+    Vector3d START_POINT = new Vector3d(0, 200.5, 2100.5);
+    Vector3d OBSERVER_POINT = new Vector3d(3, 200, 2103);
     if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
 
-    Vec3d spawnpoint = new Vec3d(5, 200, 2100);
+    Vector3d spawnpoint = new Vector3d(5, 200, 2100);
     TestRunnerMBE81.createPig(playerIn, spawnpoint);
 
     ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
@@ -99,13 +91,13 @@ public class TestRunnerMBE81b_D {
     // collide with an entity
     //  teleport the player to the observation point
     TestRunnerMBE81.clearAllDebugSettings();
-    Vec3d START_POINT = new Vec3d(0, 200.5, 2200.5);
-    Vec3d OBSERVER_POINT = new Vec3d(3, 200, 2203);
+    Vector3d START_POINT = new Vector3d(0, 200.5, 2200.5);
+    Vector3d OBSERVER_POINT = new Vector3d(3, 200, 2203);
     if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
 
-    Vec3d spawnpoint = new Vec3d(5, 200, 2200);
+    Vector3d spawnpoint = new Vector3d(5, 200, 2200);
     TestRunnerMBE81.createPig(playerIn, spawnpoint);
 
     ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
@@ -124,13 +116,13 @@ public class TestRunnerMBE81b_D {
     // collide with an entity
     //  teleport the player to the observation point
     TestRunnerMBE81.clearAllDebugSettings();
-    Vec3d START_POINT = new Vec3d(0, 200.5, 2300.5);
-    Vec3d OBSERVER_POINT = new Vec3d(3, 200, 2303);
+    Vector3d START_POINT = new Vector3d(0, 200.5, 2300.5);
+    Vector3d OBSERVER_POINT = new Vector3d(3, 200, 2303);
     if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
 
-    Vec3d spawnpoint = new Vec3d(5, 200, 2300);
+    Vector3d spawnpoint = new Vector3d(5, 200, 2300);
     TestRunnerMBE81.createPig(playerIn, spawnpoint);
 
     ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
@@ -149,13 +141,13 @@ public class TestRunnerMBE81b_D {
     // collide with an entity
     //  teleport the player to the observation point
     TestRunnerMBE81.clearAllDebugSettings();
-    Vec3d START_POINT = new Vec3d(0, 200.5, 2400.5);
-    Vec3d OBSERVER_POINT = new Vec3d(3, 200, 2403);
+    Vector3d START_POINT = new Vector3d(0, 200.5, 2400.5);
+    Vector3d OBSERVER_POINT = new Vector3d(3, 200, 2403);
     if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
 
-    Vec3d spawnpoint = new Vec3d(5, 200, 2400);
+    Vector3d spawnpoint = new Vector3d(5, 200, 2400);
     TestRunnerMBE81.createPig(playerIn, spawnpoint);
 
     ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
@@ -174,13 +166,13 @@ public class TestRunnerMBE81b_D {
     // collide with an entity
     //  teleport the player to the observation point
     TestRunnerMBE81.clearAllDebugSettings();
-    Vec3d START_POINT = new Vec3d(0, 200.5, 2500.5);
-    Vec3d OBSERVER_POINT = new Vec3d(3, 200, 2503);
+    Vector3d START_POINT = new Vector3d(0, 200.5, 2500.5);
+    Vector3d OBSERVER_POINT = new Vector3d(3, 200, 2503);
     if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
 
-    Vec3d spawnpoint = new Vec3d(5, 200, 2500);
+    Vector3d spawnpoint = new Vector3d(5, 200, 2500);
     TestRunnerMBE81.createPig(playerIn, spawnpoint);
 
     ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
@@ -199,13 +191,13 @@ public class TestRunnerMBE81b_D {
     // collide with an entity
     //  teleport the player to the observation point
     TestRunnerMBE81.clearAllDebugSettings();
-    Vec3d START_POINT = new Vec3d(0, 200.5, 2600.5);
-    Vec3d OBSERVER_POINT = new Vec3d(3, 200, 2603);
+    Vector3d START_POINT = new Vector3d(0, 200.5, 2600.5);
+    Vector3d OBSERVER_POINT = new Vector3d(3, 200, 2603);
     if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
 
-    Vec3d spawnpoint = new Vec3d(5, 200, 2600);
+    Vector3d spawnpoint = new Vector3d(5, 200, 2600);
     TestRunnerMBE81.createPig(playerIn, spawnpoint);
 
     ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
@@ -224,13 +216,13 @@ public class TestRunnerMBE81b_D {
     // collide with an entity
     //  teleport the player to the observation point
     TestRunnerMBE81.clearAllDebugSettings();
-    Vec3d START_POINT = new Vec3d(0, 200.5, 2700.5);
-    Vec3d OBSERVER_POINT = new Vec3d(3, 200, 2703);
+    Vector3d START_POINT = new Vector3d(0, 200.5, 2700.5);
+    Vector3d OBSERVER_POINT = new Vector3d(3, 200, 2703);
     if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
 
-    Vec3d spawnpoint = new Vec3d(5, 200, 2700);
+    Vector3d spawnpoint = new Vector3d(5, 200, 2700);
     TestRunnerMBE81.createHusk(playerIn, spawnpoint);
 
     ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
@@ -249,13 +241,13 @@ public class TestRunnerMBE81b_D {
     // collide with an entity
     //  teleport the player to the observation point
     TestRunnerMBE81.clearAllDebugSettings();
-    Vec3d START_POINT = new Vec3d(0, 200.5, 2800.2);
-    Vec3d OBSERVER_POINT = new Vec3d(3, 200, 2803);
+    Vector3d START_POINT = new Vector3d(0, 200.5, 2800.2);
+    Vector3d OBSERVER_POINT = new Vector3d(3, 200, 2803);
     if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
 
-    Vec3d spawnpoint = new Vec3d(5.5, 200, 2800.5);
+    Vector3d spawnpoint = new Vector3d(5.5, 200, 2800.5);
     TestRunnerMBE81.createArmorStand(playerIn, spawnpoint);
 
     ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
@@ -273,13 +265,13 @@ public class TestRunnerMBE81b_D {
     // collide with an entity
     //  teleport the player to the observation point
     TestRunnerMBE81.clearAllDebugSettings();
-    Vec3d START_POINT = new Vec3d(0, 200.5, 2900.6);
-    Vec3d OBSERVER_POINT = new Vec3d(3, 200, 2903);
+    Vector3d START_POINT = new Vector3d(0, 200.5, 2900.6);
+    Vector3d OBSERVER_POINT = new Vector3d(3, 200, 2903);
     if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
 
-    Vec3d spawnpoint = new Vec3d(5.5, 200, 2900.5);
+    Vector3d spawnpoint = new Vector3d(5.5, 200, 2900.5);
     TestRunnerMBE81.createMinecart(playerIn, spawnpoint);
 
     ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);
@@ -296,7 +288,7 @@ public class TestRunnerMBE81b_D {
   public static BoomerangEntity generateEntity(String name,
                              StringBuilder sb,
                              World world, LivingEntity livingEntity, ItemStack boomerangItemStack,
-                             Vec3d startPoint,
+                             Vector3d startPoint,
                              float apexYaw, float apexPitch, float distanceToApex,
                              float maximumSidewaysDeflection,
                              boolean anticlockwise,

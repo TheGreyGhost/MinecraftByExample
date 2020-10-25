@@ -1,6 +1,5 @@
 package minecraftbyexample.mbe12_item_nbt_animate;
 
-import minecraftbyexample.MinecraftByExample;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -12,12 +11,10 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -87,7 +84,7 @@ public class ItemNBTAnimate extends Item
         nbtTagCompound = new CompoundNBT();
         itemStackIn.setTag(nbtTagCompound);
       }
-      Vec3d playerPos = playerIn.getPositionVec();
+      Vector3d playerPos = playerIn.getPositionVec();
       nbtTagCompound.putBoolean("bound", true);
       nbtTagCompound.putDouble("x", (int)playerPos.getX());
       nbtTagCompound.putDouble("y", (int)playerPos.getY());

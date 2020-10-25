@@ -1,7 +1,7 @@
 package minecraftbyexample.mbe60_network_messages;
 
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,13 +24,13 @@ import org.apache.logging.log4j.Logger;
  */
 public class TargetEffectMessageToClient
 {
-  public TargetEffectMessageToClient(Vec3d i_targetCoordinates)
+  public TargetEffectMessageToClient(Vector3d i_targetCoordinates)
   {
     targetCoordinates = i_targetCoordinates;
     messageIsValid = true;
   }
 
-  public Vec3d getTargetCoordinates() {
+  public Vector3d getTargetCoordinates() {
     return targetCoordinates;
   }
 
@@ -56,7 +56,7 @@ public class TargetEffectMessageToClient
       double x = buf.readDouble();
       double y = buf.readDouble();
       double z = buf.readDouble();
-      retval.targetCoordinates = new Vec3d(x, y, z);
+      retval.targetCoordinates = new Vector3d(x, y, z);
 
       // these methods may also be of use for your code:
       // for Itemstacks - ByteBufUtils.readItemStack()
@@ -97,7 +97,7 @@ public class TargetEffectMessageToClient
     return "TargetEffectMessageToClient[targetCoordinates=" + String.valueOf(targetCoordinates) + "]";
   }
 
-  private Vec3d targetCoordinates;
+  private Vector3d targetCoordinates;
   private boolean messageIsValid;
 
   private static final Logger LOGGER = LogManager.getLogger();

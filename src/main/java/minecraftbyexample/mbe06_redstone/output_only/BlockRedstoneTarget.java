@@ -6,22 +6,18 @@ import minecraftbyexample.usefultools.SetBlockStateFlag;
 import minecraftbyexample.usefultools.UsefulFunctions;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.AttachFace;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
@@ -314,16 +310,16 @@ public class BlockRedstoneTarget extends Block
   /** Based on the location where the arrow hit, determine the distance to the centre
    * @return the closest distance to the centre (eg 0 = centremost ring , 6 = outermost ring); or NO_ARROW for none.
    */
-  private int findArrowDistanceFromCentre(Direction directionThatFrontIsPointing, AxisAlignedBB targetAABBinWorld, Vec3d hitLocation)
+  private int findArrowDistanceFromCentre(Direction directionThatFrontIsPointing, AxisAlignedBB targetAABBinWorld, Vector3d hitLocation)
   {
     final int MISS_VALUE = NO_ARROW;
 
-    Vec3d targetCentre = new Vec3d((targetAABBinWorld.minX + targetAABBinWorld.maxX) / 2.0,
+    Vector3d targetCentre = new Vector3d((targetAABBinWorld.minX + targetAABBinWorld.maxX) / 2.0,
             (targetAABBinWorld.minY + targetAABBinWorld.maxY) / 2.0,
             (targetAABBinWorld.minZ + targetAABBinWorld.maxZ) / 2.0
     );
 
-    Vec3d hitRelativeToCentre = hitLocation.subtract(targetCentre);
+    Vector3d hitRelativeToCentre = hitLocation.subtract(targetCentre);
 
     // Which ring did it hit?  Calculate it as the biggest deviation of y and (x and z) from the centre.
 

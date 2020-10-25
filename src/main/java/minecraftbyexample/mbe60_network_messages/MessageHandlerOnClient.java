@@ -1,14 +1,10 @@
 package minecraftbyexample.mbe60_network_messages;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeConfig;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.LogicalSidedProvider;
-import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -68,7 +64,7 @@ public class MessageHandlerOnClient {
     final int NUMBER_OF_PARTICLES = 100;
     final double HORIZONTAL_SPREAD = 1.5;
     for (int i = 0; i < NUMBER_OF_PARTICLES; ++i) {
-      Vec3d targetCoordinates = message.getTargetCoordinates();
+      Vector3d targetCoordinates = message.getTargetCoordinates();
       double spawnXpos = targetCoordinates.x + (2*random.nextDouble() - 1) * HORIZONTAL_SPREAD;
       double spawnYpos = targetCoordinates.y;
       double spawnZpos = targetCoordinates.z + (2*random.nextDouble() - 1) * HORIZONTAL_SPREAD;

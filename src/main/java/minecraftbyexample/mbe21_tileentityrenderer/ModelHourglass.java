@@ -10,16 +10,12 @@ package minecraftbyexample.mbe21_tileentityrenderer;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import minecraftbyexample.usefultools.debugging.DebugSettings;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.Optional;
 
 /**
  * This class is adapted from part of the Botania Mod, thanks to Vazkii and WillieWillus

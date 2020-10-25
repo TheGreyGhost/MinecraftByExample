@@ -12,13 +12,9 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import minecraftbyexample.usefultools.RenderTypeHelper;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.entity.model.PigModel;
 import net.minecraft.client.renderer.model.Model;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
 
 import java.awt.*;
 

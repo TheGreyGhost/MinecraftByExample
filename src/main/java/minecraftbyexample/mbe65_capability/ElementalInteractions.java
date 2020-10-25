@@ -10,7 +10,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -101,11 +101,11 @@ public class ElementalInteractions {
 
     if (!(rayTraceResult instanceof BlockRayTraceResult)) throw new AssertionError("BlockRayTraceResult expected");
     BlockRayTraceResult blockRayTraceResult = (BlockRayTraceResult)rayTraceResult;
-    Vec3d hitPosition = blockRayTraceResult.getHitVec();
+    Vector3d hitPosition = blockRayTraceResult.getHitVec();
 
     final int MAX_SMOKE_PARTICLES = 20;
     int smokeParticleCount = 1 + ((MAX_SMOKE_PARTICLES - 1) * arrowFireChargeLevel / MAX_FIRE_CHARGE_LEVEL_ARROW);
-    final Vec3d OFFSET_VARIATION = new Vec3d(0.5, 0.25, 0.5);
+    final Vector3d OFFSET_VARIATION = new Vector3d(0.5, 0.25, 0.5);
     final int SPEED = 0;
 
     serverWorld.spawnParticle(ParticleTypes.LARGE_SMOKE, hitPosition.getX(), hitPosition.getY(), hitPosition.getZ(),
@@ -128,9 +128,9 @@ public class ElementalInteractions {
 
     if (!(rayTraceResult instanceof BlockRayTraceResult)) throw new AssertionError("BlockRayTraceResult expected");
     BlockRayTraceResult blockRayTraceResult = (BlockRayTraceResult)rayTraceResult;
-    Vec3d hitPosition = blockRayTraceResult.getHitVec();
+    Vector3d hitPosition = blockRayTraceResult.getHitVec();
 
-    final Vec3d OFFSET_VARIATION = new Vec3d(0.0, 0.0, 0.0);
+    final Vector3d OFFSET_VARIATION = new Vector3d(0.0, 0.0, 0.0);
     final int SPEED = 0;
     final int PARTICLE_COUNT = 1;
     serverWorld.spawnParticle(ParticleTypes.CLOUD, hitPosition.getX(), hitPosition.getY(), hitPosition.getZ(),
@@ -197,7 +197,7 @@ public class ElementalInteractions {
     ElementalAir entityAir = livingEntity.getCapability(CapabilityElementalAir.CAPABILITY_ELEMENTAL_AIR).orElse(null);
     if (entityAir == null) return;
     if (entityAir.getChargeLevel() > 0 && entityFire.getChargeLevel() > 0) {
-      Vec3d entityPos = livingEntity.getPositionVec();
+      Vector3d entityPos = livingEntity.getPositionVec();
 
       final float MINIMUM_RADIUS = 0.5F;
       final float MAXIMUM_RADIUS = 10F;

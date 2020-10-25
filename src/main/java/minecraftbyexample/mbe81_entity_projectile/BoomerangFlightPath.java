@@ -1,19 +1,14 @@
 package minecraftbyexample.mbe81_entity_projectile;
 
-import com.google.common.base.Preconditions;
 import minecraftbyexample.usefultools.CubicSpline;
 import minecraftbyexample.usefultools.UsefulFunctions;
 import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.common.util.INBTSerializable;
 
-import javax.jws.soap.SOAPBinding;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,7 +68,7 @@ public class BoomerangFlightPath implements INBTSerializable<CompoundNBT> {
    * @param anticlockwise is the flight path clockwise or anticlockwise?
    * @param flightSpeed speed of the flight in blocks per second
    */
-  public BoomerangFlightPath(Vec3d startPoint,
+  public BoomerangFlightPath(Vector3d startPoint,
                              float apexYaw, float apexPitch, float distanceToApex,
                              float maximumSidewaysDeflection,
                              boolean anticlockwise,
@@ -105,7 +100,7 @@ public class BoomerangFlightPath implements INBTSerializable<CompoundNBT> {
 
   // calculate the current position on the flight path
   // time in seconds
-  public Vec3d getPosition(double time) {
+  public Vector3d getPosition(double time) {
 //    Preconditions.checkState(initialised);
     float pathFraction = (float)MathHelper.clamp(time, 0, flightDuration) / flightDuration;
     if (anticlockwise) pathFraction = 1 - pathFraction;
@@ -113,7 +108,7 @@ public class BoomerangFlightPath implements INBTSerializable<CompoundNBT> {
     float x = flightPathX.interpolate(pathFraction);
     float y = flightPathY.interpolate(pathFraction);
     float z = flightPathZ.interpolate(pathFraction);
-    Vec3d retval = startPoint.add(x, y, z);
+    Vector3d retval = startPoint.add(x, y, z);
     return retval;
   }
 
@@ -129,7 +124,7 @@ public class BoomerangFlightPath implements INBTSerializable<CompoundNBT> {
     // 2) convert the velocity to a direction (yaw)
     // 3) the face of the boomerang always points perpendicular to the direction of travel, so rotate the velocity by 90 degrees
 
-    Vec3d velocity = getVelocity(time);
+    Vector3d velocity = getVelocity(time);
     float flightDirection = (float)(MathHelper.atan2(velocity.getZ(), velocity.getX()) * 180 / Math.PI) - 90.0F;
     float topYaw = flightDirection + (anticlockwise ? 90F : -90F);
     return topYaw;
@@ -137,7 +132,7 @@ public class BoomerangFlightPath implements INBTSerializable<CompoundNBT> {
 
   // the velocity is the derivative of the position:
   //
-  public Vec3d getVelocity(double time) {
+  public Vector3d getVelocity(double time) {
 //    Preconditions.checkState(initialised);
     float pathFraction = (float)MathHelper.clamp(time, 0, flightDuration) / flightDuration;
     if (anticlockwise) pathFraction = 1 - pathFraction;
@@ -145,7 +140,7 @@ public class BoomerangFlightPath implements INBTSerializable<CompoundNBT> {
     float vx = flightPathX.interpolateFirstDerivative(pathFraction);
     float vy = flightPathY.interpolateFirstDerivative(pathFraction);
     float vz = flightPathZ.interpolateFirstDerivative(pathFraction);
-    Vec3d retval = new Vec3d(vx, vy, vz);
+    Vector3d retval = new Vector3d(vx, vy, vz);
     return retval;
   }
 
@@ -187,7 +182,7 @@ public class BoomerangFlightPath implements INBTSerializable<CompoundNBT> {
   private final String FLIGHT_DURATION_NBT = "flightduration";
   private final String ANTICLOCKWISE_NBT = "anticlockwise";
 
-  private Vec3d startPoint;
+  private Vector3d startPoint;
   private float distanceToApex;
   private float apexYaw;
   private float apexPitch;
@@ -223,7 +218,7 @@ public class BoomerangFlightPath implements INBTSerializable<CompoundNBT> {
       tValues.add(point[0]);
       float longways = point[1] * distanceToApex;
       float sideways = (point[2] / BASE_FLIGHT_PATH_MAX_SIDEWAYS_DEFLECTION) * maximumSidewaysDeflection;
-      Vec3d offsetFromStart = new Vec3d(sideways, 0, longways).rotatePitch(-apexPitchRadians).rotateYaw(-apexYawRadians);
+      Vector3d offsetFromStart = new Vector3d(sideways, 0, longways).rotatePitch(-apexPitchRadians).rotateYaw(-apexYawRadians);
       xValues.add((float)offsetFromStart.getX());
       yValues.add((float)offsetFromStart.getY());
       zValues.add((float)offsetFromStart.getZ());

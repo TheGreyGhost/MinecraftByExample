@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<migrationMap>
+	<name value="1.15.2-to-1.16.3.csv" />
+	<description value="1.15.2-to-1.16.3.csv" />
+	<entry oldName="net.minecraft.util.math.Vec3d" newName="net.minecraft.util.math.Vector3d" type="class" />
+</migrationMap>

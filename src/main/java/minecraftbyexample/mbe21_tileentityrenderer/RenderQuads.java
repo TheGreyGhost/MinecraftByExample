@@ -2,25 +2,14 @@ package minecraftbyexample.mbe21_tileentityrenderer;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.model.ModelManager;
-import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec2f;
-import net.minecraft.util.math.Vec3d;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import net.minecraft.util.math.vector.Vector3d;
 
 import java.awt.*;
-
-import static net.minecraft.inventory.container.PlayerContainer.LOCATION_BLOCKS_TEXTURE;
 
 /**
  * User: The Grey Ghost
@@ -63,7 +52,7 @@ public class RenderQuads {
       // The cube-drawing method draws the cube in the region from [0,0,0] to [1,1,1] but we want it
       //   to be in the block one above this, i.e. from [0,1,0] to [1,2,1],
       //   so we need to translate up by one block, i.e. by [0,1,0]
-      final Vec3d TRANSLATION_OFFSET = new Vec3d(0, 1, 0);
+      final Vector3d TRANSLATION_OFFSET = new Vector3d(0, 1, 0);
 
       matrixStack.push(); // push the current transformation matrix + normals matrix
       matrixStack.translate(TRANSLATION_OFFSET.x,TRANSLATION_OFFSET.y,TRANSLATION_OFFSET.z); // translate
@@ -95,12 +84,12 @@ public class RenderQuads {
     final float WIDTH = 1.0F;
     final float HEIGHT = 1.0F;
 
-    final Vec3d EAST_FACE_MIDPOINT = new Vec3d(1.0, 0.5, 0.5);
-    final Vec3d WEST_FACE_MIDPOINT = new Vec3d(0.0, 0.5, 0.5);
-    final Vec3d NORTH_FACE_MIDPOINT = new Vec3d(0.5, 0.5, 0.0);
-    final Vec3d SOUTH_FACE_MIDPOINT = new Vec3d(0.5, 0.5, 1.0);
-    final Vec3d UP_FACE_MIDPOINT = new Vec3d(0.5, 1.0, 0.5);
-    final Vec3d DOWN_FACE_MIDPOINT = new Vec3d(0.5, 0.0, 0.5);
+    final Vector3d EAST_FACE_MIDPOINT = new Vector3d(1.0, 0.5, 0.5);
+    final Vector3d WEST_FACE_MIDPOINT = new Vector3d(0.0, 0.5, 0.5);
+    final Vector3d NORTH_FACE_MIDPOINT = new Vector3d(0.5, 0.5, 0.0);
+    final Vector3d SOUTH_FACE_MIDPOINT = new Vector3d(0.5, 0.5, 1.0);
+    final Vector3d UP_FACE_MIDPOINT = new Vector3d(0.5, 1.0, 0.5);
+    final Vector3d DOWN_FACE_MIDPOINT = new Vector3d(0.5, 0.0, 0.5);
 
     addFace(Direction.EAST, matrixPos, matrixNormal, vertexBuilderBlockQuads,
             color, EAST_FACE_MIDPOINT, WIDTH, HEIGHT, bottomLeftUV, UVwidth, UVheight, combinedLight);
@@ -118,9 +107,9 @@ public class RenderQuads {
 
     private static void addFace(Direction whichFace,
                                 Matrix4f matrixPos, Matrix3f matrixNormal, IVertexBuilder renderBuffer,
-                              Color color, Vec3d centrePos, float width, float height,
-                              Vec2f bottomLeftUV, float texUwidth, float texVheight,
-                              int lightmapValue) {
+                                Color color, Vector3d centrePos, float width, float height,
+                                Vec2f bottomLeftUV, float texUwidth, float texVheight,
+                                int lightmapValue) {
     // the Direction class has a bunch of methods which can help you rotate quads
     //  I've written the calculations out long hand, and based them on a centre position, to make it clearer what
     //   is going on.
