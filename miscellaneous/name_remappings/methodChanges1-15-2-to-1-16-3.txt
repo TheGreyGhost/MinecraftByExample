@@ -2,3 +2,19 @@ Note of method changes from 1-15-2 to 1-16-3
 (MCP 20200514-1.15.1 to MCP 20200514-1.16)
 IForgeTileEntity::handleUpdateTag() signature change
 TileEntity::read -->  func_230337_a_(BlockState p_230337_1_, CompoundNBT p_230337_2_)
+ IStringSerializable::getName ---> func_176610_l()
+
+ Block::getLightValue  --> these mechanics have completed changed; no direct replacement; Forge method is now {tbd}
+Block::onProjectileCollision  --> signature change (AbstractBlock::onProjectileCollision(World worldIn, BlockState state, BlockRayTraceResult hit, ProjectileEntity projectile)
+BlockState::cycle() --> func_235896_a_()  (inherits from StateHolder)
+
+Item.addPropertyOverride has moved to ItemModelsProperties as static initialisers for vanilla; Forge method is now {tbd}
+
+You need to add a
+license=  to your mods.toml file
+eg
+license="All rights reserved"
+or
+license="The Unlicence"
+
+

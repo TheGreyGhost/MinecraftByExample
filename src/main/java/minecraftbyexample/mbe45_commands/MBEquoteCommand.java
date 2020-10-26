@@ -9,6 +9,9 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.MessageArgument;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.Util;
+import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -79,7 +82,7 @@ public class MBEquoteCommand {
          .then(Commands.argument("custommessage", MessageArgument.message())  // see also StringArgumentType; .word() or .string() or .greedystring()
                  .executes(commandContext -> {
                                  ITextComponent iTextComponent = MessageArgument.getMessage(commandContext, "custommessage");
-                                 sendMessage(commandContext, iTextComponent.getFormattedText());
+                                 sendMessage(commandContext,  iTextComponent.getUnformattedComponentText()); // iTextComponent.getFormattedText());  todo verify that this is right
                                  return 1;
                                 })
               )
@@ -92,7 +95,13 @@ public class MBEquoteCommand {
     TranslationTextComponent finalText = new TranslationTextComponent("chat.type.announcement",
             commandContext.getSource().getDisplayName(), new StringTextComponent(message));
 
-    commandContext.getSource().getServer().getPlayerList().sendMessage(finalText);
+    Entity entity = commandContext.getSource().getEntity();
+    if (entity != null) {
+      commandContext.getSource().getServer().getPlayerList().func_232641_a_(finalText, ChatType.CHAT, entity.getUniqueID());
+      //func_232641_a_ is sendMessage()
+    } else {
+      commandContext.getSource().getServer().getPlayerList().func_232641_a_(finalText, ChatType.SYSTEM, Util.field_240973_b_);
+    }
     return 1;
   }
 

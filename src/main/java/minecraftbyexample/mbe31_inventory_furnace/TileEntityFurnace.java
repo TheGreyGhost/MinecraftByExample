@@ -344,9 +344,9 @@ public class TileEntityFurnace extends TileEntity implements INamedContainerProv
 
 	// This is where you load the data that you saved in writeToNBT
 	@Override
-	public void read(CompoundNBT nbtTagCompound)
+	public void func_230337_a_(BlockState blockState, CompoundNBT nbtTagCompound)
 	{
-		super.read(nbtTagCompound); // The super call is required to save and load the tile's location
+		super.func_230337_a_(blockState, nbtTagCompound); // The super call is required to save and load the tile's location
 
     furnaceStateData.readFromNBT(nbtTagCompound);
 
@@ -380,7 +380,8 @@ public class TileEntityFurnace extends TileEntity implements INamedContainerProv
   @Override
   public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
     CompoundNBT updateTagDescribingTileEntityState = pkt.getNbtCompound();
-    handleUpdateTag(updateTagDescribingTileEntityState);
+    BlockState blockState = world.getBlockState(pos);
+    handleUpdateTag(blockState, updateTagDescribingTileEntityState);
   }
 
   /* Creates a tag containing the TileEntity information, used by vanilla to transmit from server to client
@@ -398,7 +399,7 @@ public class TileEntityFurnace extends TileEntity implements INamedContainerProv
    *  The vanilla default is suitable for this example but I've included an explicit definition anyway.
    */
   @Override
-  public void handleUpdateTag(CompoundNBT tag) { read(tag); }
+  public void handleUpdateTag(BlockState blockState, CompoundNBT tag) { func_230337_a_(blockState, tag); }
 
   /**
    * When this tile entity is destroyed, drop all of its contents into the world

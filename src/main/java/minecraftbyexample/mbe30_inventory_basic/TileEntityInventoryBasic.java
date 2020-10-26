@@ -1,5 +1,7 @@
 package minecraftbyexample.mbe30_inventory_basic;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.InventoryHelper;
@@ -58,10 +60,11 @@ public class TileEntityInventoryBasic extends TileEntity implements INamedContai
 	}
 
 	// This is where you load the data that you saved in write
+  // previously called read()
 	@Override
-	public void read(CompoundNBT parentNBTTagCompound)
+	public void func_230337_a_(BlockState blockState, CompoundNBT parentNBTTagCompound)
 	{
-		super.read(parentNBTTagCompound); // The super call is required to save and load the tiles location
+		super.func_230337_a_(blockState, parentNBTTagCompound); // The super call is required to save and load the tiles location
     CompoundNBT inventoryNBT = parentNBTTagCompound.getCompound(CHESTCONTENTS_INVENTORY_TAG);
     chestContents.deserializeNBT(inventoryNBT);
     if (chestContents.getSizeInventory() != NUMBER_OF_SLOTS)
@@ -87,7 +90,8 @@ public class TileEntityInventoryBasic extends TileEntity implements INamedContai
 
   @Override
   public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-    read(pkt.getNbtCompound());
+    BlockState blockState = world.getBlockState(pos);
+    func_230337_a_(blockState, pkt.getNbtCompound());
   }
 
   /* Creates a tag containing all of the TileEntity information, used by vanilla to transmit from server to client
@@ -104,9 +108,9 @@ public class TileEntityInventoryBasic extends TileEntity implements INamedContai
   *  The vanilla default is suitable for this example but I've included an explicit definition anyway.
    */
   @Override
-  public void handleUpdateTag(CompoundNBT tag)
+  public void handleUpdateTag(BlockState blockState, CompoundNBT tag)
   {
-    this.read(tag);
+    this.func_230337_a_(blockState, tag);
   }
 
   /**

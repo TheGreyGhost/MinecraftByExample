@@ -1,5 +1,6 @@
 package minecraftbyexample.mbe12_item_nbt_animate;
 
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.ItemStack;
@@ -63,13 +64,14 @@ public class ItemNBTanimationTimer implements IItemPropertyGetter {
    * @return the appropriate animation frame index expected by the "overrides" section in the item json file
    */
   @Override
-  public float call(ItemStack stack, @Nullable World worldIn, @Nullable LivingEntity entityIn)
+  public float call(ItemStack stack, @Nullable ClientWorld worldIn, @Nullable LivingEntity entityIn)
     {
       final float IDLE_FRAME_INDEX = 0.0F;
       final float FULLY_CHARGED_INDEX = 1.0F;
 
+      World world = worldIn;
       if (worldIn == null && entityIn != null)  {
-        worldIn = entityIn.world;
+        world = entityIn.world;
       }
 
       if (entityIn == null || worldIn == null) return IDLE_FRAME_INDEX;
@@ -78,7 +80,7 @@ public class ItemNBTanimationTimer implements IItemPropertyGetter {
         return IDLE_FRAME_INDEX;
       }
 
-      long worldTicks = worldIn.getGameTime();
+      long worldTicks = world.getGameTime();
       if (!animationHasStarted) {
         startingTick = worldTicks;
         animationHasStarted = true;
@@ -98,4 +100,5 @@ public class ItemNBTanimationTimer implements IItemPropertyGetter {
 
   private long startingTick = -1;
   private boolean animationHasStarted = false;
+
 }

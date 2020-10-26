@@ -334,7 +334,9 @@ public class AltimeterBakedModel implements IBakedModel {
     System.arraycopy(vertexData, 0, newVertexData, 0, newVertexData.length);
 
     int vertexSizeInts = DefaultVertexFormats.BLOCK.getIntegerSize();
-    Optional<VertexFormatElement> positionElement = DefaultVertexFormats.BLOCK.getElements().stream().filter(e -> e.isPositionElement()).findFirst();
+
+    Optional<VertexFormatElement> positionElement = DefaultVertexFormats.BLOCK.getElements().stream()
+            .filter(e -> VertexFormatElement.Usage.POSITION.equals(e.getType())).findFirst();
     if (!positionElement.isPresent()) throw new AssertionError("Position element not found");
     int positionOffset = positionElement.get().getIndex();
 
@@ -353,7 +355,7 @@ public class AltimeterBakedModel implements IBakedModel {
     }
 
     BakedQuad translatedCopy = new BakedQuad(newVertexData, original.getTintIndex(), original.getFace(),
-            original.func_187508_a(), original.shouldApplyDiffuseLighting());
+            original.func_187508_a(), original.func_239287_f_()); //            original.shouldApplyDiffuseLighting());
     return translatedCopy;
   }
 

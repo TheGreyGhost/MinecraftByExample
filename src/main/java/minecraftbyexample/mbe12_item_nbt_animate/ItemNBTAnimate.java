@@ -39,7 +39,7 @@ public class ItemNBTAnimate extends Item
     // We use a PropertyOverride for this item to change the appearance depending on the state of the property.
     //  See ItemNBTanimationTimer for more information.
     // ItemNBTanimationTimer() is used as a lambda function to calculate the current chargefraction during rendering
-    this.addPropertyOverride(new ResourceLocation("chargefraction"), new ItemNBTanimationTimer());
+//    this.addPropertyOverride(new ResourceLocation("chargefraction"), new ItemNBTanimationTimer());  //todo fix 1.16.3
   }
 
   // When the user presses and holds right click, there are three phases:

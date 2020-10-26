@@ -3,12 +3,14 @@ package minecraftbyexample.mbe15_item_dynamic_item_model;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemOverride;
 import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -35,9 +37,10 @@ public class ChessboardItemOverrideList extends ItemOverrideList {
    * @param world
    * @param entity
    * @return
+   * // old name: getModelWithOverrides
    */
   @Override
-  public IBakedModel getModelWithOverrides(IBakedModel originalModel, ItemStack stack, World world, LivingEntity entity)
+  public IBakedModel func_239290_a_(IBakedModel originalModel, ItemStack stack, @Nullable ClientWorld world, @Nullable LivingEntity entity)
   {
     int numberOfChessPieces = 0;
     if (stack != null) {
@@ -45,5 +48,4 @@ public class ChessboardItemOverrideList extends ItemOverrideList {
     }
     return new ChessboardFinalisedModel(originalModel, numberOfChessPieces);
   }
-
 }

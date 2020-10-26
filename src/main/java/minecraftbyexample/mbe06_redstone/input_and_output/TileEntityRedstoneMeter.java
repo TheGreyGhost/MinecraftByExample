@@ -130,7 +130,8 @@ public class TileEntityRedstoneMeter extends TileEntity {
 
   @Override
   public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-    read(pkt.getNbtCompound());
+    BlockState blockState = world.getBlockState(pos);
+    func_230337_a_(blockState, pkt.getNbtCompound());   // read from the nbt in the packet
     updateNeedleFromPowerLevel();
   }
 
@@ -147,8 +148,8 @@ public class TileEntityRedstoneMeter extends TileEntity {
   /* Populates this TileEntity with information from the tag, used by vanilla to transmit from server to client
  */
   @Override
-  public void handleUpdateTag(CompoundNBT tag) {
-    this.read(tag);
+  public void handleUpdateTag(BlockState blockState, CompoundNBT tag) {
+    this.func_230337_a_(blockState, tag);
     updateNeedleFromPowerLevel();
   }
 
@@ -163,9 +164,9 @@ public class TileEntityRedstoneMeter extends TileEntity {
 
   // This is where you load the data that you saved in writeToNBT
   @Override
-  public void read(CompoundNBT parentNBTTagCompound)
+  public void func_230337_a_(BlockState blockState, CompoundNBT parentNBTTagCompound)
   {
-    super.read(parentNBTTagCompound); // The super call is required to load the tiles location
+    super.func_230337_a_(blockState, parentNBTTagCompound); // The super call is required to load the tiles location
     storedPowerLevel = parentNBTTagCompound.getInt("storedPowerLevel");  // defaults to 0 if not found
     if (storedPowerLevel < MIN_POWER_LEVEL ) storedPowerLevel = MIN_POWER_LEVEL;
     if (storedPowerLevel > MAX_POWER_LEVEL ) storedPowerLevel = MAX_POWER_LEVEL;

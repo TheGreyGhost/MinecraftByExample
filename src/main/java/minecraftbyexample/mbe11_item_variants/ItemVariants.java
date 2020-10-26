@@ -38,7 +38,7 @@ public class ItemVariants extends Item
 
   public ItemVariants() {
     super(new Item.Properties().maxStackSize(MAXIMUM_NUMBER_OF_BOTTLES).group(ItemGroup.BREWING));
-    this.addPropertyOverride(new ResourceLocation("fullness"), ItemVariants::getFullnessPropertyOverride);
+//    this.addPropertyOverride(new ResourceLocation("fullness"), ItemVariants::getFullnessPropertyOverride);  todo fix 1.16.3
             // use lambda function to link the NBT fullness value to a suitable property override value
   }
 
@@ -163,7 +163,7 @@ public class ItemVariants extends Item
   public String getTranslationKey(ItemStack stack)
   {
     EnumBottleFlavour flavour = getFlavour(stack);
-    return super.getTranslationKey(stack) + "." + flavour.getName();
+    return super.getTranslationKey(stack) + "." + flavour.func_176610_l(); //    flavour.getName();
   }
 
   // change the displayed stack name depending on the fullness
@@ -195,7 +195,9 @@ public class ItemVariants extends Item
       return this.description;
     }
 
-    public String getName()
+    @Override
+    //    public String getName()
+    public String func_176610_l()
     {
       return this.name;
     }
@@ -274,7 +276,9 @@ public class ItemVariants extends Item
       return this.name;
     }
 
-    public String getName() {return this.name;}
+    @Override
+//    public String getName()
+    public String func_176610_l() {return this.name;}
 
     public Color getRenderColour() {return renderColour;}
 

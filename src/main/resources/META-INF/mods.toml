@@ -8,7 +8,12 @@
 modLoader="javafml" #mandatory
 
 # A version range to match for said mod loader - for regular FML @Mod it will be the forge version
-loaderVersion="[28,)" #mandatory (28 is current forge version)
+loaderVersion="[34,)" #mandatory (34 is current forge version)  This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
+
+# The license for you mod. This is mandatory metadata and allows for easier comprehension of your redistributive properties.
+# Review your options at https://choosealicense.com/. All rights reserved is the default copyright stance, and is thus the default in the Forge MDK.
+# MBE follows The Unlicence
+license="The Unlicence"  #mandatory
 
 # A URL to refer people to when problems occur with this mod
 issueTrackerURL="https://github.com/TheGreyGhost/MinecraftByExample/issues" #optional

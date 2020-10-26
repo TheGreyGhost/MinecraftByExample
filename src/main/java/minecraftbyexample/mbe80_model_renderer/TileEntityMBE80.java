@@ -38,7 +38,8 @@ public class TileEntityMBE80 extends TileEntity implements ITickableTileEntity {
 
 	@Override
 	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-		read(pkt.getNbtCompound());
+    BlockState blockState = world.getBlockState(pos);
+    func_230337_a_(blockState, pkt.getNbtCompound());   // read from the nbt in the packet
 	}
 
 	/* Creates a tag containing the TileEntity information, used by vanilla to transmit from server to client

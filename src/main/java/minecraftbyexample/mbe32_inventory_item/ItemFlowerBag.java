@@ -54,7 +54,7 @@ public class ItemFlowerBag extends Item {
 	public ItemFlowerBag() {
     super(new Item.Properties().maxStackSize(MAXIMUM_NUMBER_OF_FLOWER_BAGS).group(ItemGroup.MISC) // the item will appear on the Miscellaneous tab in creative
     );
-    this.addPropertyOverride(new ResourceLocation("fullness"), ItemFlowerBag::getFullnessPropertyOverride);
+    //this.addPropertyOverride(new ResourceLocation("fullness"), ItemFlowerBag::getFullnessPropertyOverride);  todo update to 1.16.3
     // use lambda function to link the NBT fullness value to a suitable property override value
 	}
 

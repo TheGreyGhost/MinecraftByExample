@@ -2,6 +2,7 @@ package minecraftbyexample.mbe50_particle;
 
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.*;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.world.World;
 
 import java.awt.*;
@@ -21,7 +22,7 @@ public class FlameParticle extends SpriteTexturedParticle
    *   given diameter.
    *   We also supply sprites so that you can change the sprite texture in the tick() method (although not needed for this example)
    */
-  public FlameParticle(World world, double x, double y, double z,
+  public FlameParticle(ClientWorld world, double x, double y, double z,
                        double velocityX, double velocityY, double velocityZ,
                        Color tint, double diameter,
                        IAnimatedSprite sprites)

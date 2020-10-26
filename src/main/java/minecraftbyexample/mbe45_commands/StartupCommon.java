@@ -32,6 +32,6 @@ public class StartupCommon
 
   @SubscribeEvent
   public static void onCommonSetupEvent(FMLCommonSetupEvent event) {
-    MinecraftForge.EVENT_BUS.register(ServerLifecycleEvents.class);
+    MinecraftForge.EVENT_BUS.register(RegisterCommandEvent.class);
   }
 }

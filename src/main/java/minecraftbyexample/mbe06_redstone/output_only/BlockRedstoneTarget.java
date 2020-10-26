@@ -7,6 +7,7 @@ import minecraftbyexample.usefultools.UsefulFunctions;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.state.DirectionProperty;
@@ -159,7 +160,7 @@ public class BlockRedstoneTarget extends Block
    * @param projectile
    */
   @Override
-  public void onProjectileCollision(World world, BlockState state, BlockRayTraceResult hit, Entity projectile) {
+  public void onProjectileCollision(World world, BlockState state, BlockRayTraceResult hit, ProjectileEntity projectile) {
     if (world.isRemote) return;  // on client - do nothing
     if (!(projectile instanceof AbstractArrowEntity)) return;  // only for arrows
     if (hit.getType() != RayTraceResult.Type.BLOCK) return;  // just being defensive; this should always be true

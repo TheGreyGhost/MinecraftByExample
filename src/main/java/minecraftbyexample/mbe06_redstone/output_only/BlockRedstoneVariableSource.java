@@ -112,7 +112,7 @@ public class BlockRedstoneVariableSource extends Block
     if (worldIn.isRemote) { // on client side, do nothing.  You may wish to add particles or similar.
       return ActionResultType.SUCCESS;
     } else {  // on server side, update the state.  Play sounds if desired.
-      BlockState nextBlockState = state.cycle(POWER_INDEX);
+      BlockState nextBlockState = state.func_235896_a_(POWER_INDEX);  //state.cycle(POWER_INDEX);
       final int FLAGS = SetBlockStateFlag.get(SetBlockStateFlag.BLOCK_UPDATE, SetBlockStateFlag.SEND_TO_CLIENTS);
       worldIn.setBlockState(pos, nextBlockState, FLAGS);
 

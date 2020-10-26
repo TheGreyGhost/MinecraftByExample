@@ -1,6 +1,5 @@
 package minecraftbyexample.mbe65_capability;
 
-import minecraftbyexample.mbe32_inventory_item.ContainerScreenFlowerBag;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
