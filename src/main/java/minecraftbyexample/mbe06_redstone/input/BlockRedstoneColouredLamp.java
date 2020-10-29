@@ -38,7 +38,7 @@ public class BlockRedstoneColouredLamp extends Block
 {
   public BlockRedstoneColouredLamp()
   {
-    super(Block.Properties.create(Material.IRON).notSolid());
+    super(Block.Properties.create(Material.IRON).func_235838_a_(BlockRedstoneColouredLamp::getLightValue).notSolid());
     // notSolid is required to make the lighting work properly (affects ambient occlusion calculations) -
     // for blocks which emit light, notSolid ensures that the skylight is added to the blocklight when calculating lighting
   }
@@ -125,23 +125,23 @@ public class BlockRedstoneColouredLamp extends Block
     return BlockRenderType.MODEL;
   }
 
-//  // Change the lighting value based on the lamp colour //todo update to 1.16.3
-//  @Override
-//  public int getLightValue(BlockState state) {
-//    // convert the RGB to a single brightness.  Just choose the component with the highest brightness.
-//
-//    int red = state.get(RED_INTENSITY);
-//    int green = state.get(GREEN_INTENSITY);
-//    int blue = state.get(BLUE_INTENSITY);
-//
-//    int brightestComponent = Math.max(Math.max(red, green), blue);
-//    final int MIN_LIGHT_VALUE = 0;
-//    final int MAX_LIGHT_VALUE = 15;
-//    int lightValue = (int)UsefulFunctions.interpolate_with_clipping(brightestComponent,
-//                                                  MIN_INTENSITY, MAX_INTENSITY,
-//                                                  MIN_LIGHT_VALUE, MAX_LIGHT_VALUE);
-//    return lightValue;
-//  }
+  // Change the lighting value based on the lamp colour //todo update to 1.16.3
+  // This function is registered in the Block Properties using func_235838_a;  see BlockInventoryFurnace constructor
+  public static int getLightValue(BlockState state) {
+    // convert the RGB to a single brightness.  Just choose the component with the highest brightness.
+
+    int red = state.get(RED_INTENSITY);
+    int green = state.get(GREEN_INTENSITY);
+    int blue = state.get(BLUE_INTENSITY);
+
+    int brightestComponent = Math.max(Math.max(red, green), blue);
+    final int MIN_LIGHT_VALUE = 0;
+    final int MAX_LIGHT_VALUE = 15;
+    int lightValue = (int)UsefulFunctions.interpolate_with_clipping(brightestComponent,
+                                                  MIN_INTENSITY, MAX_INTENSITY,
+                                                  MIN_LIGHT_VALUE, MAX_LIGHT_VALUE);
+    return lightValue;
+  }
 
   // ---------methods related to storing information about the block (which way it's facing, the power level)
 

@@ -36,7 +36,7 @@ public class BlockInventoryFurnace extends ContainerBlock
 {
 	public BlockInventoryFurnace()
   {
-    super(Block.Properties.create(Material.ROCK)
+    super(Block.Properties.create(Material.ROCK).func_235838_a_(BlockInventoryFurnace::getLightValue)
     );
     BlockState defaultBlockState = this.stateContainer.getBaseState().with(BURNING_SIDES_COUNT, 0);
     this.setDefaultState(defaultBlockState);
@@ -60,23 +60,22 @@ public class BlockInventoryFurnace extends ContainerBlock
   /**
    * Amount of block light emitted by the furnace
    * todo update to 1.16.3
+   * This function is registered in the Block Properties using func_235838_a;  see BlockInventoryFurnace constructor
    */
-//  @Override
-//  public int getLightValue(BlockState state) {
-//    int lightValue = 0;
-//    Integer burningSidesCount = state.get(BURNING_SIDES_COUNT);
-//
-//    if (burningSidesCount == 0) {
-//      lightValue = 0;
-//    } else {
-//      // linearly interpolate the light value depending on how many slots are burning
-//      lightValue = ONE_SIDE_LIGHT_VALUE +
-//              (ALL_SIDES_LIGHT_VALUE - ONE_SIDE_LIGHT_VALUE) * burningSidesCount / (MAX_NUMBER_OF_BURNING_SIDES - 1);
-//    }
-//    lightValue = MathHelper.clamp(lightValue, 0, ALL_SIDES_LIGHT_VALUE);
-//    return lightValue;
-//  }
-//
+  public static int getLightValue(BlockState state) {
+    int lightValue = 0;
+    Integer burningSidesCount = state.get(BURNING_SIDES_COUNT);
+
+    if (burningSidesCount == 0) {
+      lightValue = 0;
+    } else {
+      // linearly interpolate the light value depending on how many slots are burning
+      lightValue = ONE_SIDE_LIGHT_VALUE +
+              (ALL_SIDES_LIGHT_VALUE - ONE_SIDE_LIGHT_VALUE) * burningSidesCount / (MAX_NUMBER_OF_BURNING_SIDES - 1);
+    }
+    lightValue = MathHelper.clamp(lightValue, 0, ALL_SIDES_LIGHT_VALUE);
+    return lightValue;
+  }
 
   // ---------------------
 
