@@ -15,13 +15,13 @@ However if you have many different variants, or your item changes its appearance
 The bottle has two types of information, both stored in the NBT data of the itemstack:
 
 * Bottle contents (LIME, LEMON, CHERRY, ORANGE) - uses IItemColor to change the colour
-* Bottle fullness (EMPTY, 25%, 50%, 75%, 100%) - uses custom BakedModel to change the shape
+* Bottle fullness (EMPTY, 25%, 50%, 75%, 100%) - uses custom BakedModel to change the shape via a PropertyOverride
 
 It will show you:
 
 1. how to create an Item class with different variants and how to register them
 1. how to control which variants are displayed on the creative tabs
-1. how to control which rendering model is used for each variant
+1. how to control which rendering model is used for each variant (PropertyOverride)
 1. how to change the item description for each variant
 1. how to use multiple layer rendering to change the appearance depending on the variant--in this case, changing the colour of the bottle contents using `IItemColor`
 

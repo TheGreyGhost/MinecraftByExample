@@ -33,9 +33,15 @@ import org.apache.logging.log4j.Level;
      2) code which is only relevant to the client distribution.  This is usually related to graphical rendering, user input, or similar.  You can ensure that this code is
         only initialised on the client by using DistExecutor.runWhenOn(Dist.CLIENT, () -> MinecraftByExample::registerClientOnlyEvents);
 
-      The basic order of events is
+   3) Some of the events are called in parallel threads.  This means that your code in these events must not call non-thread-safe code; for example
+       BrewingRecipeRegistry::addRecipe  or ItemModelsProperties registering events;  if multiple threads try to call addRecipe at the same time, it will occasionally cause data
+         corruption or a game crash.
+       Instead, use DeferredWordQueue::enqueueWork to register a function for synchronous execution in the main thread after the parallel processing is completed
+       The Events affected by this are those which extend ParallelDispatchEvent (in particular FMLClientSetupEvent and FMLCommonSetupEvent
+
+   4) The basic order of events that your mod receives during startup is
      CONSTRUCTION of the mod class
-     CREATE_REGISTRIES
+     CREATE_REGISTRIES such as RegistryEvent.NewRegistry event (not commonly used)
      LOAD_REGISTRIES  such as RegistryEvent.Register<Block> to register blocks.
      COMMON_SETUP (FMLCommonSetupEvent): code which is needed regardless of whether this is a DedicatedServer distribution or a CombinedClient distribution
      SIDED_SETUP --> either FMLDedicatedServerSetupEvent(for DedicatedServer distribution) or FMLClientSetupEvent (for CombinedClient distribution).
@@ -64,8 +70,8 @@ public class MinecraftByExample {
 
     MOD_EVENT_BUS = FMLJavaModLoadingContext.get().getModEventBus();
 
-    // The event bus register method is used to specify classes.
-    // These classes will be searched for methods which are interested in startup events
+    // The event bus register method is used to specify classes used for receiving startup events:
+    // The classes you register will be searched for methods which are interested in startup events
     //    (i.e. methods that are decorated with the @SubscribeEvent annotation)
 
     // Beware - there are two event busses: the MinecraftForge.EVENT_BUS, and your own ModEventBus.
@@ -82,11 +88,11 @@ public class MinecraftByExample {
     // * RegistryEvent of all types
     // * ColorHandlerEvent for blocks & items
     // * ParticleFactoryRegisterEvent
-    // * FMLCommonSetupEvent
+    // * FMLCommonSetupEvent (multithreaded)
     // * TextureStitchEvent
-    // * FMLClientSetupEvent or FMLDedicatedServerSetupEvent
+    // * FMLClientSetupEvent or FMLDedicatedServerSetupEvent (multithreaded)
     // * ModelRegistryEvent
-    // * Other ModLifecycleEvents such as InterModEnqueueEvent, InterModProcessEvent
+    // * Other ModLifecycleEvents such as InterModEnqueueEvent, InterModProcessEvent (multithreaded)
     // ModelBakeEvent
 
     // We need to split the registration of events into:
