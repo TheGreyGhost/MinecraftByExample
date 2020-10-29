@@ -120,7 +120,7 @@ public class MBEquoteCommand {
                                 "Have you got anything without spam?",
                                 "We interrupt this program to annoy you and make things generally more irritating.",
                                 "My brain hurts!"}),
-    YOGI_BERRA(new String [] {"When you come to a fork in the road…. take it.",
+    YOGI_BERRA(new String [] {"When you come to a fork in the road... take it.",
                               "It ain't over till it's over.",
                               "The future ain't what it used to be.",
                               "If the world was perfect, it wouldn't be."}),

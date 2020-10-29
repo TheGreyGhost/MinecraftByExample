@@ -30,6 +30,7 @@
 //    // I've written out the factory as an explicit implementation to make it clearer, but most folks would just use a lambda instead, eg
 //    //    RenderingRegistry.registerEntityRenderingHandler(StartupCommon.emojiEntityType,
 //    //            erm -> new SpriteRenderer<>(erm, Minecraft.getInstance().getItemRenderer()));
+//  Enqueue work required
 //    RenderingRegistry.registerEntityRenderingHandler(StartupCommon.emojiEntityType, new emojiRenderFactory());
 //    RenderingRegistry.registerEntityRenderingHandler(StartupCommon.boomerangEntityType, new BoomerangRenderFactory());
 //  }

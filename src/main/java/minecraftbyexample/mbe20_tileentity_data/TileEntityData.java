@@ -92,7 +92,7 @@ public class TileEntityData extends TileEntity implements ITickableTileEntity {
 		super.write(parentNBTTagCompound); // The super call is required to save the tile's location
 
 		parentNBTTagCompound.putInt("ticksLeft", ticksLeftTillDisappear);
-		// alternatively - could use parentNBTTagCompound.setTag("ticksLeft", IntNBT.func_229692_a_(ticksLeftTillDisappear));
+		// alternatively - could use parentNBTTagCompound.setTag("ticksLeft", IntNBT.valueOf(ticksLeftTillDisappear));
 
 		// some examples of other NBT tags - browse NBTTagCompound or search for the subclasses of INBT for more examples
 
@@ -100,7 +100,7 @@ public class TileEntityData extends TileEntity implements ITickableTileEntity {
 		parentNBTTagCompound.putString("testString", testString);
 
 		// group x,y,z together under a "testBlockPos" tag
-		CompoundNBT blockPosNBT = new CompoundNBT();        // NBTTagCompound is similar to a Java HashMap
+		CompoundNBT blockPosNBT = new CompoundNBT();        // CompoundNBT is similar to a Java HashMap
 		blockPosNBT.putInt("x", testBlockPos.getX());
 		blockPosNBT.putInt("y", testBlockPos.getY());
 		blockPosNBT.putInt("z", testBlockPos.getZ());
@@ -115,7 +115,7 @@ public class TileEntityData extends TileEntity implements ITickableTileEntity {
 		parentNBTTagCompound.putIntArray("testIntArray", testIntArray);
 
     // List of Doubles
-		ListNBT doubleArrayNBT = new ListNBT();                     // an NBTTagList is similar to a Java ArrayList
+		ListNBT doubleArrayNBT = new ListNBT();                     // a ListNBT is similar to a Java ArrayList
 		for (double value : testDoubleArray) {
 			doubleArrayNBT.add(DoubleNBT.valueOf(value));
 		}
@@ -128,7 +128,7 @@ public class TileEntityData extends TileEntity implements ITickableTileEntity {
 			Double value = testDoubleArrayWithNulls[i];
 			if (value != null) {
 				CompoundNBT dataForThisSlot = new CompoundNBT();
-				dataForThisSlot.putInt("i", i + 1);   // avoid using 0, so the default when reading a missing value (0) is obviously invalid
+				dataForThisSlot.putInt("i", i + 1);   // avoid using 0, so that the default when reading a missing value (0) is obviously invalid
 				dataForThisSlot.putDouble("v", value);
 				doubleArrayWithNullsNBT.add(dataForThisSlot);
 			}

@@ -54,8 +54,6 @@ public class ItemFlowerBag extends Item {
 	public ItemFlowerBag() {
     super(new Item.Properties().maxStackSize(MAXIMUM_NUMBER_OF_FLOWER_BAGS).group(ItemGroup.MISC) // the item will appear on the Miscellaneous tab in creative
     );
-    //this.addPropertyOverride(new ResourceLocation("fullness"), ItemFlowerBag::getFullnessPropertyOverride);  todo update to 1.16.3
-    // use lambda function to link the NBT fullness value to a suitable property override value
 	}
 
   /**
@@ -254,7 +252,6 @@ public class ItemFlowerBag extends Item {
     itemStackHandlerFlowerBag.deserializeNBT(capabilityTag);
   }
 
-
   // ------------ code used for changing the appearance of the bag based on the number of flowers in it
 
   /**
@@ -265,7 +262,7 @@ public class ItemFlowerBag extends Item {
    * @param livingEntity
    * @return 0.0 (empty) -> 1.0 (full) based on the number of slots in the bag which are in use
    */
-  private static float getFullnessPropertyOverride(ItemStack itemStack, @Nullable World world, @Nullable LivingEntity livingEntity) {
+  public static float getFullnessPropertyOverride(ItemStack itemStack, @Nullable World world, @Nullable LivingEntity livingEntity) {
     ItemStackHandlerFlowerBag flowerBag = getItemStackHandlerFlowerBag(itemStack);
     float fractionEmpty = flowerBag.getNumberOfEmptySlots() / (float)flowerBag.getSlots();
     return 1.0F - fractionEmpty;

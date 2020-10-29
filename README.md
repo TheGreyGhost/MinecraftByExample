@@ -31,8 +31,10 @@ If you want more information and explanatory text about the concepts, the follow
 If you are updating from previous forge versions, you will probably find [this link][versionupdates] and [this link][versionupdates1-15] very helpful.  For better or for worse, MCP decided to rename a very large number of classes (eg all Blocks Blockxxx --> xxxxBlock, etc) so this might save you a stack of time.
 If you use IntelliJ, you might find these [xml mapping files][mapfiles] useful too
 
-## List of examples
+## List of examples 
 See [here](https://greyminecraftcoder.blogspot.com/2020/05/minecraft-by-example.html) for pictures of what each example looks like in-game.
+
+Examples marked with X are not converted to 1.16.3 yet.
 
 ### Blocks
   - [MBE01][01] - a simple cube
@@ -40,11 +42,11 @@ See [here](https://greyminecraftcoder.blogspot.com/2020/05/minecraft-by-example.
   - [MBE03][03] - two types of blocks which vary their appearance / shape:<br>
         a block (coloured signpost) with multiple variants- four colours, can be placed facing in four directions<br>
         a block (3D Web) with multiple parts (multipart) similar to a vanilla fence.
-  - [MBE04][04] - dynamically created block models<br>
+  -X [MBE04][04] - dynamically created block models<br>
         a camouflage ("secret door") block which dynamically changes its appearance to match adjacent blocks - uses IBlockModel.getQuads(), ModelBakeEvent, IForgeBakedModel and IModelData<br>
         an "altimeter" block which shows the block altitude (y coordinate) on the side in digital display - as camouflage block but uses programmatic generation of quads  
   - [MBE05][05] - multilayer block (lantern block with transparent glass) with animated flame texture
-  - [MBE06][06] - several different types of block which use redstone
+  -X [MBE06][06] - several different types of block which use redstone
   - [MBE08][08] - how to add a creative tab for organising your custom blocks / items
 
 ### Items
@@ -55,12 +57,12 @@ See [here](https://greyminecraftcoder.blogspot.com/2020/05/minecraft-by-example.
 
 ### TileEntities
   - [MBE20][20] - using a tile entity to store information about a block - also shows examples of using NBT storage
-  - [MBE21][21] - using the TileEntityRenderer to render unusual shapes or animations
+  -X [MBE21][21] - using the TileEntityRenderer to render unusual shapes or animations
 
 ### Containers (Inventories)
-  - [MBE30][30] - a simple container for storing items in the world - similar to a Chest
-  - [MBE31][31] - a functional container such as a Furnace or Crafting Table
-  - [MBE32][32] - an item (bag of flowers) which can store other items inside it.  Also shows how to use Capability
+  -X [MBE30][30] - a simple container for storing items in the world - similar to a Chest
+  -X [MBE31][31] - a functional container such as a Furnace or Crafting Table
+  -X [MBE32][32] - an item (bag of flowers) which can store other items inside it.  Also shows how to use Capability
 
 ### Recipes (Crafting/Furnace)
   - [MBE35][35] - some typical example crafting recipes and furnace (smelting) recipes
@@ -69,20 +71,20 @@ See [here](https://greyminecraftcoder.blogspot.com/2020/05/minecraft-by-example.
   - [MBE45][45] - custom commands
 
 ### Particles - particle effects
-  - [MBE50][50] - shows how to use vanilla Particles; also how to generate your own custom Particles
+  -X [MBE50][50] - shows how to use vanilla Particles; also how to generate your own custom Particles
 
 ### Network
-  - [MBE60][60] - send network messages between client and server
+  -X [MBE60][60] - send network messages between client and server
 
 ### Capabilities
-  - [MBE65][65] - define new Capabilities and attach them to vanilla objects 
+  -X [MBE65][65] - define new Capabilities and attach them to vanilla objects 
 
 ### Testing tools
   - [MBE75][75] - a tool to help you automate testing of your classes in-game.
 
 ### Entities and Models
-  - [MBE80][80] - Shows the basics of Models (eg PigModel), model parameters adjustable in real time using commands
-  - [MBE81][81] - Projectile Entities (eg snowballs, arrows)
+  -X [MBE80][80] - Shows the basics of Models (eg PigModel), model parameters adjustable in real time using commands
+  -X [MBE81][81] - Projectile Entities (eg snowballs, arrows)
   
 ### Miscellaneous Debugging Tools
   - [DebuggingTools]- This package is a bunch of functions and tools that I use occasionally, mostly for debugging

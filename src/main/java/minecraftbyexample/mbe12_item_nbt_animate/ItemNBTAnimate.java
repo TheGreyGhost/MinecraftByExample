@@ -22,7 +22,8 @@ import java.util.List;
 /**
  * User: The Grey Ghost
  * Date: 30/12/2014
- * Item (teleportation gem) which stores NBT information and also provides a custom animation when being "used".
+ * Item (teleportation gem) which stores NBT information and also provides a custom animation when being "used", via
+ *   a PropertyOverride (attached in StartupClientOnly).
  * Basic usage:
  * 1) Shift-click to "store" the current location in the gem
  * 2) Hold right button down to "charge up" the gem.  When fully charged, the gem teleports you to the last saved
@@ -35,11 +36,6 @@ public class ItemNBTAnimate extends Item
   public ItemNBTAnimate() {
     super(new Item.Properties().maxStackSize(MAXIMUM_NUMBER_OF_GEMS).group(ItemGroup.MISC));
           // item will appear on the Miscellaneous creative tab
-
-    // We use a PropertyOverride for this item to change the appearance depending on the state of the property.
-    //  See ItemNBTanimationTimer for more information.
-    // ItemNBTanimationTimer() is used as a lambda function to calculate the current chargefraction during rendering
-//    this.addPropertyOverride(new ResourceLocation("chargefraction"), new ItemNBTanimationTimer());  //todo fix 1.16.3
   }
 
   // When the user presses and holds right click, there are three phases:
