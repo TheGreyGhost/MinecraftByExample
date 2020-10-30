@@ -33,6 +33,7 @@ public class ContainerScreenBasic extends ContainerScreen<ContainerBasic> {
 		ySize = 133;
 	}
 
+  @Override
   public void render(int mouseX, int mouseY, float partialTicks) {
     this.renderBackground();
     super.render(mouseX, mouseY, partialTicks);
@@ -43,6 +44,7 @@ public class ContainerScreenBasic extends ContainerScreen<ContainerBasic> {
    * Draw the foreground layer for the GuiContainer (everything in front of the items)
    * Taken directly from ChestScreen
    */
+  @Override
   protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 		final float LABEL_XPOS = 5;
 		final float FONT_Y_SPACING = 12;
@@ -58,6 +60,7 @@ public class ContainerScreenBasic extends ContainerScreen<ContainerBasic> {
    * Draws the background layer of this container (behind the items).
    * Taken directly from ChestScreen / BeaconScreen
    */
+  @Override
   protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
     RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
     this.minecraft.getTextureManager().bindTexture(BACKGROUND_TEXTURE);
