@@ -74,7 +74,7 @@ Examples marked with X are not converted to 1.16.3 yet.
   - [MBE50][50] - shows how to use vanilla Particles; also how to generate your own custom Particles
 
 ### Network
-  - X [MBE60][60] - send network messages between client and server
+  - [MBE60][60] - send network messages between client and server
 
 ### Capabilities
   - X [MBE65][65] - define new Capabilities and attach them to vanilla objects 
