@@ -1,6 +1,5 @@
 package minecraftbyexample.mbe30_inventory_basic;
 
-import minecraftbyexample.testingarea.container.TestGui;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
@@ -21,6 +20,6 @@ public class StartupClientOnly
   // register the factory that is used on the client to generate a ContainerScreen corresponding to our Container
   @SubscribeEvent
   public static void onClientSetupEvent(FMLClientSetupEvent event) {
-//    ScreenManager.registerFactory(StartupCommon.containerTypeContainerBasic, ContainerScreenBasic::new);    todo 1.16.3
+    ScreenManager.registerFactory(StartupCommon.containerTypeContainerBasic, ContainerScreenBasic::new);
   }
 }

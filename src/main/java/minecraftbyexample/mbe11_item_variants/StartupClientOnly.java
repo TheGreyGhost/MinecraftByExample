@@ -20,11 +20,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 public class StartupClientOnly
 {
   @SubscribeEvent
-  public static void onClientSetupEvent(FMLClientSetupEvent event) {
-    // not actually required for this example....
-  }
-
-  @SubscribeEvent
   public static void onColorHandlerEvent(ColorHandlerEvent.Item event)
   {
     // the LiquidColour lambda function is used to change the rendering colour of the liquid in the bottle
