@@ -19,6 +19,9 @@ public class StartupClientOnly
   @SubscribeEvent
   public static void onClientSetupEvent(FMLClientSetupEvent event) {
     // not actually required for this example....
+
+    engquq
+
   }
 
   @SubscribeEvent

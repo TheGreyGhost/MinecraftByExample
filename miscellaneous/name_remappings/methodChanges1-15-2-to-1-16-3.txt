@@ -17,4 +17,53 @@ license="All rights reserved"
 or
 license="The Unlicence"
 
+--------
+Item Property override:
+ItemModelsProperties
+FMLClientSetupEvent but use DeferredWorkQueue, since the data structures in that class are not threadsafe.
 
+
+
+There are two methods:
+
+func_239420_a_ which registers a property globally and func_239418_a_which registers a property for just that item.
+--------------------
+Update guide for 1.15 -> 1.16 by ChampionAsh5357
+
+There may be a primer for 1.15 -> 1.16.1; however, in the current state of 1.16.2 onwards and with the release of 1.16.4 coming soon, I doubt you will be able to find one. Not many people understand the new system of world generation through data driven systems, so a primer will probably not be out for a while. However, since I'm not a fan of leaving any post unanswered, I'll try and take a basic stab at it.
+
+
+
+ - Blocks have been abstracted even more (AbstractBlock). You'll find that the properties have been turned into functions of some kind to allow for even fewer blocks. For example, the blockstate can control how much light is emitted using a ToIntFunction. Also, for a tool to be required to mine a block, the setRequiresTool parameter must be set.
+
+ - Block properties no longer have an interface IProperty. It has been relegated to just Property now.
+
+ - Item properties have also been removed and isolated from the Item class. They are handled within ItemModelProperties and can be registered using the appropriately named methods there.
+
+ - Rendering methods now take a MatrixStack parameter to correctly orientated it on the screen. If you find any unmapped methods, you will most likely need to stick a MatrixStack variable somewhere within there, nothing else.
+
+ - Server reload listeners are added via AddReloadListenerEvent. Client reload listeners should still be handled either within your mod constructor or FMLConstructModEvent for better thread-safety.
+
+ - DeferredWorkQueue is now officially deprecated. You should use the enqueueWork method provided in all parallel dispatch events.
+
+ - Entities store attributes within GlobalEntityTypeAttributes. If your entity does not have a registered attribute within here, then it will most likely error. For reference, this is not thread-safe.
+
+ - Models now take in a RenderType to define what layer they will render within. By default, they use a no cull cutout layer.
+
+ - Every mods.toml must have a license entry. Otherwise, your mod will error and crash.
+
+ - LazyOptionals have a few changes as defined in 33.0.21. LazyOptionals map to LazyOptionals now using lazyMap. map returns a regular Optional. Note that this Optional will throw an error if the map function somehow results in a null entry. filter also returns an Optional now. Finally, a new method called resolve has been added to convert to an Optional directly.
+
+ - ExistingFileHelper is now required within tag providers. However, this added another issue. If you would like to add to a forge tag, you must attach the forge resources to your existing resources. There has been discussion on how to handle this; however, there are no definite plans at the current moment.
+
+ - Finally, I will mention world generation. Currently, all of world gen has been delegated to a data driven system. This is a mixed point for some users. Currently, forge is working on a more dynamic system to allow all of world generation to be handled within JSON files; however, that is not completely possible yet. Therefore, there are a few workarounds to handle this via BiomeLoadingEvent. Here, you can add configured features and structures to already existing biomes along with some other details I'll let you explore for yourself.
+
+ - Creating biomes can either be done one of two ways. You can either create one using BiomeMaker for the Biome builder itself in some fashion and register it using the RegistryEvent or you can initialize a dummy biome and create it via JSON. To get your biome to spawn in the world, this is still handled within BiomeManager instead taking a RegistryKey (a concatenation of the registry and the object name). To set it as a spawn biome, that is handled when you build the biome itself.
+
+ - Features have been changed in an interesting way. Instead of having a Feature with a single Placement, features can now have multiple placements. This means a placement can determine the amount, the height, the spread, etc. The way placements are handled are similar to a stack. The first placement you attach will be the last to execute if you need an example. Therefore, when creating a ConfiguredFeature, things like a count placement should be handled as the last chained method. There are a few helper methods within that makes it easier to generate count placements, although they will most likely remain unmapped until the next mappings push. Cyborgmas pointed out something with registering these entries that non-registered ones causes an issue with the codec, so they should be handled and registered probably within your common setup or at the very earliest after placements have been registered.
+
+ - If possible, you should try to create all your world generation edits within JSON files to better prepare yourself for when the system comes out of the experimental phase. However, that is currently optional until everything updates.
+
+
+
+Hopefully I covered the gist of the changes from 1.15 -> 1.16.3. There are definitely many more that I've missed such as background music or the brain system within entities.

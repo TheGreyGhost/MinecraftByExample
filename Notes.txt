@@ -252,5 +252,16 @@ https://www.youtube.com/watch?v=6TLgIgXogwA
 http://www.minecraftforge.net/forum/index.php/topic,27137.msg138553.html#msg138553
 http://www.minecraftforge.net/forum/index.php/topic,27137.msg138502.html#msg138502
 http://www.minecraftforge.net/forum/index.php/topic,27401.0.html
+------------------
+ItemModelsProperties
+
+Map of ResourceLocation to IItemPropertyGetter
+
+Each one is a lambda function that takes (ItemStack var1, @Nullable ClientWorld var2, @Nullable LivingEntity var3) arguments and returns a float
+
+Two types of properties:
+global (added using func_239420_a_)
+per-item (added using func_239418_a_)
+
 
 
