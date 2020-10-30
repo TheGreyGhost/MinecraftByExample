@@ -29,7 +29,7 @@ import java.util.Optional;
  * Bottle fullness (EMPTY, 25%, 50%, 75%, 100%), stored in the "fullness" NBT tag
  * The FULLNESS is used to select the model name: each different fullness has a different layer1 texture for the liquid level
  *   This is done using a custom PropertyOverride "fullness" which is used in the mbe11_item_variants_registry_name.json to
- *   select the correct model.
+ *   select the correct model.  The custom PropertyOverride is attached to the Item in StartupClientOnly.
  * The FLAVOUR is used to select the colour of the contents (layer1 render) via IItemColor
  */
 public class ItemVariants extends Item
@@ -38,8 +38,6 @@ public class ItemVariants extends Item
 
   public ItemVariants() {
     super(new Item.Properties().maxStackSize(MAXIMUM_NUMBER_OF_BOTTLES).group(ItemGroup.BREWING));
-//    this.addPropertyOverride(new ResourceLocation("fullness"), ItemVariants::getFullnessPropertyOverride);  todo fix 1.16.3
-            // use lambda function to link the NBT fullness value to a suitable property override value
   }
 
     /**
@@ -72,7 +70,7 @@ public class ItemVariants extends Item
    * @param livingEntity
    * @return
    */
-  private static float getFullnessPropertyOverride(ItemStack itemStack, @Nullable World world, @Nullable LivingEntity livingEntity)
+  public static float getFullnessPropertyOverride(ItemStack itemStack, @Nullable World world, @Nullable LivingEntity livingEntity)
   {
     EnumBottleFullness enumBottleFullness = getFullness(itemStack);
     return enumBottleFullness.getPropertyOverrideValue();

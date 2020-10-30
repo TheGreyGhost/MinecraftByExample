@@ -22,6 +22,11 @@ Item Property override:
 ItemModelsProperties
 FMLClientSetupEvent but use DeferredWorkQueue, since the data structures in that class are not threadsafe.
 
+Item.addPropertyOverride has moved to ItemModelsProperties as static initialisers for vanilla; Forge method is now to register using ItemModelsProperties.func_239418_a_ and enqueue work in client setup event
+
+ Block::getLightValue  --> these mechanics have completed changed; no direct replacement; Forge method is now to add a lambda function as a Block property using func_235838_a_()
+
+
 
 
 There are two methods:

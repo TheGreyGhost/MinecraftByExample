@@ -45,8 +45,9 @@ public class BlockGlassLantern extends Block
 {
   public BlockGlassLantern()
   {
-    super(Properties.create(Material.IRON).hardnessAndResistance(3.5F).sound(SoundType.LANTERN).notSolid()
-    );    // match the vanilla lantern properties except we don't want the lantern to be lit all the time, so omit lightValue(15)
+    super(Properties.create(Material.IRON).hardnessAndResistance(3.5F).sound(SoundType.LANTERN).func_235861_h_().notSolid().func_235838_a_(BlockGlassLantern::getLightValue)
+    );    // match the vanilla lantern properties except we don't want the lantern to be lit all the time, so supply a mapping function getLightValue
+          //  func_235861_h_ is "requiresToolToHarvest
 
     BlockState defaultBlockState = this.stateContainer.getBaseState().with(HANGING, false).with(LIT, false);
     this.setDefaultState(defaultBlockState);
@@ -89,9 +90,10 @@ public class BlockGlassLantern extends Block
   private static final int UNLIT_LIGHT_VALUE = 0;  // light value when unlit
 
   /**
-   * Amount of block light emitted by the lantern
+   * Amount of block light emitted by the lantern.
+   * This function is registered in the Block Properties using func_235838_a;  see BlockGlassLantern constructor
    */
-  public int getLightValue(BlockState state) {
+  public static int getLightValue(BlockState state) {
     return state.get(LIT) ? LIT_LIGHT_VALUE : UNLIT_LIGHT_VALUE;
   }
 
