@@ -78,7 +78,11 @@ public class ContainerFurnace extends Container {
 	private static final int FIRST_INPUT_SLOT_INDEX = FIRST_FUEL_SLOT_INDEX + FUEL_SLOTS_COUNT;
 	private static final int FIRST_OUTPUT_SLOT_INDEX = FIRST_INPUT_SLOT_INDEX + INPUT_SLOTS_COUNT;
 
-	// slot number is the slot number within each component;
+  // gui position of the player inventory grid
+  public static final int PLAYER_INVENTORY_XPOS = 8;
+  public static final int PLAYER_INVENTORY_YPOS = 125;
+
+  // slot number is the slot number within each component;
   // i.e. invPlayer slots 0 - 35 (hotbar 0 - 8 then main inventory 9 to 35)
   // and furnace: inputZone slots 0 - 4, outputZone slots 0 - 4, fuelZone 0 - 3
 
@@ -108,8 +112,6 @@ public class ContainerFurnace extends Container {
 			addSlot(new Slot(invPlayer, slotNumber, HOTBAR_XPOS + SLOT_X_SPACING * x, HOTBAR_YPOS));
 		}
 
-		final int PLAYER_INVENTORY_XPOS = 8;
-		final int PLAYER_INVENTORY_YPOS = 125;
 		// Add the rest of the players inventory to the gui
 		for (int y = 0; y < PLAYER_INVENTORY_ROW_COUNT; y++) {
 			for (int x = 0; x < PLAYER_INVENTORY_COLUMN_COUNT; x++) {

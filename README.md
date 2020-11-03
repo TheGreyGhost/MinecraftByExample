@@ -60,8 +60,8 @@ Examples marked with X are not converted to 1.16.3 yet.
   - [MBE21][21] - using the TileEntityRenderer to render unusual shapes or animations
 
 ### Containers (Inventories)
-  - X [MBE30][30] - a simple container for storing items in the world - similar to a Chest
-  - X [MBE31][31] - a functional container such as a Furnace or Crafting Table
+  - [MBE30][30] - a simple container for storing items in the world - similar to a Chest
+  - [MBE31][31] - a functional container such as a Furnace or Crafting Table
   - X [MBE32][32] - an item (bag of flowers) which can store other items inside it.  Also shows how to use Capability
 
 ### Recipes (Crafting/Furnace)

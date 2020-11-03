@@ -3,6 +3,7 @@ package minecraftbyexample.mbe31_inventory_furnace;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import minecraftbyexample.mbe30_inventory_basic.ContainerBasic;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
@@ -42,20 +43,24 @@ public class ContainerScreenFurnace extends ContainerScreen<ContainerFurnace> {
 	}
 
 	// some [x,y] coordinates of graphical elements
-	final int COOK_BAR_XPOS = 49;
-	final int COOK_BAR_YPOS = 60;
-	final int COOK_BAR_ICON_U = 0;   // texture position of white arrow icon [u,v]
-	final int COOK_BAR_ICON_V = 207;
-	final int COOK_BAR_WIDTH = 80;
-	final int COOK_BAR_HEIGHT = 17;
+	final static int COOK_BAR_XPOS = 49;
+  final static  int COOK_BAR_YPOS = 60;
+  final static  int COOK_BAR_ICON_U = 0;   // texture position of white arrow icon [u,v]
+  final static  int COOK_BAR_ICON_V = 207;
+  final static  int COOK_BAR_WIDTH = 80;
+  final static  int COOK_BAR_HEIGHT = 17;
 
-	final int FLAME_XPOS = 54;
-	final int FLAME_YPOS = 80;
-	final int FLAME_ICON_U = 176;   // texture position of flame icon [u,v]
-	final int FLAME_ICON_V = 0;
-	final int FLAME_WIDTH = 14;
-	final int FLAME_HEIGHT = 14;
-	final int FLAME_X_SPACING = 18;
+  final static  int FLAME_XPOS = 54;
+  final static  int FLAME_YPOS = 80;
+  final static  int FLAME_ICON_U = 176;   // texture position of flame icon [u,v]
+  final static  int FLAME_ICON_V = 0;
+  final static  int FLAME_WIDTH = 14;
+  final static  int FLAME_HEIGHT = 14;
+  final static  int FLAME_X_SPACING = 18;
+
+  final static  int FONT_Y_SPACING = 10;
+  final static  int PLAYER_INV_LABEL_XPOS = ContainerFurnace.PLAYER_INVENTORY_XPOS;
+  final static  int PLAYER_INV_LABEL_YPOS = ContainerFurnace.PLAYER_INVENTORY_YPOS - FONT_Y_SPACING;
 
   // deobfuscated name is render
   @Override
@@ -107,6 +112,7 @@ public class ContainerScreenFurnace extends ContainerScreen<ContainerFurnace> {
     // xSize, ySize are the expected size of the texture-? usually seems to be left as a default.
     // The code below is typical for vanilla containers, so I've just copied that- it appears to centre the texture within
     //  the available window
+    // draw the background for this window
     int edgeSpacingX = (this.field_230708_k_ - this.xSize) / 2; //.width
     int edgeSpacingY = (this.field_230709_l_ - this.ySize) / 2; //.height
     this.func_238474_b_(matrixStack, edgeSpacingX, edgeSpacingY, 0, 0, this.xSize, this.ySize);  //.blit
@@ -128,10 +134,14 @@ public class ContainerScreenFurnace extends ContainerScreen<ContainerFurnace> {
 	@Override
   // drawGuiContainerForegroundLayer
 	protected void func_230451_b_(MatrixStack matrixStack, int mouseX, int mouseY) {
-		super.func_230451_b_(matrixStack, mouseX, mouseY);    //drawGuiContainerForegroundLayer
+    // draw the label for the top of the screen
 		final int LABEL_XPOS = 5;
 		final int LABEL_YPOS = 5;
     this.field_230712_o_.func_243248_b(matrixStack, this.field_230704_d_, LABEL_XPOS, LABEL_YPOS, Color.darkGray.getRGB());  //this.font.drawString;  this.title
+
+    // draw the label for the player inventory slots
+    this.field_230712_o_.func_243248_b(matrixStack, this.playerInventory.getDisplayName(),                  ///    this.font.drawString
+            PLAYER_INV_LABEL_XPOS, PLAYER_INV_LABEL_YPOS, Color.darkGray.getRGB());
 	}
 
 	// Returns true if the given x,y coordinates are within the given rectangle
