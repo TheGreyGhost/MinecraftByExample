@@ -18,6 +18,6 @@ public class StartupClientOnly
   // register the factory that is used on the client to generate a ContainerScreen corresponding to our Container
   @SubscribeEvent
   public static void onClientSetupEvent(FMLClientSetupEvent event) {
-//    ScreenManager.registerFactory(StartupCommon.containerTypeContainerFurnace, ContainerScreenFurnace::new);  todo 1.16.3
+    ScreenManager.registerFactory(StartupCommon.containerTypeContainerFurnace, ContainerScreenFurnace::new);
   }
 }

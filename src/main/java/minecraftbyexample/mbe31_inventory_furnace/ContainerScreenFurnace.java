@@ -8,6 +8,7 @@ import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -70,26 +71,26 @@ public class ContainerScreenFurnace extends ContainerScreen<ContainerFurnace> {
   protected void func_230459_a_(MatrixStack matrixStack, int mouseX, int mouseY) {
     if (!this.field_230706_i_.player.inventory.getItemStack().isEmpty()) return;  //this.minecraft  // no tooltip if the player is dragging something
 
-    List<String> hoveringText = new ArrayList<String>();
+    List<ITextComponent> hoveringText = new ArrayList<ITextComponent>();
 
     // If the mouse is over the progress bar add the progress bar hovering text
     if (isInRect(guiLeft + COOK_BAR_XPOS, guiTop + COOK_BAR_YPOS, COOK_BAR_WIDTH, COOK_BAR_HEIGHT, mouseX, mouseY)){
-      hoveringText.add("Progress:");
+      hoveringText.add(new StringTextComponent("Progress:"));
       int cookPercentage =(int)(containerFurnace.fractionOfCookTimeComplete() * 100);
-      hoveringText.add(cookPercentage + "%");
+      hoveringText.add(new StringTextComponent(cookPercentage + "%"));
     }
 
     // If the mouse is over one of the burn time indicators, add the burn time indicator hovering text
     for (int i = 0; i < containerFurnace.FUEL_SLOTS_COUNT; ++i) {
       if (isInRect(guiLeft + FLAME_XPOS + FLAME_X_SPACING * i, guiTop + FLAME_YPOS, FLAME_WIDTH, FLAME_HEIGHT, mouseX, mouseY)) {
-        hoveringText.add("Fuel Time:");
-        hoveringText.add(containerFurnace.secondsOfFuelRemaining(i) + "s");
+        hoveringText.add(new StringTextComponent("Fuel Time:"));
+        hoveringText.add(new StringTextComponent(containerFurnace.secondsOfFuelRemaining(i) + "s"));
       }
     }
 
     // If hoveringText is not empty draw the hovering text.  Otherwise, use vanilla to render tooltip for the slots
     if (!hoveringText.isEmpty()){
-      renderTooltip(matrixStack, hoveringText, mouseX, mouseY);  //renderToolTip
+      func_243308_b(matrixStack, hoveringText, mouseX, mouseY);  //renderToolTip
     } else {
       super.func_230459_a_(matrixStack, mouseX, mouseY);  //renderHoveredToolTip
     }
