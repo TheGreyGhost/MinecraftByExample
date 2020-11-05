@@ -122,7 +122,7 @@ public class MinecraftByExample {
     MOD_EVENT_BUS.register(minecraftbyexample.mbe21_tileentityrenderer.StartupCommon.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe30_inventory_basic.StartupCommon.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe31_inventory_furnace.StartupCommon.class);
-//    MOD_EVENT_BUS.register(minecraftbyexample.mbe32_inventory_item.StartupCommon.class);
+    MOD_EVENT_BUS.register(minecraftbyexample.mbe32_inventory_item.StartupCommon.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe35_recipes.StartupCommon.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe45_commands.StartupCommon.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe50_particle.StartupCommon.class);
@@ -152,7 +152,7 @@ public class MinecraftByExample {
     MOD_EVENT_BUS.register(minecraftbyexample.mbe21_tileentityrenderer.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe30_inventory_basic.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe31_inventory_furnace.StartupClientOnly.class);
-//    MOD_EVENT_BUS.register(minecraftbyexample.mbe32_inventory_item.StartupClientOnly.class);
+    MOD_EVENT_BUS.register(minecraftbyexample.mbe32_inventory_item.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe35_recipes.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe45_commands.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe50_particle.StartupClientOnly.class);

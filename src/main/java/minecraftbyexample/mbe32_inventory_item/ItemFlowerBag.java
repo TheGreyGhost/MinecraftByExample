@@ -178,7 +178,7 @@ public class ItemFlowerBag extends Item {
   // ---------------- Code related to Capabilities
   //
 
-  // The CapabilityProvider returned from this method is used to specify which capabilities the ItemFlowerBag has
+  // The CapabilityProvider returned from this method is used to specify which capabilities the ItemFlowerBag possesses
   @Nonnull
   @Override
   public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT oldCapNbt) {

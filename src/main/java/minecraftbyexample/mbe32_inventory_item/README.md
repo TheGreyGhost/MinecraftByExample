@@ -2,7 +2,7 @@
 
 This example is a Flower Bag- an item that can be used to contain other items (in this case flowers).
 
-It illustrates two concepts:
+It illustrates three concepts:
 1) How to add an inventory to an item
 2) How to use Forge Capability 
 3) How to synchronise capability information to the client for use in rendering.

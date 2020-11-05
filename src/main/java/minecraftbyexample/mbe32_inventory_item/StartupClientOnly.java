@@ -23,7 +23,7 @@ public class StartupClientOnly
     event.enqueueWork(StartupClientOnly::registerPropertyOverride);
 
     // register the factory that is used on the client to generate a ContainerScreen corresponding to our Container
-//    ScreenManager.registerFactory(StartupCommon.containerTypeFlowerBag, ContainerScreenFlowerBag::new);  todo 1.16.3
+    ScreenManager.registerFactory(StartupCommon.containerTypeFlowerBag, ContainerScreenFlowerBag::new);
   }
 
   public static void registerPropertyOverride() {
