@@ -3,7 +3,7 @@
 This example shows you how to use the Forge extension "Capability"
 
 A Capability is a way to attach information and behaviours to minecraft objects (eg Entity, ItemStack, TileEntity) at run time.  It is an example of a "Decorator" design pattern [link](https://www.geeksforgeeks.org/decorator-pattern/?ref=lbp).  Using Capability has a number of advantages compared to other coding methods:
-* It lets you easily attach information to vanilla objects or objects that other mods have added
+* It lets you easily attach information to vanilla objects, or to objects that other mods have added
 * For your own objects, your object's class doesn't need to implement interfaces or extend methods.  This helps avoid the monster "god classes" that vanilla is cursed with, such as Entity, Item, or Block
 * It is very easy to add or remove Capabilities in any combination you want without having to refactor the objects that you're attaching them to. 
 * You can use Capabilities which have been defined by other mods (for example: a "magic mana" power source), without having to statically link them: if the magic_mana mod is installed, your mod can access its capability, but if the magic_mana mod is not installed, then your mod will still function correctly.   
@@ -18,7 +18,6 @@ You can attach capability to most vanilla objects- if you look for classes which
 * ItemStack
 * TileEntity
 * World
-* Dimension
 * Chunk
 
 Capabilities can be added in one of three ways:
@@ -67,11 +66,11 @@ The terminology that Forge uses for capabilities is a bit confusing, because the
 The key concepts you need to understand:
 1) A Capability represents some extra functionality that is added to your object (ItemStack, Entity, etc)
 2) Your object needs to have a CapabilityProvider.  This is used for two main purposes
-  1) When Forge wants to know if your object supports a given Capability<Type>, it asks the CapabilityProvider using the getCapability() method.  If the type is supported, the CapabilityProvider returns the corresponding interface instance, which Forge then uses to interact with the Capability.
-  2) To read/write the Capability information to permanent storage, i.e. NBT tags. 
+    1) When Forge wants to know if your object supports a given Capability<Type>, it asks the CapabilityProvider using the getCapability() method.  If the type is supported, the CapabilityProvider returns the corresponding interface instance, which Forge then uses to interact with the Capability.
+    2) To read/write the Capability information to permanent storage, i.e. NBT tags. 
 3) A CapabilityProvider can be attached to objects in one of two ways:
-  1) By overriding the appropriate method for the object (eg IForgeItem::initCapabilities()), which is useful for classes that you have added to the game yourself
-  2) Using AttachCapabilitiesEvent, which allows you to attach your own Capability to vanilla objects
+    1) By overriding the appropriate method for the object (eg IForgeItem::initCapabilities()), which is useful for classes that you have added to the game yourself
+    2) Using AttachCapabilitiesEvent, which allows you to attach your own Capability to vanilla objects
 4) Each instance of your object gets its own instance of CapabilityProvider
 5) The CapabilityProvider uses "Lazy initialisation", i.e. instead of fully initialising your interface instance when the CapabilityProvider is created, it waits until the first time that someone requests the interface instance.
 
@@ -79,14 +78,14 @@ A concrete example:
 We want to give our ItemFlowerBag the ability to store Flowers.
 1) The Capability that lets us do this is CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.  This Capability has a corresponding interface instance of ItemStackhandlerFlowerBag, which can store up to 16 ItemStacks.
 2) Our CapabilityProvider is CapabilityProviderFlowerBag.  
-  1) When CapabilityProviderFlowerBag::getCapability is called with the CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, it returns an ItemStackhandlerFlowerBag, which the caller can use to look in the bag or add more flowers.
-  2) When an ItemFlowerBag is saved to disk, CapabilityProviderFlowerBag writes the ItemStackhandlerFlowerBag to NBT.  Likewise, when loading an ItemFlowerBag, CapabilityProviderFlowerBag reads the ItemStackhandlerFlowerBag out of NBT.
+    1) When CapabilityProviderFlowerBag::getCapability is called with the CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, it returns an ItemStackhandlerFlowerBag, which the caller can use to look in the bag or add more flowers.
+    2) When an ItemFlowerBag is saved to disk, CapabilityProviderFlowerBag writes the ItemStackhandlerFlowerBag to NBT.  Likewise, when loading an ItemFlowerBag, CapabilityProviderFlowerBag reads the ItemStackhandlerFlowerBag out of NBT.
 3) We attach the CapabilityProviderFlowerBag using ItemFlowerBag::initCapabilities
 4) This creates a new instance of CapabilityProviderFlowerBag for each time that an ItemFlowerBag ItemStack is created 
 5) Our CapabilityProviderFlowerBag does not actually create an ItemStackhandlerFlowerBag until the first time that someone calls CapabilityProviderFlowerBag::getCapability
 
 You might wonder what the point of using a Capability is- you could instead just use a method in your ItemFlowerBag class to keep its own ItemStackHandler as an NBT tag attached to the item, and handle the loading/saving to NBT directly.
-The advantage of using the Capability is that other mods will be able to interact with the ItemStack to retrieve items from it.  For an ItemFlowerBag that might not be terribly useful (since there are no vanilla items which will ask other items if they can store objects), but if you are making a new block container of some sort, then it might allow vanilla objects to interact with your container.
+The advantage of using the Capability is that other mods will be able to interact with the ItemStack to retrieve items from it.  This might not be terribly useful in the case of the FlowerBag (since there are no vanilla items which will ask other items if they can store objects), but if you are making a new block container of some sort, then it could allow vanilla objects to interact with your container.
 
 ### Synchronising Capabilities from server to client
 By default, capability information attached to an object is only valid on the server; it is not transmitted to the client.  If you want to access capability information on the client, you must synchronise it manually:

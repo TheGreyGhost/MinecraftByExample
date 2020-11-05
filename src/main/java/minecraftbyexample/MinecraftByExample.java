@@ -127,7 +127,7 @@ public class MinecraftByExample {
     MOD_EVENT_BUS.register(minecraftbyexample.mbe45_commands.StartupCommon.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe50_particle.StartupCommon.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe60_network_messages.StartupCommon.class);
-//    MOD_EVENT_BUS.register(minecraftbyexample.mbe65_capability.StartupCommon.class);
+    MOD_EVENT_BUS.register(minecraftbyexample.mbe65_capability.StartupCommon.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe75_testing_framework.StartupCommon.class);
 //    MOD_EVENT_BUS.register(minecraftbyexample.mbe80_model_renderer.StartupCommon.class);
 //    MOD_EVENT_BUS.register(minecraftbyexample.mbe81_entity_projectile.StartupCommon.class);
@@ -157,7 +157,7 @@ public class MinecraftByExample {
     MOD_EVENT_BUS.register(minecraftbyexample.mbe45_commands.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe50_particle.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe60_network_messages.StartupClientOnly.class);
-//    MOD_EVENT_BUS.register(minecraftbyexample.mbe65_capability.StartupClientOnly.class);
+    MOD_EVENT_BUS.register(minecraftbyexample.mbe65_capability.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe75_testing_framework.StartupClientOnly.class);
 //    MOD_EVENT_BUS.register(minecraftbyexample.mbe80_model_renderer.StartupClientOnly.class);
 //    MOD_EVENT_BUS.register(minecraftbyexample.mbe81_entity_projectile.StartupClientOnly.class);

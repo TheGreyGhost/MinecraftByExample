@@ -30,7 +30,4 @@ public class StartupClientOnly
   public static void registerPropertyOverride() {
     ItemModelsProperties.func_239418_a_(StartupCommon.itemNBTAnimate, new ResourceLocation("chargefraction"), new ItemNBTanimationTimer());
   }
-
-
-
 }

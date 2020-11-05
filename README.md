@@ -62,7 +62,7 @@ Examples marked with X are not converted to 1.16.3 yet.
 ### Containers (Inventories)
   - [MBE30][30] - a simple container for storing items in the world - similar to a Chest
   - [MBE31][31] - a functional container such as a Furnace or Crafting Table
-  - X [MBE32][32] - an item (bag of flowers) which can store other items inside it.  Also shows how to use Capability
+  - [MBE32][32] - an item (bag of flowers) which can store other items inside it.  Also shows how to use Capability
 
 ### Recipes (Crafting/Furnace)
   - [MBE35][35] - some typical example crafting recipes and furnace (smelting) recipes
@@ -77,7 +77,7 @@ Examples marked with X are not converted to 1.16.3 yet.
   - [MBE60][60] - send network messages between client and server
 
 ### Capabilities
-  - X [MBE65][65] - define new Capabilities and attach them to vanilla objects 
+  - [MBE65][65] - define new Capabilities and attach them to vanilla objects 
 
 ### Testing tools
   - [MBE75][75] - a tool to help you automate testing of your classes in-game.
