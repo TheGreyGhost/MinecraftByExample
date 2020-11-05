@@ -336,7 +336,7 @@ public class AltimeterBakedModel implements IBakedModel {
     int vertexSizeInts = DefaultVertexFormats.BLOCK.getIntegerSize();
 
     Optional<VertexFormatElement> positionElement = DefaultVertexFormats.BLOCK.getElements().stream()
-            .filter(e -> VertexFormatElement.Usage.POSITION.equals(e.getType())).findFirst();
+            .filter(e -> VertexFormatElement.Usage.POSITION.equals(e.getUsage())).findFirst();
     if (!positionElement.isPresent()) throw new AssertionError("Position element not found");
     int positionOffset = positionElement.get().getIndex();
 
