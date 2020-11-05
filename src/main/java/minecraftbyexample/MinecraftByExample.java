@@ -112,7 +112,7 @@ public class MinecraftByExample {
     MOD_EVENT_BUS.register(minecraftbyexample.mbe03_block_variants.StartupCommon.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe04_block_dynamic_block_models.StartupCommon.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe05_block_advanced_models.StartupCommon.class);
-//    MOD_EVENT_BUS.register(minecraftbyexample.mbe06_redstone.StartupCommon.class);
+    MOD_EVENT_BUS.register(minecraftbyexample.mbe06_redstone.StartupCommon.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe10_item_simple.StartupCommon.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe08_itemgroup.StartupCommon.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe11_item_variants.StartupCommon.class);
@@ -142,7 +142,7 @@ public class MinecraftByExample {
     MOD_EVENT_BUS.register(minecraftbyexample.mbe03_block_variants.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe04_block_dynamic_block_models.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe05_block_advanced_models.StartupClientOnly.class);
-//    MOD_EVENT_BUS.register(minecraftbyexample.mbe06_redstone.StartupClientOnly.class);
+    MOD_EVENT_BUS.register(minecraftbyexample.mbe06_redstone.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe10_item_simple.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe08_itemgroup.StartupClientOnly.class);
     MOD_EVENT_BUS.register(minecraftbyexample.mbe11_item_variants.StartupClientOnly.class);

@@ -8,7 +8,7 @@ The three key methods they use are
   public int getStrongPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
     does this block provide strong power to an adjacent block?  Note that side is the side of the acceptor block, not the donator
 
-  In vanilla, a block can accept strong power from strong power provide if Block.isNormalCube() is true.  By default this
+  In vanilla, a block can accept strong power from strong power providers if Block.isNormalCube() is true.  By default this
     is only true for opaque blocks which can't provide power themselves.
 
 
