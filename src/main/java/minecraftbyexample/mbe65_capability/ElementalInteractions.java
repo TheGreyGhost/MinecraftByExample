@@ -54,7 +54,11 @@ public class ElementalInteractions {
     ElementalFire arrowFire = arrowEntity.getCapability(CapabilityElementalFire.CAPABILITY_ELEMENTAL_FIRE).orElse(null);
     ElementalAir arrowAir = arrowEntity.getCapability(CapabilityElementalAir.CAPABILITY_ELEMENTAL_AIR).orElse(null);
 
-    if (arrowFire == null && arrowAir == null) return;
+    // If this arrow wasn't fired by an elemental bow, return immediately and treat it like a vanilla arrow
+    if (    (arrowFire == null || arrowFire.getChargeLevel() == 0)
+            && (arrowAir == null || arrowAir.getChargeLevel() == 0)) {
+      return;
+    }
 
     World world = arrowEntity.getEntityWorld();
     if (world.isRemote()) return;
