@@ -55,6 +55,7 @@ public class ContainerScreenFurnace extends ContainerScreen<ContainerFurnace> {
 	final int FLAME_HEIGHT = 14;
 	final int FLAME_X_SPACING = 18;
 
+  @Override
   public void render(int mouseX, int mouseY, float partialTicks) {
     this.renderBackground();
     super.render(mouseX, mouseY, partialTicks);
@@ -62,6 +63,7 @@ public class ContainerScreenFurnace extends ContainerScreen<ContainerFurnace> {
   }
 
   // Draw the Tool tip text if hovering over something of interest on the screen
+  @Override
   protected void renderHoveredToolTip(int mouseX, int mouseY) {
     if (!this.minecraft.player.inventory.getItemStack().isEmpty()) return;  // no tooltip if the player is dragging something
 
