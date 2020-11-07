@@ -271,7 +271,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
 
   public void writeAdditional(CompoundNBT compound) {
     if (this.throwerUUID != null) {
-      compound.put("thrower", NBTUtil.writeUniqueId(this.throwerUUID));
+      compound.putUniqueId("thrower", this.throwerUUID);
     }
     compound.putBoolean(IN_FLIGHT_NBT, this.dataManager.get(IN_FLIGHT_DMP));
     compound.putInt(PICKUP_DELAY_NBT, pickupDelay);
@@ -410,11 +410,18 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
       this.rotationPitch = 0;
     }
 
-    // apply buoyancy if underwater, or gravity acceleration if out of water
     Vector3d initialVelocity = this.getMotion();
-    if (this.areEyesInFluid(FluidTags.WATER) && ) {
+    float bottomOfItem = this.getEyeHeight() - 0.11111111F;   // 0.111111F is from vanilla
+    if (this.isInWater() && this.func_233571_b_(FluidTags.WATER) > bottomOfItem) {
+      // apply buoyancy if underwater, or gravity acceleration if out of water
       this.applyFloatMotion();
+    } else if (this.isInLava() && this.func_233571_b_(FluidTags.LAVA) > bottomOfItem) {
+        // check if we're in lava, bounce around randomly if we are
+        this.setMotion( 0.2 * (this.rand.nextFloat() - this.rand.nextFloat()),
+                        0.2,
+                        0.2 * (this.rand.nextFloat() - this.rand.nextFloat()));
     } else if (!this.hasNoGravity()) {
+      // otherwise: apply gravity  acceleration
       final double ACCELERATION_DUE_TO_GRAVITY = -0.04; // blocks per tick squared
       this.setMotion(this.getMotion().add(0.0, ACCELERATION_DUE_TO_GRAVITY, 0.0));
     }
@@ -455,16 +462,13 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
       }
     }
 
-    // check if we're in lava, bounce around randomly if we are
+    // check if we're in lava, make burning sounds if we are
     boolean blockPositionHasChanged = MathHelper.floor(this.prevPosX) != MathHelper.floor(this.getPosX())
                      || MathHelper.floor(this.prevPosY) != MathHelper.floor(this.getPosY())
                      || MathHelper.floor(this.prevPosZ) != MathHelper.floor(this.getPosZ());
     int tickUpdatePeriod = blockPositionHasChanged ? 2 : 40;
     if (this.ticksExisted % tickUpdatePeriod == 0) {
-      if (this.world.getFluidState(this.func_233580_cy_()).isTagged(FluidTags.LAVA)) {
-        this.setMotion( (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F,
-                        0.2,
-                        (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F  );
+      if (this.world.getFluidState(this.func_233580_cy_()).isTagged(FluidTags.LAVA) && !this.func_230279_az_()) {
         this.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.4F, 2.0F + this.rand.nextFloat() * 0.4F);
       }
     }
@@ -510,6 +514,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
   /**
    * This method controls the position and state for the boomerang when it is flying and is following a predetermined
    *   flight path
+   *   Based on parts of AbstractArrowEntity.tick()
    */
   private void tickInFlight() {
 
@@ -531,33 +536,31 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
     // If this isn't accurate enough for your taste, you can look at Entity::move and Entity::getAllowedMovement
     // see vanilla code for alternative collision detection methods; ThrowableEntity, AbstractArrowEntity; Entity::move
     // When we hit an object, trigger an appropriate effect on that object, and then we're no longer in flight.
-    final boolean CHECK_ENTITY_COLLISION = true;
-    RayTraceResult raytraceresult = ProjectileHelper.rayTrace(this, aabbCollisionZone,                        //.rayTrace
-            this::canEntityBeCollidedWith, RayTraceContext.BlockMode.OUTLINE, CHECK_ENTITY_COLLISION);
 
-    switch (raytraceresult.getType()) {
-      case BLOCK: {
-        BlockRayTraceResult blockRayTraceResult = (BlockRayTraceResult)raytraceresult;
-        BlockPos blockHitPos = blockRayTraceResult.getPos();
-        if (world.getBlockState(blockHitPos).getBlock() == Blocks.NETHER_PORTAL) {
-          this.setPortal(blockHitPos);
-        } else {
-          if (!net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, raytraceresult)){
-            this.onImpactWithBlock((BlockRayTraceResult)raytraceresult);
-          }
-        }
-        break;
+
+    // first check for collision with a block
+    RayTraceContext rayTraceContext = new RayTraceContext(startPosition, endPosition, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this);
+    BlockRayTraceResult blockRayTraceResult = this.world.rayTraceBlocks(rayTraceContext);
+    Vector3d endPositionForEntityCollisionCheck = endPosition;
+    if (blockRayTraceResult.getType() != RayTraceResult.Type.MISS) {
+      endPositionForEntityCollisionCheck = blockRayTraceResult.getHitVec();
+    }
+
+    // next check for collision with an entity.  We still need to check even if there was a block collision, to decide
+    //   whether the boomerang would have hit an entity before hitting the block.
+    EntityRayTraceResult entityraytraceresult = this.rayTraceEntities(startPosition, endPositionForEntityCollisionCheck, motion);
+
+    // If we collided with anything, process the colllision
+    if (entityraytraceresult != null) {
+      if (!net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, entityraytraceresult)){
+        this.onImpactWithEntity(entityraytraceresult);
       }
-      case ENTITY: {
-        if (!net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, raytraceresult)){
-          this.onImpactWithEntity((EntityRayTraceResult)raytraceresult);
-        }
-        break;
-      }
-      case MISS: {
-        break;
+    } else if (blockRayTraceResult.getType() != RayTraceResult.Type.MISS) {
+      if (!net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, blockRayTraceResult)){
+        this.onImpactWithBlock(blockRayTraceResult);
       }
     }
+
     if (!this.dataManager.get(IN_FLIGHT_DMP)) return;  // if no longer in flight due to collision; exit immediately
 
     // adjust the yaw, pitch, and end-over-end rotation, for animation purposes
@@ -619,6 +622,15 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
       dataManager.set(IN_FLIGHT_DMP, false);
     }
     ++ticksSpentInFlight;
+  }
+
+  // Check to see if we collide with any entities
+  protected EntityRayTraceResult rayTraceEntities(Vector3d startVec, Vector3d endVec, Vector3d motion) {
+    AxisAlignedBB aabb = this.getBoundingBox().expand(motion).grow(1.0);
+    // this aabb defines a worst case region that we might collide with entities in
+    // i.e. if an entity's aabb doesn't intersect this region then the boomerang can't collide with it
+    return ProjectileHelper.rayTraceEntities(this.world, this, startVec, endVec, aabb,
+                                             this::canEntityBeCollidedWith);
   }
 
   // Called when the boomerang hits a block.
@@ -785,7 +797,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
         }
       }
     } else {
-      target.setFireTimer(fireTimer);  // undo any flame effect we added
+      target.func_241209_g_(fireTimer);  //  .setFireTimer     undo any flame effect we added
     }
     stopFlightDueToEntityImpact(rayTraceResult, target.isInvulnerable());
   }
