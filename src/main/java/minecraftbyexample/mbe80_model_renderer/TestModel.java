@@ -110,7 +110,7 @@ public class TestModel extends Model {
     public Double PARENT_DELTA = 0.0;
 
     public Vector3f CHILD_CORNER = new Vector3f(-0.5F, -1.5F, -1.0F);
-    public Vector3f CHILD_ROTATION_POINT = new Vector3f(0.0F,0.0F,0.0F);
+    public Vector3f CHILD_ROTATION_POINT = new Vector3f(0.0F,-9.5F,7.0F);
     public Vector3f CHILD_ROTATION_ANGLE = new Vector3f(0.0F, 0.0F, 0.0F);
     public Vector3i CHILD_TEXTURE_ORIGIN = new Vector3i(0, 0, 0);
     public Vector3i CHILD_BLOCK_DIMENSIONS = new Vector3i(1, 3, 2);

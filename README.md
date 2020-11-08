@@ -1,7 +1,5 @@
 MinecraftByExample [1.16.3]
 ==================
-*** update to 1.16.3 is a work in progress; for earlier versions see below ***
-
 The purpose of MinecraftByExample is to give simple working examples of the important concepts in Minecraft and Forge. If you're anything like me, a good code example is worth several screens of waffling explanation, and can very quickly explain the key concepts.  I also find it much easier to adapt and debug something that already works, than to have to synthesize something from scratch and spend hours trying to discover the missing bit of information I didn't know about.
 
 I've tried to keep the code simple and obvious and to resist the urge to be clever. The examples might not be the most efficient or succinct implementation, I've deliberately left the optimization to you.
@@ -83,8 +81,8 @@ Examples marked with X are not converted to 1.16.3 yet.
   - [MBE75][75] - a tool to help you automate testing of your classes in-game.
 
 ### Entities and Models
-  - X [MBE80][80] - Shows the basics of Models (eg PigModel), model parameters adjustable in real time using commands
-  - X [MBE81][81] - Projectile Entities (eg snowballs, arrows)
+  - [MBE80][80] - Shows the basics of Models (eg PigModel), model parameters adjustable in real time using commands
+  - [MBE81][81] - Projectile Entities (eg snowballs, arrows)
   
 ### Miscellaneous Debugging Tools
   - [DebuggingTools]- This package is a bunch of functions and tools that I use occasionally, mostly for debugging

@@ -100,3 +100,5 @@ If the texture is wrong:
 
 `/mbedebug param parent_delta 0.1` delta value (expansion) of parent box<br>
 `/mbedebug param child_delta 0.1` delta value (expansion) of child box<br>
+
+`/mbedebug param use_entity_model_transformations value` if 0, don't apply vanilla's entity model transformations (which are - invert the x and y axes are inverted, translate upwards by 1.5)
