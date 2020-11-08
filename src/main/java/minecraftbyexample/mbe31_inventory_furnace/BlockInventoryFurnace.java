@@ -59,7 +59,6 @@ public class BlockInventoryFurnace extends ContainerBlock
 
   /**
    * Amount of block light emitted by the furnace
-   * todo update to 1.16.3
    * This function is registered in the Block Properties using func_235838_a;  see BlockInventoryFurnace constructor
    */
   public static int getLightValue(BlockState state) {

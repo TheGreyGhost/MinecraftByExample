@@ -125,7 +125,6 @@ public class BlockRedstoneColouredLamp extends Block
     return BlockRenderType.MODEL;
   }
 
-  // Change the lighting value based on the lamp colour //todo update to 1.16.3
   // This function is registered in the Block Properties using func_235838_a;  see BlockInventoryFurnace constructor
   public static int getLightValue(BlockState state) {
     // convert the RGB to a single brightness.  Just choose the component with the highest brightness.

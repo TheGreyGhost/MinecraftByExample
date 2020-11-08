@@ -82,7 +82,7 @@ public class MBEquoteCommand {
          .then(Commands.argument("custommessage", MessageArgument.message())  // see also StringArgumentType; .word() or .string() or .greedystring()
                  .executes(commandContext -> {
                                  ITextComponent iTextComponent = MessageArgument.getMessage(commandContext, "custommessage");
-                                 sendMessage(commandContext,  iTextComponent.getUnformattedComponentText()); // iTextComponent.getFormattedText());  todo verify that this is right
+                                 sendMessage(commandContext,  iTextComponent.getUnformattedComponentText()); // iTextComponent.getFormattedText());
                                  return 1;
                                 })
               )
