@@ -234,7 +234,7 @@ public class BlockVariants extends Block implements IWaterLoggable
 
     @Override
 //    public String getName()
-    public String func_176610_l()
+    public String getString()
     {
       return this.name;
     }

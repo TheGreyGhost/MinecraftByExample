@@ -355,7 +355,7 @@ public class AltimeterBakedModel implements IBakedModel {
     }
 
     BakedQuad translatedCopy = new BakedQuad(newVertexData, original.getTintIndex(), original.getFace(),
-            original.func_187508_a(), original.func_239287_f_()); //            original.shouldApplyDiffuseLighting());
+            original.getSprite(), original.applyDiffuseLighting());
     return translatedCopy;
   }
 
@@ -395,8 +395,8 @@ public class AltimeterBakedModel implements IBakedModel {
   }
 
   @Override
-  public boolean func_230044_c_() {
-    return baseModel.func_230044_c_();  // related to item "diffuselighting"
+  public boolean isSideLit() {
+    return baseModel.isSideLit();
   }
 
   @Override

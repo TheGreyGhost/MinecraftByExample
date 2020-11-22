@@ -130,7 +130,7 @@ public class RenderWavefrontObj {
     ClientPlayerEntity player = Minecraft.getInstance().player;
     BlockPos blockPos = tileEntityMBE21.getPos();
     if (player != null && blockPos != null) {
-      Vector3d pedestalCentre = Vector3d.func_237491_b_(blockPos).add(0.5, 1.0, 0.5);  // blockorigin//   new Vector3d(blockPos).add(0.5, 1.0, 0.5);
+      Vector3d pedestalCentre = Vector3d.copy(blockPos).add(0.5, 1.0, 0.5);
       Vector3d playerFeet = player.getPositionVec();
       playerDistance = playerFeet.distanceTo(pedestalCentre);
     }
@@ -171,7 +171,7 @@ public class RenderWavefrontObj {
     ClientPlayerEntity player = Minecraft.getInstance().player;
     BlockPos blockPos = tileEntityMBE21.getPos();
     if (player != null && blockPos != null) {
-      Vector3d pedestalCentre = Vector3d.func_237491_b_(blockPos).add(0.5, 1.0, 0.5);  // blockorigin//   new Vector3d(blockPos).add(0.5, 1.0, 0.5);
+      Vector3d pedestalCentre = Vector3d.copy(blockPos).add(0.5, 1.0, 0.5);
       Vector3d playerFeet = player.getPositionVec();
       playerDistance = playerFeet.distanceTo(pedestalCentre);
     }

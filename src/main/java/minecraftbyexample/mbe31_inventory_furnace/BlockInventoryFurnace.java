@@ -36,7 +36,7 @@ public class BlockInventoryFurnace extends ContainerBlock
 {
 	public BlockInventoryFurnace()
   {
-    super(Block.Properties.create(Material.ROCK).func_235838_a_(BlockInventoryFurnace::getLightValue)
+    super(Block.Properties.create(Material.ROCK).setLightLevel(BlockInventoryFurnace::getLightValue)
     );
     BlockState defaultBlockState = this.stateContainer.getBaseState().with(BURNING_SIDES_COUNT, 0);
     this.setDefaultState(defaultBlockState);

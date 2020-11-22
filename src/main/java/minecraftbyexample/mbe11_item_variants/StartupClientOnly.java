@@ -38,7 +38,7 @@ public class StartupClientOnly
   }
 
   public static void registerPropertyOverride() {
-    ItemModelsProperties.func_239418_a_(StartupCommon.itemVariants, new ResourceLocation("fullness"), ItemVariants::getFullnessPropertyOverride);
+    ItemModelsProperties.registerProperty(StartupCommon.itemVariants, new ResourceLocation("fullness"), ItemVariants::getFullnessPropertyOverride);
     // use lambda function to link the NBT fullness value to a suitable property override value
   }
 }

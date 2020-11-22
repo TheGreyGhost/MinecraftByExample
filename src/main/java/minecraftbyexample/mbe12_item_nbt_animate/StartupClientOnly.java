@@ -28,6 +28,6 @@ public class StartupClientOnly
   //  See ItemNBTanimationTimer for more information.
   // ItemNBTanimationTimer() is used as a lambda function to calculate the current chargefraction during rendering
   public static void registerPropertyOverride() {
-    ItemModelsProperties.func_239418_a_(StartupCommon.itemNBTAnimate, new ResourceLocation("chargefraction"), new ItemNBTanimationTimer());
+    ItemModelsProperties.registerProperty(StartupCommon.itemNBTAnimate, new ResourceLocation("chargefraction"), new ItemNBTanimationTimer());
   }
 }

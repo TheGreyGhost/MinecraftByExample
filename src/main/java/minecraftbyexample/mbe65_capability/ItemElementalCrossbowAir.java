@@ -325,7 +325,7 @@ public class ItemElementalCrossbowAir extends CrossbowItem {  // need to extend 
     if(livingEntity instanceof ServerPlayerEntity) {
       ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity)livingEntity;
       if (!world.isRemote) {
-        CriteriaTriggers.SHOT_CROSSBOW.func_215111_a(serverPlayerEntity, crossbowItemStack);
+        CriteriaTriggers.SHOT_CROSSBOW.test(serverPlayerEntity, crossbowItemStack);  // misleading name.  used to trigger advancements when crossbow is fired
       }
 
       serverPlayerEntity.addStat(Stats.ITEM_USED.get(crossbowItemStack.getItem()));
@@ -411,13 +411,13 @@ public class ItemElementalCrossbowAir extends CrossbowItem {  // need to extend 
     if (isCharged(itemStack) && !chargedProjectiles.isEmpty()) {
       ItemStack firstProjectile = (ItemStack)chargedProjectiles.get(0);
       textComponentList.add((new TranslationTextComponent("item.minecraft.crossbow.projectile", new Object[0]))
-              .func_240702_b_(" ").func_230529_a_(firstProjectile.getTextComponent()));  //.appendText   .appendSibling
+              .appendString(" ").append(firstProjectile.getTextComponent()));  //.appendText   .appendSibling
       if (tooltipFlag.isAdvanced() && firstProjectile.getItem() == Items.FIREWORK_ROCKET) {
         ArrayList arrayList = Lists.newArrayList();
         Items.FIREWORK_ROCKET.addInformation(firstProjectile, world, arrayList, tooltipFlag);
         if (!arrayList.isEmpty()) {
           for (int i = 0; i < arrayList.size(); ++i) {
-            arrayList.set(i, (new StringTextComponent("  ")).func_230529_a_((ITextComponent)arrayList.get(i)).func_240699_a_(TextFormatting.GRAY)); // .appendSibling  /.applyTextStyle
+            arrayList.set(i, (new StringTextComponent("  ")).append((ITextComponent)arrayList.get(i)).mergeStyle(TextFormatting.GRAY));
           }
 
           textComponentList.addAll(arrayList);

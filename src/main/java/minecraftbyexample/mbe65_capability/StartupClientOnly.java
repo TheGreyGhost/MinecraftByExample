@@ -22,11 +22,11 @@ public class StartupClientOnly {
 
   // We use a PropertyOverride for this item to change the appearance depending on the state of the property.
   public static void registerPropertyOverride() {
-    ItemModelsProperties.func_239418_a_(StartupCommon.itemElementalBowFire, new ResourceLocation("pulltime"), ItemElementalBowFire::getPullDurationSeconds);
-    ItemModelsProperties.func_239418_a_(StartupCommon.itemElementalBowFire, new ResourceLocation("isbeingpulled"), ItemElementalBowFire::isBeingPulled);
-    ItemModelsProperties.func_239418_a_(StartupCommon.itemElementalCrossbowAir, new ResourceLocation("pullfraction"), ItemElementalCrossbowAir::getPullFraction);
-    ItemModelsProperties.func_239418_a_(StartupCommon.itemElementalCrossbowAir, new ResourceLocation("isbeingpulled"), ItemElementalCrossbowAir::isBeingPulled);
-    ItemModelsProperties.func_239418_a_(StartupCommon.itemElementalCrossbowAir, new ResourceLocation("ischarged"), ItemElementalCrossbowAir::isFullyCharged);
+    ItemModelsProperties.registerProperty(StartupCommon.itemElementalBowFire, new ResourceLocation("pulltime"), ItemElementalBowFire::getPullDurationSeconds);
+    ItemModelsProperties.registerProperty(StartupCommon.itemElementalBowFire, new ResourceLocation("isbeingpulled"), ItemElementalBowFire::isBeingPulled);
+    ItemModelsProperties.registerProperty(StartupCommon.itemElementalCrossbowAir, new ResourceLocation("pullfraction"), ItemElementalCrossbowAir::getPullFraction);
+    ItemModelsProperties.registerProperty(StartupCommon.itemElementalCrossbowAir, new ResourceLocation("isbeingpulled"), ItemElementalCrossbowAir::isBeingPulled);
+    ItemModelsProperties.registerProperty(StartupCommon.itemElementalCrossbowAir, new ResourceLocation("ischarged"), ItemElementalCrossbowAir::isFullyCharged);
   }
 }
 

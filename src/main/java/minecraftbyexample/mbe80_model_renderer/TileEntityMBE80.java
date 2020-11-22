@@ -39,7 +39,7 @@ public class TileEntityMBE80 extends TileEntity implements ITickableTileEntity {
 	@Override
 	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
     BlockState blockState = world.getBlockState(pos);
-    func_230337_a_(blockState, pkt.getNbtCompound());   // read from the nbt in the packet
+    read(blockState, pkt.getNbtCompound());   // read from the nbt in the packet
 	}
 
 	/* Creates a tag containing the TileEntity information, used by vanilla to transmit from server to client
@@ -57,7 +57,7 @@ public class TileEntityMBE80 extends TileEntity implements ITickableTileEntity {
 	@Override
 	public void handleUpdateTag(BlockState state, CompoundNBT tag)
 	{
-		this.func_230337_a_(state, tag);  //todo deobfs  //read
+		this.read(state, tag);
 	}
 
 	// This is where you save any data that you don't want to lose when the tile entity unloads
@@ -71,9 +71,9 @@ public class TileEntityMBE80 extends TileEntity implements ITickableTileEntity {
 
 	// This is where you load the data that you saved in writeToNBT
 	@Override
-	public void func_230337_a_(BlockState blockState, CompoundNBT parentNBTTagCompound)      //todo change obfuscated name: used to be read(CompoundNBT)
+	public void read(BlockState blockState, CompoundNBT parentNBTTagCompound)
 	{
-		super.func_230337_a_(blockState, parentNBTTagCompound); // The super call is required to load the tiles location    //todo deobs
+		super.read(blockState, parentNBTTagCompound); // The super call is required to load the tiles location
     interactiveParameters = TestModel.InteractiveParameters.createFromNBT(parentNBTTagCompound);
 	}
 

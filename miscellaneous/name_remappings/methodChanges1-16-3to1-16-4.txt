@@ -1,0 +1,29 @@
+IStringSerializable::func_176610_l  -> getString
+BakedQuad::func_187508_a -> getSprite
+BakedQuad::func_239287_f_-> applyDiffuseLighting
+IBakedModel::func_230044_c_ -> isSideLit
+AbstractBlock::func_235861_h_ -> setRequiresTool
+AbstractBlock::func_235838_a_ -> setLightLevel
+TileEntity::func_230337_a_ -> read
+ItemModelsProperties.func_239418_a_ -> registerProperty
+ItemOverrideList::func_239290_a_ -> getOverrideModel
+Vector3d.func_237491_b_ -> copy
+ContainerScreen::func_230430_a_ -> render
+ContainerScreen::func_230446_a_ -> renderBackground
+ContainerScreen::func_230459_a_ -> renderHoveredTooltip
+ContainerScreen::func_230451_b_ -> drawGuiContainerForegroundLayer
+ContainerScreen::func_238474_b_
+ContainerScreen::field_230712_o_ -> font
+ContainerScreen::field_230704_d_
+ContainerScreen::field_230706_i_ -> minecraft
+ContainerScreen::field_230708_k_ -> width
+ContainerScreen::field_230709_l_ -> height
+func_243248_b
+func_230450_a_ -> drawGuiContainerBackgroundLayer
+AbstractGui::func_238474_b_ -> blit
+
+Util.field_240973_b_ -> DUMMY_UUID
+ServerWorld::func_230546_a_ -> createExplosion
+ShotCrossbowTrigger::func_215111_a -> test
+Entity::func_233580_cy_ -> getPosition
+Entity::func_230279_az_ -> isImmuneToFire

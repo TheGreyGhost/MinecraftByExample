@@ -27,7 +27,7 @@ public class StartupClientOnly
   }
 
   public static void registerPropertyOverride() {
-    ItemModelsProperties.func_239418_a_(StartupCommon.itemFlowerBag, new ResourceLocation("fullness"), ItemFlowerBag::getFullnessPropertyOverride);
+    ItemModelsProperties.registerProperty(StartupCommon.itemFlowerBag, new ResourceLocation("fullness"), ItemFlowerBag::getFullnessPropertyOverride);
     // use lambda function to link the bag fullness to a suitable property override value
   }
 

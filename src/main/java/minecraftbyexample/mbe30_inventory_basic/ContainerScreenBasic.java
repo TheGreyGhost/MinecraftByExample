@@ -34,48 +34,47 @@ public class ContainerScreenBasic extends ContainerScreen<ContainerBasic> {
 		ySize = 133;
 	}
 
-  // deobfuscated name is render
   @Override
-  public void func_230430_a_(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-    this.func_230446_a_(matrixStack);          //     this.renderBackground();
-    super.func_230430_a_(matrixStack, mouseX, mouseY, partialTicks); //super.render(mouseX, mouseY, partialTicks);
-    this.func_230459_a_(matrixStack, mouseX, mouseY);  //this.renderHoveredToolTip(mouseX, mouseY);
+  public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    this.renderBackground(matrixStack);
+    super.render(matrixStack, mouseX, mouseY, partialTicks);
+    this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
   }
 
   /**
    * Draw the foreground layer for the GuiContainer (everything in front of the items)
-   * Taken directly from ChestScreen
+   * Taken directly from ContainerScreen
    */
   @Override
-  protected void func_230451_b_(MatrixStack matrixStack, int mouseX, int mouseY) {
+  protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
 		final float LABEL_XPOS = 5;
 		final float FONT_Y_SPACING = 12;
 		final float CHEST_LABEL_YPOS = ContainerBasic.TILE_INVENTORY_YPOS - FONT_Y_SPACING;
-    this.field_230712_o_.func_243248_b(matrixStack, this.field_230704_d_,
-            LABEL_XPOS, CHEST_LABEL_YPOS, Color.darkGray.getRGB());  //this.font.drawString;  this.title
+    this.font.func_243248_b(matrixStack, this.title,
+            LABEL_XPOS, CHEST_LABEL_YPOS, Color.darkGray.getRGB());  //this.font.drawString;
 
     final float PLAYER_INV_LABEL_YPOS = ContainerBasic.PLAYER_INVENTORY_YPOS - FONT_Y_SPACING;
-    this.field_230712_o_.func_243248_b(matrixStack, this.playerInventory.getDisplayName(),                  ///    this.font.drawString
+    this.font.func_243248_b(matrixStack, this.playerInventory.getDisplayName(),                  ///    this.font.drawString
             LABEL_XPOS, PLAYER_INV_LABEL_YPOS, Color.darkGray.getRGB());
   }
 
   /**
    * Draws the background layer of this container (behind the items).
    * Taken directly from ChestScreen / BeaconScreen
-   * drawGuiContainerBackgroundLayer is the deobfuscated name
+
    */
   @Override
-  protected void func_230450_a_(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+  protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
     RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-    this.field_230706_i_.getTextureManager().bindTexture(BACKGROUND_TEXTURE);   // this.minecraft.getTextureManager()
+    this.minecraft.getTextureManager().bindTexture(BACKGROUND_TEXTURE);   // this.minecraft.getTextureManager()
 
     // width and height are the size provided to the window when initialised after creation.
     // xSize, ySize are the expected size of the texture-? usually seems to be left as a default.
     // The code below is typical for vanilla containers, so I've just copied that- it appears to centre the texture within
     //  the available window
-    int edgeSpacingX = (this.field_230708_k_ - this.xSize) / 2;  // .width
-    int edgeSpacingY = (this.field_230709_l_ - this.ySize) / 2;   //.height
-    this.func_238474_b_(matrixStack, edgeSpacingX, edgeSpacingY, 0, 0, this.xSize, this.ySize);  //.blit
+    int edgeSpacingX = (this.width - this.xSize) / 2;
+    int edgeSpacingY = (this.height - this.ySize) / 2;
+    this.blit(matrixStack, edgeSpacingX, edgeSpacingY, 0, 0, this.xSize, this.ySize);
   }
 
   // This is the resource location for the background image for the GUI

@@ -124,8 +124,8 @@ public class CamouflageBakedModel implements IBakedModel {
   }
 
   @Override
-  public boolean func_230044_c_() {
-    return modelWhenNotCamouflaged.func_230044_c_();  // related to item "diffuselighting"
+  public boolean isSideLit() {
+    return modelWhenNotCamouflaged.isSideLit();  // related to item "diffuselighting"
   }
 
   @Override

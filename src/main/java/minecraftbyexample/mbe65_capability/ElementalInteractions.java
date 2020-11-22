@@ -214,9 +214,9 @@ public class ElementalInteractions {
 
       final Entity NO_ENTITY_CAUSED_DAMAGE = null;
       final boolean CAUSES_FIRE = true;
-      serverWorld.func_230546_a_(NO_ENTITY_CAUSED_DAMAGE, DamageSource.MAGIC, (ExplosionContext)null,
+      serverWorld.createExplosion(NO_ENTITY_CAUSED_DAMAGE, DamageSource.MAGIC, (ExplosionContext)null,
                                   entityPos.getX(), entityPos.getY(), entityPos.getZ(),
-                                  explosionRadius, CAUSES_FIRE, Explosion.Mode.BREAK);      //createExplosion
+                                  explosionRadius, CAUSES_FIRE, Explosion.Mode.BREAK);
     }
   }
 

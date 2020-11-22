@@ -62,19 +62,18 @@ public class ContainerScreenFurnace extends ContainerScreen<ContainerFurnace> {
   final static  int PLAYER_INV_LABEL_XPOS = ContainerFurnace.PLAYER_INVENTORY_XPOS;
   final static  int PLAYER_INV_LABEL_YPOS = ContainerFurnace.PLAYER_INVENTORY_YPOS - FONT_Y_SPACING;
 
-  // deobfuscated name is render
   @Override
-  public void func_230430_a_(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-    this.func_230446_a_(matrixStack);                          //     this.renderBackground();
-    super.func_230430_a_(matrixStack, mouseX, mouseY, partialTicks);     //super.render
-    this.func_230459_a_(matrixStack, mouseX, mouseY);  //this.renderHoveredToolTip(mouseX, mouseY);
+  public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    this.renderBackground(matrixStack);
+    super.render(matrixStack, mouseX, mouseY, partialTicks);
+    this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
   }
 
   // Draw the Tool tip text if hovering over something of interest on the screen
   // renderHoveredToolTip
   @Override
-  protected void func_230459_a_(MatrixStack matrixStack, int mouseX, int mouseY) {
-    if (!this.field_230706_i_.player.inventory.getItemStack().isEmpty()) return;  //this.minecraft  // no tooltip if the player is dragging something
+  protected void renderHoveredTooltip(MatrixStack matrixStack, int mouseX, int mouseY) {
+    if (!this.minecraft.player.inventory.getItemStack().isEmpty()) return;  // no tooltip if the player is dragging something
 
     List<ITextComponent> hoveringText = new ArrayList<ITextComponent>();
 
@@ -97,50 +96,47 @@ public class ContainerScreenFurnace extends ContainerScreen<ContainerFurnace> {
     if (!hoveringText.isEmpty()){
       func_243308_b(matrixStack, hoveringText, mouseX, mouseY);  //renderToolTip
     } else {
-      super.func_230459_a_(matrixStack, mouseX, mouseY);  //renderHoveredToolTip
+      super.renderHoveredTooltip(matrixStack, mouseX, mouseY);
     }
   }
 
-  // drawGuiContainerBackgroundLayer is the deobfuscated name
-
   @Override
-	protected void func_230450_a_(MatrixStack matrixStack, float partialTicks, int x, int y) {
+	protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int x, int y) {
     RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-    this.field_230706_i_.getTextureManager().bindTexture(TEXTURE); //this.minecraft
+    this.minecraft.getTextureManager().bindTexture(TEXTURE);
 
     // width and height are the size provided to the window when initialised after creation.
     // xSize, ySize are the expected size of the texture-? usually seems to be left as a default.
     // The code below is typical for vanilla containers, so I've just copied that- it appears to centre the texture within
     //  the available window
     // draw the background for this window
-    int edgeSpacingX = (this.field_230708_k_ - this.xSize) / 2; //.width
-    int edgeSpacingY = (this.field_230709_l_ - this.ySize) / 2; //.height
-    this.func_238474_b_(matrixStack, edgeSpacingX, edgeSpacingY, 0, 0, this.xSize, this.ySize);  //.blit
+    int edgeSpacingX = (this.width - this.xSize) / 2;
+    int edgeSpacingY = (this.height - this.ySize) / 2;
+    this.blit(matrixStack, edgeSpacingX, edgeSpacingY, 0, 0, this.xSize, this.ySize);
 
     // draw the cook progress bar
 		double cookProgress = containerFurnace.fractionOfCookTimeComplete();
-		this.func_238474_b_(matrixStack, guiLeft + COOK_BAR_XPOS, guiTop + COOK_BAR_YPOS, COOK_BAR_ICON_U, COOK_BAR_ICON_V,  //.blit
+		this.blit(matrixStack, guiLeft + COOK_BAR_XPOS, guiTop + COOK_BAR_YPOS, COOK_BAR_ICON_U, COOK_BAR_ICON_V,
             (int) (cookProgress * COOK_BAR_WIDTH), COOK_BAR_HEIGHT);
 
 		// draw the fuel remaining bar for each fuel slot flame
 		for (int i = 0; i < containerFurnace.FUEL_SLOTS_COUNT; ++i) {
 			double burnRemaining = containerFurnace.fractionOfFuelRemaining(i);
 			int yOffset = (int)((1.0 - burnRemaining) * FLAME_HEIGHT);
-      this.func_238474_b_(matrixStack, guiLeft + FLAME_XPOS + FLAME_X_SPACING * i, guiTop + FLAME_YPOS + yOffset,  //.blit
+      this.blit(matrixStack, guiLeft + FLAME_XPOS + FLAME_X_SPACING * i, guiTop + FLAME_YPOS + yOffset,
               FLAME_ICON_U, FLAME_ICON_V + yOffset, FLAME_WIDTH, FLAME_HEIGHT - yOffset);
 		}
 	}
 
 	@Override
-  // drawGuiContainerForegroundLayer
-	protected void func_230451_b_(MatrixStack matrixStack, int mouseX, int mouseY) {
+	protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
     // draw the label for the top of the screen
 		final int LABEL_XPOS = 5;
 		final int LABEL_YPOS = 5;
-    this.field_230712_o_.func_243248_b(matrixStack, this.field_230704_d_, LABEL_XPOS, LABEL_YPOS, Color.darkGray.getRGB());  //this.font.drawString;  this.title
+    this.font.func_243248_b(matrixStack, this.title, LABEL_XPOS, LABEL_YPOS, Color.darkGray.getRGB());     ///    this.font.drawString
 
     // draw the label for the player inventory slots
-    this.field_230712_o_.func_243248_b(matrixStack, this.playerInventory.getDisplayName(),                  ///    this.font.drawString
+    this.font.func_243248_b(matrixStack, this.playerInventory.getDisplayName(),                  ///    this.font.drawString
             PLAYER_INV_LABEL_XPOS, PLAYER_INV_LABEL_YPOS, Color.darkGray.getRGB());
 	}
 

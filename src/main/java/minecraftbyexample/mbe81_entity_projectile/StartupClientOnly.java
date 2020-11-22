@@ -50,7 +50,7 @@ public class StartupClientOnly
     // getChargeUpTime() is used as a lambda function to calculate the current chargefraction during rendering
     // See the mbe81b_boomerang_charge_0.json, mbe81b_boomerang_charge_1.json, etc to see how this is done.
     //  See also mbe12 for a more-detailed explanation
-    ItemModelsProperties.func_239418_a_(StartupCommon.boomerangItem, new ResourceLocation("chargefraction"), BoomerangItem::getChargeUpTime);
+    ItemModelsProperties.registerProperty(StartupCommon.boomerangItem, new ResourceLocation("chargefraction"), BoomerangItem::getChargeUpTime);
   }
 
   // I've written this out as an explicit implementation to make it clearer, but most folks would just use a lambda instead

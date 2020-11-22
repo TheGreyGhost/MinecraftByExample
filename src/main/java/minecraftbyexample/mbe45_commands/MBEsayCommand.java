@@ -60,7 +60,7 @@ public class MBEsayCommand {
       commandContext.getSource().getServer().getPlayerList().func_232641_a_(finalText, ChatType.CHAT, entity.getUniqueID());
       //func_232641_a_ is sendMessage()
     } else {
-      commandContext.getSource().getServer().getPlayerList().func_232641_a_(finalText, ChatType.SYSTEM, Util.field_240973_b_);
+      commandContext.getSource().getServer().getPlayerList().func_232641_a_(finalText, ChatType.SYSTEM, Util.DUMMY_UUID);
     }
     return 1;
   }

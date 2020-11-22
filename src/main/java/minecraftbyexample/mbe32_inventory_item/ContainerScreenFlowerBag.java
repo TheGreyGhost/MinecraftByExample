@@ -40,42 +40,39 @@ public class ContainerScreenFlowerBag extends ContainerScreen<ContainerFlowerBag
 		super(container, playerInv, title);
 	}
 
-  // deobfuscated name is render
 	@Override
-	public void func_230430_a_(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-    this.func_230446_a_(matrixStack);                          //     this.renderBackground();
-    super.func_230430_a_(matrixStack, mouseX, mouseY, partialTicks);     //super.render
-    this.func_230459_a_(matrixStack, mouseX, mouseY);  //this.renderHoveredToolTip(mouseX, mouseY);
+	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    this.renderBackground(matrixStack);
+    super.render(matrixStack, mouseX, mouseY, partialTicks);
+    this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
 	}
 
 	@Override
-  // drawGuiContainerForegroundLayer
-	protected void func_230451_b_(MatrixStack matrixStack, int mouseX, int mouseY) {
+	protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
     final float PLAYER_LABEL_XPOS = 8;
     final float PLAYER_LABEL_DISTANCE_FROM_BOTTOM = (96 - 2);
 
     final float BAG_LABEL_YPOS = 6;
     TranslationTextComponent bagLabel = new TranslationTextComponent(StartupCommon.itemFlowerBag.getTranslationKey());
-    float BAG_LABEL_XPOS = (xSize / 2.0F) - this.field_230712_o_.getStringWidth(bagLabel.getString()) / 2.0F;                  // centre the label             //this.font.
-    this.field_230712_o_.func_243248_b(matrixStack, bagLabel, BAG_LABEL_XPOS, BAG_LABEL_YPOS, Color.darkGray.getRGB());            //this.font.drawString;
+    float BAG_LABEL_XPOS = (xSize / 2.0F) - this.font.getStringWidth(bagLabel.getString()) / 2.0F;                  // centre the label
+    this.font.func_243248_b(matrixStack, bagLabel, BAG_LABEL_XPOS, BAG_LABEL_YPOS, Color.darkGray.getRGB());            //this.font.drawString;
 
     float PLAYER_LABEL_YPOS = ySize - PLAYER_LABEL_DISTANCE_FROM_BOTTOM;
-    this.field_230712_o_.func_243248_b(matrixStack, this.playerInventory.getDisplayName(),                              //this.font.drawString;
+    this.font.func_243248_b(matrixStack, this.playerInventory.getDisplayName(),                              //this.font.drawString;
                     PLAYER_LABEL_XPOS, PLAYER_LABEL_YPOS, Color.darkGray.getRGB());
 	}
 
 	@Override
-  // drawGuiContainerBackgroundLayer is the deobfuscated name
-	protected void func_230450_a_(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+	protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
     RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-    this.field_230706_i_.getTextureManager().bindTexture(TEXTURE);                //this.minecraft
+    this.minecraft.getTextureManager().bindTexture(TEXTURE);                //this.minecraft
     // width and height are the size provided to the window when initialised after creation.
     // xSize, ySize are the expected size of the texture-? usually seems to be left as a default.
     // The code below is typical for vanilla containers, so I've just copied that- it appears to centre the texture within
     //  the available window
-    int edgeSpacingX = (this.field_230708_k_ - this.xSize) / 2;   //.width
-    int edgeSpacingY = (this.field_230709_l_ - this.ySize) / 2;  //.height
-    this.func_238474_b_(matrixStack, edgeSpacingX, edgeSpacingY, 0, 0, this.xSize, this.ySize);    //.blit
+    int edgeSpacingX = (this.width - this.xSize) / 2;
+    int edgeSpacingY = (this.height - this.ySize) / 2;
+    this.blit(matrixStack, edgeSpacingX, edgeSpacingY, 0, 0, this.xSize, this.ySize);
 	}
 
   // This is the resource location for the background image

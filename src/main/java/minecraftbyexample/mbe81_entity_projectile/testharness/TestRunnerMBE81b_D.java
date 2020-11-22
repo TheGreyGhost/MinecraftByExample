@@ -44,7 +44,7 @@ public class TestRunnerMBE81b_D {
     TestRunnerMBE81.clearAllDebugSettings();
     Vector3d START_POINT = new Vector3d(0, 200.5, 2000.5);
     Vector3d OBSERVER_POINT = new Vector3d(3, 200, 2003);
-    if (!playerIn.func_233580_cy_().withinDistance(OBSERVER_POINT, 30)) {
+    if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
 
@@ -68,7 +68,7 @@ public class TestRunnerMBE81b_D {
     TestRunnerMBE81.clearAllDebugSettings();
     Vector3d START_POINT = new Vector3d(0, 200.5, 2100.5);
     Vector3d OBSERVER_POINT = new Vector3d(3, 200, 2103);
-    if (!playerIn.func_233580_cy_().withinDistance(OBSERVER_POINT, 30)) {
+    if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
 
@@ -92,7 +92,7 @@ public class TestRunnerMBE81b_D {
     TestRunnerMBE81.clearAllDebugSettings();
     Vector3d START_POINT = new Vector3d(0, 200.5, 2200.5);
     Vector3d OBSERVER_POINT = new Vector3d(3, 200, 2203);
-    if (!playerIn.func_233580_cy_().withinDistance(OBSERVER_POINT, 30)) {
+    if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
 
@@ -117,7 +117,7 @@ public class TestRunnerMBE81b_D {
     TestRunnerMBE81.clearAllDebugSettings();
     Vector3d START_POINT = new Vector3d(0, 200.5, 2300.5);
     Vector3d OBSERVER_POINT = new Vector3d(3, 200, 2303);
-    if (!playerIn.func_233580_cy_().withinDistance(OBSERVER_POINT, 30)) {
+    if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
 
@@ -142,7 +142,7 @@ public class TestRunnerMBE81b_D {
     TestRunnerMBE81.clearAllDebugSettings();
     Vector3d START_POINT = new Vector3d(0, 200.5, 2400.5);
     Vector3d OBSERVER_POINT = new Vector3d(3, 200, 2403);
-    if (!playerIn.func_233580_cy_().withinDistance(OBSERVER_POINT, 30)) {
+    if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
 
@@ -167,7 +167,7 @@ public class TestRunnerMBE81b_D {
     TestRunnerMBE81.clearAllDebugSettings();
     Vector3d START_POINT = new Vector3d(0, 200.5, 2500.5);
     Vector3d OBSERVER_POINT = new Vector3d(3, 200, 2503);
-    if (!playerIn.func_233580_cy_().withinDistance(OBSERVER_POINT, 30)) {
+    if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
 
@@ -192,7 +192,7 @@ public class TestRunnerMBE81b_D {
     TestRunnerMBE81.clearAllDebugSettings();
     Vector3d START_POINT = new Vector3d(0, 200.5, 2600.5);
     Vector3d OBSERVER_POINT = new Vector3d(3, 200, 2603);
-    if (!playerIn.func_233580_cy_().withinDistance(OBSERVER_POINT, 30)) {
+    if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
 
@@ -217,7 +217,7 @@ public class TestRunnerMBE81b_D {
     TestRunnerMBE81.clearAllDebugSettings();
     Vector3d START_POINT = new Vector3d(0, 200.5, 2700.5);
     Vector3d OBSERVER_POINT = new Vector3d(3, 200, 2703);
-    if (!playerIn.func_233580_cy_().withinDistance(OBSERVER_POINT, 30)) {
+    if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
 
@@ -242,7 +242,7 @@ public class TestRunnerMBE81b_D {
     TestRunnerMBE81.clearAllDebugSettings();
     Vector3d START_POINT = new Vector3d(0, 200.5, 2800.2);
     Vector3d OBSERVER_POINT = new Vector3d(3, 200, 2803);
-    if (!playerIn.func_233580_cy_().withinDistance(OBSERVER_POINT, 30)) {
+    if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
 
@@ -266,7 +266,7 @@ public class TestRunnerMBE81b_D {
     TestRunnerMBE81.clearAllDebugSettings();
     Vector3d START_POINT = new Vector3d(0, 200.5, 2900.6);
     Vector3d OBSERVER_POINT = new Vector3d(3, 200, 2903);
-    if (!playerIn.func_233580_cy_().withinDistance(OBSERVER_POINT, 30)) {
+    if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
 

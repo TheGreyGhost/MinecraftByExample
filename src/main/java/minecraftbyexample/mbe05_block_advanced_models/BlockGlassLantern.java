@@ -45,7 +45,7 @@ public class BlockGlassLantern extends Block
 {
   public BlockGlassLantern()
   {
-    super(Properties.create(Material.IRON).hardnessAndResistance(3.5F).sound(SoundType.LANTERN).func_235861_h_().notSolid().func_235838_a_(BlockGlassLantern::getLightValue)
+    super(Properties.create(Material.IRON).hardnessAndResistance(3.5F).sound(SoundType.LANTERN).setRequiresTool().notSolid().setLightLevel(BlockGlassLantern::getLightValue)
     );    // match the vanilla lantern properties except we don't want the lantern to be lit all the time, so supply a mapping function getLightValue
           //  func_235861_h_ is "requiresToolToHarvest
 

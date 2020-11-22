@@ -38,7 +38,7 @@ public class BlockRedstoneColouredLamp extends Block
 {
   public BlockRedstoneColouredLamp()
   {
-    super(Block.Properties.create(Material.IRON).func_235838_a_(BlockRedstoneColouredLamp::getLightValue).notSolid());
+    super(Block.Properties.create(Material.IRON).setLightLevel(BlockRedstoneColouredLamp::getLightValue).notSolid());
     // notSolid is required to make the lighting work properly (affects ambient occlusion calculations) -
     // for blocks which emit light, notSolid ensures that the skylight is added to the blocklight when calculating lighting
   }

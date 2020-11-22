@@ -60,7 +60,7 @@ public class TileEntityData extends TileEntity implements ITickableTileEntity {
 	@Override
 	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
     BlockState blockState = world.getBlockState(pos);
-    func_230337_a_(blockState, pkt.getNbtCompound());   // read from the nbt in the packet
+    read(blockState, pkt.getNbtCompound());   // read from the nbt in the packet
 	}
 
   /* Creates a tag containing all of the TileEntity information, used by vanilla to transmit from server to client
@@ -78,7 +78,7 @@ public class TileEntityData extends TileEntity implements ITickableTileEntity {
   @Override
   public void handleUpdateTag(BlockState blockState, CompoundNBT parentNBTTagCompound)
   {
-    this.func_230337_a_(blockState, parentNBTTagCompound);   //todo deobs
+    this.read(blockState, parentNBTTagCompound);
   }
 
   // This is where you save any data that you don't want to lose when the tile entity unloads
@@ -139,9 +139,9 @@ public class TileEntityData extends TileEntity implements ITickableTileEntity {
 
 	// This is where you load the data that you saved in writeToNBT
 	@Override
-	public void func_230337_a_(BlockState blockState, CompoundNBT parentNBTTagCompound)
+	public void read(BlockState blockState, CompoundNBT parentNBTTagCompound)
 	{
-    super.func_230337_a_(blockState, parentNBTTagCompound);   //todo deobs
+    super.read(blockState, parentNBTTagCompound);   //todo deobs
 
 		// important rule: never trust the data you read from NBT, make sure it can't cause a crash
 
@@ -241,8 +241,7 @@ public class TileEntityData extends TileEntity implements ITickableTileEntity {
 			world.removeBlock(pos, false);
 		} else if (chosenBlock == Blocks.OAK_SAPLING) {
 			SaplingBlock blockSapling = (SaplingBlock)Blocks.OAK_SAPLING;
-			// blockSapling.generateTree(world, this.pos, blockSapling.getDefaultState(),random);
-      blockSapling.func_226942_a_(serverWorld, this.pos, blockSapling.getDefaultState(), random);  //todo rename at next MCP update
+      blockSapling.placeTree(serverWorld, this.pos, blockSapling.getDefaultState(), random);
 		}
 	}
 

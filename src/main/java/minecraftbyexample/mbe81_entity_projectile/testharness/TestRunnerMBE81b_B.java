@@ -66,7 +66,7 @@ public class TestRunnerMBE81b_B {
     Vector3d START_POINT = new Vector3d(0, 201, 0);
     Vector3d OBSERVER_POINT = new Vector3d(3, 200, 0);
 
-    if (!playerIn.func_233580_cy_().withinDistance(OBSERVER_POINT, 30)) {  //.getPosition
+    if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {  //.getPosition
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
     BlockPos CENTRE_POS = new BlockPos(0, 199, 0);
@@ -90,7 +90,7 @@ public class TestRunnerMBE81b_B {
     Vector3d START_POINT = new Vector3d(0, 201, 0);
     Vector3d OBSERVER_POINT = new Vector3d(3, 200, 0);
 
-    if (!playerIn.func_233580_cy_().withinDistance(OBSERVER_POINT, 30)) { //.getPosition
+    if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) { //.getPosition
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
     BlockPos CENTRE_POS = new BlockPos(0, 199, 0);
@@ -113,7 +113,7 @@ public class TestRunnerMBE81b_B {
     Vector3d START_POINT = new Vector3d(0, 201, 0);
     Vector3d OBSERVER_POINT = new Vector3d(3, 200, 0);
 
-    if (!playerIn.func_233580_cy_().withinDistance(OBSERVER_POINT, 30)) {  //.getPosition
+    if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {  //.getPosition
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
     BlockPos CENTRE_POS = new BlockPos(0, 199, 0);
@@ -136,7 +136,7 @@ public class TestRunnerMBE81b_B {
     Vector3d START_POINT = new Vector3d(0, 201, 0);
     Vector3d OBSERVER_POINT = new Vector3d(3, 200, 0);
 
-    if (!playerIn.func_233580_cy_().withinDistance(OBSERVER_POINT, 30)) {  //.getPosition
+    if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {  //.getPosition
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
     BlockPos CENTRE_POS = new BlockPos(0, 199, 0);
@@ -161,7 +161,7 @@ public class TestRunnerMBE81b_B {
     BlockPos centre = new BlockPos(100, 199, 0);
     TestRunnerMBE81.createBasin(playerIn, centre, 10, 3, Blocks.WATER.getDefaultState());
 
-    if (!playerIn.func_233580_cy_().withinDistance(OBSERVER_POINT, 30)) {  //.getPosition
+    if (!playerIn.getPosition().withinDistance(OBSERVER_POINT, 30)) {  //.getPosition
       TestRunnerTools.teleportPlayerToTestRegion(playerIn, new BlockPos(OBSERVER_POINT), true);
     }
     ItemStack thrownBoomerang = new ItemStack(StartupCommon.boomerangItem);

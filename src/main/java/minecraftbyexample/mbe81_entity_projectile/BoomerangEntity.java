@@ -468,7 +468,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
                      || MathHelper.floor(this.prevPosZ) != MathHelper.floor(this.getPosZ());
     int tickUpdatePeriod = blockPositionHasChanged ? 2 : 40;
     if (this.ticksExisted % tickUpdatePeriod == 0) {
-      if (this.world.getFluidState(this.func_233580_cy_()).isTagged(FluidTags.LAVA) && !this.func_230279_az_()) {
+      if (this.world.getFluidState(this.getPosition()).isTagged(FluidTags.LAVA) && !this.isImmuneToFire()) {
         this.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.4F, 2.0F + this.rand.nextFloat() * 0.4F);
       }
     }
@@ -797,7 +797,7 @@ public class BoomerangEntity extends Entity implements IEntityAdditionalSpawnDat
         }
       }
     } else {
-      target.func_241209_g_(fireTimer);  //  .setFireTimer     undo any flame effect we added
+      target.forceFireTicks(fireTimer);  // undo any flame effect we added
     }
     stopFlightDueToEntityImpact(rayTraceResult, target.isInvulnerable());
   }

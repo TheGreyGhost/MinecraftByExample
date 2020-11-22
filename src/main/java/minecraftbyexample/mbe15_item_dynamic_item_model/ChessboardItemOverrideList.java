@@ -40,7 +40,7 @@ public class ChessboardItemOverrideList extends ItemOverrideList {
    * // old name: getModelWithOverrides
    */
   @Override
-  public IBakedModel func_239290_a_(IBakedModel originalModel, ItemStack stack, @Nullable ClientWorld world, @Nullable LivingEntity entity)
+  public IBakedModel getOverrideModel(IBakedModel originalModel, ItemStack stack, @Nullable ClientWorld world, @Nullable LivingEntity entity)
   {
     int numberOfChessPieces = 0;
     if (stack != null) {

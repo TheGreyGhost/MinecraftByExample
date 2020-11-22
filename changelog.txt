@@ -1,3 +1,427 @@
+Build: 1.16.4-35.1.0 - Fri Nov 20 20:54:30 GMT 2020
+	lex:
+		Bump version for RB.
+
+=========
+Build: 1.16.4-35.0.22 - Fri Nov 20 18:24:46 GMT 2020
+	35673674+alcatrazEscapee:
+		Fix MC-194811 - Removing structures causes chunk save errors.
+
+	diesieben07:
+		Fix food bar not rendering when non-living entities are mounted (#7446)
+
+=========
+Build: 1.16.4-35.0.20 - Fri Nov 20 18:18:37 GMT 2020
+	diesieben07:
+		Fix concurrency issue in StartupMessageManager (#7483)
+
+=========
+Build: 1.16.4-35.0.19 - Fri Nov 20 18:11:25 GMT 2020
+	35673674+alcatrazEscapee:
+		Fix forge registry types that have private constructors (BlockStateProviderType, BlockPlacerType, FoliagePlacerType, TreeDecoratorType) (#7482)
+
+=========
+Build: 1.16.4-35.0.18 - Sun Nov 15 16:08:55 GMT 2020
+	cpw:
+		Fix problem where the absence of forge and MC in later loading triggered a weird crash.
+		
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.16.4-35.0.17 - Sat Nov 14 01:41:38 GMT 2020
+	cpw:
+		Fix NPE problem when modid is mismatched.
+		
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.16.4-35.0.16 - Sat Nov 14 00:18:29 GMT 2020
+	cpw:
+		Return the processed modlist data to the upstream system, not the raw unprocessed data. Should resolve the problem
+		that mixin complains about missing info when it's in a "crashed" situation.
+		
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.16.4-35.0.15 - Wed Nov 11 09:09:45 GMT 2020
+	cyborgmas18:
+		Fix dims on servers not loading the first run (#7445)
+
+=========
+Build: 1.16.4-35.0.14 - Tue Nov 10 20:24:33 GMT 2020
+	diesieben07:
+		Allow for custom argument types by filtering them on vanilla connections (#7463)
+
+=========
+Build: 1.16.4-35.0.13 - Tue Nov 10 20:13:34 GMT 2020
+	Bward7864:
+		Add Player context to AnvilUpdateEvent (#7442)
+
+=========
+Build: 1.16.4-35.0.12 - Tue Nov 10 20:02:33 GMT 2020
+	git:
+		Don't overwrite PlayerAdvancement's player with a fake one (#7454)
+		
+		If a FakePlayer is constructed with the same UUID/GameProfile as a
+		currently active player, the player object within PlayerAdvancement is
+		set to the fake player.
+		
+		As fake players cannot receive advancements (see grantCriterion), this
+		prevents the actual player from receiving any advancements until they
+		change dimension/relog.
+
+=========
+Build: 1.16.4-35.0.11 - Tue Nov 10 19:46:01 GMT 2020
+	curle:
+		Add BannerBlock.forColor to SAS to fix banner.toItem() on servers.
+
+=========
+Build: 1.16.4-35.0.10 - Tue Nov 10 19:36:40 GMT 2020
+	Boy132:
+		Call Harvest check event even if the block doesn't require any tool (#7414)
+
+=========
+Build: 1.16.4-35.0.9 - Tue Nov 10 19:25:26 GMT 2020
+	lex:
+		Use linked collections to stabilize order when adding new registry entries.
+
+	xfacthd:
+		Render local player when the renderViewEntity is not the local player (#7216)
+
+=========
+Build: 1.16.4-35.0.7 - Sun Nov 08 04:12:02 GMT 2020
+	cpw:
+		Some help in ExtensionPoint regarding DISPLAYTEST. Let's improve those tick rates!
+		
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.16.4-35.0.6 - Sun Nov 08 03:30:37 GMT 2020
+	cpw:
+		Handle erroring during early mod construction phases, and actually report that into the error UI
+		by doing armslength exception handling and propagation.
+		
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.16.4-35.0.5 - Sun Nov 08 01:48:22 GMT 2020
+	cpw:
+		Support backwards loading 1.16.3 mods in 1.16.4, because we are able to do that. Tweak loading a bit to be smarter about dependency errors of various kinds.
+		
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.16.4-35.0.4 - Sat Nov 07 20:10:44 GMT 2020
+	David Quintana:
+		Add FluidStack codec, and a test mod that verifies its behaviour matches the existing write/read logic.
+		Add missing license headers.
+
+=========
+Build: 1.16.4-35.0.3 - Sat Nov 07 02:11:47 GMT 2020
+	cpw:
+		Update event bus version (should be 3.0.5)
+		
+		Tweak MDK to automatically populate recommended values for things like forge version, loader version and minecraft version.
+		
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.16.4-35.0.2 - Wed Nov 04 00:07:58 GMT 2020
+	diesieben07:
+		Workaround for modded attributes on vanilla entities logging warnings on vanilla clients
+		
+		Switch to a handler-based approach per packet class, simplify patch, add some docs
+		
+		Add license header and docs
+		
+		Switch to a network handler based approach
+		
+		Switch to a network handler based approach
+		
+		revert build gradle change
+		
+		Simplify Packet patch
+		
+		Add license header to IForgePacket
+		
+		Revert ForgeHooks changes
+		
+		Less hacky and more generic way to filter packets for vanilla connections
+		
+		_Actually_ Order SAS.
+		It's early
+		
+		Order SAS
+		
+		simplify vanilla connection check
+		
+		Remove unneeded import change
+
+=========
+Build: 1.16.4-35.0.1 - Mon Nov 02 19:57:45 GMT 2020
+	cpw:
+		Fix early sorting bug that meant the file deduping was causing an error, to, well, not cause it, so we can get to an error screen.
+		
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.16.4-35.0.0 - Mon Nov 02 19:15:50 GMT 2020
+	lex:
+		1.16.4 Initial Update
+
+=========
+Build: 1.16.3-34.1.42 - Mon Nov 02 04:30:53 GMT 2020
+	lex:
+		Fix Biomes not properly copying over ids loaded from the save to the new Dynamic Registry.
+
+=========
+Build: 1.16.3-34.1.41 - Mon Nov 02 01:09:57 GMT 2020
+	David Quintana:
+		Introduce custom loader additions to the model data generators. (#7450)
+		
+		Currently implemented loaders:
+		* OBJ
+		* Composite
+		* Multi-layer
+		* Item layers (vanilla item/generated but with fullbright texture support)
+		* Bucket
+		* Separate Perspective
+
+=========
+Build: 1.16.3-34.1.40 - Mon Nov 02 00:52:12 GMT 2020
+	cpw:
+		actually rollback on error in registry events.
+		
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.16.3-34.1.39 - Sun Nov 01 22:09:32 GMT 2020
+	cpw:
+		Update modlauncher. fixes #7452
+		
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+	cpw:
+		Return client resources even if no data pack found on server. Closes #6225 (Pull request)
+		
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+	tobias.hotz:
+		Auto-detect ansi support for log4j2
+		
+		move to fml.loading subpackage
+		
+		Add license header
+
+	cpw:
+		Fix config parse failure causing crash in building exception message. fixes #7438
+		
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.16.3-34.1.35 - Thu Oct 29 17:09:31 GMT 2020
+	malte0811:
+		Fix (NonNull)Lazy.Concurrent using a global lock (#7403)
+		
+		* Fix Lazy.Concurrent using a global lock, thus preventing multiple threads from resolving independent Lazy's at the same time
+		* Use Lazy with an added null check to implement NonNullLazy
+
+=========
+Build: 1.16.3-34.1.34 - Thu Oct 29 00:12:09 GMT 2020
+	David Quintana:
+		Update forge mappings to 20201028-1.16.3 (#7435)
+
+=========
+Build: 1.16.3-34.1.33 - Tue Oct 27 16:01:02 GMT 2020
+	35673674+alcatrazEscapee:
+		Fix breaking changes from the Biome rename PR #7434 (#7439)
+
+=========
+Build: 1.16.3-34.1.32 - Mon Oct 26 23:52:47 GMT 2020
+	sciwhiz12:
+		Reimplement nametag distance attribute, fix attribute translation keys (#7387)
+
+=========
+Build: 1.16.3-34.1.31 - Mon Oct 26 22:07:02 GMT 2020
+	35673674+alcatrazEscapee:
+		Fix data pack biomes failing to load in SingleBiomeProvider (#7434)
+
+=========
+Build: 1.16.3-34.1.30 - Mon Oct 26 22:00:28 GMT 2020
+	cpw:
+		Add in proper handling of equals and hashcode for modjar urls. Fixes very slow loading on windows.
+		
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.16.3-34.1.29 - Mon Oct 26 12:51:24 GMT 2020
+	cpw:
+		Force 8.0.5 ML
+		
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.16.3-34.1.28 - Mon Oct 26 11:32:40 GMT 2020
+	cpw:
+		Restore FingerprintViolationEvent with appropriate THIS IS F*CKING DEAD DELET WARNINGS.
+		Also, notify in UI if using legacy JDK without capability to read out security data from mod jars.
+		
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.16.3-34.1.27 - Mon Oct 26 02:27:48 GMT 2020
+	cpw:
+		Rollback registries to vanilla state if something happens during loading, so subsequent activities can still run and not generate false reports..
+		
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+	cpw:
+		Add signature reporting for mods, using new signature capture from ModLauncher. Need to figure out
+		how to reflect Minecraft's JAR signatures into here.
+		
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.16.3-34.1.25 - Tue Oct 20 19:32:40 GMT 2020
+	lex:
+		Fix mcp_snapshot mapping issue causing unneeded patches. Closes #7424
+
+=========
+Build: 1.16.3-34.1.24 - Tue Oct 20 11:26:03 GMT 2020
+	David Quintana:
+		Fix resource leak in the OBJ loader.
+
+=========
+Build: 1.16.3-34.1.23 - Fri Oct 16 19:10:02 GMT 2020
+	djbake101:
+		Fix issue with ITeleporter allowing easier use of vanilla logic. (#7317)
+
+=========
+Build: 1.16.3-34.1.22 - Thu Oct 15 19:49:26 GMT 2020
+	richard:
+		Adds tag support for Enchantments, Potions, and TileEntityTypes (#7379)
+
+=========
+Build: 1.16.3-34.1.21 - Thu Oct 15 19:43:33 GMT 2020
+	lex:
+		Resuscitate BiomeDictionary using RegistryKeys instead of biome references.
+
+=========
+Build: 1.16.3-34.1.20 - Thu Oct 15 17:15:15 GMT 2020
+	FinntheRaider:
+		Add event for player changing game mode (#7355)
+
+=========
+Build: 1.16.3-34.1.19 - Mon Oct 12 18:11:22 GMT 2020
+	cpw:
+		Fix RCON multipacket responses not actually understanding UTF8.
+		
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.16.3-34.1.18 - Mon Oct 12 01:49:09 GMT 2020
+	cpw:
+		Fix RCON not sending newlines in output for multiline. Fixes https://bugs.mojang.com/browse/MC-7569, a very old bug that is really annoying if you use RCON.
+		
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.16.3-34.1.17 - Sat Oct 10 16:45:26 GMT 2020
+	championash5357:
+		Fix Texture Presence String (#7408)
+
+=========
+Build: 1.16.3-34.1.16 - Fri Oct 09 19:57:26 GMT 2020
+	lex:
+		Fix typo causing potential error in vine growth. Closes #7406
+		Sort missing registry dumps by name, making it easier to read.
+
+=========
+Build: 1.16.3-34.1.15 - Fri Oct 09 13:58:36 GMT 2020
+	David Quintana:
+		Fixed conditional advancement loading when using the "advancements" array.
+		Added automatic generation of conditional advancements from the criteria in the conditional recipe entries.
+		Added advancement name calculation from the recipe ID.
+
+=========
+Build: 1.16.3-34.1.14 - Thu Oct 08 21:08:45 GMT 2020
+	32142731+Flanks255:
+		Additions to the mdk build.gradle to accommodate datagens. (#7398)
+
+=========
+Build: 1.16.3-34.1.13 - Thu Oct 08 21:02:59 GMT 2020
+	Colby Prince:
+		Added Basic Class-Level SAS Capability to checkSAS, added Vector4f to SAS (#7385)
+
+=========
+Build: 1.16.3-34.1.12 - Wed Oct 07 20:04:11 GMT 2020
+	richard:
+		Add hooks to allow modification of structures spawn lists (#7344)
+
+=========
+Build: 1.16.3-34.1.11 - Tue Oct 06 19:38:36 GMT 2020
+	richard:
+		Add back patches to Screen allowing for item tooltips to be auto wrapped again (#7378)
+		
+		Only deals with the methods receiving an ItemStack or ITextComponent(s), the methods that take IReorderingProcessor(s) are left alone.
+
+=========
+Build: 1.16.3-34.1.10 - Mon Oct 05 14:34:56 GMT 2020
+	adam:
+		Bump mixin version to 0.8.2
+
+=========
+Build: 1.16.3-34.1.9 - Mon Oct 05 10:30:12 GMT 2020
+	cpw:
+		Remove redundant call to CrashReport generator - Vanilla is doing a crashreport for itself at startup now.
+		
+		Add a UUID into crashreport that is also logged in all channels at crash report generation time. This will allow to associate crash reports and the logs.
+		
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+	cpw:
+		Add in extra debug logging
+		
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.16.3-34.1.7 - Sun Oct 04 19:51:37 GMT 2020
+	cpw:
+		Modify how ModLoadingStage handles dispatch to Registry Events. Stops the objectholder spam and generally improves performance on larger packs.
+		
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+	cpw:
+		Fix doc README and answer lex's question
+		
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.16.3-34.1.5 - Fri Oct 02 23:40:14 GMT 2020
+	Colby Prince:
+		Added "Bukkit Plugin" to InvalidModIdentifier (#7384)
+
+=========
+Build: 1.16.3-34.1.4 - Fri Oct 02 23:34:26 GMT 2020
+	richard:
+		Fix vanilla Campfire smoke bug. MC-201374 (#7381)
+
+=========
+Build: 1.16.3-34.1.3 - Fri Oct 02 23:28:31 GMT 2020
+	sciwhiz12:
+		Fix toggleable keybindings still being active while in GUI Fixes #7370 (#7373)
+
+=========
+Build: 1.16.3-34.1.2 - Fri Oct 02 22:06:59 GMT 2020
+	dev:
+		Fix modded EntityClassifications not being useable in the codec. (#7337)
+
+=========
+Build: 1.16.3-34.1.1 - Mon Sep 28 18:02:11 GMT 2020
+	cech12:
+		Support effective materials of vanilla AxeItem (#7351)
+
+=========
 Build: 1.16.3-34.1.0 - Thu Sep 24 07:05:13 GMT 2020
 	lex:
 		Prep new RB.

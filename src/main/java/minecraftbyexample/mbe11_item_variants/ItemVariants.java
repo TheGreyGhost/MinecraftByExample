@@ -161,7 +161,7 @@ public class ItemVariants extends Item
   public String getTranslationKey(ItemStack stack)
   {
     EnumBottleFlavour flavour = getFlavour(stack);
-    return super.getTranslationKey(stack) + "." + flavour.func_176610_l(); //    flavour.getName();
+    return super.getTranslationKey(stack) + "." + flavour.getString();
   }
 
   // change the displayed stack name depending on the fullness
@@ -194,8 +194,7 @@ public class ItemVariants extends Item
     }
 
     @Override
-    //    public String getName()
-    public String func_176610_l()
+    public String getString()
     {
       return this.name;
     }
@@ -275,8 +274,7 @@ public class ItemVariants extends Item
     }
 
     @Override
-//    public String getName()
-    public String func_176610_l() {return this.name;}
+    public String getString() {return this.name;}
 
     public Color getRenderColour() {return renderColour;}
 
