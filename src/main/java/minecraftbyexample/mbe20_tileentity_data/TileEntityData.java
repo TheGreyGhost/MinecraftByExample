@@ -141,7 +141,7 @@ public class TileEntityData extends TileEntity implements ITickableTileEntity {
 	@Override
 	public void read(BlockState blockState, CompoundNBT parentNBTTagCompound)
 	{
-    super.read(blockState, parentNBTTagCompound);   //todo deobs
+    super.read(blockState, parentNBTTagCompound);   
 
 		// important rule: never trust the data you read from NBT, make sure it can't cause a crash
 
