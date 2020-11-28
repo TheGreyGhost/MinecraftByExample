@@ -267,5 +267,20 @@ Two types of properties:
 global (added using func_239420_a_)
 per-item (added using func_239418_a_)
 
+-----------------
+MCP uses two different sets of mappings which are applied separately during the workspace setup. The difference between Notch, Searge and MCP mappings can be seen in the example below:
 
+// Notch
+boolean a(rw ☃);
+
+// Searge
+boolean func_72838_d(Entity p_72838_1_);
+
+// MCP
+boolean spawnEntityInWorld(Entity entityIn);
+Notch mappings are the original names in the obfuscated Minecraft binary. They change regularly with new Minecraft versions.
+
+Searge mappings contain unique names for all obfuscated methods, fields and parameters, as well as human-readable names for the classes. Unlike Notch mappings they usually stay the same across Minecraft updates unless the method signatures change. For SpongeVanilla and SpongeForge, they are also used in production (outside of your IDE).
+
+MCP mappings contain human-readable names largely contributed by the community. They are typically only used in the development environment, and then re-obfuscated to Searge or Notch mappings.
 

@@ -14,6 +14,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawHighlightEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.awt.*;
 import java.lang.reflect.Field;
@@ -30,7 +32,9 @@ public class DebugBlockVoxelShapeHighlighter {
 
     try {
       world = getPrivateWorldFromWorldRenderer(event.getContext());
-    } catch (IllegalAccessException e) {
+    } catch (IllegalAccessException | ObfuscationReflectionHelper.UnableToFindFieldException e) {
+      if (!loggedReflectionError) LOGGER.error("Could not find WorldRenderer.world");
+      loggedReflectionError = true;
       return;
     }
 
@@ -77,14 +81,15 @@ public class DebugBlockVoxelShapeHighlighter {
   // we need to use the srg name for it to work robustly:
   // see here:   https://mcp.thiakil.com/#/search
   //   and here: https://jamieswhiteshirt.github.io/resources/know-your-tools/  
-  private static World getPrivateWorldFromWorldRenderer(WorldRenderer worldRenderer) throws IllegalAccessException {
+  private static World getPrivateWorldFromWorldRenderer(WorldRenderer worldRenderer) throws IllegalAccessException, ObfuscationReflectionHelper.UnableToFindFieldException {
     if (worldField == null) {
-      worldField = ObfuscationReflectionHelper.findField(WorldRenderer.class, "field_72769_h");
+      worldField = ObfuscationReflectionHelper.findField(WorldRenderer.class, "field_72769_hD");
     }
     return (World)worldField.get(worldRenderer);
   }
 
   private static Field worldField;
+  private static boolean loggedReflectionError = false;
 
   /**
    * copied from WorldRenderer; starting from the code marked with iprofiler.endStartSection("outline");
@@ -118,5 +123,5 @@ public class DebugBlockVoxelShapeHighlighter {
       vertexBuilder.pos(matrix4f, (float)(x1 + originX), (float)(y1 + originY), (float)(z1 + originZ)).color(red, green, blue, alpha).endVertex();
     });
   }
-
+  private static final Logger LOGGER = LogManager.getLogger();
 }
