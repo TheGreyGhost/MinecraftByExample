@@ -1,3 +1,7 @@
+Good link for info on obfuscation/deobfuscation:
+https://jamieswhiteshirt.github.io/resources/know-your-tools/
+
+
 
 Item chainsaw for repeating sound
 
