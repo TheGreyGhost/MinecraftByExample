@@ -73,9 +73,13 @@ public class DebugBlockVoxelShapeHighlighter {
     event.setCanceled(true);
   }
 
+  // The world field is private so we need a trick to get access to it
+  // we need to use the srg name for it to work robustly:
+  // see here:   https://mcp.thiakil.com/#/search
+  //   and here: https://jamieswhiteshirt.github.io/resources/know-your-tools/  
   private static World getPrivateWorldFromWorldRenderer(WorldRenderer worldRenderer) throws IllegalAccessException {
     if (worldField == null) {
-      worldField = ObfuscationReflectionHelper.findField(WorldRenderer.class, "world");
+      worldField = ObfuscationReflectionHelper.findField(WorldRenderer.class, "field_72769_h");
     }
     return (World)worldField.get(worldRenderer);
   }
