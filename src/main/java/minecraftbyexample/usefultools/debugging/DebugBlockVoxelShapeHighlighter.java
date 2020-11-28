@@ -83,7 +83,7 @@ public class DebugBlockVoxelShapeHighlighter {
   //   and here: https://jamieswhiteshirt.github.io/resources/know-your-tools/  
   private static World getPrivateWorldFromWorldRenderer(WorldRenderer worldRenderer) throws IllegalAccessException, ObfuscationReflectionHelper.UnableToFindFieldException {
     if (worldField == null) {
-      worldField = ObfuscationReflectionHelper.findField(WorldRenderer.class, "field_72769_hD");
+      worldField = ObfuscationReflectionHelper.findField(WorldRenderer.class, "field_72769_h");
     }
     return (World)worldField.get(worldRenderer);
   }
