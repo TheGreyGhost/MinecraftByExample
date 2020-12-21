@@ -33,6 +33,9 @@
   "block.minecraftbyexample.mbe30_block_registry_name": "MBE30 Inventory Basic Block",
   "container.minecraftbyexample.mbe30_container_registry_name": "MBE30 Inventory Basic GUI",
 
+  "block.minecraftbyexample.mbe30b_block_registry_name": "MBE30b Inventory Basic Block",
+  "container.minecraftbyexample.mbe30b_container_registry_name": "MBE30b Inventory Basic GUI",
+
   "block.minecraftbyexample.mbe31_block_inventory_furnace_registry_name": "MBE31 Inventory Furnace Block",
   "container.minecraftbyexample.mbe31_container_registry_name": "MBE31 Inventory Furnace GUI",
 
