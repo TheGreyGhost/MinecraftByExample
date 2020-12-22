@@ -1,21 +1,32 @@
 package minecraftbyexample.mbe30b_inventory_basic;
 
+import minecraftbyexample.mbe32_inventory_item.ItemStackHandlerFlowerBag;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.ChestBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 /**
  * User: brandon3055 & TGG
@@ -29,20 +40,8 @@ public class TileEntityInventoryBasic_IIH extends TileEntity implements INamedCo
 	public TileEntityInventoryBasic_IIH()
 	{
     super(StartupCommon.tileEntityTypeMBE30_IIH);
-    chestContents = ChestContents_IIH.createForTileEntity(NUMBER_OF_SLOTS,
-            this::canPlayerAccessInventory, this::markDirty);
-	}
-
-	// Return true if the given player is able to use this block. In this case it checks that
-	// 1) the world tileentity hasn't been replaced in the meantime, and
-	// 2) the player isn't too far away from the centre of the block
-	public boolean canPlayerAccessInventory(PlayerEntity player) {
-		if (this.world.getTileEntity(this.pos) != this) return false;
-		final double X_CENTRE_OFFSET = 0.5;
-		final double Y_CENTRE_OFFSET = 0.5;
-		final double Z_CENTRE_OFFSET = 0.5;
-		final double MAXIMUM_DISTANCE_SQ = 8.0 * 8.0;
-		return player.getDistanceSq(pos.getX() + X_CENTRE_OFFSET, pos.getY() + Y_CENTRE_OFFSET, pos.getZ() + Z_CENTRE_OFFSET) < MAXIMUM_DISTANCE_SQ;
+//    chestContents = ChestContents_IIH.createForTileEntity(NUMBER_OF_SLOTS,
+//            this::canPlayerAccessInventory, this::markDirty);
 	}
 
 	private static final String CHESTCONTENTS_INVENTORY_TAG = "contents";
@@ -93,22 +92,23 @@ public class TileEntityInventoryBasic_IIH extends TileEntity implements INamedCo
   }
 
   /* Creates a tag containing all of the TileEntity information, used by vanilla to transmit from server to client
+   *  For this example - Do nothing extra!   The client does not need to know what the contents of the chest are.
+   *  If the client did need to know, for example like the vanilla campfire which renders the "contents" of the chest,
+   *  you would transmit that information here.
    */
   @Override
   public CompoundNBT getUpdateTag()
   {
-    CompoundNBT nbtTagCompound = new CompoundNBT();
-    write(nbtTagCompound);
-    return nbtTagCompound;
+    IT APPEARS THAT FORGE WRITES THE CAPABILITY EVEN FOR PACKETS
+    return super.getUpdateTag();
   }
 
   /* Populates this TileEntity with information from the tag, used by vanilla to transmit from server to client
-  *  The vanilla default is suitable for this example but I've included an explicit definition anyway.
    */
   @Override
   public void handleUpdateTag(BlockState blockState, CompoundNBT tag)
   {
-    this.read(blockState, tag);
+    super.handleUpdateTag(blockState, tag);
   }
 
   /**
@@ -117,10 +117,60 @@ public class TileEntityInventoryBasic_IIH extends TileEntity implements INamedCo
    * @param blockPos
    */
 	public void dropAllContents(World world, BlockPos blockPos) {
-    InventoryHelper.dropInventoryItems(world, blockPos, chestContents);
+	  ItemStackHandler inventory = getInventory();
+    double x = blockPos.getX();
+    double y = blockPos.getY();
+    double z = blockPos.getZ();
+	  for (int i = 0; i < inventory.getSlots(); ++i) {
+  	  InventoryHelper.spawnItemStack(world, x, y, z, inventory.getStackInSlot(i));
+    }
   }
 
-	// -------------  The following two methods are used to make the TileEntity perform as a NamedContainerProvider, i.e.
+  // Return true if the given player is able to use this block. In this case it checks that
+  // 1) the world tileentity hasn't been replaced in the meantime, and
+  // 2) the player isn't too far away from the centre of the block
+  public boolean canPlayerAccessInventory(PlayerEntity player) {
+    if (this.world.getTileEntity(this.pos) != this) return false;
+    final double X_CENTRE_OFFSET = 0.5;
+    final double Y_CENTRE_OFFSET = 0.5;
+    final double Z_CENTRE_OFFSET = 0.5;
+    final double MAXIMUM_DISTANCE_BLOCKS = 8.0;
+    final double MAXIMUM_DISTANCE_SQ = MAXIMUM_DISTANCE_BLOCKS * MAXIMUM_DISTANCE_BLOCKS;
+    return player.getDistanceSq(pos.getX() + X_CENTRE_OFFSET, pos.getY() + Y_CENTRE_OFFSET, pos.getZ() + Z_CENTRE_OFFSET) < MAXIMUM_DISTANCE_SQ;
+  }
+
+  // -----------
+  // retrieve our chest contents (create it if necessary, i.e. if it hasn't been opened before)
+  private ItemStackHandler getInventory() {return itemStackHandlerLazyOptional.resolve().orElseThrow(IllegalStateException::new);}
+
+  @Override
+  public <T> net.minecraftforge.common.util.LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> cap, Direction side) {
+    if (!this.removed && cap == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+      return (LazyOptional<T>)this.itemStackHandlerLazyOptional;
+    }
+    return super.getCapability(cap, side);
+  }
+
+  private ItemStackHandler createItemStackHandler() {
+	  return new ItemStackHandler(NUMBER_OF_SLOTS);
+  }
+
+//  /**
+//   * Retrieves the ItemStackHandlerFlowerBag for this itemStack (retrieved from the Capability)
+//   * @param itemStack
+//   * @return
+//   */
+//  private static ItemStackHandlerFlowerBag getItemStackHandlerFlowerBag(ItemStack itemStack) {
+//    IItemHandler flowerBag = itemStack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElse(null);
+//    if (flowerBag == null || !(flowerBag instanceof ItemStackHandlerFlowerBag)) {
+//      LOGGER.error("ItemFlowerBag did not have the expected ITEM_HANDLER_CAPABILITY");
+//      return new ItemStackHandlerFlowerBag(1);
+//    }
+//    return (ItemStackHandlerFlowerBag)flowerBag;
+//  }
+  private LazyOptional<ItemStackHandler> itemStackHandlerLazyOptional = LazyOptional.of(this::createItemStackHandler);
+
+  // -------------  The following two methods are used to make the TileEntity perform as a NamedContainerProvider, i.e.
   //  1) Provide a name used when displaying the container, and
   //  2) Creating an instance of container on the server, and linking it to the inventory items stored within the TileEntity
 
@@ -143,8 +193,9 @@ public class TileEntityInventoryBasic_IIH extends TileEntity implements INamedCo
   @Nullable
   @Override
   public Container createMenu(int windowID, PlayerInventory playerInventory, PlayerEntity playerEntity) {
-    return ContainerBasic_IIH.createContainerServerSide(windowID, playerInventory, chestContents);
+    return ContainerBasic_IIH.createContainerServerSide(windowID, playerInventory, getInventory(),
+                                                        this::canPlayerAccessInventory, this::markDirty);
   }
 
-  private final ChestContents_IIH chestContents; // holds the ItemStacks in the Chest
+//  private final ChestContents_IIH chestContents; // holds the ItemStacks in the Chest
 }
