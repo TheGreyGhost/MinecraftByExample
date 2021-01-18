@@ -37,7 +37,7 @@ public class FurnaceStateData implements IIntArray {
 
   public void putIntoNBT(CompoundNBT nbtTagCompound) {
     nbtTagCompound.putInt("CookTimeElapsed", cookTimeElapsed);
-    nbtTagCompound.putInt("CookTimeForCompletion", cookTimeElapsed);
+    nbtTagCompound.putInt("CookTimeForCompletion", cookTimeForCompletion);
     nbtTagCompound.putIntArray("burnTimeRemainings", burnTimeRemainings);
     nbtTagCompound.putIntArray("burnTimeInitial", burnTimeInitialValues);
   }
