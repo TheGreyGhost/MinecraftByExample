@@ -58,9 +58,6 @@ public class MinecraftByExample {
   //  resources/META-INF/mods.toml (the name, description, and version parameters)
   public static final String MODID = "minecraftbyexample";
 
-  // get a reference to the event bus for this mod;  Registration events are fired on this bus.
-  public static IEventBus MOD_EVENT_BUS;
-
   public MinecraftByExample() {
     final boolean HIDE_CONSOLE_NOISE = false;  // todo get rid of all the noise from the console (after mod is constructed) to show warnings more clearly.
     if (HIDE_CONSOLE_NOISE) {
@@ -68,7 +65,13 @@ public class MinecraftByExample {
       ForgeLoggerTweaker.applyLoggerFilter();
     }
 
-    MOD_EVENT_BUS = FMLJavaModLoadingContext.get().getModEventBus();
+    // Get an instance of the event bus
+    final IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+
+    // Get an instance of the event registrar that is used to bind events to the mod event bus
+    // this is is a separate class to allow us to use `safeRunWhenOn` instead of the deprecated
+    // `runWhenOn` method on the DistExecuter.
+    final EventRegistrar eventRegistrar = new EventRegistrar(eventBus);
 
     // The event bus register method is used to specify classes used for receiving startup events:
     // The classes you register will be searched for methods which are interested in startup events
@@ -78,7 +81,7 @@ public class MinecraftByExample {
     //  If you subscribe your event to the wrong bus, it will never get called.
     // likewise, beware of the difference between static and non-static methods, i.e.
     //  If you register a class, but the @SubscribeEvent is on a non-static method, it won't be called.  e.g.
-    //  MOD_EVENT_BUS.register(MyClass.class);
+    //  eventBus.register(MyClass.class);
     //  public class ServerLifecycleEvents {
     //    @SubscribeEvent
     //      public void onServerStartingEvent(FMLServerStartingEvent event) { // missing static! --> never gets called}
@@ -102,68 +105,8 @@ public class MinecraftByExample {
     // It doesn't matter if your client-only code is never actually called; simply referencing the class is often enough to
     //   cause a crash.
 
-    registerCommonEvents();
-    DistExecutor.runWhenOn(Dist.CLIENT, () -> MinecraftByExample::registerClientOnlyEvents);
-  }
-
-  public static void registerCommonEvents() {
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe01_block_simple.StartupCommon.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe02_block_partial.StartupCommon.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe03_block_variants.StartupCommon.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe04_block_dynamic_block_models.StartupCommon.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe05_block_advanced_models.StartupCommon.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe06_redstone.StartupCommon.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe10_item_simple.StartupCommon.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe08_itemgroup.StartupCommon.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe11_item_variants.StartupCommon.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe12_item_nbt_animate.StartupCommon.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe15_item_dynamic_item_model.StartupCommon.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe20_tileentity_data.StartupCommon.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe21_tileentityrenderer.StartupCommon.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe30_inventory_basic.StartupCommon.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe31_inventory_furnace.StartupCommon.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe32_inventory_item.StartupCommon.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe35_recipes.StartupCommon.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe45_commands.StartupCommon.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe50_particle.StartupCommon.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe60_network_messages.StartupCommon.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe65_capability.StartupCommon.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe75_testing_framework.StartupCommon.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe80_model_renderer.StartupCommon.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe81_entity_projectile.StartupCommon.class);
-
-    //----------------
-    MOD_EVENT_BUS.register(minecraftbyexample.usefultools.debugging.StartupCommon.class);
-  }
-
-  public static void registerClientOnlyEvents() {
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe01_block_simple.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe02_block_partial.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe03_block_variants.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe04_block_dynamic_block_models.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe05_block_advanced_models.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe06_redstone.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe10_item_simple.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe08_itemgroup.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe11_item_variants.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe12_item_nbt_animate.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe15_item_dynamic_item_model.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe20_tileentity_data.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe21_tileentityrenderer.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe30_inventory_basic.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe31_inventory_furnace.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe32_inventory_item.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe35_recipes.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe45_commands.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe50_particle.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe60_network_messages.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe65_capability.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe75_testing_framework.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe80_model_renderer.StartupClientOnly.class);
-    MOD_EVENT_BUS.register(minecraftbyexample.mbe81_entity_projectile.StartupClientOnly.class);
-
-    //----------------
-    MOD_EVENT_BUS.register(minecraftbyexample.usefultools.debugging.StartupClientOnly.class);
+    eventRegistrar.registerCommonEvents();
+    DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> eventRegistrar::registerClientOnlyEvents);
   }
 
 }
