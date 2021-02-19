@@ -1,7 +1,10 @@
 Good link for info on obfuscation/deobfuscation:
 https://jamieswhiteshirt.github.io/resources/know-your-tools/
 
+ASM now has mixins
+https://github.com/Vazkii/Quark/blob/master/src/main/java/vazkii/quark/base/mixin/ItemRendererMixin.java
 
+SeparatePerspectiveModel for giving items different models depending on their perspective
 
 Item chainsaw for repeating sound
 

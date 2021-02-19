@@ -141,7 +141,7 @@ public class TileEntityInventoryBasic_IIH extends TileEntity implements INamedCo
 
   // -----------
   // retrieve our chest contents (create it if necessary, i.e. if it hasn't been opened before)
-  private ItemStackHandler getInventory() {return itemStackHandlerLazyOptional.resolve().orElseThrow(IllegalStateException::new);}
+  private ItemStackHandler getInventory() {return itemStackHandlerLazyOptional.orElseThrow(IllegalStateException::new);}
 
   @Override
   public <T> net.minecraftforge.common.util.LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> cap, Direction side) {
