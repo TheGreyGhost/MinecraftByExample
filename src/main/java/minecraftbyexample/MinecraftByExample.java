@@ -31,13 +31,13 @@ import org.apache.logging.log4j.Level;
      1) code which needs to be called regardless of whether your mod is installed in a DedicatedServer or CombinedClient distribution.  This is usually related to game logic and
         any other things that the server needs to keep track of.
      2) code which is only relevant to the client distribution.  This is usually related to graphical rendering, user input, or similar.  You can ensure that this code is
-        only initialised on the client by using DistExecutor.runWhenOn(Dist.CLIENT, () -> MinecraftByExample::registerClientOnlyEvents);
+        only initialised on the client by using DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> eventRegistrar::registerClientOnlyEvents);
 
    3) Some of the events are called in parallel threads.  This means that your code in these events must not call non-thread-safe code; for example
        BrewingRecipeRegistry::addRecipe  or ItemModelsProperties registering events;  if multiple threads try to call addRecipe at the same time, it will occasionally cause data
          corruption or a game crash.
        Instead, use DeferredWordQueue::enqueueWork to register a function for synchronous execution in the main thread after the parallel processing is completed
-       The Events affected by this are those which extend ParallelDispatchEvent (in particular FMLClientSetupEvent and FMLCommonSetupEvent
+       The Events affected by this are those which extend ParallelDispatchEvent (in particular FMLClientSetupEvent and FMLCommonSetupEvent)
 
    4) The basic order of events that your mod receives during startup is
      CONSTRUCTION of the mod class
@@ -65,13 +65,13 @@ public class MinecraftByExample {
       ForgeLoggerTweaker.applyLoggerFilter();
     }
 
-    // Get an instance of the event bus
-    final IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+    // Get an instance of the mod event bus
+    final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
     // Get an instance of the event registrar that is used to bind events to the mod event bus
     // this is is a separate class to allow us to use `safeRunWhenOn` instead of the deprecated
     // `runWhenOn` method on the DistExecuter.
-    final EventRegistrar eventRegistrar = new EventRegistrar(eventBus);
+    final ClientSideOnlyModEventRegistrar clientSideOnlyModEventRegistrar = new ClientSideOnlyModEventRegistrar(modEventBus);
 
     // The event bus register method is used to specify classes used for receiving startup events:
     // The classes you register will be searched for methods which are interested in startup events
@@ -103,10 +103,47 @@ public class MinecraftByExample {
     // 2) "Client only" events that are not executed on a dedicated server.
     // If you aren't careful to split these into two parts, your mod will crash when installed on a dedicated server
     // It doesn't matter if your client-only code is never actually called; simply referencing the class is often enough to
-    //   cause a crash.
+    //   cause a crash.  I have also heard that the behaviour depends on the particular implementation of the Java Virtual
+    //   Machine (for example Windows vs Linux), so you can't necessarily rely on testing to be sure it works.
+    //   See the comments in DistExecutor class for more context.
+    //  This is the reason that the ClientOnlyEvents are split into a completely-separate class.
 
-    eventRegistrar.registerCommonEvents();
-    DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> eventRegistrar::registerClientOnlyEvents);
+    registerCommonEvents(modEventBus);
+    DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> clientSideOnlyModEventRegistrar::registerClientOnlyEvents);
+  }
+
+
+  /**
+   * Register common events for both dedicated servers and clients. This method is safe to call directly.
+   */
+  public void registerCommonEvents(IEventBus eventBus) {
+    eventBus.register(minecraftbyexample.mbe01_block_simple.StartupCommon.class);
+    eventBus.register(minecraftbyexample.mbe02_block_partial.StartupCommon.class);
+    eventBus.register(minecraftbyexample.mbe03_block_variants.StartupCommon.class);
+    eventBus.register(minecraftbyexample.mbe04_block_dynamic_block_models.StartupCommon.class);
+    eventBus.register(minecraftbyexample.mbe05_block_advanced_models.StartupCommon.class);
+    eventBus.register(minecraftbyexample.mbe06_redstone.StartupCommon.class);
+    eventBus.register(minecraftbyexample.mbe10_item_simple.StartupCommon.class);
+    eventBus.register(minecraftbyexample.mbe08_itemgroup.StartupCommon.class);
+    eventBus.register(minecraftbyexample.mbe11_item_variants.StartupCommon.class);
+    eventBus.register(minecraftbyexample.mbe12_item_nbt_animate.StartupCommon.class);
+    eventBus.register(minecraftbyexample.mbe15_item_dynamic_item_model.StartupCommon.class);
+    eventBus.register(minecraftbyexample.mbe20_tileentity_data.StartupCommon.class);
+    eventBus.register(minecraftbyexample.mbe21_tileentityrenderer.StartupCommon.class);
+    eventBus.register(minecraftbyexample.mbe30_inventory_basic.StartupCommon.class);
+    eventBus.register(minecraftbyexample.mbe31_inventory_furnace.StartupCommon.class);
+    eventBus.register(minecraftbyexample.mbe32_inventory_item.StartupCommon.class);
+    eventBus.register(minecraftbyexample.mbe35_recipes.StartupCommon.class);
+    eventBus.register(minecraftbyexample.mbe45_commands.StartupCommon.class);
+    eventBus.register(minecraftbyexample.mbe50_particle.StartupCommon.class);
+    eventBus.register(minecraftbyexample.mbe60_network_messages.StartupCommon.class);
+    eventBus.register(minecraftbyexample.mbe65_capability.StartupCommon.class);
+    eventBus.register(minecraftbyexample.mbe75_testing_framework.StartupCommon.class);
+    eventBus.register(minecraftbyexample.mbe80_model_renderer.StartupCommon.class);
+    eventBus.register(minecraftbyexample.mbe81_entity_projectile.StartupCommon.class);
+
+    //----------------
+    eventBus.register(minecraftbyexample.usefultools.debugging.StartupCommon.class);
   }
 
 }
