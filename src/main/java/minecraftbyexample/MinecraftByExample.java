@@ -69,7 +69,7 @@ public class MinecraftByExample {
     final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
     // Get an instance of the event registrar that is used to bind events to the mod event bus
-    // this is is a separate class to allow us to use `safeRunWhenOn` instead of the deprecated
+    // this is a separate class to allow us to use `safeRunWhenOn` instead of the deprecated
     // `runWhenOn` method on the DistExecuter.
     final ClientSideOnlyModEventRegistrar clientSideOnlyModEventRegistrar = new ClientSideOnlyModEventRegistrar(modEventBus);
 
